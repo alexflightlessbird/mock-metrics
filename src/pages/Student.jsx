@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
+import { useSession } from '../context/SessionContext';
+import IconButton from "../components/buttons/IconButton";
+import icons from "../utils/icons.json";
 
 export default function Student() {
   const { studentId } = useParams();
@@ -11,6 +14,9 @@ export default function Student() {
   const [school, setSchool] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [role, setRole] = useState("");
+
+  const { userId } = useSession();
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -27,6 +33,21 @@ export default function Student() {
 
         if (studentData) {
           setStudent(studentData);
+
+          const { data: roleData, error: roleError } = await supabase
+            .from("users_schools")
+            .select("role")
+            .eq("school_id", studentData.school_id)
+            .eq("user_id", userId)
+            .single();
+
+            if (roleError) {
+              throw roleError;
+            }
+
+            if (roleData) {
+              setRole(roleData.role);
+            }
 
           const { data: schoolData } = await supabase
             .from("schools")
@@ -63,14 +84,37 @@ export default function Student() {
     fetchStudent();
   }, []);
 
+  const isAdmin = role === ("Primary") || role === ("Admin");
+  const isPrimaryAdmin = role === ("Primary");
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   document.title = `${student.name} - MockMetrics`;
 
+  const handleEditStudentClick = () => {
+    window.alert("Edit student");
+  }
+
+  const handleDeleteStudentClick = () => {
+    window.alert("Delete student");
+  }
+
+  const handleEditTeamAssignmentClick = () => {
+    window.alert("Edit team assignment");
+  }
+
+  const handleDeletePreviousTeamClick = () => {
+    window.alert("Delete previous team assignment");
+  }
+
   return (
     <div>
       <h1>{student.name}</h1>
+      <div>
+        {isAdmin && <IconButton text={"Edit Student"} handleClickFunction={handleEditStudentClick} icon="edit" />}
+        {isPrimaryAdmin && <IconButton text={"Delete Student"} handleClickFunction={handleDeleteStudentClick} icon="delete" />}
+      </div>
       <li>
         School:{" "}
         <Link to={`/schools/${school.id}`}>
@@ -79,9 +123,10 @@ export default function Student() {
         </Link>
       </li>
       <li>
-        Current Student: {student.is_active ? <>&#128505;</> : <>&#128503;</>}
+        Current Student: {student.is_active ? icons["check"] : icons["x"]}
       </li>
       <h2>Teams</h2>
+      {isAdmin && <IconButton text={"Edit Team Assignment"} handleClickFunction={handleEditTeamAssignmentClick} icon="edit" />}
       <h3>Current Team</h3>
       <ul>
         {currentTeam ? (
@@ -93,6 +138,7 @@ export default function Student() {
         )}
       </ul>
       <h3>Previous Teams</h3>
+      {isPrimaryAdmin && <IconButton text={"Delete Previous Team Assignment"} icon="delete" handleClickFunction={handleDeletePreviousTeamClick} />}
       <ul>
         {currentTeam
           ? teams

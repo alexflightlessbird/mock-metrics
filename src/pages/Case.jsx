@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
-import BackButton from "../components/buttons/BackButton";
+import IconButton from "../components/buttons/IconButton";
+import icons from "../utils/icons.json";
 
 export default function Case() {
   const { caseId } = useParams();
@@ -56,13 +57,13 @@ export default function Case() {
 
   return (
     <div>
-      <BackButton onClickLink="/cases" />
+      <IconButton onClickLink="/cases" text="All Cases" icon="back" />
       <h1>{caseVal.name}</h1>
       <ul>
         <li>Year: {caseVal.year}</li>
         <li>Type: {caseVal.type}</li>
         <li>
-          Current Case: {caseVal.is_active ? <>&#128505;</> : <>&#128503;</>}
+          Current Case: {caseVal.is_active ? icons["check"] : icons["x"]}
         </li>
       </ul>
       <h2>Witnesses</h2>
