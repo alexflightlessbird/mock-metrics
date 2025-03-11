@@ -5,8 +5,8 @@ import { useSession } from "../context/SessionContext";
 import logo from "../assets/logo.png";
 
 export default function NavBar() {
-  const session = useSession();
-
+  const { session } = useSession();
+  
   if (!session) {
     return (
       <div>
