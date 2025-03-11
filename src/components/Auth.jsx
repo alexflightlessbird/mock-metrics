@@ -5,12 +5,12 @@ import { useSession } from "../context/SessionContext";
 export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { session, loading } = useSession();
+  const { session } = useSession();
   const [isLogin, setIsLogin] = useState(true);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -26,7 +26,7 @@ export default function Auth() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
