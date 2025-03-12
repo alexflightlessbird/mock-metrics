@@ -62,9 +62,7 @@ export default function Case() {
       <ul>
         <li>Year: {caseVal.year}</li>
         <li>Type: {caseVal.type}</li>
-        <li>
-          Current Case: {caseVal.is_active ? icons["check"] : icons["x"]}
-        </li>
+        <li>Current Case: {caseVal.is_active ? icons["check"] : icons["x"]}</li>
       </ul>
       <h2>Witnesses</h2>
       <h3>Plaintiff Side-Locked</h3>
