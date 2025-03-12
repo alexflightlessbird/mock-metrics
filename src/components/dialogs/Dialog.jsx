@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import InputField from "./InputField";
 
 export default function Dialog({
@@ -8,6 +8,7 @@ export default function Dialog({
   questions,
 }) {
   const dialogRef = useRef(null);
+  const formRef = useRef(null);
 
   const initialValues = questions.reduce((acc, q) => {
     acc[q.id || `question-${questions.indexOf(q)}`] = q.value || "";
@@ -38,11 +39,28 @@ export default function Dialog({
     setValues(initialValues);
   };
 
+  useEffect(() => {
+    const form = formRef.current;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleFormSubmit(e);
+      }
+    };
+
+    if (form) form.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      if (form) form.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleFormSubmit]);
+
   return (
     <dialog className={className} ref={dialogRef}>
       <fieldset>
         <legend>{legendText}</legend>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} ref={formRef}>
           {questions.map((q, i) => (
             <InputField
               key={i}
