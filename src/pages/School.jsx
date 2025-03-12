@@ -14,6 +14,7 @@ export default function School() {
   const [error, setError] = useState("");
   const [role, setRole] = useState("");
   const [assignees, setAssignees] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
 
   const { userId } = useSession();
 
@@ -76,6 +77,15 @@ export default function School() {
           if (teamData && teamData.length > 0) {
             setTeams(teamData);
           }
+
+          const { data: tournamentData } = await supabase
+            .from("tournaments")
+            .select("*")
+            .eq("school_id", schoolId);
+
+          if (tournamentData && tournamentData.length > 0) {
+            setTournaments(tournamentData);
+          }
         } else {
           setError("School not found.");
         }
@@ -130,13 +140,15 @@ export default function School() {
   const handleDeleteStudentClick = () => {
     window.alert("Delete student");
   }
-  
 
   return (
     <div>
       <IconButton onClickLink="/schools" text="All Schools" icon="back" />
       <h1>{school.name}</h1>
-      {isPrimaryAdmin && <div><IconButton icon="edit" handleClickFunction={handleEditSchoolClick} text="Edit School" /></div>}
+      <div>
+        {isPrimaryAdmin && <><IconButton icon="edit" handleClickFunction={handleEditSchoolClick} text="Edit School" /><br/></>}
+        <IconButton icon="forward" onClickLink={`/schools/${schoolId}/analysis`} text="Ballot Analysis" />
+      </div>
       <ul>
         <li>Short Name: {school.short_name}</li>
         <li>Your Role: {role}{role === "Primary" ? " Admin" : ""}</li>
@@ -218,6 +230,27 @@ export default function School() {
           <li key={s.id}><Link to={`/student/${s.id}`}>{s.name}</Link></li>
         ))}
         </ul>
+      <h2>Tournaments</h2>
+      <h3>Current Tournaments</h3>
+      <ul>
+        {tournaments.filter((t) => t.is_active).map((t) => (
+          <li key={t.id}>
+            <Link to={`/school/${schoolId}/tournaments/${t.id}`}>
+              {t.name} - {t.year}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <h3>Previous Tournaments</h3>
+      <ul>
+        {tournaments.filter((t) => !t.is_active).map((t) => (
+          <li key={t.id}>
+            <Link to={`/school/${schoolId}/tournaments/${t.id}`}>
+              {t.name} - {t.year}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

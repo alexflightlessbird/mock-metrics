@@ -14,6 +14,7 @@ import School from "./pages/School";
 import Witness from "./pages/Witness";
 import Team from "./pages/Team";
 import Student from "./pages/Student";
+import SchoolAnalysis from './pages/SchoolAnalysis';
 import RootLayout from "./layouts/RootLayout";
 
 export default function App() {
@@ -39,6 +40,14 @@ export default function App() {
               <School />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/schools/:schoolId/analysis"
+          element={
+            <ProtectedRoute>
+              <SchoolAnalysis />
+            </ProtectedRoute>
+          } 
         />
         <Route
           path="/team/:teamId"
