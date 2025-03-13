@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import IconButton from "../buttons/IconButton";
 
-export default function StudentsList({ students, isAdmin }) {
+export default function StudentsList({ students, isAdmin, schoolId }) {
   const handleAddStudentClick = () => {
     window.alert("Add student - will be dialog");
   };

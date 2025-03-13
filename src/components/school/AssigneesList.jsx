@@ -1,7 +1,7 @@
 import React from "react";
 import IconButton from "../buttons/IconButton";
 
-export default function AssigneesList({ assignees }) {
+export default function AssigneesList({ assignees, schoolId }) {
   const handlEditUserRolesClick = () => {
     window.alert("Editing user roles - will be dialog");
   };

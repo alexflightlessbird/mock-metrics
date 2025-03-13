@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import IconButton from "../buttons/IconButton";
 
-export default function TournamentsList({ tournaments, isAdmin }) {
+export default function TournamentsList({ tournaments, isAdmin, schoolId }) {
   const handleAddTournamentClick = () => {
     window.alert("Add tournament - will be dialog");
   };
