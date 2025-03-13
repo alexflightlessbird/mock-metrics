@@ -25,6 +25,7 @@ export default function Dialog({
   };
 
   const handleFormSubmit = (e) => {
+    e.preventDefault();
     handleSubmit(values);
     dialogRef.current.close();
   };
