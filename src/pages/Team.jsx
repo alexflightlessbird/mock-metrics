@@ -10,7 +10,6 @@ export default function Team() {
   const { teamId } = useParams();
   const [team, setTeam] = useState(null);
   const [school, setSchool] = useState(null);
-  const [caseVal, setCaseVal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentStudents, setCurrentStudents] = useState([]);
@@ -97,7 +96,7 @@ export default function Team() {
     };
 
     fetchTeam();
-  }, []);
+  }, [teamId]);
 
   const isAdmin = role === "Primary" || role === "Admin";
   const isPrimaryAdmin = role === "Primary";
@@ -144,10 +143,6 @@ export default function Team() {
         </li>
         <li>Type: {team.type}</li>
         <li>Active Team: {team.is_active ? icons["check"] : icons["x"]}</li>
-        <li>
-          Associated Case:{" "}
-          <Link to={`/cases/${caseVal.id}`}>{caseVal.name}</Link>
-        </li>
       </ul>
       <h2>Students</h2>
       <h3>Active Students</h3>
