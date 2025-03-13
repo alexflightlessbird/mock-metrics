@@ -7,7 +7,10 @@ export default function Schools() {
 
   useEffect(() => {
     const fetchSchools = async () => {
-      const { data, error } = await supabase.from("schools").select("*");
+      const { data, error } = await supabase
+        .from("schools")
+        .select("*")
+        .order("name");
       if (error) {
         console.error("Error fetching schools:", error);
       } else {
