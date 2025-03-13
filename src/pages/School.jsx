@@ -13,6 +13,7 @@ import useSchoolData from "../hooks/useSchoolData";
 export default function School() {
   const { schoolId } = useParams();
   const { userId } = useSession();
+  const [shortName, setShortName] = useState("");
 
   const {
     school,
@@ -28,16 +29,32 @@ export default function School() {
   const isAdmin = role === "Primary" || role === "Admin";
   const isPrimaryAdmin = role === "Primary";
 
+  useEffect(() => {
+    if (school) {
+      setShortName(school.short_name);
+    }
+  }, [school]);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  document.title = `${
-    school.short_name ? school.short_name : school.name
-  } - MockMetrics`;
+  document.title = `${shortName} - MockMetrics`;
 
-  const handleEditSchoolClick = () => {
-    const dialog = document.querySelector(".edit-school-dialog");
-    dialog.showModal();
+  const handleEditSchoolSubmit = (values) => {
+    const newShortName = values["short-name"];
+    if (newShortName === shortName) return;
+
+    supabase
+      .from("schools")
+      .update({ short_name: newShortName })
+      .eq("id", schoolId)
+      .then(({ error }) => {
+        if (error) {
+          console.error("Error updating school:", error);
+        } else {
+          setShortName(newShortName);
+        }
+      });
   };
 
   return (
@@ -49,16 +66,16 @@ export default function School() {
           <>
             <IconButton
               icon="edit"
-              handleClickFunction={handleEditSchoolClick}
+              handleClickFunction={() =>
+                document.querySelector(".edit-school-dialog").showModal()
+              }
               text="Edit School"
             />
             <br />
             <Dialog
               className="edit-school-dialog"
               legendText="Edit School"
-              handleSubmit={(e) => {
-                window.alert("Would be submitted here");
-              }}
+              handleSubmit={handleEditSchoolSubmit}
               questions={[
                 {
                   type: "text",
@@ -66,7 +83,7 @@ export default function School() {
                   label: "Short Name",
                   disabled: false,
                   required: true,
-                  value: school.short_name,
+                  value: shortName,
                 },
               ]}
             />
@@ -79,16 +96,30 @@ export default function School() {
         />
       </div>
       <ul>
-        <li>Short Name: {school.short_name}</li>
+        <li>Short Name: {shortName}</li>
         <li>
           Your Role: {role}
           {role === "Primary" ? " Admin" : ""}
         </li>
       </ul>
-      {isPrimaryAdmin && <AssigneesList assignees={assignees} />}
-      {<TeamsList teams={teams} isAdmin={isAdmin} />}
-      {<StudentsList students={students} isAdmin={isAdmin} />}
-      {<TournamentsList tournaments={tournaments} isAdmin={isAdmin} />}
+      {isPrimaryAdmin && (
+        <AssigneesList assignees={assignees} schoolId={schoolId} />
+      )}
+      {<TeamsList teams={teams} isAdmin={isAdmin} schoolId={schoolId} />}
+      {
+        <StudentsList
+          students={students}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+        />
+      }
+      {
+        <TournamentsList
+          tournaments={tournaments}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+        />
+      }
     </div>
   );
 }
