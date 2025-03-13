@@ -26,6 +26,7 @@ export default function NavBar() {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/cases">Cases</NavLink>
           <NavLink to="/schools">Schools</NavLink>
+          <NavLink to="/profile">Profile</NavLink>
           <Auth />
         </nav>
       </div>

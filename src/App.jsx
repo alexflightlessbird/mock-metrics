@@ -14,8 +14,9 @@ import School from "./pages/School";
 import Witness from "./pages/Witness";
 import Team from "./pages/Team";
 import Student from "./pages/Student";
-import SchoolAnalysis from './pages/SchoolAnalysis';
+import SchoolAnalysis from "./pages/SchoolAnalysis";
 import RootLayout from "./layouts/RootLayout";
+import Profile from "./pages/Profile";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -47,7 +48,7 @@ export default function App() {
             <ProtectedRoute>
               <SchoolAnalysis />
             </ProtectedRoute>
-          } 
+          }
         />
         <Route
           path="/team/:teamId"
@@ -62,6 +63,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Student />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
