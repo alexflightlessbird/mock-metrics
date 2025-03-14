@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
 import { useSession } from "../context/SessionContext";
-import Dialog from "../components/dialogs/Dialog";
-import IconButton from "../components/buttons/IconButton";
+import Dialog from "../components/common/dialogs/Dialog";
+import IconButton from "../components/common/buttons/IconButton";
 
 export default function Profile() {
   const { userId } = useSession();

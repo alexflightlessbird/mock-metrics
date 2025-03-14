@@ -1,5 +1,5 @@
 import React from "react";
-import IconButton from "../buttons/IconButton";
+import IconButton from "./IconButton";
 
 export default function OpenModalButton({ dialogClass, text, type }) {
   if (type !== "add" && type !== "edit" && type !== "delete") {

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
 import { useSession } from "../context/SessionContext";
-import IconButton from "../components/buttons/IconButton";
+import IconButton from "../components/common/buttons/IconButton";
 import icons from "../utils/icons.json";
 
 export default function Team() {

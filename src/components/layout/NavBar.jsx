@@ -1,8 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Auth from "./Auth";
-import { useSession } from "../context/SessionContext";
-import logo from "../assets/logo.png";
+import Auth from "../auth/Auth";
+import { useSession } from "../../context/SessionContext";
+import logo from "../../assets/logo.png";
 
 export default function NavBar() {
   const { session } = useSession();

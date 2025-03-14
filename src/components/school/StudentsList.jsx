@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Dialog from "../dialogs/Dialog";
+import Dialog from "../common/dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
-import ListComponent from "../common/ListComponent";
-import OpenModalButton from "../common/OpenModalButton";
+import ListComponent from "../common/lists/ListComponent";
+import OpenModalButton from "../common/buttons/OpenModalButton";
 
 export default function StudentsList({ students, isAdmin, schoolId, teams }) {
   const [activeStudents, setActiveStudents] = useState([]);

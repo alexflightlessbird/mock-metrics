@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ListComponent from "../common/ListComponent";
-import OpenModalButton from "../common/OpenModalButton";
+import ListComponent from "../common/lists/ListComponent";
+import OpenModalButton from "../common/buttons/OpenModalButton";
 
 export default function AssigneesList({ assignees, schoolId }) {
   const [primaryAdmins, setPrimaryAdmins] = useState([]);

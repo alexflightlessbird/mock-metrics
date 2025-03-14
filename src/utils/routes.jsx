@@ -8,7 +8,7 @@ import Home from "../pages/Home";
 import Schools from "../pages/Schools";
 import Cases from "../pages/Cases";
 import Case from "../pages/Case";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/layout/ProtectedRoute";
 import School from "../pages/School";
 import Witness from "../pages/Witness";
 import Team from "../pages/Team";

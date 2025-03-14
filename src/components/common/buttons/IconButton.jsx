@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import icons from "../../utils/icons.json";
+import icons from "../../../utils/icons.json";
 
 export default function IconButton({
   onClickLink,

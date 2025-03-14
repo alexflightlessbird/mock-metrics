@@ -1,36 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
-import IconButton from "../components/buttons/IconButton";
-import OpenModalButton from "../components/common/OpenModalButton";
 import { useSession } from "../context/SessionContext";
-import Dialog from "../components/dialogs/Dialog";
-import useSchoolData from "../hooks/useSchoolData";
 import AssigneesList from "../components/school/AssigneesList";
 import TeamsList from "../components/school/TeamsList";
 import StudentsList from "../components/school/StudentsList";
 import TournamentsList from "../components/school/TournamentsList";
+import useFetchData from "../hooks/useFetchData";
+import useSchoolData from "../hooks/useSchoolData";
+import { fetchCases } from "../services/api/caseApi";
+import SchoolHeader from "../components/school/SchoolHeader";
+import SchoolDetails from "../components/school/SchoolDetails";
 
 export default function School() {
   const { schoolId } = useParams();
   const { userId } = useSession();
   const [shortName, setShortName] = useState("");
 
-  const {
+  const { 
     school,
+    schoolLoading,
+    schoolError,
     teams,
-    setTeams,
-    students,
-    loading,
-    error,
-    role,
-    assignees,
+    teamsLoading,
+    teamsError,
     tournaments,
-    cases,
+    tournamentsLoading,
+    tournamentsError,
+    students,
+    studentsLoading,
+    studentsError,
+    roleData,
+    roleLoading,
+    roleError,
+    assignees,
+    assigneesLoading,
+    assigneesError 
   } = useSchoolData(schoolId, userId);
-
-  const isAdmin = role === "Primary" || role === "Admin";
-  const isPrimaryAdmin = role === "Primary";
+  const { data: cases, loading: casesLoading, error: casesError } = useFetchData(() => fetchCases(), false, []);
 
   useEffect(() => {
     if (school) {
@@ -38,8 +45,16 @@ export default function School() {
     }
   }, [school]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (roleLoading) return <p>Loading...</p>;
+  if (roleError) return <p>{roleError}</p>;
+  
+  const role = roleData.role;
+
+  const isAdmin = role === "Primary" || role === "Admin";
+  const isPrimaryAdmin = role === "Primary";
+
+  if (schoolLoading) return <p>Loading school...</p>;
+  if (schoolError) return <p>{schoolError}</p>;
 
   const handleTeamAdded = (newTeam) => {
     setTeams((prevTeams) => [...prevTeams, newTeam]);
@@ -65,69 +80,42 @@ export default function School() {
 
   return (
     <div>
-      <IconButton onClickLink="/schools" text="All Schools" icon="back" />
-      <h1>{school.name}</h1>
-      <div>
-        {isPrimaryAdmin && (
-          <>
-            <OpenModalButton
-              type="edit"
-              text="Edit School"
-              dialogClass="edit-school-dialog"
-            />
-            <Dialog
-              className="edit-school-dialog"
-              legendText="Edit School"
-              handleSubmit={handleEditSchoolSubmit}
-              questions={[
-                {
-                  type: "text",
-                  id: "short-name",
-                  label: "Short Name",
-                  value: shortName,
-                  required: true,
-                },
-              ]}
-            />
-          </>
-        )}
-        <IconButton
-          icon="forward"
-          onClickLink={`/schools/${schoolId}/analysis`}
-          text="Ballot Analysis"
-        />
-      </div>
-      <ul>
-        <li>Short Name: {shortName}</li>
-        <li>
-          Your Role: {role}
-          {role === "Primary" ? " Admin" : ""}
-        </li>
-      </ul>
-      {isPrimaryAdmin && (
+      <SchoolHeader school={school} isPrimaryAdmin={isPrimaryAdmin} shortName={shortName} handleEditSchoolSubmit={handleEditSchoolSubmit} />
+      <SchoolDetails shortName={shortName} role={role} />
+      {isPrimaryAdmin && assigneesLoading && <p>Loading assignees...</p>}
+      {isPrimaryAdmin && !assigneesLoading && (
         <AssigneesList assignees={assignees} schoolId={schoolId} />
       )}
 
-      <TeamsList
-        teams={teams}
-        isAdmin={isAdmin}
-        schoolId={schoolId}
-        onTeamAdded={handleTeamAdded}
-      />
-      <StudentsList
-        students={students}
-        isAdmin={isAdmin}
-        schoolId={schoolId}
-        teams={teams}
-      />
-      <TournamentsList
-        tournaments={tournaments}
-        isPrimaryAdmin={isPrimaryAdmin}
-        isAdmin={isAdmin}
-        schoolId={schoolId}
-        cases={cases}
-        teams={teams}
-      />
+      {teamsLoading ? 
+        <p>Loading teams...</p> : 
+        <TeamsList teams={teams}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+          onTeamAdded={handleTeamAdded}
+        />
+      }
+
+      {teamsLoading || studentsLoading ? 
+        <p>Loading students...</p> : 
+        <StudentsList
+          students={students}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+          teams={teams}
+        />
+      }
+      {tournamentsLoading || teamsLoading || casesLoading ? 
+        <p>Loading tournaments...</p> :
+        <TournamentsList
+          tournaments={tournaments}
+          isPrimaryAdmin={isPrimaryAdmin}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+          cases={cases}
+          teams={teams}
+        />
+      }
     </div>
   );
 }

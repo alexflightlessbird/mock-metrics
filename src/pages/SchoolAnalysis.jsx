@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import IconButton from '../components/buttons/IconButton';
+import IconButton from '../components/common/buttons/IconButton';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { useSession } from '../context/SessionContext';

@@ -1,4 +1,4 @@
-import { useSession } from "../context/SessionContext";
+import { useSession } from "../../context/SessionContext";
 import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
