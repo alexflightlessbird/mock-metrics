@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
-import Dialog from "../dialogs/Dialog";
+import Dialog from "../common/dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
-import ListComponent from "../common/ListComponent";
-import OpenModalButton from "../common/OpenModalButton";
+import ListComponent from "../common/lists/ListComponent";
+import OpenModalButton from "../common/buttons/OpenModalButton";
+import ListWithLoader from "../common/lists/ListWithLoader";
 
 export default function TournamentsList({
   tournaments,
-  isAdmin,
   schoolId,
   isPrimaryAdmin,
   cases,
   teams,
+  loading,
+  error
 }) {
   const [activeTournaments, setActiveTournaments] = useState([]);
   const [inactiveTournaments, setInactiveTournaments] = useState([]);
 
   useEffect(() => {
-    setActiveTournaments(tournaments.filter((t) => t.is_active));
-    setInactiveTournaments(tournaments.filter((t) => !t.is_active));
+    setActiveTournaments(tournaments ? tournaments.filter((t) => t.is_active) : []);
+    setInactiveTournaments(tournaments ? tournaments.filter((t) => !t.is_active) : []);
   }, [tournaments]);
 
   const handleAddTournamentSubmit = async (values) => {
@@ -60,6 +62,11 @@ export default function TournamentsList({
       window.alert("Something went wrong. Please try again.");
     }
   };
+
+  const casesValue = cases ? cases.filter((c) => c.is_active)[0]?.id : "";
+  const casesOptions = cases ? cases
+    .filter((c) => c.is_active)
+    .map((c) => ({ label: c.name, value: c.id })) : {};
 
   return (
     <div>
@@ -141,15 +148,13 @@ export default function TournamentsList({
                 type: "select",
                 label: "Associated Case",
                 id: "caseId",
-                value: cases.filter((c) => c.is_active)[0].id,
+                value: casesValue,
                 options: [
-                  ...cases
-                    .filter((c) => c.is_active)
-                    .map((c) => ({ label: c.name, value: c.id })),
+                  casesOptions,
                 ],
                 required: true,
               },
-              ...(teams.length > 0
+              ...(teams && teams.length > 0
                 ? [
                     {
                       type: "multi-select",
@@ -167,17 +172,21 @@ export default function TournamentsList({
           />
         </>
       )}
-      <ListComponent
+      <ListWithLoader
         items={activeTournaments}
         title="Active Tournaments"
-        emptyMessage="No active tournaments"
+        emptyMessage="No active tournaments."
         linkPath="/tournaments"
+        loading={loading}
+        error={error}
       />
-      <ListComponent
+      <ListWithLoader
         items={inactiveTournaments}
         title="Inactive Tournaments"
-        emptyMessage="No inactive tournaments"
+        emptyMessage="No inactive tournaments."
         linkPath="/tournaments"
+        loading={loading}
+        error={error}
       />
     </div>
   );

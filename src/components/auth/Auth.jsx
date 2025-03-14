@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { supabase } from "../services/supabaseClient";
-import { useSession } from "../context/SessionContext";
+import { supabase } from "../../services/supabaseClient";
+import { useSession } from "../../hooks/auth/useSession";
 
 export default function Auth() {
   const [email, setEmail] = useState("");

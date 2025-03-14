@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Witness() {
   const { witnessId } = useParams();
@@ -51,8 +52,8 @@ export default function Witness() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  document.title = `${witness.name} - MockMetrics`;
-
+  setDocumentTitle(witness.name);
+  
   return (
     <div>
       <h1>{witness.name}</h1>

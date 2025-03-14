@@ -8,12 +8,13 @@ import Home from "../pages/Home";
 import Schools from "../pages/Schools";
 import Cases from "../pages/Cases";
 import Case from "../pages/Case";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/layout/ProtectedRoute";
 import School from "../pages/School";
 import Witness from "../pages/Witness";
 import Team from "../pages/Team";
 import SchoolAnalysis from "../pages/SchoolAnalysis";
 import Profile from "../pages/Profile";
+import Student from "../pages/Student";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,14 @@ const router = createBrowserRouter(
       <Route
         path="/tournaments/:tournamentId"
         element={<div>Tournament Page</div>}
+      />
+      <Route 
+        path="/student/:studentId" 
+        element={
+          <ProtectedRoute>
+            <Student />
+          </ProtectedRoute>
+        }
       />
     </Route>
   )

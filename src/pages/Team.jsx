@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
-import { useSession } from "../context/SessionContext";
-import IconButton from "../components/buttons/IconButton";
+import { useSession } from "../hooks/auth/useSession";
+import IconButton from "../components/common/buttons/IconButton";
 import icons from "../utils/icons.json";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Team() {
   const { teamId } = useParams();
@@ -113,7 +114,7 @@ export default function Team() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  document.title = `${team.name} - MockMetrics`;
+  setDocumentTitle(team.name);
 
   const handleEditTeamClick = () => {
     window.alert("Edit team");

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import IconButton from '../components/buttons/IconButton';
+import IconButton from '../components/common/buttons/IconButton';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import { useSession } from '../context/SessionContext';
+import { useSession } from "../hooks/auth/useSession";
+import { setDocumentTitle } from '../utils/helpers/documentTitle';
 
 export default function SchoolAnalysis () {
     const { schoolId } = useParams();
@@ -62,9 +63,7 @@ export default function SchoolAnalysis () {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>error: {error}</p>;
 
-    document.title = `Analysis - ${
-        school.short_name ? school.short_name : school.name
-      } - MockMetrics`;
+    setDocumentTitle(`Analysis - ${school.short_name ? school.short_name : school.name}`);
 
     return (
         <div>

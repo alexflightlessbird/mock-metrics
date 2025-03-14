@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import Dialog from "../dialogs/Dialog";
+import Dialog from "../common/dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
-import ListComponent from "../common/ListComponent";
-import OpenModalButton from "../common/OpenModalButton";
+import OpenModalButton from "../common/buttons/OpenModalButton";
+import ListWithLoader from "../common/lists/ListWithLoader";
 
-export default function StudentsList({ students, isAdmin, schoolId, teams }) {
+export default function StudentsList({ students, isAdmin, schoolId, teams, loading, error }) {
   const [activeStudents, setActiveStudents] = useState([]);
   const [inactiveStudents, setInactiveStudents] = useState([]);
 
   useEffect(() => {
-    setActiveStudents(students.filter((s) => s.is_active));
-    setInactiveStudents(students.filter((s) => !s.is_active));
+    setActiveStudents(students ? students.filter((s) => s.is_active) : []);
+    setInactiveStudents(students ? students.filter((s) => !s.is_active) : []);
   }, [students]);
 
   const handleAddStudentSubmit = async (values) => {
@@ -44,6 +44,10 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
       window.alert("Something went wrong. Please try again.");
     }
   };
+
+  const teamsOptions = teams ? teams
+    .filter((t) => t.is_active)
+    .map((t) => ({ label: t.name, value: t.id })) : {};
 
   return (
     <div>
@@ -85,9 +89,7 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
                   {
                     options: [
                       { label: "No Team", value: "" },
-                      ...teams
-                        .filter((t) => t.is_active)
-                        .map((t) => ({ label: t.name, value: t.id })),
+                      teamsOptions,
                     ],
                   },
                 ],
@@ -97,17 +99,21 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
           />
         </>
       )}
-      <ListComponent
+      <ListWithLoader
         items={activeStudents}
         title="Active Students"
         emptyMessage="No active students."
         linkPath="/student"
+        loading={loading}
+        error={error}
       />
-      <ListComponent
+      <ListWithLoader
         items={inactiveStudents}
         title="Inactive Students"
-        emptyMessage="No inactive students"
+        emptyMessage="No inactive students."
         linkPath="/student"
+        loading={loading}
+        error={error}
       />
     </div>
   );

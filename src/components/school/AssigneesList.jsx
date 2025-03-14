@@ -1,31 +1,18 @@
 import React, { useState, useEffect } from "react";
-import ListComponent from "../common/ListComponent";
-import OpenModalButton from "../common/OpenModalButton";
+import OpenModalButton from "../common/buttons/OpenModalButton";
+import ListWithLoader from "../common/lists/ListWithLoader";
+import { filterAssigneesByRole } from "../../utils/helpers/assigneeHelpers";
 
-export default function AssigneesList({ assignees, schoolId }) {
+export default function AssigneesList({ assignees, schoolId, loading, error }) {
   const [primaryAdmins, setPrimaryAdmins] = useState([]);
   const [standardAdmins, setStandardAdmins] = useState([]);
   const [viewers, setViewers] = useState([]);
 
+
   useEffect(() => {
-    setPrimaryAdmins(
-      assignees
-        .filter((a) => a.role === "Primary")
-        .map((a) => a.users)
-        .flat()
-    );
-    setStandardAdmins(
-      assignees
-        .filter((a) => a.role === "Admin")
-        .map((a) => a.users)
-        .flat()
-    );
-    setViewers(
-      assignees
-        .filter((a) => a.role === "Viewer")
-        .map((a) => a.users)
-        .flat()
-    );
+    setPrimaryAdmins(filterAssigneesByRole(assignees, "Primary"));
+    setStandardAdmins(filterAssigneesByRole(assignees, "Admin"));
+    setViewers(filterAssigneesByRole(assignees, "Viewer"));
   }, [assignees]);
 
   const handleEditUserRolesClick = () => {
@@ -66,23 +53,29 @@ export default function AssigneesList({ assignees, schoolId }) {
           dialogClass="remove-user-dialog"
         />
       </div>
-      <ListComponent
+      <ListWithLoader 
         items={primaryAdmins}
         title="Primary Admins"
         emptyMessage="No primary admins."
         renderItem={renderAssignee}
+        loading={loading}
+        error={error}
       />
-      <ListComponent
+      <ListWithLoader
         items={standardAdmins}
         title="Standard Admins"
         emptyMessage="No standard admins."
         renderItem={renderAssignee}
+        loading={loading}
+        error={error}
       />
-      <ListComponent
+      <ListWithLoader
         items={viewers}
         title="Viewers"
         emptyMessage="No viewers."
         renderItem={renderAssignee}
+        loading={loading}
+        error={error}
       />
     </div>
   );
