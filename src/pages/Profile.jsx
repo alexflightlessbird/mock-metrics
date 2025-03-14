@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
-import { useSession } from "../context/SessionContext";
+import { useSession } from "../hooks/auth/useSession";
 import Dialog from "../components/common/dialogs/Dialog";
 import IconButton from "../components/common/buttons/IconButton";
 

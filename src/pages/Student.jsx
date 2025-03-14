@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
-import { useSession } from "../context/SessionContext";
+import { useSession } from "../../hooks/auth/useSession";
 import IconButton from "../components/common/buttons/IconButton";
 import icons from "../utils/icons.json";
 

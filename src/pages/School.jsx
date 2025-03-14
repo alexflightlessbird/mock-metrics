@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
-import { useSession } from "../context/SessionContext";
+import { useSession } from "../hooks/auth/useSession";
 import AssigneesList from "../components/school/AssigneesList";
 import TeamsList from "../components/school/TeamsList";
 import StudentsList from "../components/school/StudentsList";

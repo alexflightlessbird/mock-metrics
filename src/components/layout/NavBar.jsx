@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import Auth from "../auth/Auth";
-import { useSession } from "../../context/SessionContext";
+import { useSession } from "../../hooks/auth/useSession";
 import logo from "../../assets/logo.png";
 
 export default function NavBar() {

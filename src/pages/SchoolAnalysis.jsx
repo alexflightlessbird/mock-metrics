@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import IconButton from '../components/common/buttons/IconButton';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import { useSession } from '../context/SessionContext';
+import { useSession } from "../hooks/auth/useSession";
 
 export default function SchoolAnalysis () {
     const { schoolId } = useParams();
