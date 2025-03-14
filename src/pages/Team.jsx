@@ -59,16 +59,6 @@ export default function Team() {
             setSchool(schoolData);
           }
 
-          const { data: caseData } = await supabase
-            .from("cases")
-            .select("*")
-            .eq("id", teamData.case_id)
-            .single();
-
-          if (caseData) {
-            setCaseVal(caseData);
-          }
-
           const { data: studentData } = await supabase
             .from("student_teams")
             .select("students(*), is_active")

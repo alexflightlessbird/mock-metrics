@@ -18,6 +18,7 @@ export default function School() {
   const {
     school,
     teams,
+    setTeams,
     students,
     loading,
     error,
@@ -37,6 +38,10 @@ export default function School() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const handleTeamAdded = (newTeam) => {
+    setTeams((prevTeams) => [...prevTeams, newTeam]);
+  };
 
   document.title = `${shortName} - MockMetrics`;
 
@@ -105,17 +110,26 @@ export default function School() {
       {isPrimaryAdmin && (
         <AssigneesList assignees={assignees} schoolId={schoolId} />
       )}
-      {<TeamsList teams={teams} isAdmin={isAdmin} schoolId={schoolId} />}
+      {
+        <TeamsList
+          teams={teams}
+          isAdmin={isAdmin}
+          schoolId={schoolId}
+          onTeamAdded={handleTeamAdded}
+        />
+      }
       {
         <StudentsList
           students={students}
           isAdmin={isAdmin}
           schoolId={schoolId}
+          teams={teams}
         />
       }
       {
         <TournamentsList
           tournaments={tournaments}
+          isPrimaryAdmin={isPrimaryAdmin}
           isAdmin={isAdmin}
           schoolId={schoolId}
         />

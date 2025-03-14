@@ -82,6 +82,7 @@ export default function useSchoolData(schoolId, userId) {
   return {
     school,
     teams,
+    setTeams,
     students,
     loading,
     error,

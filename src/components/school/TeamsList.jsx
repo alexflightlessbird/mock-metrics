@@ -4,7 +4,7 @@ import IconButton from "../buttons/IconButton";
 import Dialog from "../dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
 
-export default function TeamsList({ teams, isAdmin, schoolId }) {
+export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
   const [activeTeams, setActiveTeams] = useState([]);
   const [inactiveTeams, setInactiveTeams] = useState([]);
 
@@ -14,16 +14,19 @@ export default function TeamsList({ teams, isAdmin, schoolId }) {
   }, [teams]);
 
   const handleAddTeamSubmit = async (values) => {
-    const { name, school_id, is_active, type } = values;
+    const { name, type } = values;
 
     try {
       const { data, error } = await supabase
         .from("teams")
-        .insert([{ name, school_id, is_active, type }])
+        .insert([{ name, school_id: schoolId, is_active: trues, type }])
         .select();
 
       if (error) {
         console.error("Error adding team:", error);
+        window.alert(
+          "Something went wrong with adding this team. Please try again."
+        );
         return;
       }
 
@@ -34,6 +37,8 @@ export default function TeamsList({ teams, isAdmin, schoolId }) {
         } else {
           setInactiveTeams((prev) => [...prev, newTeam]);
         }
+
+        onTeamAdded(newTeam);
       }
     } catch (error) {
       console.error("Error adding team:", error);
@@ -64,21 +69,6 @@ export default function TeamsList({ teams, isAdmin, schoolId }) {
                 type: "text",
                 required: true,
                 autofocus: true,
-              },
-              {
-                type: "hidden",
-                id: "school_id",
-                value: schoolId,
-              },
-              {
-                type: "radio",
-                label: "Active",
-                id: "is_active",
-                options: [
-                  { label: "Yes", value: true },
-                  { label: "No", value: false },
-                ],
-                required: false,
               },
               {
                 type: "radio",
