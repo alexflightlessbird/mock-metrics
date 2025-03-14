@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import IconButton from "../buttons/IconButton";
 import Dialog from "../dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
+import ListComponent from "../common/ListComponent";
+import OpenModalButton from "../common/OpenModalButton";
 
 export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
   const [activeTeams, setActiveTeams] = useState([]);
@@ -19,29 +19,18 @@ export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
     try {
       const { data, error } = await supabase
         .from("teams")
-        .insert([{ name, school_id: schoolId, is_active: trues, type }])
+        .insert([{ name, school_id: schoolId, is_active: true, type }])
         .select();
 
-      if (error) {
-        console.error("Error adding team:", error);
-        window.alert(
-          "Something went wrong with adding this team. Please try again."
-        );
-        return;
-      }
+      if (error) throw error;
 
       if (data && data.length > 0) {
         const newTeam = data[0];
-        if (newTeam.is_active) {
-          setActiveTeams((prev) => [...prev, newTeam]);
-        } else {
-          setInactiveTeams((prev) => [...prev, newTeam]);
-        }
-
         onTeamAdded(newTeam);
       }
     } catch (error) {
       console.error("Error adding team:", error);
+      window.alert("Something went wrong. Please try again.");
     }
   };
 
@@ -50,14 +39,11 @@ export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
       <h2>Teams</h2>
       {isAdmin && (
         <>
-          <IconButton
-            icon="add"
+          <OpenModalButton
+            type="add"
+            dialogClass="add-team-dialog"
             text="Add Team"
-            handleClickFunction={() =>
-              document.querySelector(".add-team-dialog").showModal()
-            }
           />
-          <br />
           <Dialog
             className="add-team-dialog"
             legendText="Add Team"
@@ -84,30 +70,18 @@ export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
           />
         </>
       )}
-      <h3>Active Teams</h3>
-      <ul>
-        {activeTeams.length > 0 ? (
-          activeTeams.map((t) => (
-            <li key={t.id}>
-              <Link to={`/team/${t.id}`}>{t.name}</Link>
-            </li>
-          ))
-        ) : (
-          <li>No active teams</li>
-        )}
-      </ul>
-      <h3>Inactive Teams</h3>
-      <ul>
-        {inactiveTeams.length > 0 ? (
-          inactiveTeams.map((t) => (
-            <li key={t.id}>
-              <Link to={`/team/${t.id}`}>{t.name}</Link>
-            </li>
-          ))
-        ) : (
-          <li>No inactive teams</li>
-        )}
-      </ul>
+      <ListComponent
+        items={activeTeams}
+        title="Active Teams"
+        emptyMessage="No active teams."
+        linkPath="/team"
+      />
+      <ListComponent
+        items={inactiveTeams}
+        title="Inactive Teams"
+        emptyMessage="No inactive teams"
+        linkPath="/team"
+      />
     </div>
   );
 }

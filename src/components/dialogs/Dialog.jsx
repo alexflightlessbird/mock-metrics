@@ -26,6 +26,19 @@ export default function Dialog({
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    const isValid = questions.every((q) => {
+      if (q.type === "searchable-dropdown") {
+        return q.options.some((option) => option.value === values[q.id]);
+      }
+      return true;
+    });
+
+    if (!isValid) {
+      alert("Please select a valid option from the list.");
+      return;
+    }
+
     handleSubmit(values);
     dialogRef.current.close();
   };
@@ -58,7 +71,11 @@ export default function Dialog({
   }, [handleFormSubmit]);
 
   return (
-    <dialog className={className} ref={dialogRef}>
+    <dialog
+      className={className}
+      ref={dialogRef}
+      style={{ overflow: "visible" }}
+    >
       <fieldset>
         <legend>{legendText}</legend>
         <form onSubmit={handleFormSubmit} ref={formRef}>

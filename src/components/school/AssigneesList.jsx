@@ -1,72 +1,89 @@
-import React from "react";
-import IconButton from "../buttons/IconButton";
+import React, { useState, useEffect } from "react";
+import ListComponent from "../common/ListComponent";
+import OpenModalButton from "../common/OpenModalButton";
 
 export default function AssigneesList({ assignees, schoolId }) {
-  const handlEditUserRolesClick = () => {
-    window.alert("Editing user roles - will be dialog");
+  const [primaryAdmins, setPrimaryAdmins] = useState([]);
+  const [standardAdmins, setStandardAdmins] = useState([]);
+  const [viewers, setViewers] = useState([]);
+
+  useEffect(() => {
+    setPrimaryAdmins(
+      assignees
+        .filter((a) => a.role === "Primary")
+        .map((a) => a.users)
+        .flat()
+    );
+    setStandardAdmins(
+      assignees
+        .filter((a) => a.role === "Admin")
+        .map((a) => a.users)
+        .flat()
+    );
+    setViewers(
+      assignees
+        .filter((a) => a.role === "Viewer")
+        .map((a) => a.users)
+        .flat()
+    );
+  }, [assignees]);
+
+  const handleEditUserRolesClick = () => {
+    window.alert("Edit user roles");
   };
 
   const handleAddUserClick = () => {
-    window.alert("Add user - will be dialog");
+    window.alert("Add user");
   };
 
   const handleRemoveUserClick = () => {
-    window.alert("Remove user - will be dialog");
+    window.alert("Remove user");
   };
+
+  const renderAssignee = (assignee) => (
+    <span>
+      {assignee.name} (<em>{assignee.email}</em>)
+    </span>
+  );
 
   return (
     <div>
       <h2>School Users</h2>
       <div>
-        <IconButton
-          icon="add"
+        <OpenModalButton
+          type="add"
           text="Add User"
-          handleClickFunction={handleAddUserClick}
+          dialogClass="add-user-dialog"
         />
-        <IconButton
-          icon="edit"
+        <OpenModalButton
+          type="edit"
           text="Edit User Roles"
-          handleClickFunction={handlEditUserRolesClick}
+          dialogClass="edit-user-roles-dialog"
         />
-        <IconButton
-          icon="delete"
+        <OpenModalButton
+          type="delete"
           text="Remove User"
-          handleClickFunction={handleRemoveUserClick}
+          dialogClass="remove-user-dialog"
         />
       </div>
-      <h3>Primary Admins</h3>
-      <ul>
-        {assignees
-          .filter((a) => a.role === "Primary")
-          .map((a, index) => (
-            <li key={index}>
-              <p>Name: {a.users.name}</p>
-              <p>Email: {a.users.email}</p>
-            </li>
-          ))}
-      </ul>
-      <h3>Standard Admins</h3>
-      <ul>
-        {assignees
-          .filter((a) => a.role === "Admin")
-          .map((a, index) => (
-            <li key={index}>
-              <p>Name: {a.users.name}</p>
-              <p>Email: {a.users.email}</p>
-            </li>
-          ))}
-      </ul>
-      <h3>Viewers</h3>
-      <ul>
-        {assignees
-          .filter((a) => a.role === "Viewer")
-          .map((a, index) => (
-            <li key={index}>
-              <p>Name: {a.users.name}</p>
-              <p>Email: {a.users.email}</p>
-            </li>
-          ))}
-      </ul>
+      <ListComponent
+        items={primaryAdmins}
+        title="Primary Admins"
+        emptyMessage="No primary admins."
+        renderItem={renderAssignee}
+      />
+      <ListComponent
+        items={standardAdmins}
+        title="Standard Admins"
+        emptyMessage="No standard admins."
+        renderItem={renderAssignee}
+      />
+      <ListComponent
+        items={viewers}
+        title="Viewers"
+        emptyMessage="No viewers."
+        renderItem={renderAssignee}
+      />
     </div>
   );
 }

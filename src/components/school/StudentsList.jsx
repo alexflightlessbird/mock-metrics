@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import IconButton from "../buttons/IconButton";
 import Dialog from "../dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
+import ListComponent from "../common/ListComponent";
+import OpenModalButton from "../common/OpenModalButton";
 
 export default function StudentsList({ students, isAdmin, schoolId, teams }) {
   const [activeStudents, setActiveStudents] = useState([]);
@@ -22,33 +22,15 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
         .insert([{ name, school_id: schoolId, is_active }])
         .select();
 
-      if (error) {
-        console.error("Error adding student:", error);
-        window.alert(
-          "Something went wrong with adding this student. Please try again."
-        );
-        return;
-      }
-
-      console.log("Data: ", data.length);
-      console.log("Team id: ", team_id);
+      if (error) throw error;
 
       if (data && data.length > 0) {
         const newStudent = data[0];
 
-        console.log(team_id);
-
         if (team_id) {
-          const { error: teamError } = await supabase
+          await supabase
             .from("student_teams")
             .insert([{ student_id: newStudent.id, team_id, is_active: true }]);
-
-          if (teamError) {
-            console.error("Error assigning student to team:", teamError);
-            window.alert(
-              "Student was added, but there was an error assigning them to the team."
-            );
-          }
         }
 
         if (newStudent.is_active) {
@@ -59,6 +41,7 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
       }
     } catch (error) {
       console.error("Error adding student:", error);
+      window.alert("Something went wrong. Please try again.");
     }
   };
 
@@ -66,17 +49,14 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
     <div>
       <h2>Students</h2>
       {isAdmin && (
-        <div>
-          <IconButton
-            icon="add"
+        <>
+          <OpenModalButton
+            type="add"
+            dialogClass="add-student-dialog"
             text="Add Student"
-            handleClickFunction={() =>
-              document.querySelector(".add-student-dialog").showModal()
-            }
           />
-          <br />
           <Dialog
-            className={"add-student-dialog"}
+            className="add-student-dialog"
             legendText="Add Student"
             handleSubmit={handleAddStudentSubmit}
             questions={[
@@ -115,32 +95,20 @@ export default function StudentsList({ students, isAdmin, schoolId, teams }) {
               },
             ]}
           />
-        </div>
+        </>
       )}
-      <h3>Current Students</h3>
-      <ul>
-        {activeStudents.length > 0 ? (
-          activeStudents.map((s) => (
-            <li key={s.id}>
-              <Link to={`/student/${s.id}`}>{s.name}</Link>
-            </li>
-          ))
-        ) : (
-          <li>No active students</li>
-        )}
-      </ul>
-      <h3>Inactive Students</h3>
-      <ul>
-        {inactiveStudents.length > 0 ? (
-          inactiveStudents.map((s) => (
-            <li key={s.id}>
-              <Link to={`/student/${s.id}`}>{s.name}</Link>
-            </li>
-          ))
-        ) : (
-          <li>No inactive students</li>
-        )}
-      </ul>
+      <ListComponent
+        items={activeStudents}
+        title="Active Students"
+        emptyMessage="No active students."
+        linkPath="/student"
+      />
+      <ListComponent
+        items={inactiveStudents}
+        title="Inactive Students"
+        emptyMessage="No inactive students"
+        linkPath="/student"
+      />
     </div>
   );
 }

@@ -14,6 +14,8 @@ export default function Team() {
   const [error, setError] = useState("");
   const [currentStudents, setCurrentStudents] = useState([]);
   const [previousStudents, setPreviousStudents] = useState([]);
+  const [currentTournaments, setCurrentTournaments] = useState([]);
+  const [previousTournaments, setPreviousTournaments] = useState([]);
   const [role, setRole] = useState("");
 
   const { userId } = useSession();
@@ -74,6 +76,23 @@ export default function Team() {
 
             setCurrentStudents(current);
             setPreviousStudents(previous);
+          }
+
+          const { data: tournamentData } = await supabase
+            .from("teams_tournaments")
+            .select("tournaments(*), is_active")
+            .eq("team_id", teamId);
+
+          if (tournamentData && tournamentData.length > 0) {
+            const current = tournamentData
+              .filter((t) => t.is_active)
+              .map((t) => t.tournaments);
+            const previous = tournamentData
+              .filter((t) => !t.is_active)
+              .map((t) => t.tournaments);
+
+            setCurrentTournaments(current);
+            setPreviousTournaments(previous);
           }
         } else {
           setError("Team not found.");
@@ -148,6 +167,23 @@ export default function Team() {
         {previousStudents.map((s) => (
           <li key={s.id}>
             <Link to={`/student/${s.id}`}>{s.name}</Link>
+          </li>
+        ))}
+      </ul>
+      <h2>Tournaments</h2>
+      <h3>Active Tournaments</h3>
+      <ul>
+        {currentTournaments.map((t) => (
+          <li key={t.id}>
+            <Link to={`/tournaments/${t.id}`}>{t.name}</Link>
+          </li>
+        ))}
+      </ul>
+      <h3>Inactive Tournaments</h3>
+      <ul>
+        {previousTournaments.map((t) => (
+          <li key={t.id}>
+            <Link to={`/tournaments/${t.id}`}>{t.name}</Link>
           </li>
         ))}
       </ul>

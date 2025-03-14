@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import IconButton from "../components/buttons/IconButton";
+import OpenModalButton from "../components/common/OpenModalButton";
 import { useSession } from "../context/SessionContext";
 import Dialog from "../components/dialogs/Dialog";
+import useSchoolData from "../hooks/useSchoolData";
 import AssigneesList from "../components/school/AssigneesList";
 import TeamsList from "../components/school/TeamsList";
 import StudentsList from "../components/school/StudentsList";
 import TournamentsList from "../components/school/TournamentsList";
-import useSchoolData from "../hooks/useSchoolData";
 
 export default function School() {
   const { schoolId } = useParams();
@@ -25,6 +26,7 @@ export default function School() {
     role,
     assignees,
     tournaments,
+    cases,
   } = useSchoolData(schoolId, userId);
 
   const isAdmin = role === "Primary" || role === "Admin";
@@ -37,7 +39,7 @@ export default function School() {
   }, [school]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>{error}</p>;
 
   const handleTeamAdded = (newTeam) => {
     setTeams((prevTeams) => [...prevTeams, newTeam]);
@@ -49,17 +51,16 @@ export default function School() {
     const newShortName = values["short-name"];
     if (newShortName === shortName) return;
 
-    supabase
+    const { error } = supabase
       .from("schools")
       .update({ short_name: newShortName })
-      .eq("id", schoolId)
-      .then(({ error }) => {
-        if (error) {
-          console.error("Error updating school:", error);
-        } else {
-          setShortName(newShortName);
-        }
-      });
+      .eq("id", schoolId);
+
+    if (error) {
+      console.error("Error updating school:", error);
+    } else {
+      setShortName(newShortName);
+    }
   };
 
   return (
@@ -69,14 +70,11 @@ export default function School() {
       <div>
         {isPrimaryAdmin && (
           <>
-            <IconButton
-              icon="edit"
-              handleClickFunction={() =>
-                document.querySelector(".edit-school-dialog").showModal()
-              }
+            <OpenModalButton
+              type="edit"
               text="Edit School"
+              dialogClass="edit-school-dialog"
             />
-            <br />
             <Dialog
               className="edit-school-dialog"
               legendText="Edit School"
@@ -86,9 +84,8 @@ export default function School() {
                   type: "text",
                   id: "short-name",
                   label: "Short Name",
-                  disabled: false,
-                  required: true,
                   value: shortName,
+                  required: true,
                 },
               ]}
             />
@@ -110,30 +107,27 @@ export default function School() {
       {isPrimaryAdmin && (
         <AssigneesList assignees={assignees} schoolId={schoolId} />
       )}
-      {
-        <TeamsList
-          teams={teams}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-          onTeamAdded={handleTeamAdded}
-        />
-      }
-      {
-        <StudentsList
-          students={students}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-          teams={teams}
-        />
-      }
-      {
-        <TournamentsList
-          tournaments={tournaments}
-          isPrimaryAdmin={isPrimaryAdmin}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-        />
-      }
+
+      <TeamsList
+        teams={teams}
+        isAdmin={isAdmin}
+        schoolId={schoolId}
+        onTeamAdded={handleTeamAdded}
+      />
+      <StudentsList
+        students={students}
+        isAdmin={isAdmin}
+        schoolId={schoolId}
+        teams={teams}
+      />
+      <TournamentsList
+        tournaments={tournaments}
+        isPrimaryAdmin={isPrimaryAdmin}
+        isAdmin={isAdmin}
+        schoolId={schoolId}
+        cases={cases}
+        teams={teams}
+      />
     </div>
   );
 }

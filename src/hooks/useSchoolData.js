@@ -10,6 +10,7 @@ export default function useSchoolData(schoolId, userId) {
   const [role, setRole] = useState("");
   const [assignees, setAssignees] = useState([]);
   const [tournaments, setTournaments] = useState([]);
+  const [cases, setCases] = useState([]);
 
   useEffect(() => {
     const fetchSchool = async () => {
@@ -62,12 +63,19 @@ export default function useSchoolData(schoolId, userId) {
             .from("tournaments")
             .select("*")
             .eq("school_id", schoolId)
-            .order("name");
+            .order("year");
 
           if (tournamentData && tournamentData.length > 0)
             setTournaments(tournamentData);
+
+          const { data: caseData } = await supabase
+            .from("cases")
+            .select("*")
+            .order("year", { ascending: false });
+
+          if (caseData && caseData.length > 0) setCases(caseData);
         } else {
-          setError("School not found.");
+          setError("School not found");
         }
       } catch (error) {
         setError(error.message);
@@ -89,5 +97,6 @@ export default function useSchoolData(schoolId, userId) {
     role,
     assignees,
     tournaments,
+    cases,
   };
 }
