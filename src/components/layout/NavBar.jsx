@@ -1,35 +1,17 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import Auth from "../auth/Auth";
 import { useSession } from "../../hooks/auth/useSession";
 import logo from "../../assets/logo.png";
+import NavLinks from "./NavLinks";
+import AuthSection from "./AuthSection";
 
 export default function NavBar() {
   const { session } = useSession();
 
-  if (!session) {
-    return (
-      <div>
-        <nav>
-          <img src={logo} alt="MockMetrics logo" width="50px" height="auto" />
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/cases">Cases</NavLink>
-          <Auth />
-        </nav>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <nav>
-          <img src={logo} alt="MockMetrics logo" width="50px" height="auto" />
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/cases">Cases</NavLink>
-          <NavLink to="/schools">Schools</NavLink>
-          <NavLink to="/profile">Profile</NavLink>
-          <Auth />
-        </nav>
-      </div>
-    );
-  }
+  return (
+    <nav>
+      <img src={logo} alt="MockMetrics logo" width="50px" height="auto" />
+      <NavLinks session={session} />
+      <AuthSection />
+    </nav>
+  )
 }

@@ -14,6 +14,7 @@ import Witness from "../pages/Witness";
 import Team from "../pages/Team";
 import SchoolAnalysis from "../pages/SchoolAnalysis";
 import Profile from "../pages/Profile";
+import Student from "../pages/Student";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,14 @@ const router = createBrowserRouter(
       <Route
         path="/tournaments/:tournamentId"
         element={<div>Tournament Page</div>}
+      />
+      <Route 
+        path="/student/:studentId" 
+        element={
+          <ProtectedRoute>
+            <Student />
+          </ProtectedRoute>
+        }
       />
     </Route>
   )

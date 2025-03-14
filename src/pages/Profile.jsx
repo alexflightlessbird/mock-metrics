@@ -3,6 +3,7 @@ import { supabase } from "../services/supabaseClient";
 import { useSession } from "../hooks/auth/useSession";
 import Dialog from "../components/common/dialogs/Dialog";
 import IconButton from "../components/common/buttons/IconButton";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Profile() {
   const { userId } = useSession();
@@ -34,7 +35,7 @@ export default function Profile() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  document.title = `${name} - MockMetrics`;
+  setDocumentTitle(name);
 
   const handleEditNameClick = () => {
     const dialog = document.querySelector(".edit-name-dialog");

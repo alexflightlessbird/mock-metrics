@@ -4,6 +4,7 @@ import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
 import IconButton from "../components/common/buttons/IconButton";
 import icons from "../utils/icons.json";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Case() {
   const { caseId } = useParams();
@@ -53,7 +54,7 @@ export default function Case() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  document.title = `${caseVal.name} - MockMetrics`;
+  setDocumentTitle(caseVal.name);
 
   return (
     <div>

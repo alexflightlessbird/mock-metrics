@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Schools() {
   const [schools, setSchools] = useState([]);
@@ -20,7 +21,7 @@ export default function Schools() {
     fetchSchools();
   }, []);
 
-  document.title = "Schools - MockMetrics";
+  setDocumentTitle("Schools");
 
   return (
     <div>

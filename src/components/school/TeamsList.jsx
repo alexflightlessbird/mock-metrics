@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Dialog from "../common/dialogs/Dialog";
 import { supabase } from "../../services/supabaseClient";
-import ListComponent from "../common/lists/ListComponent";
 import OpenModalButton from "../common/buttons/OpenModalButton";
+import ListWithLoader from "../common/lists/ListWithLoader";
 
-export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
+export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded, loading, error }) {
   const [activeTeams, setActiveTeams] = useState([]);
   const [inactiveTeams, setInactiveTeams] = useState([]);
 
   useEffect(() => {
-    setActiveTeams(teams.filter((t) => t.is_active));
-    setInactiveTeams(teams.filter((t) => !t.is_active));
+    setActiveTeams(teams ? teams.filter((t) => t.is_active): []);
+    setInactiveTeams(teams ? teams.filter((t) => !t.is_active): []);
   }, [teams]);
 
   const handleAddTeamSubmit = async (values) => {
@@ -70,17 +70,21 @@ export default function TeamsList({ teams, isAdmin, schoolId, onTeamAdded }) {
           />
         </>
       )}
-      <ListComponent
+      <ListWithLoader
         items={activeTeams}
         title="Active Teams"
         emptyMessage="No active teams."
         linkPath="/team"
+        loading={loading}
+        error={error}
       />
-      <ListComponent
+      <ListWithLoader
         items={inactiveTeams}
         title="Inactive Teams"
-        emptyMessage="No inactive teams"
+        emptyMessage="No inactive teams."
         linkPath="/team"
+        loading={loading}
+        error={error}
       />
     </div>
   );

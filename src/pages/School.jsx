@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../services/supabaseClient";
-import { useSession } from "../hooks/auth/useSession";
+import React, { useState, useEffect } from "react";
 import AssigneesList from "../components/school/AssigneesList";
 import TeamsList from "../components/school/TeamsList";
 import StudentsList from "../components/school/StudentsList";
 import TournamentsList from "../components/school/TournamentsList";
-import useFetchData from "../hooks/useFetchData";
-import useSchoolData from "../hooks/useSchoolData";
-import { fetchCases } from "../services/api/caseApi";
 import SchoolHeader from "../components/school/SchoolHeader";
 import SchoolDetails from "../components/school/SchoolDetails";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
+import LoadingErrorHandler from "../components/common/loaders/LoadingErrorHandler";
+import { useSchool } from "../hooks/useSchool";
+import { supabase } from "../services/supabaseClient";
 
 export default function School() {
-  const { schoolId } = useParams();
-  const { userId } = useSession();
   const [shortName, setShortName] = useState("");
-
-  const { 
+  const {
     school,
     schoolLoading,
     schoolError,
@@ -30,37 +25,33 @@ export default function School() {
     students,
     studentsLoading,
     studentsError,
-    roleData,
+    role,
     roleLoading,
     roleError,
     assignees,
     assigneesLoading,
-    assigneesError 
-  } = useSchoolData(schoolId, userId);
-  const { data: cases, loading: casesLoading, error: casesError } = useFetchData(() => fetchCases(), false, []);
+    assigneesError,
+    cases,
+    casesLoading,
+    casesError,
+    isAdmin,
+    isPrimaryAdmin,
+    handleTeamAdded,
+  } = useSchool();
 
   useEffect(() => {
     if (school) {
-      setShortName(school.short_name);
+        setShortName(school.short_name);
     }
   }, [school]);
 
   if (roleLoading) return <p>Loading...</p>;
   if (roleError) return <p>{roleError}</p>;
-  
-  const role = roleData.role;
-
-  const isAdmin = role === "Primary" || role === "Admin";
-  const isPrimaryAdmin = role === "Primary";
 
   if (schoolLoading) return <p>Loading school...</p>;
   if (schoolError) return <p>{schoolError}</p>;
 
-  const handleTeamAdded = (newTeam) => {
-    setTeams((prevTeams) => [...prevTeams, newTeam]);
-  };
-
-  document.title = `${shortName} - MockMetrics`;
+  setDocumentTitle(`${shortName}`);
 
   const handleEditSchoolSubmit = (values) => {
     const newShortName = values["short-name"];
@@ -69,53 +60,63 @@ export default function School() {
     const { error } = supabase
       .from("schools")
       .update({ short_name: newShortName })
-      .eq("id", schoolId);
+      .eq("id", school.id);
 
     if (error) {
-      console.error("Error updating school:", error);
+        console.error("Error updating school:", error);
     } else {
-      setShortName(newShortName);
+        setShortName(newShortName);
     }
-  };
+  }
 
   return (
     <div>
-      <SchoolHeader school={school} isPrimaryAdmin={isPrimaryAdmin} shortName={shortName} handleEditSchoolSubmit={handleEditSchoolSubmit} />
-      <SchoolDetails shortName={shortName} role={role} />
-      {isPrimaryAdmin && assigneesLoading && <p>Loading assignees...</p>}
-      {isPrimaryAdmin && !assigneesLoading && (
-        <AssigneesList assignees={assignees} schoolId={schoolId} />
-      )}
+      <LoadingErrorHandler loading={schoolLoading} error={schoolError}>
+        <SchoolHeader 
+          school={school} 
+          isPrimaryAdmin={isPrimaryAdmin} 
+          shortName={shortName} 
+          handleEditSchoolSubmit={handleEditSchoolSubmit} 
+        />
+        <SchoolDetails shortName={shortName} role={role} />
+      </LoadingErrorHandler>
 
-      {teamsLoading ? 
-        <p>Loading teams...</p> : 
-        <TeamsList teams={teams}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-          onTeamAdded={handleTeamAdded}
+      {
+        isPrimaryAdmin && 
+        <AssigneesList 
+          loading={assigneesLoading}
+          error={assigneesError}
+          assignees={assignees}
+          schoolId={school.id}
         />
-      }
+      } 
 
-      {teamsLoading || studentsLoading ? 
-        <p>Loading students...</p> : 
-        <StudentsList
-          students={students}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-          teams={teams}
-        />
-      }
-      {tournamentsLoading || teamsLoading || casesLoading ? 
-        <p>Loading tournaments...</p> :
-        <TournamentsList
-          tournaments={tournaments}
-          isPrimaryAdmin={isPrimaryAdmin}
-          isAdmin={isAdmin}
-          schoolId={schoolId}
-          cases={cases}
-          teams={teams}
-        />
-      }
+      <TeamsList teams={teams}
+        loading={teamsLoading}
+        error={teamsError}
+        isAdmin={isAdmin}
+        schoolId={school.id}
+        onTeamAdded={handleTeamAdded}
+      />
+
+      <StudentsList
+        loading={teamsLoading || studentsLoading}
+        error={studentsError}
+        students={students}
+        isAdmin={isAdmin}
+        schoolId={school.id}
+        teams={teams}
+      />
+
+      <TournamentsList
+        loading={tournamentsLoading || teamsLoading || casesLoading}
+        error={tournamentsError}
+        tournaments={tournaments}
+        isPrimaryAdmin={isPrimaryAdmin}
+        schoolId={school.id}
+        cases={cases}
+        teams={teams}
+      />
     </div>
   );
 }

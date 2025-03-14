@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Link } from "react-router-dom";
+import { setDocumentTitle } from "../utils/helpers/documentTitle";
 
 export default function Cases() {
   const [cases, setCases] = useState([]);
@@ -20,7 +21,7 @@ export default function Cases() {
     fetchCases();
   }, []);
 
-  document.title = "Cases - MockMetrics";
+  setDocumentTitle("Cases");
 
   return (
     <div>

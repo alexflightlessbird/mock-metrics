@@ -17,7 +17,7 @@ export default function ListComponent({
     <div>
       <h3>{title}</h3>
       <ul>
-        {items.length > 0 ? (
+        {items && items.length > 0 ? (
           items.map((item, index) => (
             <li key={item.id || index}>
               {render && renderItem(item)}
