@@ -17,7 +17,6 @@ export default function Profile() {
       .select("name, email")
       .eq("id", userId)
       .then(({ data, error }) => {
-        console.log(data);
         if (error || data.length === 0) {
           setError(
             error?.message ||
