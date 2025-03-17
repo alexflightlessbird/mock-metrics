@@ -45,6 +45,8 @@ export default function Form({
       .then(() => {
         onSubmit(formValues);
         updateFormCompletionStatus(true);
+        window.alert(`Form ${title} has been submitted.`);
+        form.resetFields();
       })
       .catch((err) => {
         console.log("Validation Failed:", err);
@@ -71,7 +73,8 @@ export default function Form({
           if (input.required) {
             return (
               formValues[input.name] !== "" &&
-              formValues[input.name] !== undefined
+              formValues[input.name] !== undefined &&
+              formValues[input.name].length !== 0
             );
           }
           return true;
@@ -87,7 +90,9 @@ export default function Form({
     const isSubmitEnabled = inputGroups.flat().every((input) => {
       if (input.required) {
         return (
-          formValues[input.name] !== "" && formValues[input.name] !== undefined
+          formValues[input.name] !== "" &&
+          formValues[input.name] !== undefined &&
+          formValues[input.name].length !== 0
         );
       }
       return true;
