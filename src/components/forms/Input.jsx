@@ -12,16 +12,16 @@ const { Group: CheckboxGroup } = AntCheckbox;
 
 export default function Input({
   className,
-  type,
+  type = "text",
   name,
-  label,
+  label = "Input",
   value,
   onChange,
   options = [],
-  multi,
-  searchable,
-  disabled,
-  required,
+  multi = false,
+  searchable = true,
+  disabled = false,
+  required = true,
   placeholder,
   autoFocus,
   ...otherProps

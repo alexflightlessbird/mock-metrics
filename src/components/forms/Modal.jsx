@@ -7,11 +7,11 @@ import IconButton from "../common/buttons/IconButton";
 export default function Modal({
   title = "Modal",
   fieldsetGroups,
-  paginate,
+  paginate = false,
   onClose,
   className,
   validatePaginate = false,
-  isOpen
+  isOpen = false
 }) {
   const getInitialFormValues = (fieldsetGroups) => {
     const initialValues = {};

@@ -4,9 +4,9 @@ import icons from "../../utils/icons";
 import IconButton from "../common/buttons/IconButton";
 
 export default function Fieldset({
-  title,
+  title = "Fieldset",
   formGroups = [],
-  paginate,
+  paginate = false,
   className,
   formValues,
   onFormValueChange,

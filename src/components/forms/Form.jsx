@@ -5,9 +5,9 @@ import IconButton from "../common/buttons/IconButton";
 import { Form as AntForm } from "antd";
 
 export default function Form({
-  title,
+  title = "Title",
   inputGroups = [],
-  paginate,
+  paginate = false,
   onSubmit,
   className,
   formValues,
