@@ -1,8 +1,9 @@
-export default function Home() {
-  document.title = "MockMetrics";
-  return (
-    <div>
-      <h1>Welcome to the MockMetrics Ballot Analysis App</h1>
-    </div>
-  );
+import React from "react";
+import { setDocumentTitle } from "../utils/helpers";
+
+function Home() {
+  setDocumentTitle({ isHomePage: true });
+  return <div>Welcome to MockMetrics</div>;
 }
+
+export default Home;

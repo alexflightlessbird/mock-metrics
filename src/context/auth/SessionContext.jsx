@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { supabase } from "../../services/supabaseClient";
 
 export const SessionContext = createContext();
@@ -27,7 +27,7 @@ export const SessionProvider = ({ children }) => {
     // Cleanup subscription on unmount
     return () => subscription.unsubscribe();
   }, []);
-  
+
   return (
     <SessionContext.Provider value={{ session, userId, loading }}>
       {children}

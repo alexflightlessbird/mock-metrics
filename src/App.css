@@ -1,32 +1,134 @@
-.searchable-dropdown-input {
+body.dialog-open {
+  overflow: hidden;
+}
+
+dialog {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  max-height: 90vh;
+  width: clamp(300px, 70vw, 1200px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 0;
+  transform: scale(0.9);
   position: relative;
 }
 
-.dropdown-list {
+dialog[open] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media screen and (max-width: 500px) {
+  dialog {
+    width: clamp(300px, 90vw, 90vw);
+  }
+}
+
+hr.dotted {
+  border-top: 3px dotted #bbb;
+}
+
+hr.divider {
+  position: relative;
+  margin-top: 10px;
+  height: 1px;
+  border: none;
+}
+
+hr.divider-transparent:before {
+  content: "";
   position: absolute;
-  top: 100%;
-  left: 0;
+  top: 0;
+  left: 5%;
+  width: 90%;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(48, 49, 51),
+    transparent
+  );
+}
+
+.controls-group {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   width: 100%;
-  border: 1px solid #ccc;
-  background: white;
-  max-height: 150px;
-  overflow-y: auto;
-  z-index: 1000;
-  list-style: none;
-  padding: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  font-size: 0.65rem;
+}
+
+.controls-group .pagination-controls {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  gap: 5px;
+}
+
+.page-indicator {
+  font-size: 0.8rem;
+  grid-column: 2;
+  text-align: center;
   margin: 0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0;
 }
 
-.dropdown-item {
-  padding: 8px;
-  cursor: pointer;
+.controls .page-indicator {
+  width: clamp(25%, 50%, 75%);
+  text-align: center;
 }
 
-.dropdown-item:hover {
-  background-color: #f0f0f0;
+.handle-controls {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  gap: 5px;
 }
 
-body.dropdown-open {
-  overflow: hidden;
+.handle-controls button {
+  max-width: 90%;
+}
+
+.handle-controls .reset-button {
+  grid-column: 2 / span 1;
+}
+
+.handle-controls .submit-button {
+  grid-column: 3 / span 1;
+}
+
+.close-button {
+  width: 100%;
+  text-align: center;
+  justify-self: stretch;
+  grid-column: 1 / span 2;
+  display: flex;
+  display: flex;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  position: relative;
+}
+
+.example-dialog .input label {
+  margin-right: 5px;
 }

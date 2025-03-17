@@ -1,54 +1,43 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import icons from "../../../utils/icons.json";
+import { Button, Tooltip } from "antd";
 
 export default function IconButton({
-  onClickLink,
-  handleClickFunction,
-  text,
   icon,
+  onClick,
+  disabled,
+  tooltip,
+  tooltipText,
+  tooltipPlacement,
+  buttonText,
+  iconPosition = "start",
+  open = false,
+  className,
 }) {
-  const innerText = text || "";
-  if (handleClickFunction) {
-    return (
-      <button onClick={handleClickFunction}>
-        {icon ? (
-          <span role="img" aria-label={icon}>
-            {icons[icon]}{" "}
-          </span>
-        ) : (
-          ""
-        )}
-        {innerText}
-      </button>
-    );
-  } else if (onClickLink) {
-    return (
-      <Link to={onClickLink}>
-        <button>
-          {icon ? (
-            <span role="img" aria-label={text}>
-              {icons[icon]}{" "}
-            </span>
-          ) : (
-            ""
-          )}
-          {innerText}
-        </button>
-      </Link>
-    );
-  } else {
-    return (
-      <button>
-        {icon ? (
-          <span role="img" aria-label={text}>
-            {icons[icon]}{" "}
-          </span>
-        ) : (
-          ""
-        )}
-        {innerText}
-      </button>
-    );
-  }
+  return (
+    <>
+      {tooltip ? (
+        <Tooltip title={tooltipText} placement={tooltipPlacement}>
+          <Button
+            onClick={onClick}
+            disabled={disabled}
+            icon={icon}
+            iconPosition={iconPosition}
+            open={open}
+            className={className}
+          >
+            {buttonText}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Button
+          onClick={onClick}
+          disabled={disabled}
+          icon={icon}
+          iconPosition={iconPosition}
+          className={className}
+        >
+          {buttonText}
+        </Button>
+      )}
+    </>
+  );
 }
