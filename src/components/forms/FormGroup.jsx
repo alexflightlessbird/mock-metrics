@@ -8,19 +8,25 @@ export default function FormGroup({
   onFormValueChange,
   formPages,
   onFormPageChange,
+  formCompletionStatus,
+  updateFormCompletionStatus,
 }) {
   return (
     <div className={`${className} form-group`}>
-      {formGroup.map((form, index) => (
-        <React.Fragment key={index}>
+      {formGroup.map((form, formIndex) => (
+        <React.Fragment key={formIndex}>
           <Form
             {...form}
             formValues={formValues}
             onFormValueChange={onFormValueChange}
-            formPage={formPages[index]}
-            onFormPageChange={(newPage) => onFormPageChange(index, newPage)}
+            formPage={formPages[formIndex]} // Pass the correct form page index
+            onFormPageChange={(newPage) => onFormPageChange(formIndex, newPage)}
+            formCompletionStatus={formCompletionStatus[formIndex]} // Pass the correct completion status
+            updateFormCompletionStatus={(isCompleted) =>
+              updateFormCompletionStatus(formIndex, isCompleted)
+            }
           />
-          {index < formGroup.length - 1 && <hr />}
+          {formIndex < formGroup.length - 1 && <hr />}
         </React.Fragment>
       ))}
       <hr className="divider divider-transparent divider-stopper" />

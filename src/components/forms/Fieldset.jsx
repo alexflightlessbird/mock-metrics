@@ -15,6 +15,8 @@ export default function Fieldset({
   formPages,
   onFormPageChange,
   validatePaginate = false,
+  formCompletionStatus,
+  updateFormCompletionStatus,
 }) {
   const [isValid, setIsValid] = useState(false);
 
@@ -34,20 +36,30 @@ export default function Fieldset({
     if (paginate) {
       if (validatePaginate) {
         const currentFormGroup = formGroups[fieldsetPage];
-        const isValid = currentFormGroup.every((form) => {
-          return form.inputGroups.every((inputGroup) => {
-            return inputGroup.every((input) => {
-              if (input.required) {
-                return (
-                  formValues[input.name] !== "" &&
-                  formValues[input.name] !== undefined
-                );
-              }
-              return true;
-            });
+        if (Array.isArray(currentFormGroup)) {
+          const isValid = currentFormGroup.every((form) => {
+            if (Array.isArray(form.inputGroups)) {
+              return form.inputGroups.every((inputGroup) => {
+                if (Array.isArray(inputGroup)) {
+                  return inputGroup.every((input) => {
+                    if (input.required) {
+                      return (
+                        formValues[input.name] !== "" &&
+                        formValues[input.name] !== undefined
+                      );
+                    }
+                    return true;
+                  });
+                }
+                return false;
+              });
+            }
+            return false;
           });
-        });
-        setIsValid(isValid);
+          setIsValid(isValid);
+        } else {
+          setIsValid(false);
+        }
       }
     } else {
       setIsValid(true);
@@ -68,19 +80,23 @@ export default function Fieldset({
             onFormPageChange={(formIndex, newPage) =>
               onFormPageChange(fieldsetPage, formIndex, newPage)
             }
+            formCompletionStatus={formCompletionStatus[fieldsetPage]}
+            updateFormCompletionStatus={(formIndex, isCompleted) => updateFormCompletionStatus(fieldsetPage, formIndex, isCompleted)}
           />
         ) : (
-          formGroups.map((formGroup, index) => (
+          formGroups.map((formGroup, formGroupIndex) => (
             <FormGroup
-              key={index}
+              key={formGroupIndex}
               className={className}
               formGroup={formGroup}
               formValues={formValues}
               onFormValueChange={onFormValueChange}
-              formPages={formPages[index]}
+              formPages={formPages[formGroupIndex]}
               onFormPageChange={(formIndex, newPage) =>
-                onFormPageChange(index, formIndex, newPage)
+                onFormPageChange(formGroupIndex, formIndex, newPage)
               }
+              formCompletionStatus={formCompletionStatus[formGroupIndex]}
+              updateFormCompletionStatus={(formIndex, isCompleted) => updateFormCompletionStatus(formGroupIndex, formIndex, isCompleted)}
             />
           ))
         )}
@@ -113,7 +129,7 @@ export default function Fieldset({
               icon={React.createElement(icons.forward)}
               iconPosition="end"
               tooltip={validatePaginate && !isValid}
-              tooltipText="Complete all required questions"
+              tooltipText="Submit forms before continuing"
               tooltipPlacement="top"
             />
           </div>

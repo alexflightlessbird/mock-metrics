@@ -10,6 +10,8 @@ export default function FieldsetGroup({
   onFieldsetPageChange,
   formPages,
   onFormPageChange,
+  formCompletionStatus,
+  updateFormCompletionStatus,
 }) {
   return (
     <div className={`${className} fieldset-groups`}>
@@ -24,18 +26,11 @@ export default function FieldsetGroup({
                 formValues={formValues}
                 onFormValueChange={onFormValueChange}
                 fieldsetPage={fieldsetPages[fieldsetIndex]}
-                onFieldsetPageChange={(newPage) =>
-                  onFieldsetPageChange(fieldsetIndex, newPage)
-                }
+                onFieldsetPageChange={(newPage) => onFieldsetPageChange(fieldsetIndex, newPage)}
                 formPages={formPages[fieldsetIndex]}
-                onFormPageChange={(formGroupIndex, formIndex, newPage) =>
-                  onFormPageChange(
-                    fieldsetIndex,
-                    formGroupIndex,
-                    formIndex,
-                    newPage
-                  )
-                }
+                onFormPageChange={(formGroupIndex, formIndex, newPage) => onFormPageChange(fieldsetIndex, formGroupIndex, formIndex, newPage)}
+                formCompletionStatus={formCompletionStatus[fieldsetIndex]}
+                updateFormCompletionStatus={(formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
               />
               <br />
             </React.Fragment>
@@ -43,5 +38,5 @@ export default function FieldsetGroup({
         </div>
       ))}
     </div>
-  );
+  )
 }

@@ -5,12 +5,13 @@ import icons from "../../utils/icons";
 import IconButton from "../common/buttons/IconButton";
 
 export default function Modal({
+  title = "Modal",
   fieldsetGroups,
   paginate,
   onClose,
   className,
   validatePaginate = false,
-  isOpen,
+  isOpen
 }) {
   const getInitialFormValues = (fieldsetGroups) => {
     const initialValues = {};
@@ -21,217 +22,177 @@ export default function Modal({
           formGroup.forEach((form) => {
             form.inputGroups.forEach((inputGroup) => {
               inputGroup.forEach((input) => {
-                if (input.type === "checkbox") {
-                  initialValues[input.name] = input.default || false;
-                } else if (input.type === "radio") {
-                  initialValues[input.name] = input.default || "";
-                } else if (input.type === "select" && input.multi) {
-                  initialValues[input.name] = input.default || [];
-                } else {
-                  initialValues[input.name] = input.default || "";
-                }
-              });
-            });
-          });
-        });
-      });
-    });
-
+                if (input.type === "checkbox") initialValues[input.name] = input.default || false;
+                else if (input.type === "radio") initialValues[input.name] = input.default || "";
+                else if (input.type === "select" && input.multi) initialValues[input.name] = input.default || [];
+                else initialValues[input.name] = input.default || "";
+              })
+            })
+          })
+        })
+      })
+    })
     return initialValues;
-  };
+  }
 
-  const [formValues, setFormValues] = useState(
-    getInitialFormValues(fieldsetGroups)
-  );
-
+  const [formValues, setFormValues] = useState(getInitialFormValues(fieldsetGroups));
   const [isValid, setIsValid] = useState(false);
+
+  const [formCompletionStatus, setFormCompletionStatus] = useState(
+    fieldsetGroups.map((fieldsetGroup) => 
+      fieldsetGroup.map((fieldset) => 
+        fieldset.formGroups.map((formGroup) => 
+          formGroup.map(() => false)
+        )
+      )
+    )
+  )
 
   const handleFormValueChange = (name, value) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
-  };
+  }
 
-  const [dialogPage, setDialogPage] = useState(0);
+  const [modalPage, setModalPage] = useState(0);
   const [fieldsetPages, setFieldsetPages] = useState(
     fieldsetGroups.map((fieldsetGroup) => fieldsetGroup.map(() => 0))
-  );
+  )
 
   const [formPages, setFormPages] = useState(
-    fieldsetGroups.map((fieldsetGroup) =>
-      fieldsetGroup.map((fieldset) =>
+    fieldsetGroups.map((fieldsetGroup) => 
+      fieldsetGroup.map((fieldset) => 
         fieldset.formGroups.map((formGroup) => formGroup.map(() => 0))
       )
     )
-  );
+  )
+
+  const updateFormCompletionStatus = (fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, isCompleted) => {
+    setFormCompletionStatus((prev) => {
+      const newStatus = [...prev];
+      newStatus[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][formIndex] = isCompleted;
+      return newStatus;
+    })
+  }
 
   useEffect(() => {
     if (paginate) {
       if (validatePaginate) {
-        const currentFieldsetGroup = fieldsetGroups[dialogPage];
-        const isValid = currentFieldsetGroup.every((fieldset) => {
-          return fieldset.formGroups.every((formGroup) => {
-            return formGroup.every((form) => {
-              return form.inputGroups.every((inputGroup) => {
-                return inputGroup.every((input) => {
-                  if (input.required) {
-                    return (
-                      formValues[input.name] !== "" &&
-                      formValues[input.name] !== undefined
-                    );
-                  }
-                  return true;
-                });
-              });
-            });
-          });
-        });
+        const currentFieldsetGroup = fieldsetGroups[modalPage];
+        const isValid = currentFieldsetGroup.every((fieldset, fieldsetIndex) => {
+          return fieldset.formGroups.every((formGroup, formGroupIndex) => {
+            return formGroup.every((form, formIndex) => {
+              return formCompletionStatus[modalPage][fieldsetIndex][formGroupIndex][formIndex];
+            })
+          })
+        })
         setIsValid(isValid);
       }
     } else {
       setIsValid(true);
     }
-  }, [formValues, dialogPage, fieldsetGroups, validatePaginate]);
+  }, [formCompletionStatus, modalPage, fieldsetGroups, validatePaginate]);
 
   const handleNext = () => {
-    if (dialogPage < fieldsetGroups.length - 1) {
-      setDialogPage((prev) => prev + 1);
+    if (modalPage < fieldsetGroups.length - 1) {
+      setModalPage((prev) => prev + 1);
     }
-  };
+  }
 
   const handlePrev = () => {
-    if (dialogPage > 0) {
-      setDialogPage((prev) => prev - 1);
+    if (modalPage > 0) {
+      setModalPage((prev) => prev - 1);
     }
-  };
+  }
 
-  const handleFieldsetPageChange = (
-    fieldsetGroupIndex,
-    fieldsetIndex,
-    newPage
-  ) => {
+  const handleFieldsetPageChange = (fieldsetGroupIndex, fieldsetIndex, newPage) => {
     setFieldsetPages((prev) => {
       const newFieldsetPages = [...prev];
       newFieldsetPages[fieldsetGroupIndex][fieldsetIndex] = newPage;
       return newFieldsetPages;
-    });
-  };
+    })
+  }
 
-  const handleFormPageChange = (
-    fieldsetGroupIndex,
-    fieldsetIndex,
-    formGroupIndex,
-    formIndex,
-    newPage
-  ) => {
+  const handleFormPageChange = (fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, newPage) => {
     setFormPages((prev) => {
       const newFormPages = [...prev];
-      newFormPages[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][
-        formIndex
-      ] = newPage;
+      newFormPages[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][formIndex] = newPage;
       return newFormPages;
-    });
-  };
+    })
+  }
 
   return (
-    <AntModal
-      className={`${className} modal`}
-      title="Modal"
+    <AntModal className={`${className} modal`}
+      title={title}
       open={isOpen}
       onCancel={onClose}
       footer={[
-        <IconButton
+        <IconButton 
           key="close"
           onClick={onClose}
           icon={React.createElement(icons.close)}
-          buttonText="Close Dialog"
+          buttonText="Close Modal"
           //className={`${className} handle-controls close-button`}
-        />,
-      ]}
-    >
-      {paginate ? (
-        <FieldsetGroup
-          className={className}
-          formValues={formValues}
-          onFormValueChange={handleFormValueChange}
-          fieldsetGroup={[fieldsetGroups[dialogPage]]}
-          fieldsetPages={fieldsetPages[dialogPage]}
-          onFieldsetPageChange={(fieldsetIndex, newPage) =>
-            handleFieldsetPageChange(dialogPage, fieldsetIndex, newPage)
-          }
-          formPages={formPages[dialogPage]}
-          onFormPageChange={(
-            fieldsetIndex,
-            formGroupIndex,
-            formIndex,
-            newPage
-          ) =>
-            handleFormPageChange(
-              dialogPage,
-              fieldsetIndex,
-              formGroupIndex,
-              formIndex,
-              newPage
-            )
-          }
         />
-      ) : (
-        fieldsetGroups.map((fieldsetGroup, index) => (
+      ]}
+      >
+        {paginate ? (
           <FieldsetGroup
-            key={index}
             className={className}
             formValues={formValues}
             onFormValueChange={handleFormValueChange}
-            fieldsetGroup={fieldsetGroup}
-            fieldsetPages={fieldsetPages[index]}
-            onFieldsetPageChange={(fieldsetIndex, newPage) =>
-              handleFieldsetPageChange(index, fieldsetIndex, newPage)
-            }
-            formPages={formPages[index]}
-            onFormPageChange={(
-              fieldsetIndex,
-              formGroupIndex,
-              formIndex,
-              newPage
-            ) =>
-              handleFormPageChange(
-                index,
-                fieldsetIndex,
-                formGroupIndex,
-                formIndex,
-                newPage
-              )
-            }
-          />
-        ))
-      )}
-      <div className={`${className} controls-group dialog-controls controls`}>
+            fieldsetGroup={[fieldsetGroups[modalPage]]}
+            fieldsetPages={fieldsetPages[modalPage]}
+            onFieldsetPageChange={(fieldsetIndex, newPage) => handleFieldsetPageChange(modalPage, fieldsetIndex, newPage)}
+            formPages={formPages[modalPage]}
+            onFormPageChange={(fieldsetIndex, formGroupIndex, formIndex, newPage) => handleFormPageChange(modalPage, fieldsetIndex, formGroupIndex, formIndex, newPage)}
+            formCompletionStatus={formCompletionStatus[modalPage]}
+            updateFormCompletionStatus={(fieldsetIndex, formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(modalPage, fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
+            />
+        ) : (
+          fieldsetGroups.map((fieldsetGroup, fieldsetGroupIndex) => {
+            <FieldsetGroup
+              key={fieldsetGroupIndex}
+              className={className}
+              formValues={formValues}
+              onFormValueChange={handleFormValueChange}
+              fieldsetGroup={fieldsetGroup}
+              fieldsetPages={fieldsetPages[fieldsetGroupIndex]}
+              onFieldsetPageChange={(fieldsetIndex, newPage) => handleFieldsetPageChange(fieldsetGroupIndex, fieldsetIndex, newPage)}
+              formPages={formPages[fieldsetGroupIndex]}
+              onFormPageChange={(fieldsetIndex, formGroupIndex, formIndex, newPage) => handleFormPageChange(fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, newPage)}
+              formCompletionStatus={formCompletionStatus[fieldsetGroupIndex]}
+              updateFormCompletionStatus={(fieldsetIndex, formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
+              />
+          })
+        )}
+        <div className={`${className} controls-group modal-controls controls`}>
         {paginate && (
           <div
-            className={`${className} dialog-pagination-controls pagination-controls dialog-controls controls`}
+            className={`${className} modal-pagination-controls pagination-controls modal-controls controls`}
           >
             <IconButton
               onClick={handlePrev}
-              buttonText="Dialog"
-              disabled={dialogPage === 0}
+              buttonText="Modal"
+              disabled={modalPage === 0}
               icon={React.createElement(icons.back)}
             />
             <p
-              className={`${className} dialog-controls controls page-indicator`}
+              className={`${className} modal-controls controls page-indicator`}
             >
               <span>
-                Page {dialogPage + 1} of {fieldsetGroups.length}
+                Page {modalPage + 1} of {fieldsetGroups.length}
               </span>
             </p>
             <IconButton
               onClick={handleNext}
-              buttonText="Dialog"
+              buttonText="Modal"
               disabled={
-                dialogPage === fieldsetGroups.length - 1 ||
+                modalPage === fieldsetGroups.length - 1 ||
                 (validatePaginate && !isValid)
               }
               icon={React.createElement(icons.forward)}
               iconPosition="end"
               tooltip={validatePaginate && !isValid}
-              tooltipText="Complete all required questions"
+              tooltipText="Submit forms before continuing"
               tooltipPlacement="top"
             />
           </div>
