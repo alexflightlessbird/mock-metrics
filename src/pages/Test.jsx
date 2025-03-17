@@ -17,6 +17,7 @@ const example = {
               title: "Form 1",
               paginate: true,
               validatePaginate: true,
+              waitTime: 60,
               onSubmit: (values) => console.log("Form 1 Submitted", values),
               inputGroups: [
                 [
@@ -58,6 +59,7 @@ const example = {
             {
               title: "Form 2",
               paginate: false,
+              waitTime: 20,
               onSubmit: (values) => console.log("Form 2 Submitted", values),
               inputGroups: [
                 [

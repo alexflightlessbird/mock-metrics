@@ -3,6 +3,7 @@ import InputGroup from "./InputGroup";
 import icons from "../../utils/icons";
 import IconButton from "../common/buttons/IconButton";
 import { Form as AntForm } from "antd";
+import Countdown from "../common/Countdown";
 
 export default function Form({
   title = "Title",
@@ -17,6 +18,7 @@ export default function Form({
   validatePaginate = false,
   formCompletionStatus,
   updateFormCompletionStatus,
+  waitTime = 0
 }) {
   const [isValid, setIsValid] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
@@ -42,7 +44,7 @@ export default function Form({
     e.preventDefault();
     form
       .validateFields()
-      .then(() => {
+      .then(() => {      
         onSubmit(formValues);
         updateFormCompletionStatus(true);
         window.alert(`Form ${title} has been submitted.`);
