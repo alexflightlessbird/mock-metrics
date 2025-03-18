@@ -36,35 +36,22 @@ export default function Fieldset({
     if (paginate) {
       if (validatePaginate) {
         const currentFormGroup = formGroups[fieldsetPage];
-        if (Array.isArray(currentFormGroup)) {
-          const isValid = currentFormGroup.every((form) => {
-            if (Array.isArray(form.inputGroups)) {
-              return form.inputGroups.every((inputGroup) => {
-                if (Array.isArray(inputGroup)) {
-                  return inputGroup.every((input) => {
-                    if (input.required) {
-                      return (
-                        formValues[input.name] !== "" &&
-                        formValues[input.name] !== undefined
-                      );
-                    }
-                    return true;
-                  });
-                }
-                return false;
-              });
-            }
-            return false;
-          });
-          setIsValid(isValid);
-        } else {
-          setIsValid(false);
-        }
+        const isValid = currentFormGroup.every((form, formIndex) => {
+          console.log(formCompletionStatus[fieldsetPage][formIndex]);
+          return formCompletionStatus[fieldsetPage][formIndex];
+        });
+        setIsValid(isValid);
       }
     } else {
       setIsValid(true);
     }
-  }, [formValues, fieldsetPage, formGroups, validatePaginate]);
+  }, [
+    formCompletionStatus,
+    fieldsetPage,
+    formGroups,
+    validatePaginate,
+    paginate,
+  ]);
 
   return (
     <fieldset className={`${className} fieldset`}>
@@ -81,7 +68,9 @@ export default function Fieldset({
               onFormPageChange(fieldsetPage, formIndex, newPage)
             }
             formCompletionStatus={formCompletionStatus[fieldsetPage]}
-            updateFormCompletionStatus={(formIndex, isCompleted) => updateFormCompletionStatus(fieldsetPage, formIndex, isCompleted)}
+            updateFormCompletionStatus={(formIndex, isCompleted) =>
+              updateFormCompletionStatus(fieldsetPage, formIndex, isCompleted)
+            }
           />
         ) : (
           formGroups.map((formGroup, formGroupIndex) => (
@@ -96,7 +85,13 @@ export default function Fieldset({
                 onFormPageChange(formGroupIndex, formIndex, newPage)
               }
               formCompletionStatus={formCompletionStatus[formGroupIndex]}
-              updateFormCompletionStatus={(formIndex, isCompleted) => updateFormCompletionStatus(formGroupIndex, formIndex, isCompleted)}
+              updateFormCompletionStatus={(formIndex, isCompleted) =>
+                updateFormCompletionStatus(
+                  formGroupIndex,
+                  formIndex,
+                  isCompleted
+                )
+              }
             />
           ))
         )}

@@ -13,14 +13,14 @@ export default function IconButton({
   className,
   shape = "default",
   size = "middle",
-  type = "default",
+  type = "primary",
   color = "primary",
   danger = false,
   ghost = false,
   href,
   htmlType,
   loading = false,
-  variant,
+  variant = "solid",
 }) {
   return (
     <>

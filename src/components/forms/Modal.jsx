@@ -11,7 +11,7 @@ export default function Modal({
   onClose,
   className,
   validatePaginate = false,
-  isOpen = false
+  isOpen = false,
 }) {
   const getInitialFormValues = (fieldsetGroups) => {
     const initialValues = {};
@@ -22,68 +22,86 @@ export default function Modal({
           formGroup.forEach((form) => {
             form.inputGroups.forEach((inputGroup) => {
               inputGroup.forEach((input) => {
-                if (input.type === "checkbox") initialValues[input.name] = input.default || false;
-                else if (input.type === "radio") initialValues[input.name] = input.default || "";
-                else if (input.type === "select" && input.multi) initialValues[input.name] = input.default || [];
+                if (input.type === "checkbox")
+                  initialValues[input.name] = input.default || false;
+                else if (input.type === "radio")
+                  initialValues[input.name] = input.default || "";
+                else if (input.type === "select" && input.multi)
+                  initialValues[input.name] = input.default || [];
                 else initialValues[input.name] = input.default || "";
-              })
-            })
-          })
-        })
-      })
-    })
+              });
+            });
+          });
+        });
+      });
+    });
     return initialValues;
-  }
+  };
 
-  const [formValues, setFormValues] = useState(getInitialFormValues(fieldsetGroups));
+  const [formValues, setFormValues] = useState(
+    getInitialFormValues(fieldsetGroups)
+  );
   const [isValid, setIsValid] = useState(false);
 
   const [formCompletionStatus, setFormCompletionStatus] = useState(
-    fieldsetGroups.map((fieldsetGroup) => 
-      fieldsetGroup.map((fieldset) => 
-        fieldset.formGroups.map((formGroup) => 
-          formGroup.map(() => false)
-        )
+    fieldsetGroups.map((fieldsetGroup) =>
+      fieldsetGroup.map((fieldset) =>
+        fieldset.formGroups.map((formGroup) => formGroup.map(() => false))
       )
     )
-  )
+  );
 
   const handleFormValueChange = (name, value) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
-  }
+  };
 
   const [modalPage, setModalPage] = useState(0);
   const [fieldsetPages, setFieldsetPages] = useState(
     fieldsetGroups.map((fieldsetGroup) => fieldsetGroup.map(() => 0))
-  )
+  );
 
   const [formPages, setFormPages] = useState(
-    fieldsetGroups.map((fieldsetGroup) => 
-      fieldsetGroup.map((fieldset) => 
+    fieldsetGroups.map((fieldsetGroup) =>
+      fieldsetGroup.map((fieldset) =>
         fieldset.formGroups.map((formGroup) => formGroup.map(() => 0))
       )
     )
-  )
+  );
 
-  const updateFormCompletionStatus = (fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, isCompleted) => {
+  const updateFormCompletionStatus = (
+    fieldsetGroupIndex,
+    fieldsetIndex,
+    formGroupIndex,
+    formIndex,
+    isCompleted
+  ) => {
     setFormCompletionStatus((prev) => {
-      const newStatus = [...prev];
-      newStatus[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][formIndex] = isCompleted;
+      const newStatus = JSON.parse(JSON.stringify(prev));
+      newStatus[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][formIndex] =
+        isCompleted;
       return newStatus;
-    })
-  }
+    });
+  };
+
+  useEffect(() => {
+    console.log("Form Completion status updated:", formCompletionStatus);
+  }, [formCompletionStatus]);
 
   useEffect(() => {
     if (paginate) {
       if (validatePaginate) {
         const currentFieldsetGroup = fieldsetGroups[modalPage];
-        const isValid = currentFieldsetGroup.every((fieldset, fieldsetIndex) => {
-          return fieldset.formGroups.every((formGroup, formGroupIndex) => {
-            return formGroup.every((form, formIndex) => {
-              return formCompletionStatus[modalPage][fieldsetIndex][formGroupIndex][formIndex];
-            })
-          })
-        })
+        const isValid = currentFieldsetGroup.every(
+          (fieldset, fieldsetIndex) => {
+            return fieldset.formGroups.every((formGroup, formGroupIndex) => {
+              return formGroup.every((form, formIndex) => {
+                return formCompletionStatus[modalPage][fieldsetIndex][
+                  formGroupIndex
+                ][formIndex];
+              });
+            });
+          }
+        );
         setIsValid(isValid);
       }
     } else {
@@ -95,76 +113,149 @@ export default function Modal({
     if (modalPage < fieldsetGroups.length - 1) {
       setModalPage((prev) => prev + 1);
     }
-  }
+  };
 
   const handlePrev = () => {
     if (modalPage > 0) {
       setModalPage((prev) => prev - 1);
     }
-  }
+  };
 
-  const handleFieldsetPageChange = (fieldsetGroupIndex, fieldsetIndex, newPage) => {
+  const handleFieldsetPageChange = (
+    fieldsetGroupIndex,
+    fieldsetIndex,
+    newPage
+  ) => {
     setFieldsetPages((prev) => {
       const newFieldsetPages = [...prev];
       newFieldsetPages[fieldsetGroupIndex][fieldsetIndex] = newPage;
       return newFieldsetPages;
-    })
-  }
+    });
+  };
 
-  const handleFormPageChange = (fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, newPage) => {
+  const handleFormPageChange = (
+    fieldsetGroupIndex,
+    fieldsetIndex,
+    formGroupIndex,
+    formIndex,
+    newPage
+  ) => {
     setFormPages((prev) => {
       const newFormPages = [...prev];
-      newFormPages[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][formIndex] = newPage;
+      newFormPages[fieldsetGroupIndex][fieldsetIndex][formGroupIndex][
+        formIndex
+      ] = newPage;
       return newFormPages;
-    })
-  }
+    });
+  };
 
   return (
-    <AntModal className={`${className} modal`}
+    <AntModal
+      className={`${className} modal`}
       title={title}
       open={isOpen}
       onCancel={onClose}
       footer={[
-        <IconButton 
+        <IconButton
           key="close"
           onClick={onClose}
           icon={React.createElement(icons.close)}
           buttonText="Close Modal"
           //className={`${className} handle-controls close-button`}
-        />
+        />,
       ]}
-      >
-        {paginate ? (
+    >
+      {paginate ? (
+        <FieldsetGroup
+          className={className}
+          formValues={formValues}
+          onFormValueChange={handleFormValueChange}
+          fieldsetGroup={[fieldsetGroups[modalPage]]}
+          fieldsetPages={fieldsetPages[modalPage]}
+          onFieldsetPageChange={(fieldsetIndex, newPage) =>
+            handleFieldsetPageChange(modalPage, fieldsetIndex, newPage)
+          }
+          formPages={formPages[modalPage]}
+          onFormPageChange={(
+            fieldsetIndex,
+            formGroupIndex,
+            formIndex,
+            newPage
+          ) =>
+            handleFormPageChange(
+              modalPage,
+              fieldsetIndex,
+              formGroupIndex,
+              formIndex,
+              newPage
+            )
+          }
+          formCompletionStatus={formCompletionStatus[modalPage]}
+          updateFormCompletionStatus={(
+            fieldsetIndex,
+            formGroupIndex,
+            formIndex,
+            isCompleted
+          ) =>
+            updateFormCompletionStatus(
+              modalPage,
+              fieldsetIndex,
+              formGroupIndex,
+              formIndex,
+              isCompleted
+            )
+          }
+        />
+      ) : (
+        fieldsetGroups.map((fieldsetGroup, fieldsetGroupIndex) => {
           <FieldsetGroup
+            key={fieldsetGroupIndex}
             className={className}
             formValues={formValues}
             onFormValueChange={handleFormValueChange}
-            fieldsetGroup={[fieldsetGroups[modalPage]]}
-            fieldsetPages={fieldsetPages[modalPage]}
-            onFieldsetPageChange={(fieldsetIndex, newPage) => handleFieldsetPageChange(modalPage, fieldsetIndex, newPage)}
-            formPages={formPages[modalPage]}
-            onFormPageChange={(fieldsetIndex, formGroupIndex, formIndex, newPage) => handleFormPageChange(modalPage, fieldsetIndex, formGroupIndex, formIndex, newPage)}
-            formCompletionStatus={formCompletionStatus[modalPage]}
-            updateFormCompletionStatus={(fieldsetIndex, formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(modalPage, fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
-            />
-        ) : (
-          fieldsetGroups.map((fieldsetGroup, fieldsetGroupIndex) => {
-            <FieldsetGroup
-              key={fieldsetGroupIndex}
-              className={className}
-              formValues={formValues}
-              onFormValueChange={handleFormValueChange}
-              fieldsetGroup={fieldsetGroup}
-              fieldsetPages={fieldsetPages[fieldsetGroupIndex]}
-              onFieldsetPageChange={(fieldsetIndex, newPage) => handleFieldsetPageChange(fieldsetGroupIndex, fieldsetIndex, newPage)}
-              formPages={formPages[fieldsetGroupIndex]}
-              onFormPageChange={(fieldsetIndex, formGroupIndex, formIndex, newPage) => handleFormPageChange(fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, newPage)}
-              formCompletionStatus={formCompletionStatus[fieldsetGroupIndex]}
-              updateFormCompletionStatus={(fieldsetIndex, formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(fieldsetGroupIndex, fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
-              />
-          })
-        )}
-        <div className={`${className} controls-group modal-controls controls`}>
+            fieldsetGroup={fieldsetGroup}
+            fieldsetPages={fieldsetPages[fieldsetGroupIndex]}
+            onFieldsetPageChange={(fieldsetIndex, newPage) =>
+              handleFieldsetPageChange(
+                fieldsetGroupIndex,
+                fieldsetIndex,
+                newPage
+              )
+            }
+            formPages={formPages[fieldsetGroupIndex]}
+            onFormPageChange={(
+              fieldsetIndex,
+              formGroupIndex,
+              formIndex,
+              newPage
+            ) =>
+              handleFormPageChange(
+                fieldsetGroupIndex,
+                fieldsetIndex,
+                formGroupIndex,
+                formIndex,
+                newPage
+              )
+            }
+            formCompletionStatus={formCompletionStatus[fieldsetGroupIndex]}
+            updateFormCompletionStatus={(
+              fieldsetIndex,
+              formGroupIndex,
+              formIndex,
+              isCompleted
+            ) =>
+              updateFormCompletionStatus(
+                fieldsetGroupIndex,
+                fieldsetIndex,
+                formGroupIndex,
+                formIndex,
+                isCompleted
+              )
+            }
+          />;
+        })
+      )}
+      <div className={`${className} controls-group modal-controls controls`}>
         {paginate && (
           <div
             className={`${className} modal-pagination-controls pagination-controls modal-controls controls`}

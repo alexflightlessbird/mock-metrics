@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import InputGroup from "./InputGroup";
 import icons from "../../utils/icons";
 import IconButton from "../common/buttons/IconButton";
-import { Form as AntForm, notification } from "antd";
+import { Form as AntForm, notification, message } from "antd";
 import Countdown from "../common/Countdown";
 
 export default function Form({
   title = "Title",
+  description = "",
   inputGroups = [],
   paginate = false,
   onSubmit,
@@ -19,11 +20,14 @@ export default function Form({
   formCompletionStatus,
   updateFormCompletionStatus,
   waitTime = 0,
+  disableAfterCompletion = true,
 }) {
   const [isValid, setIsValid] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
   const [form] = AntForm.useForm();
-  const [notificationApi, contextHolder] = notification.useNotification();
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification();
+  const [messageApi, messageContextHolder] = message.useMessage();
 
   const handleNext = () => {
     if (formPage < inputGroups.length - 1) {
@@ -62,8 +66,8 @@ export default function Form({
       .then(() => {
         onSubmit(formValues);
         updateFormCompletionStatus(true);
-        window.alert(`Form ${title} has been submitted.`);
-        form.resetFields();
+        showConfirmationMessage(title);
+        handleReset();
         if (waitTime > 0) {
           localStorage.setItem(
             `lastSubmissionTime_${title}`,
@@ -96,8 +100,14 @@ export default function Form({
     });
   };
 
+  const showConfirmationMessage = (title) => {
+    messageApi.open({
+      type: "success",
+      content: `Form ${title} has been submitted.`,
+    });
+  };
+
   const handleReset = () => {
-    form.resetFields();
     const initialValues = inputGroups.flat().reduce((acc, input) => {
       acc[input.name] = input.default || "";
       return acc;
@@ -146,15 +156,24 @@ export default function Form({
   const showSubmitButton =
     !paginate || (paginate && formPage === inputGroups.length - 1);
 
+  console.log("UPDATED:", title, formCompletionStatus);
   return (
     <>
-      {contextHolder}
+      {notificationContextHolder}
+      {messageContextHolder}
       <AntForm
         form={form}
         onFinish={handleSubmit}
         className={`${className} form`}
       >
         <h3>{title}</h3>
+        {description && (
+          <p className={`${className} form-description`}>{description}</p>
+        )}
+        <p>
+          Submission Status:{" "}
+          {formCompletionStatus ? "Submitted" : "Not yet submitted"}
+        </p>
         <div className={`${className} input-groups`}>
           {paginate ? (
             <InputGroup
@@ -219,18 +238,32 @@ export default function Form({
               icon={React.createElement(icons.refresh)}
               className="reset-button"
             />
-            {showSubmitButton && (
-              <IconButton
-                icon={React.createElement(icons.check)}
-                buttonText="Submit Form"
-                onClick={handleSubmit}
-                disabled={!submitEnabled}
-                tooltip={!submitEnabled}
-                tooltipPlacement="top"
-                tooltipText="Complete all required questions"
-                className="submit-button"
-              />
-            )}
+            {showSubmitButton &&
+              disableAfterCompletion &&
+              formCompletionStatus && (
+                <IconButton
+                  icon={React.createElement(icons.check)}
+                  buttonText="Form Submitted"
+                  disabled={true}
+                  tooltip={true}
+                  tooltipPlacement="top"
+                  tooltipText="Form has already been submitted"
+                  className="submit-button"
+                />
+              )}
+            {(showSubmitButton && !disableAfterCompletion) ||
+              (disableAfterCompletion && !formCompletionStatus && (
+                <IconButton
+                  icon={React.createElement(icons.check)}
+                  buttonText="Submit Form"
+                  onClick={handleSubmit}
+                  disabled={!submitEnabled}
+                  tooltip={!submitEnabled}
+                  tooltipPlacement="top"
+                  tooltipText="Complete all required questions"
+                  className="submit-button"
+                />
+              ))}
           </div>
         </div>
       </AntForm>
