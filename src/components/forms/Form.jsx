@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InputGroup from "./InputGroup";
 import icons from "../../utils/icons";
 import IconButton from "../common/buttons/IconButton";
-import { Form as AntForm } from "antd";
+import { Form as AntForm, notification } from "antd";
 import Countdown from "../common/Countdown";
 
 export default function Form({
@@ -18,11 +18,12 @@ export default function Form({
   validatePaginate = false,
   formCompletionStatus,
   updateFormCompletionStatus,
-  waitTime = 0
+  waitTime = 0,
 }) {
   const [isValid, setIsValid] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
   const [form] = AntForm.useForm();
+  const [notificationApi, contextHolder] = notification.useNotification();
 
   const handleNext = () => {
     if (formPage < inputGroups.length - 1) {
@@ -42,17 +43,57 @@ export default function Form({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const lastSubmissionTime = localStorage.getItem(
+      `lastSubmissionTime_${title}`
+    );
+    const currentTime = Date.now();
+
+    if (lastSubmissionTime && waitTime > 0) {
+      const timeElapsed = (currentTime - parseInt(lastSubmissionTime)) / 1000;
+      if (timeElapsed < waitTime) {
+        const timeLeft = waitTime - timeElapsed;
+        showCountdownNotification(timeLeft);
+        return;
+      }
+    }
+
     form
       .validateFields()
-      .then(() => {      
+      .then(() => {
         onSubmit(formValues);
         updateFormCompletionStatus(true);
         window.alert(`Form ${title} has been submitted.`);
         form.resetFields();
+        if (waitTime > 0) {
+          localStorage.setItem(
+            `lastSubmissionTime_${title}`,
+            currentTime.toString()
+          );
+          setTimeout(() => {
+            localStorage.removeItem(`lastSubmissionTime_${title}`);
+          }, waitTime * 1000);
+        }
       })
       .catch((err) => {
         console.log("Validation Failed:", err);
       });
+  };
+
+  const showCountdownNotification = (timeLeft) => {
+    notificationApi.info({
+      message: `Please wait before submitting again`,
+      description: (
+        <Countdown
+          initialSeconds={Math.ceil(timeLeft)}
+          onComplete={() => notificationApi.destroy()}
+        >
+          {(seconds) => `Time remaining: ${seconds} seconds`}
+        </Countdown>
+      ),
+      placement: "topRight",
+      duration: 10,
+      pauseOnHover: true,
+    });
   };
 
   const handleReset = () => {
@@ -106,88 +147,93 @@ export default function Form({
     !paginate || (paginate && formPage === inputGroups.length - 1);
 
   return (
-    <AntForm
-      form={form}
-      onFinish={handleSubmit}
-      className={`${className} form`}
-    >
-      <h3>{title}</h3>
-      <div className={`${className} input-groups`}>
-        {paginate ? (
-          <InputGroup
-            className={className}
-            inputs={inputGroups[formPage]}
-            formValues={formValues}
-            onFormValueChange={handleInputChange}
-          />
-        ) : (
-          inputGroups.map((inputGroup, inputGroupIndex) => (
+    <>
+      {contextHolder}
+      <AntForm
+        form={form}
+        onFinish={handleSubmit}
+        className={`${className} form`}
+      >
+        <h3>{title}</h3>
+        <div className={`${className} input-groups`}>
+          {paginate ? (
             <InputGroup
-              key={inputGroupIndex}
               className={className}
-              inputs={inputGroup}
+              inputs={inputGroups[formPage]}
               formValues={formValues}
               onFormValueChange={handleInputChange}
             />
-          ))
-        )}
-      </div>
-      <div className={`${className} controls-group form-controls controls`}>
-        {paginate && (
+          ) : (
+            inputGroups.map((inputGroup, inputGroupIndex) => (
+              <InputGroup
+                key={inputGroupIndex}
+                className={className}
+                inputs={inputGroup}
+                formValues={formValues}
+                onFormValueChange={handleInputChange}
+              />
+            ))
+          )}
+        </div>
+        <div className={`${className} controls-group form-controls controls`}>
+          {paginate && (
+            <div
+              className={`${className} form-pagination-controls pagination-controls form-controls controls`}
+            >
+              <IconButton
+                buttonText="Form"
+                onClick={handlePrev}
+                disabled={formPage === 0}
+                icon={React.createElement(icons.back)}
+              />
+              <p
+                className={`${className} form-controls controls page-indicator`}
+              >
+                <span>
+                  Page {formPage + 1} of {inputGroups.length}
+                </span>
+              </p>
+              {!showSubmitButton && (
+                <IconButton
+                  onClick={handleNext}
+                  buttonText="Form"
+                  disabled={
+                    formPage === inputGroups.length - 1 ||
+                    (validatePaginate && !isValid)
+                  }
+                  icon={React.createElement(icons.forward)}
+                  iconPosition="end"
+                  tooltip={validatePaginate && !isValid}
+                  tooltipPlacement="top"
+                  tooltipText="Complete all required questions"
+                />
+              )}
+            </div>
+          )}
           <div
-            className={`${className} form-pagination-controls pagination-controls form-controls controls`}
+            className={`${className} form-handle-controls handle-controls controls`}
           >
             <IconButton
-              buttonText="Form"
-              onClick={handlePrev}
-              disabled={formPage === 0}
-              icon={React.createElement(icons.back)}
+              buttonText="Reset Form"
+              onClick={handleReset}
+              icon={React.createElement(icons.refresh)}
+              className="reset-button"
             />
-            <p className={`${className} form-controls controls page-indicator`}>
-              <span>
-                Page {formPage + 1} of {inputGroups.length}
-              </span>
-            </p>
-            {!showSubmitButton && (
+            {showSubmitButton && (
               <IconButton
-                onClick={handleNext}
-                buttonText="Form"
-                disabled={
-                  formPage === inputGroups.length - 1 ||
-                  (validatePaginate && !isValid)
-                }
-                icon={React.createElement(icons.forward)}
-                iconPosition="end"
-                tooltip={validatePaginate && !isValid}
+                icon={React.createElement(icons.check)}
+                buttonText="Submit Form"
+                onClick={handleSubmit}
+                disabled={!submitEnabled}
+                tooltip={!submitEnabled}
                 tooltipPlacement="top"
                 tooltipText="Complete all required questions"
+                className="submit-button"
               />
             )}
           </div>
-        )}
-        <div
-          className={`${className} form-handle-controls handle-controls controls`}
-        >
-          <IconButton
-            buttonText="Reset Form"
-            onClick={handleReset}
-            icon={React.createElement(icons.refresh)}
-            className="reset-button"
-          />
-          {showSubmitButton && (
-            <IconButton
-              icon={React.createElement(icons.check)}
-              buttonText="Submit Form"
-              onClick={handleSubmit}
-              disabled={!submitEnabled}
-              tooltip={!submitEnabled}
-              tooltipPlacement="top"
-              tooltipText="Complete all required questions"
-              className="submit-button"
-            />
-          )}
         </div>
-      </div>
-    </AntForm>
+      </AntForm>
+    </>
   );
 }

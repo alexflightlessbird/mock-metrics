@@ -3,14 +3,24 @@ import { Button, Tooltip } from "antd";
 export default function IconButton({
   icon,
   onClick,
-  disabled,
+  disabled = false,
   tooltip,
   tooltipText,
   tooltipPlacement,
-  buttonText,
+  buttonText = "Button",
   iconPosition = "start",
   open = false,
   className,
+  shape = "default",
+  size = "middle",
+  type = "default",
+  color = "primary",
+  danger = false,
+  ghost = false,
+  href,
+  htmlType,
+  loading = false,
+  variant,
 }) {
   return (
     <>
@@ -23,6 +33,16 @@ export default function IconButton({
             iconPosition={iconPosition}
             open={open}
             className={className}
+            shape={shape}
+            size={size}
+            type={type}
+            color={color}
+            danger={danger}
+            ghost={ghost}
+            href={href}
+            htmlType={htmlType}
+            loading={loading}
+            variant={variant}
           >
             {buttonText}
           </Button>
@@ -34,6 +54,16 @@ export default function IconButton({
           icon={icon}
           iconPosition={iconPosition}
           className={className}
+          shape={shape}
+          size={size}
+          type={type}
+          color={color}
+          danger={danger}
+          ghost={ghost}
+          href={href}
+          htmlType={htmlType}
+          loading={loading}
+          variant={variant}
         >
           {buttonText}
         </Button>

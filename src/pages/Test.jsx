@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../components/forms/Modal";
+import IconButton from "../components/common/buttons/IconButton";
+import icons from "../utils/icons";
 
 const example = {
   paginate: true,
@@ -177,7 +179,12 @@ function Test() {
 
   return (
     <div>
-      <button onClick={handleOpenModal}>Open Modal</button>
+      <IconButton
+        buttonText="Open Modal"
+        icon={React.createElement(icons.open)}
+        onClick={handleOpenModal}
+        className="open-modal"
+      />
       <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
     </div>
   );

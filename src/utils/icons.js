@@ -42,6 +42,9 @@ import {
   UsergroupDeleteOutlined,
   EyeOutlined,
   WarningOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 
 // Map icon names to Ant Design icon components
@@ -68,10 +71,13 @@ const iconComponents = {
   link: LinkOutlined,
   loading: LoadingOutlined,
   lock: LockOutlined,
+  login: LoginOutlined,
+  logout: LogoutOutlined,
   menu: MenuOutlined,
   moon: MoonOutlined,
   more: MoreOutlined,
   number: NumberOutlined,
+  open: ExportOutlined,
   paperclip: PaperClipOutlined,
   question: QuestionOutlined,
   refresh: ReloadOutlined,

@@ -129,6 +129,7 @@ button:disabled {
   position: relative;
 }
 
-.example-dialog .input label {
-  margin-right: 5px;
+.open-modal {
+  padding: 20px;
+  margin-top: 40px;
 }
