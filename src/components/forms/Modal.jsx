@@ -28,9 +28,9 @@ export default function Modal({
                   initialValues[input.name] = input.default || false;
                 else if (input.type === "radio")
                   initialValues[input.name] = input.default || "";
-                else if (input.type === "select" && input.multi)
+                else if (input.type === "select" && input.multi) {
                   initialValues[input.name] = input.default || [];
-                else initialValues[input.name] = input.default || "";
+                } else initialValues[input.name] = input.default || "";
               });
             });
           });
@@ -54,6 +54,12 @@ export default function Modal({
   );
 
   const handleFormValueChange = (name, value) => {
+    if (Array.isArray(name)) {
+      setFormValues((prev) => ({
+        ...prev,
+        [name[0]]: { ...prev[name[0]], [name[1]]: value },
+      }));
+    }
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 

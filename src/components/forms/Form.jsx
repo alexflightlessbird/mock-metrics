@@ -47,11 +47,11 @@ export default function Form({
   };
 
   const handleInputChange = (name, value) => {
+    if (Array.isArray(name) && value.length === 0) return;
     onFormValueChange(name, value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (values) => {
     const lastSubmissionTime = localStorage.getItem(
       `lastSubmissionTime_${title}`
     );
@@ -69,6 +69,7 @@ export default function Form({
     form
       .validateFields()
       .then(() => {
+        console.log(values);
         onSubmit(formValues);
         updateFormCompletionStatus(true);
         showConfirmationMessage(title);
@@ -84,6 +85,7 @@ export default function Form({
         }
       })
       .catch((err) => {
+        showErrorMessage();
         console.log("Validation Failed:", err);
       });
   };
@@ -114,15 +116,26 @@ export default function Form({
     });
   };
 
+  const showErrorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: "Please satisfy all form requirements.",
+    });
+  };
+
   const handleReset = () => {
     const initialValues = inputGroups.flat().reduce((acc, input) => {
-      acc[input.name] = input.default || "";
+      acc[input.name] =
+        input.type === "select" && input.multi
+          ? input.default || []
+          : input.default || "";
       return acc;
     }, {});
 
     Object.keys(initialValues).forEach((key) => {
       onFormValueChange(key, initialValues[key]);
     });
+    form.resetFields();
   };
 
   useEffect(() => {
@@ -171,6 +184,7 @@ export default function Form({
         form={form}
         onFinish={handleSubmit}
         className={`${className} form`}
+        initialValues={formValues}
       >
         <h3>{title}</h3>
         {description && (
@@ -264,12 +278,12 @@ export default function Form({
                 <IconButton
                   icon="check"
                   buttonText="Submit Form"
-                  onClick={handleSubmit}
                   disabled={!submitEnabled}
                   tooltip={!submitEnabled}
                   tooltipPlacement="top"
                   tooltipText="Complete all required questions"
                   className="submit-button"
+                  htmlType="submit"
                 />
               ))}
           </div>

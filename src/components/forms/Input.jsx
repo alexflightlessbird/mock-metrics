@@ -5,6 +5,7 @@ import AntSelect from "antd/es/select";
 import AntCheckbox from "antd/es/checkbox";
 import AntRadio from "antd/es/radio";
 import AntInputNumber from "antd/es/input-number";
+import FormItem from "antd/es/form/FormItem";
 const { Group: RadioGroup } = AntRadio;
 
 export default function Input({
@@ -135,8 +136,14 @@ export default function Input({
 
   return (
     <div className={`${className} input`}>
-      {label && type !== "radio" && <label htmlFor={name}>{label}</label>}
-      {renderInput()}
+      <FormItem
+        name={name}
+        label={label}
+        validateTrigger="onBlur"
+        rules={[{ required: required, message: "Required" }]}
+      >
+        {renderInput()}
+      </FormItem>
     </div>
   );
 }

@@ -15,7 +15,11 @@ export default function InputGroup({
           <Input
             key={index}
             {...input}
-            value={formValues[input.name] || ""}
+            value={
+              Array.isArray(formValues[input.name])
+                ? formValues[input.name] || []
+                : formValues[input.name] || ""
+            }
             onChange={(value) => onFormValueChange(input.name, value)}
           />
         ))}
