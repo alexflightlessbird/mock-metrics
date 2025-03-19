@@ -9,7 +9,7 @@ export default function IconButton({
   disabled = false,
   tooltip,
   tooltipText,
-  tooltipPlacement,
+  tooltipPlacement = "top",
   buttonText = "Button",
   iconPosition = "start",
   open = false,
@@ -25,55 +25,35 @@ export default function IconButton({
   loading = false,
   variant = "solid",
 }) {
-  if (icon && icons[icon]) {
-    icon = React.createElement(icons[icon]);
-  } else if (icon) throw new Error("Invalid icon name");
+  const iconElement = icon && icons[icon] ? React.createElement(icons[icon]) : null;
+
+  const buttonProps = {
+    icon: iconElement,
+    onClick,
+    disabled,
+    iconPosition,
+    open,
+    className,
+    shape,
+    size,
+    type,
+    color,
+    danger,
+    ghost,
+    href,
+    htmlType,
+    loading,
+    variant,
+  }
 
   return (
     <>
       {tooltip ? (
         <Tooltip title={tooltipText} placement={tooltipPlacement}>
-          <Button
-            onClick={onClick}
-            disabled={disabled}
-            icon={icon}
-            iconPosition={iconPosition}
-            open={open}
-            className={className}
-            shape={shape}
-            size={size}
-            type={type}
-            color={color}
-            danger={danger}
-            ghost={ghost}
-            href={href}
-            htmlType={htmlType}
-            loading={loading}
-            variant={variant}
-          >
-            {buttonText}
-          </Button>
+          <Button {...buttonProps}>{buttonText}</Button>
         </Tooltip>
       ) : (
-        <Button
-          onClick={onClick}
-          disabled={disabled}
-          icon={icon}
-          iconPosition={iconPosition}
-          className={className}
-          shape={shape}
-          size={size}
-          type={type}
-          color={color}
-          danger={danger}
-          ghost={ghost}
-          href={href}
-          htmlType={htmlType}
-          loading={loading}
-          variant={variant}
-        >
-          {buttonText}
-        </Button>
+        <Button {...buttonProps}>{buttonText}</Button>
       )}
     </>
   );

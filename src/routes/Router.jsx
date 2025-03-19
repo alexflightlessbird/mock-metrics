@@ -10,14 +10,12 @@ import RootLayout from "../layouts/RootLayout";
 import Spin from "antd/es/spin";
 
 //pages
-const Home = lazy(() => import("../pages/Home"));
-const Test = lazy(() => import("../pages/Test"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 const componentMap = {
-  Home,
-  Test,
-};
+  Home: lazy(() => import("../pages/Home")),
+  Test: lazy(() => import("../pages/Test"))
+}
 
 function createRouteElements(routes) {
   return routes.map((route) => {

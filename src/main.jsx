@@ -7,27 +7,27 @@ import { SessionProvider } from "./context/auth/SessionContext.jsx";
 const ConfigProvider = lazy(() => import("antd/es/config-provider"));
 const App = lazy(() => import("./App"));
 
+const themeConfig = {
+  token: {
+    colorPrimary: "#2dace6",
+    colorBgBase: "#f7f5f3",
+    colorTextBase: "#0a1f3c",
+    fontFamily:
+      'Urbanist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Base font family
+    fontSize: 16,
+  },
+  components: {
+    Typography: {
+      fontFamilyHeading:
+        'Raleway, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Heading font family
+    },
+  },
+}
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Suspense fallback={<Spin fullscreen tip="loading overall" />}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#2dace6",
-            colorBgBase: "#f7f5f3",
-            colorTextBase: "#0a1f3c",
-            fontFamily:
-              'Urbanist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Base font family
-            fontSize: 16,
-          },
-          components: {
-            Typography: {
-              fontFamilyHeading:
-                'Raleway, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', // Heading font family
-            },
-          },
-        }}
-      >
+      <ConfigProvider theme={themeConfig}>
         <Suspense fallback={<Spin fullscreen tip="loading session" />}>
           <SessionProvider>
             <Suspense fallback={<Spin fullscreen tip="loading app" />}>

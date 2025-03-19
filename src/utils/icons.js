@@ -4,7 +4,7 @@ import CalendarOutlined from "@ant-design/icons/CalendarOutlined";
 import CheckOutlined from "@ant-design/icons/CheckOutlined";
 import CloseOutlined from "@ant-design/icons/CloseOutlined";
 import CommentOutlined from "@ant-design/icons/CommentOutlined";
-import CopyrightOutlined from "@ant-design/icons/CopyRightOutlined";
+import CopyrightOutlined from "@ant-design/icons/CopyrightOutlined";
 import CrownOutlined from "@ant-design/icons/CrownOutlined";
 import DashboardOutlined from "@ant-design/icons/DashboardOutlined";
 import DeleteOutlined from "@ant-design/icons/DeleteOutlined";

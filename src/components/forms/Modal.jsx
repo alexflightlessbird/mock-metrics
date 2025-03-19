@@ -6,6 +6,27 @@ import AntModal from "antd/es/modal";
 
 const FieldsetGroup = lazy(() => import("./FieldsetGroup"));
 
+function getInitialFormValues (fieldsetGroups) {
+  const initialValues = {};
+  fieldsetGroups.forEach((fieldsetGroup) => {
+    fieldsetGroup.forEach((fieldset) => {
+      fieldset.formGroups.forEach((formGroup) => {
+        formGroup.forEach((form) => {
+          form.inputGroups.forEach((inputGroup) => {
+            inputGroup.forEach((input) => {
+              if (input.type === "checkbox") initialValues[input.name] = input.default || false;
+              else if (input.type === "radio") initialValues[input.name] = input.default || "";
+              else if (input.type === "select" && input.multi) initialValues[input.name] = input.default || [];
+              else initialValues[input.name] = input.default || "";
+            })
+          })
+        })
+      })
+    })
+  })
+  return initialValues;
+}
+
 export default function Modal({
   title = "Modal",
   fieldsetGroups,
@@ -15,31 +36,6 @@ export default function Modal({
   validatePaginate = false,
   isOpen = false,
 }) {
-  const getInitialFormValues = (fieldsetGroups) => {
-    const initialValues = {};
-
-    fieldsetGroups.forEach((fieldsetGroup) => {
-      fieldsetGroup.forEach((fieldset) => {
-        fieldset.formGroups.forEach((formGroup) => {
-          formGroup.forEach((form) => {
-            form.inputGroups.forEach((inputGroup) => {
-              inputGroup.forEach((input) => {
-                if (input.type === "checkbox")
-                  initialValues[input.name] = input.default || false;
-                else if (input.type === "radio")
-                  initialValues[input.name] = input.default || "";
-                else if (input.type === "select" && input.multi) {
-                  initialValues[input.name] = input.default || [];
-                } else initialValues[input.name] = input.default || "";
-              });
-            });
-          });
-        });
-      });
-    });
-    return initialValues;
-  };
-
   const [formValues, setFormValues] = useState(
     getInitialFormValues(fieldsetGroups)
   );

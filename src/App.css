@@ -43,12 +43,7 @@ hr.divider-transparent:before {
   left: 5%;
   width: 90%;
   height: 1px;
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    rgb(48, 49, 51),
-    transparent
-  );
+  background-image: linear-gradient(to right, transparent, rgb(48, 49, 51), transparent);
 }
 
 .controls-group {
@@ -87,11 +82,6 @@ hr.divider-transparent:before {
   padding: 0;
 }
 
-.controls .page-indicator {
-  width: clamp(25%, 50%, 75%);
-  text-align: center;
-}
-
 .handle-controls {
   margin-top: 10px;
   display: grid;
@@ -119,7 +109,6 @@ hr.divider-transparent:before {
   text-align: center;
   justify-self: stretch;
   grid-column: 1 / span 2;
-  display: flex;
   display: flex;
 }
 
