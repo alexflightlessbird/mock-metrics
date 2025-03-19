@@ -25,6 +25,7 @@ const example = {
               paginate: true,
               validatePaginate: true,
               waitTime: 60,
+              disableAfterCompletion: false,
               onSubmit: (values) => console.log("Form 1 Submitted", values),
               inputGroups: [
                 [

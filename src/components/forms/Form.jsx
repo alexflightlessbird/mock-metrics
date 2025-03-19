@@ -136,6 +136,7 @@ export default function Form({
       onFormValueChange(key, initialValues[key]);
     });
     form.resetFields();
+    form.setFieldsValue(initialValues);
   };
 
   useEffect(() => {
@@ -273,8 +274,8 @@ export default function Form({
                   className="submit-button"
                 />
               )}
-            {(showSubmitButton && !disableAfterCompletion) ||
-              (disableAfterCompletion && !formCompletionStatus && (
+            {(showSubmitButton && (!disableAfterCompletion ||
+              (disableAfterCompletion && !formCompletionStatus)) && (
                 <IconButton
                   icon="check"
                   buttonText="Submit Form"
