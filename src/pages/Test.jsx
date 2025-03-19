@@ -1,7 +1,12 @@
-import React, { useState } from "react";
-import Modal from "../components/forms/Modal";
-import IconButton from "../components/common/buttons/IconButton";
-import icons from "../utils/icons";
+import React, { lazy, useState, Suspense } from "react";
+import Spin from "antd/es/spin";
+import Button from "antd/es/button";
+import { setDocumentTitle } from "../utils/helpers";
+
+const Modal = lazy(() => import("../components/forms/Modal"));
+const IconButton = lazy(() =>
+  import("../components/common/buttons/IconButton")
+);
 
 const example = {
   paginate: true,
@@ -168,24 +173,34 @@ const example = {
 
 function Test() {
   const [isOpen, setisOpen] = useState(false);
+  const [isModalLoaded, setIsModalLoaded] = useState(false);
 
   const handleOpenModal = () => {
     setisOpen(true);
+    setIsModalLoaded(true);
   };
 
   const handleCloseModal = () => {
     setisOpen(false);
   };
 
+  setDocumentTitle({ title: "Test" });
+
   return (
     <div>
-      <IconButton
-        buttonText="Open Modal"
-        icon={React.createElement(icons.open)}
-        onClick={handleOpenModal}
-        className="open-modal"
-      />
-      <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
+      <Suspense fallback={<Button className="open-modal" loading disabled />}>
+        <IconButton
+          buttonText="Open Modal"
+          icon="open"
+          onClick={handleOpenModal}
+          className="open-modal"
+        />
+      </Suspense>
+      {isModalLoaded && isOpen && (
+        <Suspense fallback={<Spin fullscreen tip="loading modal" />}>
+          <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
+        </Suspense>
+      )}
     </div>
   );
 }

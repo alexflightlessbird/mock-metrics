@@ -1,4 +1,7 @@
-import { Button, Tooltip } from "antd";
+import React from "react";
+import Button from "antd/es/button";
+import Tooltip from "antd/es/tooltip";
+import icons from "../../../utils/icons";
 
 export default function IconButton({
   icon,
@@ -22,6 +25,10 @@ export default function IconButton({
   loading = false,
   variant = "solid",
 }) {
+  if (icon && icons[icon]) {
+    icon = React.createElement(icons[icon]);
+  } else if (icon) throw new Error("Invalid icon name");
+
   return (
     <>
       {tooltip ? (

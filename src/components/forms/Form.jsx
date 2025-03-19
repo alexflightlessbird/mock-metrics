@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
-import InputGroup from "./InputGroup";
-import icons from "../../utils/icons";
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import Skeleton from "antd/es/skeleton";
+
+const InputGroup = lazy(() => import("./InputGroup"));
+const Countdown = lazy(() => import("../common/Countdown"));
+
 import IconButton from "../common/buttons/IconButton";
-import { Form as AntForm, notification, message } from "antd";
-import Countdown from "../common/Countdown";
+
+import AntForm from "antd/es/form";
+import notification from "antd/es/notification";
+import message from "antd/es/message";
 
 export default function Form({
   title = "Title",
@@ -87,12 +92,14 @@ export default function Form({
     notificationApi.info({
       message: `Please wait before submitting again`,
       description: (
-        <Countdown
-          initialSeconds={Math.ceil(timeLeft)}
-          onComplete={() => notificationApi.destroy()}
-        >
-          {(seconds) => `Time remaining: ${seconds} seconds`}
-        </Countdown>
+        <Suspense fallback={<Skeleton active />}>
+          <Countdown
+            initialSeconds={Math.ceil(timeLeft)}
+            onComplete={() => notificationApi.destroy()}
+          >
+            {(seconds) => `Time remaining: ${seconds} seconds`}
+          </Countdown>
+        </Suspense>
       ),
       placement: "topRight",
       duration: 10,
@@ -156,7 +163,6 @@ export default function Form({
   const showSubmitButton =
     !paginate || (paginate && formPage === inputGroups.length - 1);
 
-  console.log("UPDATED:", title, formCompletionStatus);
   return (
     <>
       {notificationContextHolder}
@@ -175,24 +181,26 @@ export default function Form({
           {formCompletionStatus ? "Submitted" : "Not yet submitted"}
         </p>
         <div className={`${className} input-groups`}>
-          {paginate ? (
-            <InputGroup
-              className={className}
-              inputs={inputGroups[formPage]}
-              formValues={formValues}
-              onFormValueChange={handleInputChange}
-            />
-          ) : (
-            inputGroups.map((inputGroup, inputGroupIndex) => (
+          <Suspense fallback={<Skeleton active />}>
+            {paginate ? (
               <InputGroup
-                key={inputGroupIndex}
                 className={className}
-                inputs={inputGroup}
+                inputs={inputGroups[formPage]}
                 formValues={formValues}
                 onFormValueChange={handleInputChange}
               />
-            ))
-          )}
+            ) : (
+              inputGroups.map((inputGroup, inputGroupIndex) => (
+                <InputGroup
+                  key={inputGroupIndex}
+                  className={className}
+                  inputs={inputGroup}
+                  formValues={formValues}
+                  onFormValueChange={handleInputChange}
+                />
+              ))
+            )}
+          </Suspense>
         </div>
         <div className={`${className} controls-group form-controls controls`}>
           {paginate && (
@@ -203,7 +211,7 @@ export default function Form({
                 buttonText="Form"
                 onClick={handlePrev}
                 disabled={formPage === 0}
-                icon={React.createElement(icons.back)}
+                icon="back"
               />
               <p
                 className={`${className} form-controls controls page-indicator`}
@@ -220,7 +228,7 @@ export default function Form({
                     formPage === inputGroups.length - 1 ||
                     (validatePaginate && !isValid)
                   }
-                  icon={React.createElement(icons.forward)}
+                  icon="forward"
                   iconPosition="end"
                   tooltip={validatePaginate && !isValid}
                   tooltipPlacement="top"
@@ -235,14 +243,14 @@ export default function Form({
             <IconButton
               buttonText="Reset Form"
               onClick={handleReset}
-              icon={React.createElement(icons.refresh)}
+              icon="refresh"
               className="reset-button"
             />
             {showSubmitButton &&
               disableAfterCompletion &&
               formCompletionStatus && (
                 <IconButton
-                  icon={React.createElement(icons.check)}
+                  icon="check"
                   buttonText="Form Submitted"
                   disabled={true}
                   tooltip={true}
@@ -254,7 +262,7 @@ export default function Form({
             {(showSubmitButton && !disableAfterCompletion) ||
               (disableAfterCompletion && !formCompletionStatus && (
                 <IconButton
-                  icon={React.createElement(icons.check)}
+                  icon="check"
                   buttonText="Submit Form"
                   onClick={handleSubmit}
                   disabled={!submitEnabled}

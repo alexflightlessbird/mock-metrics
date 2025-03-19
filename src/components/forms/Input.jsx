@@ -1,14 +1,11 @@
 import React from "react";
-import {
-  Input as AntInput,
-  Select as AntSelect,
-  Checkbox as AntCheckbox,
-  Radio as AntRadio,
-  InputNumber as AntInputNumber,
-} from "antd";
-const { Option } = AntSelect;
+
+import AntInput from "antd/es/input";
+import AntSelect from "antd/es/select";
+import AntCheckbox from "antd/es/checkbox";
+import AntRadio from "antd/es/radio";
+import AntInputNumber from "antd/es/input-number";
 const { Group: RadioGroup } = AntRadio;
-const { Group: CheckboxGroup } = AntCheckbox;
 
 export default function Input({
   className,

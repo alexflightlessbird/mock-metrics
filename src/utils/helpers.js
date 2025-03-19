@@ -3,7 +3,7 @@ function setDocumentTitle({ title, isHomePage = false }) {
     document.title = `MockMetrics`;
     return;
   }
-  document.title = `${title} - MockMetrics`;
+  document.title = `${title} | MockMetrics`;
 }
 
 function filterAssigneesByRole(assignees, role) {

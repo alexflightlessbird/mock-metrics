@@ -1,8 +1,10 @@
-import { Modal as AntModal } from "antd";
-import React, { useState, useEffect } from "react";
-import FieldsetGroup from "./FieldsetGroup";
-import icons from "../../utils/icons";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import IconButton from "../common/buttons/IconButton";
+import Spin from "antd/es/spin";
+
+import AntModal from "antd/es/modal";
+
+const FieldsetGroup = lazy(() => import("./FieldsetGroup"));
 
 export default function Modal({
   title = "Modal",
@@ -84,10 +86,6 @@ export default function Modal({
   };
 
   useEffect(() => {
-    console.log("Form Completion status updated:", formCompletionStatus);
-  }, [formCompletionStatus]);
-
-  useEffect(() => {
     if (paginate) {
       if (validatePaginate) {
         const currentFieldsetGroup = fieldsetGroups[modalPage];
@@ -159,70 +157,24 @@ export default function Modal({
         <IconButton
           key="close"
           onClick={onClose}
-          icon={React.createElement(icons.close)}
+          icon="close"
           buttonText="Close Modal"
           //className={`${className} handle-controls close-button`}
         />,
       ]}
     >
-      {paginate ? (
-        <FieldsetGroup
-          className={className}
-          formValues={formValues}
-          onFormValueChange={handleFormValueChange}
-          fieldsetGroup={[fieldsetGroups[modalPage]]}
-          fieldsetPages={fieldsetPages[modalPage]}
-          onFieldsetPageChange={(fieldsetIndex, newPage) =>
-            handleFieldsetPageChange(modalPage, fieldsetIndex, newPage)
-          }
-          formPages={formPages[modalPage]}
-          onFormPageChange={(
-            fieldsetIndex,
-            formGroupIndex,
-            formIndex,
-            newPage
-          ) =>
-            handleFormPageChange(
-              modalPage,
-              fieldsetIndex,
-              formGroupIndex,
-              formIndex,
-              newPage
-            )
-          }
-          formCompletionStatus={formCompletionStatus[modalPage]}
-          updateFormCompletionStatus={(
-            fieldsetIndex,
-            formGroupIndex,
-            formIndex,
-            isCompleted
-          ) =>
-            updateFormCompletionStatus(
-              modalPage,
-              fieldsetIndex,
-              formGroupIndex,
-              formIndex,
-              isCompleted
-            )
-          }
-        />
-      ) : (
-        fieldsetGroups.map((fieldsetGroup, fieldsetGroupIndex) => {
+      <Suspense fallback={<Spin />}>
+        {paginate ? (
           <FieldsetGroup
-            key={fieldsetGroupIndex}
             className={className}
             formValues={formValues}
             onFormValueChange={handleFormValueChange}
-            fieldsetGroup={fieldsetGroup}
-            fieldsetPages={fieldsetPages[fieldsetGroupIndex]}
+            fieldsetGroup={[fieldsetGroups[modalPage]]}
+            fieldsetPages={fieldsetPages[modalPage]}
             onFieldsetPageChange={(fieldsetIndex, newPage) =>
-              handleFieldsetPageChange(
-                fieldsetGroupIndex,
-                fieldsetIndex,
-                newPage
-              )
+              handleFieldsetPageChange(modalPage, fieldsetIndex, newPage)
             }
-            formPages={formPages[fieldsetGroupIndex]}
+            formPages={formPages[modalPage]}
             onFormPageChange={(
               fieldsetIndex,
               formGroupIndex,
@@ -230,14 +182,14 @@ export default function Modal({
               newPage
             ) =>
               handleFormPageChange(
-                fieldsetGroupIndex,
+                modalPage,
                 fieldsetIndex,
                 formGroupIndex,
                 formIndex,
                 newPage
               )
             }
-            formCompletionStatus={formCompletionStatus[fieldsetGroupIndex]}
+            formCompletionStatus={formCompletionStatus[modalPage]}
             updateFormCompletionStatus={(
               fieldsetIndex,
               formGroupIndex,
@@ -245,16 +197,64 @@ export default function Modal({
               isCompleted
             ) =>
               updateFormCompletionStatus(
-                fieldsetGroupIndex,
+                modalPage,
                 fieldsetIndex,
                 formGroupIndex,
                 formIndex,
                 isCompleted
               )
             }
-          />;
-        })
-      )}
+          />
+        ) : (
+          fieldsetGroups.map((fieldsetGroup, fieldsetGroupIndex) => {
+            <FieldsetGroup
+              key={fieldsetGroupIndex}
+              className={className}
+              formValues={formValues}
+              onFormValueChange={handleFormValueChange}
+              fieldsetGroup={fieldsetGroup}
+              fieldsetPages={fieldsetPages[fieldsetGroupIndex]}
+              onFieldsetPageChange={(fieldsetIndex, newPage) =>
+                handleFieldsetPageChange(
+                  fieldsetGroupIndex,
+                  fieldsetIndex,
+                  newPage
+                )
+              }
+              formPages={formPages[fieldsetGroupIndex]}
+              onFormPageChange={(
+                fieldsetIndex,
+                formGroupIndex,
+                formIndex,
+                newPage
+              ) =>
+                handleFormPageChange(
+                  fieldsetGroupIndex,
+                  fieldsetIndex,
+                  formGroupIndex,
+                  formIndex,
+                  newPage
+                )
+              }
+              formCompletionStatus={formCompletionStatus[fieldsetGroupIndex]}
+              updateFormCompletionStatus={(
+                fieldsetIndex,
+                formGroupIndex,
+                formIndex,
+                isCompleted
+              ) =>
+                updateFormCompletionStatus(
+                  fieldsetGroupIndex,
+                  fieldsetIndex,
+                  formGroupIndex,
+                  formIndex,
+                  isCompleted
+                )
+              }
+            />;
+          })
+        )}
+      </Suspense>
       <div className={`${className} controls-group modal-controls controls`}>
         {paginate && (
           <div
@@ -264,7 +264,7 @@ export default function Modal({
               onClick={handlePrev}
               buttonText="Modal"
               disabled={modalPage === 0}
-              icon={React.createElement(icons.back)}
+              icon="back"
             />
             <p
               className={`${className} modal-controls controls page-indicator`}
@@ -280,7 +280,7 @@ export default function Modal({
                 modalPage === fieldsetGroups.length - 1 ||
                 (validatePaginate && !isValid)
               }
-              icon={React.createElement(icons.forward)}
+              icon="forward"
               iconPosition="end"
               tooltip={validatePaginate && !isValid}
               tooltipText="Submit forms before continuing"

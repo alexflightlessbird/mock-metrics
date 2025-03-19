@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import FormGroup from "./FormGroup";
-import icons from "../../utils/icons";
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import Skeleton from "antd/es/skeleton";
+
+const FormGroup = lazy(() => import("./FormGroup"));
+
 import IconButton from "../common/buttons/IconButton";
 
 export default function Fieldset({
@@ -37,7 +39,6 @@ export default function Fieldset({
       if (validatePaginate) {
         const currentFormGroup = formGroups[fieldsetPage];
         const isValid = currentFormGroup.every((form, formIndex) => {
-          console.log(formCompletionStatus[fieldsetPage][formIndex]);
           return formCompletionStatus[fieldsetPage][formIndex];
         });
         setIsValid(isValid);
@@ -57,44 +58,46 @@ export default function Fieldset({
     <fieldset className={`${className} fieldset`}>
       <legend>{title}</legend>
       <div className={`${className} form-groups`}>
-        {paginate ? (
-          <FormGroup
-            className={className}
-            formGroup={formGroups[fieldsetPage]}
-            formValues={formValues}
-            onFormValueChange={onFormValueChange}
-            formPages={formPages[fieldsetPage]}
-            onFormPageChange={(formIndex, newPage) =>
-              onFormPageChange(fieldsetPage, formIndex, newPage)
-            }
-            formCompletionStatus={formCompletionStatus[fieldsetPage]}
-            updateFormCompletionStatus={(formIndex, isCompleted) =>
-              updateFormCompletionStatus(fieldsetPage, formIndex, isCompleted)
-            }
-          />
-        ) : (
-          formGroups.map((formGroup, formGroupIndex) => (
+        <Suspense fallback={<Skeleton active />}>
+          {paginate ? (
             <FormGroup
-              key={formGroupIndex}
               className={className}
-              formGroup={formGroup}
+              formGroup={formGroups[fieldsetPage]}
               formValues={formValues}
               onFormValueChange={onFormValueChange}
-              formPages={formPages[formGroupIndex]}
+              formPages={formPages[fieldsetPage]}
               onFormPageChange={(formIndex, newPage) =>
-                onFormPageChange(formGroupIndex, formIndex, newPage)
+                onFormPageChange(fieldsetPage, formIndex, newPage)
               }
-              formCompletionStatus={formCompletionStatus[formGroupIndex]}
+              formCompletionStatus={formCompletionStatus[fieldsetPage]}
               updateFormCompletionStatus={(formIndex, isCompleted) =>
-                updateFormCompletionStatus(
-                  formGroupIndex,
-                  formIndex,
-                  isCompleted
-                )
+                updateFormCompletionStatus(fieldsetPage, formIndex, isCompleted)
               }
             />
-          ))
-        )}
+          ) : (
+            formGroups.map((formGroup, formGroupIndex) => (
+              <FormGroup
+                key={formGroupIndex}
+                className={className}
+                formGroup={formGroup}
+                formValues={formValues}
+                onFormValueChange={onFormValueChange}
+                formPages={formPages[formGroupIndex]}
+                onFormPageChange={(formIndex, newPage) =>
+                  onFormPageChange(formGroupIndex, formIndex, newPage)
+                }
+                formCompletionStatus={formCompletionStatus[formGroupIndex]}
+                updateFormCompletionStatus={(formIndex, isCompleted) =>
+                  updateFormCompletionStatus(
+                    formGroupIndex,
+                    formIndex,
+                    isCompleted
+                  )
+                }
+              />
+            ))
+          )}
+        </Suspense>
       </div>
       <div className={`${className} controls-group`}>
         {paginate && (
@@ -105,7 +108,7 @@ export default function Fieldset({
               onClick={handlePrev}
               buttonText="Fieldset"
               disabled={fieldsetPage === 0}
-              icon={React.createElement(icons.back)}
+              icon="back"
             />
             <p
               className={`${className} fieldset-controls controls page-indicator`}
@@ -121,7 +124,7 @@ export default function Fieldset({
                 fieldsetPage === formGroups.length - 1 ||
                 (validatePaginate && !isValid)
               }
-              icon={React.createElement(icons.forward)}
+              icon="forward"
               iconPosition="end"
               tooltip={validatePaginate && !isValid}
               tooltipText="Submit forms before continuing"
