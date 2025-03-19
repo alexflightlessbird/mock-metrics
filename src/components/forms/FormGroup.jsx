@@ -4,15 +4,31 @@ const Form = lazy(() => import("./Form"));
 
 export default function FormGroup({
   className,
-  formGroup = [],
-  formValues,
-  onFormValueChange,
-  formPages,
-  onFormPageChange,
+  formGroup,
   formCompletionStatus,
-  updateFormCompletionStatus,
+  updateFormCompletionStatus
 }) {
   return (
+    <div className={`${className} form-group`}>
+      {formGroup.map((form, formIndex) => (
+        <Suspense fallback={<Skeleton active />}>
+          <Form 
+            key={formIndex}
+            className={className}
+            formCompletionStatus={formCompletionStatus[formIndex]}
+            updateFormCompletionStatus={(isCompleted) => updateFormCompletionStatus(formIndex, isCompleted)}
+            {...form}
+          />
+          <br />
+        </Suspense>
+      ))}
+    </div>
+  )
+}
+
+
+
+/*
     <div className={`${className} form-group`}>
       <Suspense fallback={<Skeleton active />}>
         {formGroup.map((form, formIndex) => (
@@ -38,3 +54,4 @@ export default function FormGroup({
     </div>
   );
 }
+*/
