@@ -10,6 +10,19 @@ import AntForm from "antd/es/form";
 import notification from "antd/es/notification";
 import message from "antd/es/message";
 
+function getInitialFormValues (inputGroups) {
+  const initialValues = {};
+  inputGroups.forEach((inputGroup) => {
+    inputGroup.forEach((input) => {
+      if (input.type === "checkbox") initialValues[input.name] = input.default || false;
+      else if (input.type === "radio") initialValues[input.name] = input.default || "";
+      else if (input.type === "select" && input.multi) initialValues[input.name] = input.default || [];
+      else initialValues[input.name] = input.default || "";
+    })
+  })
+  return initialValues;
+}
+
 export default function Form({
   title = "Title",
   description = "",
@@ -27,6 +40,7 @@ export default function Form({
   waitTime = 0,
   disableAfterCompletion = true,
 }) {
+  const initialValues = getInitialFormValues(inputGroups);
   const [isValid, setIsValid] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
   const [form] = AntForm.useForm();
@@ -70,7 +84,7 @@ export default function Form({
       .validateFields()
       .then(() => {
         console.log(values);
-        onSubmit(formValues);
+        //onSubmit(formValues);
         updateFormCompletionStatus(true);
         showConfirmationMessage(title);
         handleReset();
@@ -124,17 +138,6 @@ export default function Form({
   };
 
   const handleReset = () => {
-    const initialValues = inputGroups.flat().reduce((acc, input) => {
-      acc[input.name] =
-        input.type === "select" && input.multi
-          ? input.default || []
-          : input.default || "";
-      return acc;
-    }, {});
-
-    Object.keys(initialValues).forEach((key) => {
-      onFormValueChange(key, initialValues[key]);
-    });
     form.resetFields();
     form.setFieldsValue(initialValues);
   };
@@ -212,6 +215,7 @@ export default function Form({
                   inputs={inputGroup}
                   formValues={formValues}
                   onFormValueChange={handleInputChange}
+                  form={form}
                 />
               ))
             )}
