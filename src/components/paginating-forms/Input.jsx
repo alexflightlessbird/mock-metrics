@@ -113,20 +113,3 @@ export default function Input({
     </div>
   );
 }
-
-/*
-
-  return (
-    <div className={`${className} input`}>
-      <FormItem
-        name={name}
-        label={label}
-        validateTrigger="onBlur"
-        rules={[{ required: required, message: "Required" }]}
-      >
-        {renderInput()}
-      </FormItem>
-    </div>
-  );
-}
-*/
