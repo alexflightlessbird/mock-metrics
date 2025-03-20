@@ -7,7 +7,16 @@
     {
       "path": "/test",
       "component": "Test"
+    },
+    {
+      "path": "/login",
+      "component": "Login"
     }
   ],
-  "protected_routes": []
+  "protected_routes": [
+    {
+      "path": "/settings",
+      "component": "UserSettings"
+    }
+  ]
 }
