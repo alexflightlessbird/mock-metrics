@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -7,14 +7,15 @@ import {
 import ProtectedRouteWrapper from "./ProtectedRouteWrapper";
 import routesConfig from "./routes.json";
 import RootLayout from "../layouts/RootLayout";
-import Spin from "antd/es/spin";
 
 //pages
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 const componentMap = {
   Home: lazy(() => import("../pages/Home")),
-  Test: lazy(() => import("../pages/Test"))
+  Test: lazy(() => import("../pages/Test")),
+  UserSettings: lazy(() => import("../pages/UserSettings")),
+  Login: lazy(() => import("../pages/Login"))
 }
 
 function createRouteElements(routes) {
@@ -28,11 +29,7 @@ function createRouteElements(routes) {
       <Route
         key={route.path}
         path={route.path}
-        element={
-          <Suspense fallback={<Spin fullscreen tip="loading page" />}>
-            <Component />
-          </Suspense>
-        }
+        element={<Component />}
       />
     );
   });

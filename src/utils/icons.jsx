@@ -1,11 +1,9 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 
 const lazyIcon = (importFunction) => {
   const IconComponent = lazy(importFunction);
   return (props) => (
-    <Suspense fallback={null}>
       <IconComponent {...props} />
-    </Suspense>
   );
 };
 

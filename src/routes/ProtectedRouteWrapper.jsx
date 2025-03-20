@@ -1,7 +1,6 @@
 import ProtectedRoute from "./ProtectedRoute";
+import { Outlet } from "react-router-dom";
 
-function ProtectedRouteWrapper({ children }) {
-  return <ProtectedRoute redirectPath="/login">{children}</ProtectedRoute>;
+export default function ProtectedRouteWrapper() {
+  return <ProtectedRoute redirectPath="/login"><Outlet /></ProtectedRoute>;
 }
-
-export default ProtectedRouteWrapper;

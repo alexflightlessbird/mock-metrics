@@ -52,7 +52,7 @@ export default function Form({
         if (currentStep < inputGroups.length - 1)
           setCurrentStep((prev) => prev + 1);
       })
-      .catch(() => showErrorMessage());
+      .catch(() => showErrorMessage("continuing"));
   };
 
   const handlePrev = () => {
@@ -126,10 +126,10 @@ export default function Form({
     });
   };
 
-  const showErrorMessage = () => {
+  const showErrorMessage = (action = "submitting") => {
     messageApi.open({
       type: "error",
-      content: "Please satisfy all form requirements before submitting.",
+      content: `Please satisfy all form requirements before ${action}.`,
     });
   };
 

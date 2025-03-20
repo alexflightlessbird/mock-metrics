@@ -94,7 +94,7 @@ export default function Modal({
           ))}
         </Steps>
       )}
-      <Suspense fallback={<Spin />}>
+      <Suspense fallback={<Spin delay={500}/>}>
         <FieldsetGroup
           className={className}
           fieldsetGroup={fieldsetGroups[currentStep]}

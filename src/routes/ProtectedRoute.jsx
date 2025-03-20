@@ -1,17 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { useSession } from "../hooks/auth/useSession";
-//loading spinner
+import Spin from "antd/es/spin";
 
-function ProtectedRoute({ children, redirectPath = "/" }) {
+export default function ProtectedRoute({ children, redirectPath = "/" }) {
   const { session, loading } = useSession();
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Spin delay={500} />;
   }
   if (!session) {
     return <Navigate to={redirectPath} replace />;
   }
   return children;
 }
-
-export default ProtectedRoute;
