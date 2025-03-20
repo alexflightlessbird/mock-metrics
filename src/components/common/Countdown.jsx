@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function Countdown({ initialSeconds, onComplete, children }) {
+export default function Countdown({ initialSeconds, onComplete, children }) {
   const [secondsRemaining, setSecondsRemaining] = useState(initialSeconds);
 
   useEffect(() => {
@@ -18,5 +18,3 @@ function Countdown({ initialSeconds, onComplete, children }) {
 
   return children(secondsRemaining);
 }
-
-export default Countdown;

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Countdown from "../components/common/Countdown";
 import { setDocumentTitle } from "../utils/helpers";
 
-function NotFound() {
+export default function NotFound() {
   const navigate = useNavigate();
 
   const handleCountdownComplete = () => {
@@ -29,5 +29,3 @@ function NotFound() {
     </div>
   );
 }
-
-export default NotFound;

@@ -215,7 +215,7 @@ const example = {
   ],
 };
 
-function Test() {
+export default function Test() {
   const [isOpen, setisOpen] = useState(false);
   const [isModalLoaded, setIsModalLoaded] = useState(false);
 
@@ -241,12 +241,10 @@ function Test() {
         />
       </Suspense>
       {isModalLoaded && isOpen && (
-        <Suspense fallback={<Spin fullscreen tip="loading modal" />}>
+        <Suspense fallback={<Spin fullscreen delay={500} tip="loading modal" />}>
           <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
         </Suspense>
       )}
     </div>
   );
 }
-
-export default Test;
