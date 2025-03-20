@@ -3,7 +3,7 @@ import Spin from "antd/es/spin";
 import Button from "antd/es/button";
 import { setDocumentTitle } from "../utils/helpers";
 
-const Modal = lazy(() => import("../components/forms/Modal"));
+const Modal = lazy(() => import("../components/paginating-forms/Modal"));
 const IconButton = lazy(() =>
   import("../components/common/buttons/IconButton")
 );
