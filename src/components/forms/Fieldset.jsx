@@ -6,11 +6,11 @@ import IconButton from "../common/buttons/IconButton";
 const FormGroup = lazy(() => import("./FormGroup"));
 
 export default function Fieldset({
-  title = "Fieldset",
+  title = "",
   formGroups = [],
   className,
   formCompletionStatus,
-  updateFormCompletionStatus
+  updateFormCompletionStatus,
 }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isValid, setIsValid] = useState(false);
@@ -19,59 +19,80 @@ export default function Fieldset({
     const currentFormGroup = formGroups[currentStep];
     const isValid = currentFormGroup.every((form, formIndex) => {
       return formCompletionStatus[currentStep][formIndex];
-    })
+    });
     setIsValid(isValid);
-  }, [formCompletionStatus, currentStep, formGroups]);  
+  }, [formCompletionStatus, currentStep, formGroups]);
 
   const handleNext = () => {
     if (currentStep < formGroups.length - 1) setCurrentStep((prev) => prev + 1);
-  }
+  };
 
   const handlePrev = () => {
     if (currentStep > 0) setCurrentStep((prev) => prev - 1);
-  }
+  };
 
   return (
     <fieldset className={`${className} fieldset`}>
-      <legend>{title}</legend>
-      <Steps current={currentStep}>
-        {formGroups.map((formGroup, formGroupIndex) => (
-          <Step key={formGroupIndex} title={`Step ${formGroupIndex + 1}`} />        ))}
-      </Steps>
+      <div className="fieldset-steps-title">
+        <legend>{title}</legend>
+        {formGroups.length > 1 && (
+          <Steps
+            progressDot
+            size="small"
+            current={currentStep}
+            className={`${className} fieldset-steps steps`}
+            responsive={false}
+          >
+            {formGroups.map((formGroup, formGroupIndex) => (
+              <Step key={formGroupIndex} title={`Step ${formGroupIndex + 1}`} />
+            ))}
+          </Steps>
+        )}
+      </div>
       <Suspense fallback={<Skeleton active />}>
-          <FormGroup
-            className={className}
-            formGroup={formGroups[currentStep]}
-            formCompletionStatus={formCompletionStatus[currentStep]}
-            updateFormCompletionStatus={(formIndex, isCompleted) => updateFormCompletionStatus(currentStep, formIndex, isCompleted)}
-          />
+        <FormGroup
+          className={className}
+          formGroup={formGroups[currentStep]}
+          formCompletionStatus={formCompletionStatus[currentStep]}
+          updateFormCompletionStatus={(formIndex, isCompleted) =>
+            updateFormCompletionStatus(currentStep, formIndex, isCompleted)
+          }
+        />
       </Suspense>
       <div className={`${className} controls-group fieldset-controls controls`}>
-        <div className={`${className} fieldset-pagination-controls pagination-controls fieldset-controls controls`}>
-          <IconButton 
-            onClick={handlePrev}
-            buttonText="Fieldset"
-            disabled={currentStep === 0}
-            icon="back"
-          />
-          <p className={`${className} fieldset-controls controls page-indicator`}><span>Page {currentStep + 1} of {formGroups.length}</span></p>
-          <IconButton
-            onClick={handleNext}
-            buttonText="Fieldset"
-            disabled={currentStep === formGroups.length - 1 || !isValid}
-            icon="forward"
-            iconPosition="end"
-            tooltip={!isValid}
-            tooltipText="Submit forms before continuing"
-            tooltipPlacement="top"
-          />
-        </div>
+        {formGroups.length > 1 && (
+          <div
+            className={`${className} fieldset-pagination-controls pagination-controls fieldset-controls controls`}
+          >
+            <IconButton
+              onClick={handlePrev}
+              buttonText="Fieldset"
+              disabled={currentStep === 0}
+              icon="back"
+            />
+            <p
+              className={`${className} fieldset-controls controls page-indicator`}
+            >
+              <span>
+                Page {currentStep + 1} of {formGroups.length}
+              </span>
+            </p>
+            <IconButton
+              onClick={handleNext}
+              buttonText="Fieldset"
+              disabled={currentStep === formGroups.length - 1 || !isValid}
+              icon="forward"
+              iconPosition="end"
+              tooltip={!isValid}
+              tooltipText="Submit forms before continuing"
+              tooltipPlacement="top"
+            />
+          </div>
+        )}
       </div>
     </fieldset>
-  )
+  );
 }
-
-
 
 /*
   return (

@@ -25,7 +25,8 @@ export default function IconButton({
   loading = false,
   variant = "solid",
 }) {
-  const iconElement = icon && icons[icon] ? React.createElement(icons[icon]) : null;
+  const iconElement =
+    icon && icons[icon] ? React.createElement(icons[icon]) : null;
 
   const buttonProps = {
     icon: iconElement,
@@ -44,7 +45,7 @@ export default function IconButton({
     htmlType,
     loading,
     variant,
-  }
+  };
 
   return (
     <>

@@ -6,22 +6,36 @@ export default function FieldsetGroup({
   className,
   fieldsetGroup,
   formCompletionStatus,
-  updateFormCompletionStatus
+  updateFormCompletionStatus,
 }) {
   return (
     <div className={`${className} fieldset-group`}>
       {fieldsetGroup.map((fieldset, fieldsetIndex) => (
-        <Suspense fallback={<Skeleton active />}>
-          <Fieldset 
-            key={fieldsetIndex}
+        <Suspense
+          key={fieldset.title || fieldsetIndex}
+          fallback={<Skeleton active />}
+        >
+          <Fieldset
+            key={fieldset.title || fieldsetIndex}
             className={className}
             formCompletionStatus={formCompletionStatus[fieldsetIndex]}
-            updateFormCompletionStatus={(formGroupIndex, formIndex, isCompleted) => updateFormCompletionStatus(fieldsetIndex, formGroupIndex, formIndex, isCompleted)}
+            updateFormCompletionStatus={(
+              formGroupIndex,
+              formIndex,
+              isCompleted
+            ) =>
+              updateFormCompletionStatus(
+                fieldsetIndex,
+                formGroupIndex,
+                formIndex,
+                isCompleted
+              )
+            }
             {...fieldset}
           />
           <br />
         </Suspense>
       ))}
     </div>
-  )
+  );
 }

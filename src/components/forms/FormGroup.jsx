@@ -6,27 +6,27 @@ export default function FormGroup({
   className,
   formGroup,
   formCompletionStatus,
-  updateFormCompletionStatus
+  updateFormCompletionStatus,
 }) {
   return (
     <div className={`${className} form-group`}>
       {formGroup.map((form, formIndex) => (
-        <Suspense fallback={<Skeleton active />}>
-          <Form 
-            key={formIndex}
+        <Suspense key={form.title || formIndex} fallback={<Skeleton active />}>
+          <Form
+            key={form.title || formIndex}
             className={className}
             formCompletionStatus={formCompletionStatus[formIndex]}
-            updateFormCompletionStatus={(isCompleted) => updateFormCompletionStatus(formIndex, isCompleted)}
+            updateFormCompletionStatus={(isCompleted) =>
+              updateFormCompletionStatus(formIndex, isCompleted)
+            }
             {...form}
           />
           <br />
         </Suspense>
       ))}
     </div>
-  )
+  );
 }
-
-
 
 /*
     <div className={`${className} form-group`}>

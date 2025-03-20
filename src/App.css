@@ -43,7 +43,12 @@ hr.divider-transparent:before {
   left: 5%;
   width: 90%;
   height: 1px;
-  background-image: linear-gradient(to right, transparent, rgb(48, 49, 51), transparent);
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(48, 49, 51),
+    transparent
+  );
 }
 
 .controls-group {
@@ -125,4 +130,12 @@ button:disabled {
 
 .input label {
   margin-right: 10px;
+}
+
+.fieldset-steps-title,
+.form-steps-title {
+  display: grid;
+  grid-template: 1fr / 2fr 1fr;
+  align-items: center;
+  margin: 10px 0;
 }
