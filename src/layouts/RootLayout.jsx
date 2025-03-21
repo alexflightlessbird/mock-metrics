@@ -1,4 +1,4 @@
-import React, { Suspense, memo, useState } from "react";
+import React, { Suspense, memo, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import NavBar from "../components/navbar/NavBar";
 import Sidebar from "../components/navbar/Sidebar";
@@ -35,11 +35,20 @@ function RootLayout() {
     );
   }
 
+  function ScrollToTopOnMount() {
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+  
+    return null;
+  }
+
   return (
     <Layout style={{ minHeight: "100vh", width: "100%" }}>
+      <ScrollToTopOnMount />
       <Header
         className="header"
-        style={{ width: "100%", position: "sticky", top: 0, zIndex: 1 }}
+        style={{ width: "100%", position: "fixed", top: 0, zIndex: 1, height: "95px", backgroundColor: "#0a1f3c" }}
       >
         <span onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <div className="logo">
@@ -56,15 +65,15 @@ function RootLayout() {
         </span>
         <div className="header-side"></div>
       </Header>
-      <Sidebar session={session} style={{ height: "100vh" }} />
-      <Flex style={{ minHeight: "200vh" }}>
-        <Layout>
-          <Content className="container">
+      <Layout style={{ marginTop: "95px" }}>
+        <Sidebar session={session} style={{ position: "sticky", top: "95px", left: 0, zIndex: 1, bottom: 0, height: "calc(100vh - 95px - 48px)", padding: 0 }} />
+        <Layout style={{ display: "flex", flexDirection: "column" }}>
+          <Content className="container" style={{ padding: "16px", minHeight: "calc(100vh - 95px)", flex: 1 }}>
             <Outlet />
           </Content>
+          <Footer style={{ display: "flex", flexDirection: "row", backgroundColor: "red", height: "200px", overflow: "hidden", alignItems: "flex-end", justifyContent: "center"}}><h1 style={{height: "95%"}}>Footer</h1></Footer>
         </Layout>
-      </Flex>
-      <Footer>{/* footer here */}</Footer>
+      </Layout>
     </Layout>
   );
 }

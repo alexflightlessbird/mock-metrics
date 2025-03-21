@@ -11,7 +11,7 @@ function getItem(label, key, icon, children) {
   return { key, icon, children, label };
 }
 
-export default function Sidebar({ session }) {
+export default function Sidebar({ session, style }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(true);
@@ -112,22 +112,24 @@ export default function Sidebar({ session }) {
     breakpoint: null,
   };
 
+  const smallStyle = {
+    ...style,
+    height: "calc(100vh - 95px)",
+  };
+
+  const commonStyle = {
+    ...style,
+    height: "calc(100vh - 95px - 48px)"
+  }
+
   return (
     <Sider
       {...(isSmallScreen ? smallSliderProps : commonSliderProps)}
-      style={{
-        height: "100vh",
-        position: "sticky",
-        insetInlineStart: 0,
-        padding: 0,
-        marginBottom: 0,
-        bottom: 0,
-        backgroundColor: "#0a1f3c",
-      }}
+      style={isSmallScreen ? smallStyle : commonStyle}
     >
       <Flex
         vertical
-        style={{ height: "100%", justifyContent: "space-between" }}
+        style={{ height: "100%", justifyContent: "space-between", margin: 0, overflow: "auto" }}
       >
         <Menu
           selectedKeys={selectedKey}
@@ -135,7 +137,7 @@ export default function Sidebar({ session }) {
           items={mainMenuItems}
           onSelect={({ key }) => navigate(mainItems[key].navigatePath)}
         />
-        <Flex justify="flex-end" style={{ marginTop: "auto" }}>
+        <Flex justify="flex-end" style={{ marginTop: "auto", marginBottom: "0" }}>
           <Menu
             selectedKeys={selectedKey}
             mode="inline"
@@ -143,6 +145,7 @@ export default function Sidebar({ session }) {
             onSelect={({ key }) =>
               navigate(sessionItem[key - mainItems.length].navigatePath)
             }
+            style={{ marginTop: "50px", }}
           />
         </Flex>
       </Flex>
