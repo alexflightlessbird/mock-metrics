@@ -232,6 +232,7 @@ export default function Test() {
 
   return (
     <div>
+      <h1>Testing Page</h1>
       <Suspense fallback={<Button className="open-modal" loading disabled />}>
         <IconButton
           buttonText="Open Modal"
@@ -241,7 +242,9 @@ export default function Test() {
         />
       </Suspense>
       {isModalLoaded && isOpen && (
-        <Suspense fallback={<Spin fullscreen delay={500} tip="loading modal" />}>
+        <Suspense
+          fallback={<Spin fullscreen delay={500} tip="loading modal" />}
+        >
           <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
         </Suspense>
       )}

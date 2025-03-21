@@ -15,8 +15,9 @@ const componentMap = {
   Home: lazy(() => import("../pages/Home")),
   Test: lazy(() => import("../pages/Test")),
   UserSettings: lazy(() => import("../pages/UserSettings")),
-  Login: lazy(() => import("../pages/Login"))
-}
+  Login: lazy(() => import("../pages/Login")),
+  Logout: lazy(() => import("../pages/Logout")),
+};
 
 function createRouteElements(routes) {
   return routes.map((route) => {
@@ -25,13 +26,7 @@ function createRouteElements(routes) {
       throw new Error(`Component not found for route: ${route.component}`);
     }
 
-    return (
-      <Route
-        key={route.path}
-        path={route.path}
-        element={<Component />}
-      />
-    );
+    return <Route key={route.path} path={route.path} element={<Component />} />;
   });
 }
 

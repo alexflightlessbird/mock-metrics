@@ -27,9 +27,7 @@ const themeConfig = {
       dotSize: 5,
       fontSize: 12,
     },
-    Button: {
-      
-    }
+    Button: {},
   },
 };
 
@@ -43,11 +41,11 @@ createRoot(document.getElementById("root")).render(
           delay={5000} // 5 seconds
         />
       }
-      >
+    >
       <ConfigProvider theme={themeConfig}>
-          <SessionProvider>
-              <App />
-          </SessionProvider>
+        <SessionProvider>
+          <App />
+        </SessionProvider>
       </ConfigProvider>
     </Suspense>
   </StrictMode>

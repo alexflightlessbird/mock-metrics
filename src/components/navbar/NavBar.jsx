@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../../services/supabaseClient";
 import Spin from "antd/es/spin";
 import logo from "../../assets/logo.png";
+import icons from "../../utils/icons";
 
 const UserDropdown = lazy(() => import("./UserDropdown"));
 const LoginRegisterButton = lazy(() => import("./LoginRegisterButton"));
 
-function NavBar() {
+function NavBar({ onToggleSidebar }) {
   const navigate = useNavigate();
   const { session, loading } = useSession();
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -19,6 +20,17 @@ function NavBar() {
 
   return (
     <div className="navbar">
+      <button
+        onCLick={onToggleSidebar}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          color: "white",
+        }}
+      >
+        {onToggleSidebar ? icons.menu : icons.close}
+      </button>
       <span onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
         <div className="logo">
           <img
