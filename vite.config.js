@@ -10,8 +10,5 @@ export default defineConfig({
     rollupOptions: {
       treeshake: true,
     },
-    optimizeDeps: {
-      include: ["antd"],
-    },
   },
 });
