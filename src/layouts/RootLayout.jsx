@@ -1,5 +1,5 @@
 import React, { Suspense, memo, useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from "../components/navbar/NavBar";
 import Sidebar from "../components/navbar/Sidebar";
 import Watermark from "antd/es/watermark";
@@ -8,10 +8,9 @@ import Skeleton from "antd/es/skeleton";
 import DelayedFallback from "../components/common/DelayedFallback";
 import Layout from "antd/es/layout";
 import Image from "antd/es/image";
+import Flex from "antd/es/flex";
 import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
 import { useSession } from "../hooks/auth/useSession";
-import { Flex } from "antd";
 
 const { Content, Header, Footer } = Layout;
 
@@ -19,6 +18,16 @@ function RootLayout() {
   const navigate = useNavigate();
   const [imageLoaded, setImageLoaded] = useState(false);
   const { session, loading } = useSession();
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 600);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (loading) {
     return (
@@ -43,6 +52,8 @@ function RootLayout() {
     return null;
   }
 
+  const contentPadding = isSmallScreen ? "50px" : "16px";
+
   return (
     <Layout style={{ minHeight: "100vh", width: "100%" }}>
       <ScrollToTopOnMount />
@@ -66,12 +77,14 @@ function RootLayout() {
         <div className="header-side"></div>
       </Header>
       <Layout style={{ marginTop: "95px" }}>
-        <Sidebar session={session} style={{ position: "sticky", top: "95px", left: 0, zIndex: 1, bottom: 0, height: "calc(100vh - 95px - 48px)", padding: 0 }} />
+        <Sidebar session={session} isSmallScreen={isSmallScreen} style={{ position: "sticky", top: "95px", left: 0, zIndex: 1, bottom: 0, padding: 0 }} />
         <Layout style={{ display: "flex", flexDirection: "column" }}>
-          <Content className="container" style={{ padding: "16px", minHeight: "calc(100vh - 95px)", flex: 1 }}>
-            <Outlet />
-          </Content>
-          <Footer style={{ display: "flex", flexDirection: "row", backgroundColor: "red", height: "200px", overflow: "hidden", alignItems: "flex-end", justifyContent: "center"}}><h1 style={{height: "95%"}}>Footer</h1></Footer>
+          <Watermark content={["MockMetrics", "Test Mode"]} inherit={false} height="40" width="110">
+            <Content className="container" style={{ paddingTop: "16px", paddingLeft: contentPadding, minHeight: "calc(100vh - 95px)", flex: 1 }}>
+              <Outlet />
+            </Content>
+            <Footer style={{ display: "flex", flexDirection: "row", backgroundColor: "red", height: "200px", overflow: "hidden", alignItems: "center", justifyContent: "center"}}><h1>Footer</h1></Footer>
+          </Watermark>
         </Layout>
       </Layout>
     </Layout>

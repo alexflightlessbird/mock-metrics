@@ -18,7 +18,7 @@ export default function Logout() {
       console.error("Logout failed:", error);
     } finally {
       setLoggingOut(false);
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     }
   };
 

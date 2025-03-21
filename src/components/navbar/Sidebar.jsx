@@ -11,12 +11,11 @@ function getItem(label, key, icon, children) {
   return { key, icon, children, label };
 }
 
-export default function Sidebar({ session, style }) {
+export default function Sidebar({ session, style, isSmallScreen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(true);
   const [selectedKey, setSelectedKey] = useState([""]);
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
 
   const mainItems = session
     ? //logged in
@@ -62,7 +61,7 @@ export default function Sidebar({ session, style }) {
       ]
     : [
         {
-          label: "Login",
+          label: "Login/Register",
           icon: React.createElement(icons.login),
           navigatePath: "/login",
           className: "login-item",
@@ -86,15 +85,6 @@ export default function Sidebar({ session, style }) {
       setSelectedKey([itemIndex.toString()]);
     }
   }, [location.pathname, session]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 600);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const smallSliderProps = {
     breakpoint: "600px",
@@ -126,28 +116,26 @@ export default function Sidebar({ session, style }) {
     <Sider
       {...(isSmallScreen ? smallSliderProps : commonSliderProps)}
       style={isSmallScreen ? smallStyle : commonStyle}
-    >
+      >
       <Flex
         vertical
-        style={{ height: "100%", justifyContent: "space-between", margin: 0, overflow: "auto" }}
-      >
-        <Menu
-          selectedKeys={selectedKey}
-          mode="inline"
-          items={mainMenuItems}
-          onSelect={({ key }) => navigate(mainItems[key].navigatePath)}
-        />
-        <Flex justify="flex-end" style={{ marginTop: "auto", marginBottom: "0" }}>
+        style={{ height: "100%", justifyContent: "flex-start", margin: 0, overflow: "auto" }}
+        >
           <Menu
             selectedKeys={selectedKey}
             mode="inline"
             items={sessionItems}
             onSelect={({ key }) =>
               navigate(sessionItem[key - mainItems.length].navigatePath)
-            }
-            style={{ marginTop: "50px", }}
+          }
+          style={{ marginBottom: "50px", }}
           />
-        </Flex>
+        <Menu
+          selectedKeys={selectedKey}
+          mode="inline"
+          items={mainMenuItems}
+          onSelect={({ key }) => navigate(mainItems[key].navigatePath)}
+          />
       </Flex>
     </Sider>
   );
