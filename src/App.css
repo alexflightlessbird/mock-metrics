@@ -8,8 +8,8 @@
 
 .container {
   flex: 1;
+  min-height: calc(100vh - 95px - clamp(40px, 7vh, 75px));
   padding: var(--padding-default);
-  min-height: calc(100vh - var(--navbar-height) - var(--spacing-medium));
   transition: margin-left 0.2s;
 }
 
@@ -132,10 +132,6 @@
   justify-self: stretch;
   grid-column: 1 / span 2;
   display: flex;
-}
-
-.input label {
-  margin-right: var(--spacing-small);
 }
 
 .fieldset-steps-title,

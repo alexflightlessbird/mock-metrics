@@ -30,6 +30,7 @@ export default function Form({
   inputGroups = [],
   onSubmit,
   className,
+  showMessage = true,
   formCompletionStatus,
   updateFormCompletionStatus,
   waitTime = 0,
@@ -86,7 +87,7 @@ export default function Form({
       }
       onSubmit(finalValues);
       updateFormCompletionStatus(true);
-      showConfirmationMessage(title);
+      showMessage ? showConfirmationMessage(title) : null;
       handleReset();
       if (waitTime > 0) {
         localStorage.setItem(

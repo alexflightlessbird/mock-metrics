@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import Countdown from "../components/common/Countdown";
+import IconButton from "../components/common/buttons/IconButton";
 import { setDocumentTitle } from "../utils/helpers";
 
 export default function NotFound() {
@@ -25,7 +26,11 @@ export default function NotFound() {
           </p>
         )}
       </Countdown>
-      <button onClick={() => navigate("/", { replace: true })}>Go Now</button>
+      <IconButton
+        icon="home"
+        buttonText="Go Now"
+        onClick={() => navigate("/", { replace: true })}
+      />
     </div>
   );
 }

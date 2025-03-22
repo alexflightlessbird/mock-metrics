@@ -9,18 +9,14 @@
       "component": "Test"
     },
     {
-      "path": "/login",
-      "component": "Login"
+      "path": "/auth",
+      "component": "Auth"
     }
   ],
   "protected_routes": [
     {
       "path": "/settings",
       "component": "UserSettings"
-    },
-    {
-      "path": "/logout",
-      "component": "Logout"
     }
   ]
 }

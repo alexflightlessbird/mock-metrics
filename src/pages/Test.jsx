@@ -9,7 +9,7 @@ const IconButton = lazy(() =>
 );
 
 const example1 = {
-  clssName: "testing",
+  className: "testing",
   fieldsetGroups: [
     [
       {

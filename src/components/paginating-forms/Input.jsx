@@ -18,6 +18,7 @@ export default function Input({
   searchable = true,
   disabled = false,
   required = true,
+  rules = [],
   ...otherProps
 }) {
   const renderInput = () => {
@@ -103,7 +104,7 @@ export default function Input({
           name={name}
           label={label}
           validateTrigger="onBlur"
-          rules={[{ required: required, message: "Required" }]}
+          rules={[...rules, { required: required, message: "Required" }]}
         >
           {renderInput()}
         </FormItem>

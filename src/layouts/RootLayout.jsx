@@ -19,7 +19,7 @@ function RootLayout() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const { session, loading } = useSession();
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 600);
-  
+
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 600);
@@ -48,7 +48,7 @@ function RootLayout() {
     useEffect(() => {
       window.scrollTo(0, 0);
     }, []);
-  
+
     return null;
   }
 
@@ -59,7 +59,14 @@ function RootLayout() {
       <ScrollToTopOnMount />
       <Header
         className="header"
-        style={{ width: "100%", position: "fixed", top: 0, zIndex: 1, height: "95px", backgroundColor: "#0a1f3c" }}
+        style={{
+          width: "100%",
+          position: "fixed",
+          top: 0,
+          zIndex: 10,
+          height: "95px",
+          backgroundColor: "#0a1f3c",
+        }}
       >
         <span onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <div className="logo">
@@ -77,13 +84,54 @@ function RootLayout() {
         <div className="header-side"></div>
       </Header>
       <Layout style={{ marginTop: "95px" }}>
-        <Sidebar session={session} isSmallScreen={isSmallScreen} style={{ position: "sticky", top: "95px", left: 0, zIndex: 1, bottom: 0, padding: 0 }} />
-        <Layout style={{ display: "flex", flexDirection: "column" }}>
-          <Watermark content={["MockMetrics", "Test Mode"]} inherit={false} height="40" width="110">
-            <Content className="container" style={{ paddingTop: "16px", paddingLeft: contentPadding, minHeight: "calc(100vh - 95px)", flex: 1 }}>
+        <Sidebar
+          session={session}
+          isSmallScreen={isSmallScreen}
+          style={{
+            position: "sticky",
+            top: "95px",
+            left: 0,
+            bottom: 0,
+            padding: 0,
+            zIndex: 1,
+          }}
+        />
+        <Layout
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Watermark
+            content={["MockMetrics", "Test Mode"]}
+            inherit={false}
+            height="40"
+            width="110"
+            zIndex={0}
+          >
+            <Content
+              className="container"
+              style={{
+                paddingTop: "16px",
+                paddingLeft: contentPadding,
+                flex: 1,
+              }}
+            >
               <Outlet />
             </Content>
-            <Footer style={{ display: "flex", flexDirection: "row", backgroundColor: "red", height: "200px", overflow: "hidden", alignItems: "center", justifyContent: "center"}}><h1>Footer</h1></Footer>
+            <Footer
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                backgroundColor: "red",
+                height: "clamp(40px, 7vh, 75px)",
+                overflow: "hidden",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <h1>Footer</h1>
+            </Footer>
           </Watermark>
         </Layout>
       </Layout>
