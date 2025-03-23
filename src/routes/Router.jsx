@@ -16,6 +16,7 @@ const componentMap = {
   Test: lazy(() => import("../pages/Test")),
   UserSettings: lazy(() => import("../pages/UserSettings")),
   Auth: lazy(() => import("../pages/Auth")),
+  Cases: lazy(() => import("../pages/Cases")),
 };
 
 function createRouteElements(routes) {

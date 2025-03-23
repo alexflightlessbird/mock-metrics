@@ -123,11 +123,13 @@ function RootLayout() {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                backgroundColor: "red",
-                height: "clamp(40px, 7vh, 75px)",
+                backgroundColor: "#0a1f3c",
+                color: "white",
+                height: "clamp(50px, 7vh, 75px)",
                 overflow: "hidden",
                 alignItems: "center",
                 justifyContent: "center",
+                zIndex: 1,
               }}
             >
               <h1>Footer</h1>

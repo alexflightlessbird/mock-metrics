@@ -92,7 +92,7 @@ export default function Login() {
             setIsOpen(true);
             return showErrorMessage({ error: "invalid" });
           }
-          return console.log(error);
+          return showErrorMessage({ error: "other" });
         }
         setLoggingIn(false);
         showConfirmationMessage();
@@ -137,7 +137,7 @@ export default function Login() {
     }
 
     const formQuestions = {
-      title: "",
+      title: "Login",
       className: "login-form",
       fieldsetGroups: [
         [
@@ -146,11 +146,12 @@ export default function Login() {
             formGroups: [
               [
                 {
-                  title: "Login",
+                  title: "",
                   waitTime: 15,
                   disableAfterCompletion: false,
                   onSubmit: (values) => handleLogin(values),
                   showMessage: false,
+                  showSubmit: false,
                   inputGroups: [
                     [
                       {

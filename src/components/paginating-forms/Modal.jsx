@@ -12,6 +12,7 @@ export default function Modal({
   onClose,
   className,
   isOpen = false,
+  paginationButtonText = "Set of Fields",
 }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isValid, setIsValid] = useState(0);
@@ -94,7 +95,7 @@ export default function Modal({
           ))}
         </Steps>
       )}
-      <Suspense fallback={<Spin delay={500}/>}>
+      <Suspense fallback={<Spin delay={500} />}>
         <FieldsetGroup
           className={className}
           fieldsetGroup={fieldsetGroups[currentStep]}
@@ -122,7 +123,7 @@ export default function Modal({
           >
             <IconButton
               onClick={handlePrev}
-              buttonText="Modal"
+              buttonText={paginationButtonText}
               disabled={currentStep === 0}
               icon="back"
             />
@@ -135,7 +136,7 @@ export default function Modal({
             </p>
             <IconButton
               onClick={handleNext}
-              buttonText="Modal"
+              buttonText={paginationButtonText}
               disabled={currentStep === fieldsetGroups.length - 1 || !isValid}
               icon="forward"
               iconPosition="end"

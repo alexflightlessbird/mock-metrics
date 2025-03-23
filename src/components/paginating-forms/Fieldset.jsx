@@ -11,6 +11,7 @@ export default function Fieldset({
   className,
   formCompletionStatus,
   updateFormCompletionStatus,
+  paginationButtonText = "Set of Forms",
 }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isValid, setIsValid] = useState(false);
@@ -34,7 +35,7 @@ export default function Fieldset({
   return (
     <fieldset className={`${className} fieldset`}>
       <div className="fieldset-steps-title">
-        <legend>{title}</legend>
+        {title !== "" && <legend>{title}</legend>}
         {formGroups.length > 1 && (
           <Steps
             progressDot
@@ -66,7 +67,7 @@ export default function Fieldset({
           >
             <IconButton
               onClick={handlePrev}
-              buttonText="Fieldset"
+              buttonText={paginationButtonText}
               disabled={currentStep === 0}
               icon="back"
             />
@@ -79,7 +80,7 @@ export default function Fieldset({
             </p>
             <IconButton
               onClick={handleNext}
-              buttonText="Fieldset"
+              buttonText={paginationButtonText}
               disabled={currentStep === formGroups.length - 1 || !isValid}
               icon="forward"
               iconPosition="end"

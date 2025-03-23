@@ -31,10 +31,12 @@ export default function Form({
   onSubmit,
   className,
   showMessage = true,
+  showSubmit = true,
   formCompletionStatus,
   updateFormCompletionStatus,
   waitTime = 0,
   disableAfterCompletion = true,
+  paginationButtonText = "Page",
 }) {
   const initialValues = getInitialFormValues(inputGroups);
   const [formValues, setFormValues] = useState(initialValues);
@@ -177,7 +179,7 @@ export default function Form({
         initialValues={initialValues}
       >
         <div className="form-steps-title">
-          <h3>{title}</h3>
+          {title !== "" && <h3>{title}</h3>}
           {inputGroups.length > 1 && (
             <Steps
               progressDot
@@ -198,10 +200,12 @@ export default function Form({
         {description && (
           <p className={`${className} form-description`}>{description}</p>
         )}
-        <p>
-          Submission Status:{" "}
-          {formCompletionStatus ? "Submitted" : "Not yet submitted"}
-        </p>
+        {showSubmit && (
+          <p>
+            Submission Status:{" "}
+            {formCompletionStatus ? "Submitted" : "Not yet submitted"}
+          </p>
+        )}
         <Suspense fallback={<Skeleton active />}>
           <InputGroup
             className={className}
@@ -215,7 +219,7 @@ export default function Form({
             >
               <IconButton
                 onClick={handlePrev}
-                buttonText="Form"
+                buttonText={paginationButtonText}
                 disabled={currentStep === 0}
                 icon="back"
               />
@@ -228,7 +232,7 @@ export default function Form({
               </p>
               <IconButton
                 onClick={handleNext}
-                buttonText="Form"
+                buttonText={paginationButtonText}
                 disabled={currentStep === inputGroups.length - 1}
                 icon="forward"
                 iconPosition="end"
@@ -239,7 +243,7 @@ export default function Form({
             className={`${className} form-handle-controls handle-controls controls`}
           >
             <IconButton
-              buttonText="Reset Form"
+              buttonText="Reset"
               onClick={handleReset}
               icon="refresh"
               className="reset-button"
@@ -262,7 +266,7 @@ export default function Form({
                 (disableAfterCompletion && !formCompletionStatus)) && (
                 <IconButton
                   icon="check"
-                  buttonText="Submit Form"
+                  buttonText="Submit"
                   disabled={!submitEnabled}
                   tooltip={!submitEnabled}
                   tooltipPlacement="top"

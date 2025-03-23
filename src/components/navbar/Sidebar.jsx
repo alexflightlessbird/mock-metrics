@@ -129,14 +129,22 @@ export default function Sidebar({ session, style, isSmallScreen }) {
     key: item.key,
     icon: item.icon,
     label: item.label,
-    children: item.children,
+    children: item.children?.map((child) => ({
+      key: child.key,
+      icon: child.icon,
+      label: child.label,
+    })),
   }));
 
   const sessionMenuItems = generatedSessionItems.map((item) => ({
     key: item.key,
     icon: item.icon,
     label: item.label,
-    children: item.children,
+    children: item.children?.map((child) => ({
+      key: child.key,
+      icon: child.icon,
+      label: child.label,
+    })),
   }));
 
   // Update selected key when location changes

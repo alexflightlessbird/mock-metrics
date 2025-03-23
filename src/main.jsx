@@ -31,6 +31,16 @@ const themeConfig = {
   },
 };
 
+setTimeout(() => {
+  const splashScreen = document.getElementById("splash-screen");
+  if (splashScreen) {
+    splashScreen.style.opacity = "0";
+    setTimeout(() => {
+      splashScreen.remove();
+    }, 500);
+  }
+}, 3000);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Suspense

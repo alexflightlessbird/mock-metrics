@@ -4,6 +4,7 @@
   --spacing-small: 10px;
   --spacing-medium: 20px;
   --padding-default: 16px;
+  position: relative;
 }
 
 .container {

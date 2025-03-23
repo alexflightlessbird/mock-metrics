@@ -17,6 +17,10 @@
     {
       "path": "/settings",
       "component": "UserSettings"
+    },
+    {
+      "path": "/cases",
+      "component": "Cases"
     }
   ]
 }

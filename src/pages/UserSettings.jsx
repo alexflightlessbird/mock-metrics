@@ -4,12 +4,12 @@ import { useSession } from "../hooks/auth/useSession";
 import { setDocumentTitle } from "../utils/helpers";
 import Modal from "../components/paginating-forms/Modal";
 
-export default function UserSettings () {
-    const { userId } = useSession();
+export default function UserSettings() {
+  const { userId } = useSession();
 
-    return (
-        <div>
-            <h1>Settings Page</h1>
-        </div>
-    );
+  return (
+    <div style={{ height: "200vh" }}>
+      <h1>Settings Page</h1>
+    </div>
+  );
 }
