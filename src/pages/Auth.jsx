@@ -14,12 +14,18 @@ const IconButton = lazy(() =>
 );
 
 export default function Login() {
-  const { session } = useSession();
+  const { session, loading } = useSession();
   const navigate = useNavigate();
 
-  if (session) {
-    const [loggingOut, setLoggingOut] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isModalLoaded, setIsModalLoaded] = useState(false);
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification();
+  const [messageApi, messageContextHolder] = message.useMessage();
+  const [loggingOut, setLoggingOut] = useState(false);
 
+  if (session) {
     setDocumentTitle({ title: "Logout" });
 
     const handleLogout = async () => {
@@ -70,13 +76,6 @@ export default function Login() {
   }
 
   if (!session) {
-    const [loggingIn, setLoggingIn] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [isModalLoaded, setIsModalLoaded] = useState(false);
-    const [notificationApi, notificationContextHolder] =
-      notification.useNotification();
-    const [messageApi, messageContextHolder] = message.useMessage();
-
     const handleLogin = async ({ email, password }) => {
       setIsOpen(false);
       setLoggingIn(true);

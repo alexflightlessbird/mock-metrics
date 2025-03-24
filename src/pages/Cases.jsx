@@ -1,4 +1,99 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../services/supabaseClient";
+import { Link, useSearchParams } from "react-router-dom";
+import { setDocumentTitle } from "../utils/helpers";
+import { Breadcrumbs, Pill, useMantineTheme } from "@mantine/core";
+
+export default function Cases() {
+  const [cases, setCases] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const theme = useMantineTheme();
+
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    const fetchCases = async () => {
+      const { data, error } = await supabase.from("cases").select("*");
+      if (error) console.error("Error fetching cases:", error);
+      else setCases(data);
+    };
+    fetchCases();
+  }, []);
+
+  const selectedCase = id ? cases.find((c) => c.id === parseInt(id)) : null;
+
+  useEffect(() => {
+    selectedCase
+      ? setDocumentTitle({ title: selectedCase.name })
+      : setDocumentTitle({ title: "Cases" });
+  }, [selectedCase]);
+
+  const breadcrumbItems = (
+    selectedCase
+      ? [
+          {
+            title: (
+              <Link to="/cases">
+                <Pill
+                  style={{
+                    backgroundColor: theme.colors.lightGray[0],
+                    color: theme.colors.darkBlue[0],
+                    border: "1px solid " + theme.colors.darkBlue[0],
+                  }}
+                >
+                  Cases
+                </Pill>
+              </Link>
+            ),
+          },
+          {
+            title: (
+              <Pill
+                style={{
+                  backgroundColor: theme.colors.primaryBlue[0],
+                  color: theme.colors.darkBlue[0],
+                  border: "1px solid " + theme.colors.darkBlue[0],
+                }}
+              >
+                {selectedCase?.name}
+              </Pill>
+            ),
+          },
+        ]
+      : [
+          {
+            title: (
+              <Pill
+                style={{
+                  backgroundColor: theme.colors.primaryBlue[0],
+                  color: theme.colors.lightGray[0],
+                  border: "1px solid " + theme.colors.darkBlue[0],
+                }}
+              >
+                Cases
+              </Pill>
+            ),
+          },
+        ]
+  ).map((item, index) => (
+    <React.Fragment key={index}>{item.title}</React.Fragment>
+  ));
+
+  return (
+    <div>
+      <Breadcrumbs>{breadcrumbItems}</Breadcrumbs>
+      <ul>
+        {cases.map((c, i) => (
+          <li key={i}>
+            <Link to={`/cases?id=${c.id}`}>{c.name}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/*import React, { useEffect, useState, Suspense } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Link, useSearchParams } from "react-router-dom";
 import { setDocumentTitle } from "../utils/helpers";
@@ -9,50 +104,13 @@ import Tag from "antd/es/tag";
 import Table from "antd/es/table";
 import icons from "../utils/icons";
 
-export default function Cases() {
-  const [cases, setCases] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Get the `caseId` from the query parameters
-  const caseId = searchParams.get("caseId");
-
-  // Fetch all cases when the component mounts
-  useEffect(() => {
-    const fetchCases = async () => {
-      const { data, error } = await supabase.from("cases").select("*");
-      if (error) {
-        console.error("Error fetching cases:", error);
-      } else {
-        setCases(data);
-      }
-    };
-    fetchCases();
-  }, []);
-
-  // Find the selected case from the `cases` array
-  const selectedCase = caseId
-    ? cases.find((c) => c.id === parseInt(caseId))
-    : null;
-
-  useEffect(() => {
-    if (selectedCase) {
-      setDocumentTitle({ title: selectedCase.name });
-    } else {
-      setDocumentTitle({ title: "Cases" });
-    }
-  }, [selectedCase]);
-
-  const breadcrumbItems = selectedCase
-    ? [{ title: <Link to="/cases">Cases</Link> }, { title: selectedCase?.name }]
-    : [{ title: "Cases" }];
-
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
-        <Link to={`/cases?caseId=${record.id}`}>{text}</Link>
+        <Link to={`/cases?id=${record.id}`}>{text}</Link>
       ),
     },
     {
@@ -144,7 +202,7 @@ export default function Cases() {
         </>
       )}
 
-      {/* Display the selected case details */}
+      {/* Display the selected case details *}
       {selectedCase && (
         <div>
           <Breadcrumb items={breadcrumbItems} />
@@ -164,3 +222,4 @@ export default function Cases() {
     </div>
   );
 }
+*/
