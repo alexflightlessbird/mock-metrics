@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Link, useSearchParams } from "react-router-dom";
 import { setDocumentTitle } from "../utils/helpers";
-import { Breadcrumbs, Pill, useMantineTheme } from "@mantine/core";
+import {
+  Breadcrumbs,
+  Flex,
+  Pill,
+  useMantineTheme,
+  Divider,
+  Space,
+  Text,
+} from "@mantine/core";
+import { DataTable } from "mantine-datatable";
 
 export default function Cases() {
   const [cases, setCases] = useState([]);
@@ -35,6 +44,7 @@ export default function Cases() {
             title: (
               <Link to="/cases">
                 <Pill
+                  size="md"
                   style={{
                     backgroundColor: theme.colors.lightGray[0],
                     color: theme.colors.darkBlue[0],
@@ -49,10 +59,10 @@ export default function Cases() {
           {
             title: (
               <Pill
+                size="lg"
                 style={{
                   backgroundColor: theme.colors.primaryBlue[0],
                   color: theme.colors.darkBlue[0],
-                  border: "1px solid " + theme.colors.darkBlue[0],
                 }}
               >
                 {selectedCase?.name}
@@ -64,10 +74,10 @@ export default function Cases() {
           {
             title: (
               <Pill
+                size="lg"
                 style={{
                   backgroundColor: theme.colors.primaryBlue[0],
                   color: theme.colors.lightGray[0],
-                  border: "1px solid " + theme.colors.darkBlue[0],
                 }}
               >
                 Cases
@@ -79,16 +89,59 @@ export default function Cases() {
     <React.Fragment key={index}>{item.title}</React.Fragment>
   ));
 
+  const columns = [
+    {
+      accessor: "name",
+      title: "Name",
+      render: (record) => (
+        <Link to={`/cases?id=${record.id}`}>{record.name}</Link>
+      ),
+    },
+    { accessor: "year", title: "Year" },
+    {
+      accessor: "type",
+      title: "Type",
+      render: (record) => <Pill>{record.type}</Pill>,
+    },
+    { accessor: "area", title: "Area" },
+  ];
+
+  const activeCases = cases.filter((c) => c.is_active);
+  const inactiveCases = cases.filter((c) => !c.is_active);
+
+  const activeCasesProps =
+    activeCases.length == 0
+      ? {
+          minHeight: 150,
+          scrollAreaProps: { type: "never" },
+        }
+      : {};
+
+  const inactiveCasesProps =
+    inactiveCases.length == 0
+      ? { minHeight: 150, scrollAreaProps: { type: "never" } }
+      : {};
+
   return (
     <div>
-      <Breadcrumbs>{breadcrumbItems}</Breadcrumbs>
-      <ul>
-        {cases.map((c, i) => (
-          <li key={i}>
-            <Link to={`/cases?id=${c.id}`}>{c.name}</Link>
-          </li>
-        ))}
-      </ul>
+      <Flex direction="column">
+        <Breadcrumbs>{breadcrumbItems}</Breadcrumbs>
+        <Space h="sm" />
+        <Divider />
+      </Flex>
+      <h1>Cases</h1>
+      <h2>Active Cases</h2>
+      <DataTable
+        {...activeCasesProps}
+        columns={columns}
+        records={activeCases}
+      />
+      <h2>Inactive Cases</h2>
+      <DataTable
+        {...inactiveCasesProps}
+        columns={columns}
+        records={inactiveCases}
+      />
     </div>
   );
 }
