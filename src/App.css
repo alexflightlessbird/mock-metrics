@@ -249,3 +249,9 @@ button:disabled {
 button:active {
   animation: insetAnimation 0.2s ease;
 }
+
+a {
+  text-decoration: none;
+  color: var(--mantine-color-primaryBlue-0);
+}
+

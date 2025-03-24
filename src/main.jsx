@@ -1,6 +1,5 @@
 import React from "react";
 import "@mantine/core/styles.css";
-import "mantine-datatable/styles.css";
 import { createRoot } from "react-dom/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import App from "./App";

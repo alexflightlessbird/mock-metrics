@@ -21,6 +21,18 @@
     {
       "path": "/cases",
       "component": "Cases"
+    },
+    {
+      "path": "/witnesses",
+      "component": "Witnesses"
+    },
+    {
+      "path": "/schools",
+      "component": "Schools"
+    },
+    {
+      "path": "/teams",
+      "component": "Teams"
     }
   ]
 }

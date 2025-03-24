@@ -103,7 +103,15 @@ function RootLayout() {
             color: theme.colors.darkBlue[0],
           }}
         >
-          <Outlet />
+          <ScrollArea
+            type="scroll"
+            overscrollBehavior="contain"
+            offsetScrollbars
+          >
+            <Flex direction="column">
+            <Outlet />
+            </Flex>
+          </ScrollArea>
         </AppShell.Main>
         <AppShell.Footer
           p="xs"
