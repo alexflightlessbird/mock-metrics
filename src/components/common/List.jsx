@@ -8,9 +8,12 @@ export default function ListComponent({ items }) {
         center: true,
         withPadding: true,
     }
+
+    const filteredItems = items.filter(item => item !== "");
+
     return (
         <List {...listProps}>
-            {items.map((i, index) => <List.Item key={index}>{i}</List.Item>)}
+            {filteredItems.map((i, index) => <List.Item key={index}>{i}</List.Item>)}
         </List>
     )
 }

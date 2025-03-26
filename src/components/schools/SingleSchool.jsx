@@ -5,7 +5,7 @@ import TeamList from "./TeamList";
 import StudentList from "./StudentList";
 import TournamentList from "./TournamentList";
 const UserList = lazy(() => import("./UserList"));
-import { Flex, Tabs, TextInput, Tooltip } from "@mantine/core";
+import { Flex, Tabs, Text, TextInput, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { hasLength, useForm } from "@mantine/form";
 import { EditIcon } from "../../components/common/ActionIcons";
@@ -17,6 +17,11 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
   const [allStudents, setAllStudents] = useState([]);
   const [allTournaments, setAllTournaments] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [reload, setReload] = useState(false);
+
+  const triggerReloadSingle = () => {
+    setReload(!reload);
+  }
 
   const [activeTeams, inactiveTeams] = useMemo(() => {
     const active = allTeams.filter((t) => t.is_active);
@@ -89,11 +94,11 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
     fetchStudents();
     fetchTournaments();
     fetchUsers();
-  }, [selectedSchool.schools.id, selectedSchool.role]);
+  }, [selectedSchool.schools.id, selectedSchool.role, reload]);
 
   const detailItems = [
-    `ShortName: ${selectedSchool.schools.short_name}`,
-    `Premium Status: ${selectedSchool.schools.is_premium ? "Active" : "Inactive"}`,
+    `Short Name: ${selectedSchool.schools.short_name}`,
+    selectedSchool.role === "Primary" ? `Premium Status: ${selectedSchool.schools.is_premium ? "Active" : "Inactive"}` : "",
     `Your Role: ${selectedSchool.role === "Primary" ? "Primary Admin" : selectedSchool.role}`
   ];
 
@@ -104,14 +109,15 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
     },
     validate: {
       shortName: hasLength({ min: 2, max: 10 }, "Short names must be 2-10 characters long")
-    }
+    },
+    validateInputOnBlur: true,
   });
 
   const handleEditSchoolSubmit = async (values, e) => {
     e.preventDefault();
     try {
       if (values.shortName === selectedSchool.schools.short_name) {
-        close();
+        modals.closeAll();
         return;
       }
       const { error } = await supabase
@@ -119,7 +125,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .update({ short_name: values.shortName })
         .eq("id", selectedSchool.schools.id);
       if (error) throw error;
-      close();
+      modals.closeAll();
       triggerReload();
     } catch (error) {
       console.error("Error updating school:", error);
@@ -171,12 +177,14 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
 
         {selectedSchool.role === "Primary" && (<Tabs.Panel value="users">
           <>
+            <br />
+            <Text>To add additional users, please contact MSU Mock Trial.</Text>
             <h3>Primary Admins {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({primaryAdminUsers.length}/{PREMIUM_LIMITS.PRIMARY})</span></Tooltip>}</h3>
-            <UserList users={primaryAdminUsers} triggerReload={triggerReload} />
+            <UserList users={primaryAdminUsers} triggerReload={triggerReloadSingle} isPremium={selectedSchool.schools.is_premium} schoolId={selectedSchool.school_id} />
             <h3>Admins {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({adminUsers.length}/{PREMIUM_LIMITS.ADMIN})</span></Tooltip>}</h3>
-            <UserList users={adminUsers} triggerReload={triggerReload} />
+            <UserList users={adminUsers} triggerReload={triggerReloadSingle} schoolId={selectedSchool.school_id}  />
             <h3>Viewers {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({viewerUsers.length}/{PREMIUM_LIMITS.VIEWER})</span></Tooltip> }</h3>
-            <UserList users={viewerUsers} triggerReload={triggerReload} />
+            <UserList users={viewerUsers} triggerReload={triggerReloadSingle} schoolId={selectedSchool.school_id}  />
           </>
         </Tabs.Panel>)}
 
