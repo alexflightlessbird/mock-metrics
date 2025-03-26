@@ -14,13 +14,13 @@ const IconButton = lazy(() =>
 );
 
 export default function Login() {
-  const { session, loading } = useSession();
+  const { session } = useSession();
   const navigate = useNavigate();
 
   const [loggingIn, setLoggingIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalLoaded, setIsModalLoaded] = useState(false);
-  const [notificationApi, notificationContextHolder] =
+  const [_, notificationContextHolder] =
     notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -80,7 +80,7 @@ export default function Login() {
       setIsOpen(false);
       setLoggingIn(true);
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: email,
           password: password,
         });

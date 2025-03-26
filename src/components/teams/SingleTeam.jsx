@@ -3,22 +3,24 @@ import { supabase } from "../../services/supabaseClient";
 import List from "../common/List";
 import { Link } from "react-router-dom";
 import StudentList from "./StudentList";
+import TournamentList from "./TournamentList";
 import { Text } from "@mantine/core";
 
 export default function SingleTeam({ selectedTeam }) {
   const [allStudents, setAllStudents] = useState([]);
-
-  const [activeStudents, inactiveStudents] = useMemo(() => {
-    const active = allStudents.filter((s) => s.is_active);
-    const inactive = allStudents.filter((s) => !s.is_active);
-    return [active, inactive];
-  }, [allStudents]);
+  const [allTournaments, setAllTournaments] = useState([]);
 
   const [currentStudentAssignments, formerStudentAssignments] = useMemo(() => {
     const current = allStudents.filter((s) => s.is_active);
     const former = allStudents.filter((s) => !s.is_active);
     return [current, former];
   }, [allStudents]);
+
+  const [activeTournaments, inactiveTournaments] = useMemo(() => {
+    const active = allTournaments.filter((t) => t.tournaments.is_active);
+    const inactive = allTournaments.filter((t) => !t.tournaments.is_active);
+    return [active, inactive];
+  }, [allTournaments]);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -30,8 +32,20 @@ export default function SingleTeam({ selectedTeam }) {
       if (error) console.error("Error fetching students:", error);
       else setAllStudents(data);
     };
+
+    const fetchTournaments = async () => {
+      const { data, error } = await supabase
+        .from("teams_tournaments")
+        .select("*, tournaments(*)")
+        .eq("team_id", selectedTeam.id)
+        .order("tournaments(name)");
+      if (error) console.error("Error fetching tournaments:", error);
+      else setAllTournaments(data);
+    };
+
     fetchStudents();
-  }, []);
+    fetchTournaments();
+  }, [selectedTeam.id]);
 
   const schoolItem = (
     <Link to={`/schools?id=${selectedTeam?.schools.id}`}>
@@ -55,6 +69,11 @@ export default function SingleTeam({ selectedTeam }) {
       <StudentList students={currentStudentAssignments} />
       <h3>Formerly Assigned</h3>
       <StudentList students={formerStudentAssignments} />
+      <h2>Attended Tournaments</h2>
+      <h3>Active Tournaments</h3>
+      <TournamentList tournaments={activeTournaments} />
+      <h3>Inactive Tournaments</h3>
+      <TournamentList tournaments={inactiveTournaments} />
     </>
   );
 }

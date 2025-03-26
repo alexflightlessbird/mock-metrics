@@ -5,12 +5,24 @@ export default function AllSchools({ primaryAdminSchools, adminSchools, viewerSc
     return (
         <>
             <h1>Schools</h1>
-            <h2>Primary Admin Schools</h2>
-            <SchoolList schools={primaryAdminSchools} />
-            <h2>Admin Schools</h2>
-            <SchoolList schools={adminSchools} />
-            <h2>Viewer Schools</h2>
-            <SchoolList schools={viewerSchools} />
+            {primaryAdminSchools.length > 0 && (
+                <>
+                <h2>Primary Admin Schools</h2>
+                <SchoolList schools={primaryAdminSchools} />
+                </>
+            )}
+            {adminSchools.length > 0 && (
+                <>
+                    <h2>Admin Schools</h2>
+                    <SchoolList schools={adminSchools} />
+                </>
+            )}
+            {viewerSchools.length > 0 && (
+                <>
+                    <h2>Viewer Schools</h2>
+                    <SchoolList schools={viewerSchools} />
+                </>
+            )}
         </>
     )
 }
