@@ -1,16 +1,12 @@
-import React, { useEffect, useState, useMemo, lazy } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../../services/supabaseClient";
 import List from "../common/List";
-import TeamList from "./TeamList";
-import StudentList from "./StudentList";
-import TournamentList from "./TournamentList";
-const UserList = lazy(() => import("./UserList"));
-import { Flex, Tabs, Text, TextInput, Tooltip } from "@mantine/core";
+import { Flex, TextInput } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { hasLength, useForm } from "@mantine/form";
 import { EditIcon } from "../../components/common/ActionIcons";
 import IconButton from "../../components/common/buttons/NewIconButton";
-import { ROLES, PREMIUM_LIMITS } from "../../utils/constants";
+import SchoolTabs from "./SchoolTabs";
 
 export default function SingleSchool({ selectedSchool, triggerReload }) {
   const [allTeams, setAllTeams] = useState([]);
@@ -22,31 +18,6 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
   const triggerReloadSingle = () => {
     setReload(!reload);
   }
-
-  const [activeTeams, inactiveTeams] = useMemo(() => {
-    const active = allTeams.filter((t) => t.is_active);
-    const inactive = allTeams.filter((t) => !t.is_active);
-    return [active, inactive];
-  }, [allTeams]);
-
-  const [activeStudents, inactiveStudents] = useMemo(() => {
-    const active = allStudents.filter((s) => s.is_active);
-    const inactive = allStudents.filter((s) => !s.is_active);
-    return [active, inactive];
-  }, [allStudents]);
-
-  const [activeTournaments, inactiveTournaments] = useMemo(() => {
-    const active = allTournaments.filter((t) => t.is_active);
-    const inactive = allTournaments.filter((t) => !t.is_active);
-    return [active, inactive];
-  }, [allTournaments]);
-
-  const [primaryAdminUsers, adminUsers, viewerUsers] = useMemo(() => {
-    const primary = allUsers.filter((u) => u.role === ROLES.PRIMARY);
-    const admin = allUsers.filter((u) => u.role === ROLES.ADMIN);
-    const viewer = allUsers.filter((u) => u.role === ROLES.VIEWER);
-    return [primary, admin, viewer];
-  }, [allUsers]);
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -153,8 +124,6 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
     })
   }
 
-  const premiumTooltipLabel = "Upgrade to premium for unlimited spots";
-
   return (
     <>
       <h1>{selectedSchool.schools.name}</h1>
@@ -167,54 +136,17 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
       <List items={detailItems} />
       <br />
 
-      <Tabs defaultValue="teams">
-        <Tabs.List>
-          {selectedSchool.role === "Primary" && (<Tabs.Tab value="users">School Users</Tabs.Tab>)}
-          <Tabs.Tab value="teams">Teams</Tabs.Tab>
-          <Tabs.Tab value="students">Students</Tabs.Tab>
-          <Tabs.Tab value="tournaments">Tournaments</Tabs.Tab>
-        </Tabs.List>
-
-        {selectedSchool.role === "Primary" && (<Tabs.Panel value="users">
-          <>
-            <br />
-            <Text>To add additional users, please contact MSU Mock Trial.</Text>
-            <h3>Primary Admins {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({primaryAdminUsers.length}/{PREMIUM_LIMITS.PRIMARY})</span></Tooltip>}</h3>
-            <UserList users={primaryAdminUsers} triggerReload={triggerReloadSingle} isPremium={selectedSchool.schools.is_premium} schoolId={selectedSchool.school_id} />
-            <h3>Admins {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({adminUsers.length}/{PREMIUM_LIMITS.ADMIN})</span></Tooltip>}</h3>
-            <UserList users={adminUsers} triggerReload={triggerReloadSingle} schoolId={selectedSchool.school_id}  />
-            <h3>Viewers {selectedSchool.schools.is_premium ? "" : <Tooltip inline label={premiumTooltipLabel}><span>({viewerUsers.length}/{PREMIUM_LIMITS.VIEWER})</span></Tooltip> }</h3>
-            <UserList users={viewerUsers} triggerReload={triggerReloadSingle} schoolId={selectedSchool.school_id}  />
-          </>
-        </Tabs.Panel>)}
-
-        <Tabs.Panel value="teams">
-          <>
-            <h3>Active Teams</h3>
-            <TeamList teams={activeTeams} />
-            <h3>Inactive Teams</h3>
-            <TeamList teams={inactiveTeams} />
-          </>
-        </Tabs.Panel>
-
-        <Tabs.Panel value="students">
-          <>
-            <h3>Active Students</h3>
-            <StudentList students={activeStudents} />
-            <h3>Inactive Students</h3>
-            <StudentList students={inactiveStudents} />
-          </>
-        </Tabs.Panel>
-
-        <Tabs.Panel value="tournaments">
-          <>
-            <h3>Active Tournaments</h3>
-            <TournamentList tournaments={activeTournaments} />
-            <h3>Inactive Tournaments</h3>
-            <TournamentList tournaments={inactiveTournaments} />
-          </>
-        </Tabs.Panel>
-      </Tabs>
+      <SchoolTabs 
+        role={selectedSchool.role} 
+        allUsers={allUsers} 
+        allTeams={allTeams} 
+        allStudents={allStudents} 
+        allTournaments={allTournaments} 
+        triggerReload={triggerReloadSingle} 
+        isPremium={selectedSchool.schools.is_premium} 
+        schoolId={selectedSchool.schools.id} 
+        schoolName={selectedSchool.schools.name} 
+      />
     </>
   )
 

@@ -11,7 +11,7 @@ export default function Schools() {
     const [allSchools, setAllSchools] = useState([]);
     const [searchParams] = useSearchParams();
     const { userId } = useSession();
-    const id = searchParams.get("id");
+    const schoolId = searchParams.get("schoolId");
     const [reload, setReload] = useState(false);
 
     const [primaryAdminSchools, adminSchools, viewerSchools] = useMemo(() => {
@@ -22,10 +22,10 @@ export default function Schools() {
     }, [allSchools]);
 
     const selectedSchool = useMemo(() => {
-        if (!id) return null;
-        const found = allSchools.find((s) => s.school_id === parseInt(id));
+        if (!schoolId) return null;
+        const found = allSchools.find((s) => s.school_id === parseInt(schoolId));
         return found ? {...found} : null;
-    }, [id, allSchools]);
+    }, [schoolId, allSchools]);
 
     const triggerReload = () => {
         setReload(!reload);

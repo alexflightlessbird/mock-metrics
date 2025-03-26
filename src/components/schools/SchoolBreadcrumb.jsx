@@ -19,7 +19,7 @@ export default function SchoolBreadcrumb({ selectedSchool }) {
         size: "lg",
         style: {
             backgroundColor: theme.colors.primaryBlue[0],
-            color: theme.colors.darkBlue[0]
+            color: theme.colors.lightGray[0]
         }
     };
 

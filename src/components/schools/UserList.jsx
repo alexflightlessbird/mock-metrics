@@ -9,7 +9,7 @@ import { ROLES } from "../../utils/constants";
 import { supabase } from "../../services/supabaseClient";
 import { useSession } from "../../hooks/auth/useSession";
 
-export default function UserList({ users, triggerReload, isPremium, schoolId }) {
+export default function UserList({ users, triggerReload, isPremium, schoolId, schoolName }) {
     const editUserForm = useForm({
         mode: "uncontrolled",
         onSubmitPreventDefault: "always",
@@ -112,7 +112,7 @@ export default function UserList({ users, triggerReload, isPremium, schoolId }) 
             title: "Remove User",
             centered: true,
             children: (
-                <Text>Are you sure you want to remove {user.users.name} from this school?</Text>
+                <Text>Are you sure you want to remove {user.users.name} from {schoolName}?</Text>
             ),
             labels: { confirm: "Remove User", cancel: "Cancel" },
             onConfirm: async () => {
