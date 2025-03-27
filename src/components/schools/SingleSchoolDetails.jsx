@@ -1,12 +1,13 @@
 import React from "react";
-import { useForm, hasLength } from "@mantine/form";
-import { modals } from "@mantine/modals";
 import { supabase } from "../../services/supabaseClient";
+import List from "../common/List";
+import { Link } from "react-router-dom";
+import { Flex, TextInput, Modal, FocusTrap } from "@mantine/core";
+import { useForm, hasLength } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../utils/constants";
-import { Flex, TextInput } from "@mantine/core";
 import { EditIcon } from "../common/ActionIcons";
 import IconButton from "../common/buttons/NewIconButton";
-import List from "../common/List";
 import SchoolTabs from "./SchoolTabs";
 
 export default function SingleSchoolDetails({
@@ -20,6 +21,13 @@ export default function SingleSchoolDetails({
   currentTab,
   setCurrentTab,
 }) {
+  const [opened, { open, close }] = useDisclosure(false, {
+    onOpen: () =>
+      editSchoolForm.setValues({
+        shortName: selectedSchool.schools.short_name,
+      }),
+    onClose: () => editSchoolForm.reset(),
+  });
   const detailItems = [
     `Short Name: ${selectedSchool.schools.short_name}`,
     selectedSchool.role === ROLES.PRIMARY
@@ -36,9 +44,6 @@ export default function SingleSchoolDetails({
 
   const editSchoolForm = useForm({
     mode: "uncontrolled",
-    initialValues: {
-      shortName: selectedSchool.schools.short_name || "",
-    },
     validate: {
       shortName: hasLength(
         { min: 2, max: 10 },
@@ -51,7 +56,7 @@ export default function SingleSchoolDetails({
 
   const handleEditSchoolSubmit = async (values) => {
     if (values.shortName === selectedSchool.schools.short_name) {
-      modals.closeAll();
+      close();
       return;
     }
     try {
@@ -60,32 +65,11 @@ export default function SingleSchoolDetails({
         .update({ short_name: values.shortName })
         .eq("id", selectedSchool.schools.id);
       if (error) throw error;
-      modals.closeAll();
+      close();
       triggerReload();
     } catch (error) {
       console.error("Error updating school short name:", error);
     }
-  };
-
-  const editSchoolModal = () => {
-    modals.open({
-      title: "Edit School Details",
-      children: (
-        <>
-          <form onSubmit={editSchoolForm.onSubmit(handleEditSchoolSubmit)}>
-            <TextInput
-              label="Short Name"
-              withAsterisk
-              key={editSchoolForm.key("shortName")}
-              placeholder="Enter the school's short name"
-              {...editSchoolForm.getInputProps("shortName")}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
-        </>
-      ),
-    });
   };
 
   const schoolTabsProps = {
@@ -108,7 +92,30 @@ export default function SingleSchoolDetails({
       <Flex style={{ alignItems: "center", gap: "7px" }}>
         <h2>School Details</h2>
         {selectedSchool.role === ROLES.PRIMARY && (
-          <EditIcon onClick={editSchoolModal} />
+          <>
+            <EditIcon onClick={open} />
+            <Modal opened={opened} onClose={close} title="Edit School Details">
+              <form
+                onSubmit={editSchoolForm.onSubmit(
+                  handleEditSchoolSubmit,
+                  (errors) => {
+                    const firstErrorPath = Object.keys(errors)[0];
+                    editSchoolForm.getInputNode(firstErrorPath)?.focus();
+                  }
+                )}
+              >
+                <TextInput
+                  data-autofocus
+                  label="Short Name"
+                  withAsterisk
+                  placeholder="Enter the school's short name"
+                  {...editSchoolForm.getInputProps("shortName")}
+                />
+                <br />
+                <IconButton icon="save" type="submit" buttonText="Submit" />
+              </form>
+            </Modal>
+          </>
         )}
       </Flex>
       <List items={detailItems} />
