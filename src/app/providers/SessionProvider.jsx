@@ -1,14 +1,10 @@
 import React, {
-  createContext,
-  lazy,
   useEffect,
   useState,
   useMemo,
-  useRef,
 } from "react";
 import { supabase } from "../../services/supabaseClient";
-
-export const SessionContext = createContext();
+import { SessionContext } from "../../contexts/SessionContext";
 
 export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);

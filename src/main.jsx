@@ -1,10 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "@mantine/core/styles.css";
-import "../assets/styles/App.css";
 import App from "./App";
-import { SessionProvider } from "../app/providers/SessionProvier";
-import { AppProviders } from "../app/providers/AppProviders";
+import { SessionProvider } from "./app/providers/SessionProvider";
+import AppProviders from "./app/providers/AppProviders";
 
 setTimeout(() => {
   const splashScreen = document.getElementById("splash-screen");
