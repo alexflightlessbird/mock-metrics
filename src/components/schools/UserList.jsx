@@ -6,43 +6,45 @@ import { useForm } from "@mantine/form";
 import { EditIcon, DeleteIcon } from "../common/ActionIcons";
 import IconButton from "../common/buttons/NewIconButton";
 import { ROLES } from "../../utils/constants";
-import { supabase } from "../../services/supabaseClient";
 import { useSession } from "../../hooks/auth/useSession";
+import { useSchoolDataMutations } from "../../hooks/api/useSchoolData";
 
 export default function UserList({
   users,
-  triggerReload,
   isPremium,
   schoolId,
-  schoolName,
+  schoolName
 }) {
+  const { updateUserRole, removeUserFromSchool } = useSchoolDataMutations();
+  const { userId } = useSession();
+
   const editUserForm = useForm({
     mode: "uncontrolled",
     onSubmitPreventDefault: "always",
     validateInputOnBlur: true,
   });
 
-  const { userId } = useSession();
-
   const handleEditUserSubmit = async (values) => {
-    try {
-      if (values.role === values.currentRole) {
-        modals.closeAll();
-        return;
-      }
-      const { error } = await supabase
-        .from("users_schools")
-        .update({ role: values.role })
-        .eq("user_id", values.user_id)
-        .eq("school_id", schoolId);
-      if (error) throw error;
+    const { role, currentRole, user_id } = values;
+
+    const roleChanged = role !== currentRole;
+
+    if (!roleChanged) {
       modals.closeAll();
-      if (values.user_id === userId) return window.location.reload();
-      triggerReload();
-    } catch (error) {
-      console.error("Error updating role:", error);
+      return;
     }
-  };
+
+    try {
+      await updateUserRole({
+        userId: user_id,
+        role,
+        schoolId,
+      });
+      modals.closeAll();
+    } catch (error) {
+      console.error("User role update failed:", error);
+    }
+  }
 
   const editUserModal = (user) => {
     editUserForm.reset();
@@ -61,6 +63,7 @@ export default function UserList({
     if (user.role === ROLES.PRIMARY && users.length === 1) {
       return modals.open({
         title: "Oops",
+        centered: true,
         children: (
           <>
             <Text>
@@ -68,24 +71,35 @@ export default function UserList({
               {isPremium ? (
                 <span>To make changes, add another primary admin first.</span>
               ) : (
-                <span>
-                  To change the primary admin, please contact MSU Mock Trial.
-                </span>
+                <span>To change the primary admin, please contact MSU Mock Trial.</span>
               )}
             </Text>
           </>
-        ),
-      });
+        )
+      })
+    }
+
+    if (user.user_id === userId) {
+      return modals.open({
+        title: "Oops",
+        centered: true,
+        children: (
+          <>
+            <Text>You can't modify your own role in a school assignment.</Text>
+          </>
+        )
+      })
     }
 
     modals.open({
       title: `Edit Details: ${user.users.email}`,
+      centered: true,
       children: (
         <>
-          <Text>User ID: {user.user_id}</Text>
+          <Text>User Id: {user.user_id}</Text>
           <form onSubmit={editUserForm.onSubmit(handleEditUserSubmit)}>
             <Select
-              label="New role"
+              label="New Role"
               withAsterisk
               placeholder="Pick role"
               key={editUserForm.key("role")}
@@ -96,66 +110,64 @@ export default function UserList({
             <IconButton icon="save" type="submit" buttonText="Submit" />
           </form>
         </>
-      ),
-    });
-  };
+      )
+    })
+  }
 
   const removeUserModal = (user) => {
     if (user.role === ROLES.PRIMARY && users.length === 1) {
       return modals.open({
         title: "Oops",
+        centered: true,
         children: (
           <>
             <Text>You can't remove the only primary admin!</Text>
           </>
-        ),
+        )
       });
     }
 
     if (user.user_id === userId) {
       return modals.open({
         title: "Oops",
+        centered: true,
         children: (
           <>
             <Text>You can't remove yourself from a school assignment.</Text>
           </>
-        ),
-      });
+        )
+      })
     }
 
     modals.openConfirmModal({
       title: "Remove User",
       centered: true,
       children: (
-        <Text>
-          Are you sure you want to remove {user.users.name} from {schoolName}?
-        </Text>
+        <Text>Are you sure you want to remove {user.users.name} from {schoolName}?</Text>
       ),
       labels: { confirm: "Remove User", cancel: "Cancel" },
       onConfirm: async () => {
-        const { error } = await supabase
-          .from("users_schools")
-          .delete()
-          .eq("user_id", user.user_id);
-        if (error) console.error("Error removing user:", error);
-        triggerReload();
-      },
-    });
-  };
+        await removeUserFromSchool({ userId: user.user_id, schoolId });
+        modals.closeAll();
+      }
+    })
+  }
 
   const mappedUsers = [];
 
   users.map((u) => {
     mappedUsers.push(
       <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <Text>
-          {u.users.name} ({u.users.email})
-        </Text>
-        <EditIcon onClick={() => editUserModal(u)} />
-        <DeleteIcon onClick={() => removeUserModal(u)} />
+        <Text>{u.users.name} ({u.users.email})</Text>
+        {u.user_id !== userId && (
+          <>
+            <EditIcon onClick={() => editUserModal(u)} />
+            <DeleteIcon onClick={() => removeUserModal(u)} />
+          </>
+        )}
       </Flex>
-    );
-  });
+    )
+  })
 
   if (mappedUsers.length == 0) mappedUsers.push("None");
 

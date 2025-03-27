@@ -45,29 +45,9 @@ export default function Sidebar({ session, opened, toggle }) {
           navigatePath: "/cases",
         },
         {
-          label: "Witnesses",
-          icon: React.createElement(icons.contact),
-          navigatePath: "/witnesses",
-        },
-        {
           label: "Schools",
           icon: React.createElement(icons.school),
           navigatePath: "/schools",
-        },
-        {
-          label: "Tournaments",
-          icon: React.createElement(icons.trophy),
-          navigatePath: "/tournaments",
-        },
-        {
-          label: "Teams",
-          icon: React.createElement(icons.team),
-          navigatePath: "/teams",
-        },
-        {
-          label: "Students",
-          icon: React.createElement(icons.idcard),
-          navigatePath: "/students",
         },
       ],
     },

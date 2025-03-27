@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { supabase } from "../services/supabaseClient";
+import React, { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { setDocumentTitle } from "../utils/helpers";
 import { useSession } from "../hooks/auth/useSession";
 import SingleSchool from "../components/schools/SingleSchool";
 import AllSchools from "../components/schools/AllSchools";
 import { ROLES } from "../utils/constants";
+import { useSchools } from "../hooks/api/useSchools";
 
 export default function Schools() {
-  const [allSchools, setAllSchools] = useState([]);
   const [searchParams] = useSearchParams();
   const { userId } = useSession();
   const schoolId = searchParams.get("schoolId");
-  const [reload, setReload] = useState(false);
+  const { data: allSchools = [], isPending } = useSchools(userId);
 
   const [primaryAdminSchools, adminSchools, viewerSchools] = useMemo(() => {
     const primary = allSchools.filter((s) => s.role === ROLES.PRIMARY);
@@ -23,37 +22,23 @@ export default function Schools() {
 
   const selectedSchool = useMemo(() => {
     if (!schoolId) return null;
-    const found = allSchools.find((s) => s.school_id === parseInt(schoolId));
-    return found ? { ...found } : null;
+    return allSchools.find((s) => s.schools.id === parseInt(schoolId)) || null;
   }, [schoolId, allSchools]);
-
-  const triggerReload = () => {
-    setReload(!reload);
-  };
-
-  useEffect(() => {
-    const fetchSchools = async () => {
-      const { data, error } = await supabase
-        .from("users_schools")
-        .select("*, schools(*)")
-        .eq("user_id", userId)
-        .order("schools(name)");
-      if (error) console.error("Error fetching schools:", error);
-      else setAllSchools(data);
-    };
-    fetchSchools();
-  }, [reload, userId]);
 
   useEffect(() => {
     const currentTitle = selectedSchool?.schools?.name || "Schools";
     setDocumentTitle({ title: currentTitle });
   }, [selectedSchool?.schools?.name]);
 
+  if (isPending) return <div>Loading schools...</div>;
+
+  const triggerReload = () => console.log("Reload");
+
   return (
     <>
       {selectedSchool ? (
         <SingleSchool
-          key={selectedSchool.school_id}
+          key={selectedSchool.schools.id}
           selectedSchool={selectedSchool}
           triggerReload={triggerReload}
         />
@@ -66,5 +51,5 @@ export default function Schools() {
         />
       )}
     </>
-  );
+  )
 }

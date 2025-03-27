@@ -1,11 +1,43 @@
 import React from "react";
+import { createRoot } from "react-dom/client";
+import "@mantine/core/styles.css";
+import "../assets/styles/App.css";
+import App from "./App";
+import { SessionProvider } from "../app/providers/SessionProvier";
+import { AppProviders } from "../app/providers/AppProviders";
+
+setTimeout(() => {
+  const splashScreen = document.getElementById("splash-screen");
+  if (splashScreen) {
+    splashScreen.style.opacity = "0";
+    setTimeout(() => {
+      splashScreen.remove();
+    }, 500);
+  }
+}, 3000);
+
+createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <AppProviders>
+      <SessionProvider>
+        <App />
+      </SessionProvider>
+    </AppProviders>
+  </React.StrictMode>
+);
+
+
+
+/*import React from "react";
 import "@mantine/core/styles.css";
 import { createRoot } from "react-dom/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import App from "./App";
-import "./App.css";
+import "./assets/styles/App.css";
 import { SessionProvider } from "./context/auth/SessionContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 setTimeout(() => {
   const splashScreen = document.getElementById("splash-screen");
@@ -48,14 +80,27 @@ const theme = createTheme({
   cursorType: "pointer",
 });
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <MantineProvider theme={theme}>
-      <ModalsProvider>
-        <SessionProvider>
-          <App />
-        </SessionProvider>
-      </ModalsProvider>
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={theme}>
+        <ModalsProvider>
+          <SessionProvider>
+            <App />
+            <ReactQueryDevtools />
+          </SessionProvider>
+        </ModalsProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
+*/

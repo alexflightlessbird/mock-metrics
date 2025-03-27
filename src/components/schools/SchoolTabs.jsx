@@ -12,7 +12,6 @@ export default function SchoolTabs({
   allTeams,
   allStudents,
   allTournaments,
-  triggerReload,
   isPremium,
   schoolId,
   schoolName,
@@ -52,7 +51,6 @@ export default function SchoolTabs({
   };
 
   const userListProps = {
-    triggerReload,
     isPremium,
     schoolId,
     schoolName,
