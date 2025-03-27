@@ -52,7 +52,7 @@ export default function UserList({ users, triggerReload, isPremium, schoolId, sc
             currentRole: user.role
         });
 
-        if (user.role === "Primary" && users.length === 1) {
+        if (user.role === ROLES.PRIMARY && users.length === 1) {
             return modals.open({
                 title: "Oops",
                 children: (
@@ -86,7 +86,7 @@ export default function UserList({ users, triggerReload, isPremium, schoolId, sc
     }
 
     const removeUserModal = (user) => {
-        if (user.role === "Primary" && users.length === 1) {
+        if (user.role === ROLES.PRIMARY && users.length === 1) {
             return modals.open({
                 title: "Oops",
                 children: (

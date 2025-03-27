@@ -6,7 +6,7 @@ export default function TournamentList({ tournaments }) {
   const mappedTournaments = [];
   tournaments.map((t) =>
     mappedTournaments.push(
-      <Link to={`/tournaments?id=${t.id}`}>
+      <Link to={`/schools?schoolId=${t.school_id}&tournamentId=${t.id}`}>
         {t.name} ({t.year})
       </Link>
     )

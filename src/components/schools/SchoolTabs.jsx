@@ -6,7 +6,7 @@ import TeamList from "./TeamList";
 import StudentList from "./StudentList";
 import TournamentList from "./TournamentList";
 
-export default function SchoolTabs({ role, allUsers, allTeams, allStudents, allTournaments, triggerReload, isPremium, schoolId, schoolName }) {
+export default function SchoolTabs({ role, allUsers, allTeams, allStudents, allTournaments, triggerReload, isPremium, schoolId, schoolName, currentTab, setCurrentTab }) {
     const [activeTeams, inactiveTeams] = useMemo(() => {
         const active = allTeams.filter((t) => t.is_active);
         const inactive = allTeams.filter((t) => !t.is_active);
@@ -47,7 +47,7 @@ export default function SchoolTabs({ role, allUsers, allTeams, allStudents, allT
     };
 
     return (
-        <Tabs defaultValue="teams">
+        <Tabs defaultValue={currentTab} onChange={setCurrentTab}>
             <Tabs.List>
                 {role === ROLES.PRIMARY && (<Tabs.Tab value="users">School Users</Tabs.Tab>)}
                 <Tabs.Tab value="teams">Teams</Tabs.Tab>

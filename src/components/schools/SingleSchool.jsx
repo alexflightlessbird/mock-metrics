@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../services/supabaseClient";
-import List from "../common/List";
-import { Flex, TextInput } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { hasLength, useForm } from "@mantine/form";
-import { EditIcon } from "../../components/common/ActionIcons";
-import IconButton from "../../components/common/buttons/NewIconButton";
-import SchoolTabs from "./SchoolTabs";
+import SchoolBreadcrumb from "./SchoolBreadcrumb";
+import SingleTeam from "./SingleTeam";
+import SingleStudent from "./SingleStudent";
+import SingleTournament from "./SingleTournament";
+import { useSearchParams } from "react-router-dom";
+import SingleSchoolDetails from "./SingleSchoolDetails";
+import { ROLES } from "../../utils/constants";
 
 export default function SingleSchool({ selectedSchool, triggerReload }) {
   const [allTeams, setAllTeams] = useState([]);
   const [allStudents, setAllStudents] = useState([]);
+  const [allStudentTeams, setAllStudentTeams] = useState([]);
   const [allTournaments, setAllTournaments] = useState([]);
+  const [allTeamsTournaments, setAllTeamsTournaments] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [reload, setReload] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [currentTab, setCurrentTab] = useState("teams");
+
+  const teamId = searchParams.get("teamId");
+  const studentId = searchParams.get("studentId");
+  const tournamentId = searchParams.get("tournamentId");
 
   const triggerReloadSingle = () => {
     setReload(!reload);
@@ -51,7 +59,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
     }
 
     const fetchUsers = async () => {
-      if (selectedSchool.role === "Primary") {
+      if (selectedSchool.role === ROLES.PRIMARY) {
         const { data, error } = await supabase
           .from("users_schools")
           .select("*, users(*)")
@@ -61,92 +69,74 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
       }
     }
 
+    const fetchStudentTeams = async () => {
+      const { data, error } = await supabase
+        .from("students_teams")
+        .select("*, students(*), teams(*)")
+        .eq("students.school_id", selectedSchool.schools.id);
+      if (error) console.error("Error fetching student teams:", error);
+      else setAllStudentTeams(data);
+    }
+
+    const fetchTeamsTournaments = async () => {
+      const { data, error } = await supabase
+        .from("teams_tournaments")
+        .select("*, teams(*), tournaments(*)")
+        .eq("teams.school_id", selectedSchool.schools.id);
+      if (error) console.error("Error fetching teams tournaments:", error);
+      else setAllTeamsTournaments(data);
+    }
+
     fetchTeams();
     fetchStudents();
+    fetchStudentTeams();
     fetchTournaments();
+    fetchTeamsTournaments();
     fetchUsers();
   }, [selectedSchool.schools.id, selectedSchool.role, reload]);
 
-  const detailItems = [
-    `Short Name: ${selectedSchool.schools.short_name}`,
-    selectedSchool.role === "Primary" ? `Premium Status: ${selectedSchool.schools.is_premium ? "Active" : "Inactive"}` : "",
-    `Your Role: ${selectedSchool.role === "Primary" ? "Primary Admin" : selectedSchool.role}`
-  ];
-
-  const editSchoolForm = useForm({
-    mode: "uncontrolled",
-    initialValues: {
-      shortName: selectedSchool.schools.short_name || ""
-    },
-    validate: {
-      shortName: hasLength({ min: 2, max: 10 }, "Short names must be 2-10 characters long")
-    },
-    validateInputOnBlur: true,
-  });
-
-  const handleEditSchoolSubmit = async (values, e) => {
-    e.preventDefault();
-    try {
-      if (values.shortName === selectedSchool.schools.short_name) {
-        modals.closeAll();
-        return;
-      }
-      const { error } = await supabase
-        .from("schools")
-        .update({ short_name: values.shortName })
-        .eq("id", selectedSchool.schools.id);
-      if (error) throw error;
-      modals.closeAll();
-      triggerReload();
-    } catch (error) {
-      console.error("Error updating school:", error);
+  const renderContent = () => {
+    if (teamId) {
+      const team = allTeams.find((t) => t.id === parseInt(teamId));
+      if (!team) return <SingleTeam selectedSchool={selectedSchool} selectedTeam="Not found" />
+      return <SingleTeam selectedSchool={selectedSchool} selectedTeam={team} allStudentTeams={allStudentTeams} allTeamsTournaments={allTeamsTournaments} triggerReload={triggerReloadSingle} />
     }
-  }
 
-  const editSchoolModal = () => {
-    modals.open({
-      title: "Edit School Details",
-      children: (
-        <>
-          <form onSubmit={editSchoolForm.onSubmit(handleEditSchoolSubmit)}>
-            <TextInput
-              label="Short Name"
-              withAsterisk
-              key={editSchoolForm.key("shortName")}
-              placeholder="Enter the school's short name"
-              {...editSchoolForm.getInputProps("shortName")}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
-        </>
-      )
-    })
+    if (studentId) {
+      const student = allStudents.find((s) => s.id === parseInt(studentId));
+      if (!student) return <SingleStudent selectedSchool={selectedSchool} selectedStudent="Not found" />
+      return <SingleStudent selectedSchool={selectedSchool} selectedStudent={student} allTeams={allTeams} allStudentTeams={allStudentTeams} triggerReload={triggerReloadSingle} />
+    }
+
+    if (tournamentId) {
+      const tournament = allTournaments.find((t) => t.id === parseInt(tournamentId));
+      if (!tournament) return <SingleTournament selectedSchool={selectedSchool} selectedTournament="Not found" />
+      return <SingleTournament selectedSchool={selectedSchool} selectedTournament={tournament} allTeams={allTeams} allTeamsTournaments={allTeamsTournaments} triggerReload={triggerReloadSingle} />
+    }
+
+    return <SingleSchoolDetails 
+      selectedSchool={selectedSchool} 
+      allUsers={allUsers} 
+      allStudents={allStudents} 
+      allTeams={allTeams} 
+      allTournaments={allTournaments} 
+      triggerReload={triggerReload}
+      triggerReloadSingle={triggerReloadSingle}
+      currentTab={currentTab}
+      setCurrentTab={setCurrentTab}
+    />;
   }
+  
 
   return (
     <>
-      <h1>{selectedSchool.schools.name}</h1>
-      <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <h2>School Details</h2>
-        {selectedSchool.role === "Primary" && (
-          <EditIcon onClick={editSchoolModal} />
-        )}
-      </Flex>
-      <List items={detailItems} />
-      <br />
-
-      <SchoolTabs 
-        role={selectedSchool.role} 
-        allUsers={allUsers} 
-        allTeams={allTeams} 
-        allStudents={allStudents} 
-        allTournaments={allTournaments} 
-        triggerReload={triggerReloadSingle} 
-        isPremium={selectedSchool.schools.is_premium} 
-        schoolId={selectedSchool.schools.id} 
-        schoolName={selectedSchool.schools.name} 
+      <SchoolBreadcrumb 
+        selectedSchool={selectedSchool}
+        allStudents={allStudents}
+        allTeams={allTeams}
+        allTournaments={allTournaments}
       />
+      {renderContent()}
     </>
   )
 

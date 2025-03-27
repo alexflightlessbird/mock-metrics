@@ -1,9 +1,11 @@
 import React from "react";
 import SchoolList from "./SchoolList";
+import SchoolBreadcrumb from "./SchoolBreadcrumb";
 
 export default function AllSchools({ primaryAdminSchools, adminSchools, viewerSchools }) {
     return (
         <>
+            <SchoolBreadcrumb />
             <h1>Schools</h1>
             {primaryAdminSchools.length > 0 && (
                 <>

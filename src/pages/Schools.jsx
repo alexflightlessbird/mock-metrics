@@ -5,7 +5,7 @@ import { setDocumentTitle } from "../utils/helpers";
 import { useSession } from "../hooks/auth/useSession";
 import SingleSchool from "../components/schools/SingleSchool";
 import AllSchools from "../components/schools/AllSchools";
-import SchoolBreadcrumb from "../components/schools/SchoolBreadcrumb";
+import { ROLES } from "../utils/constants";
 
 export default function Schools() {
     const [allSchools, setAllSchools] = useState([]);
@@ -15,9 +15,9 @@ export default function Schools() {
     const [reload, setReload] = useState(false);
 
     const [primaryAdminSchools, adminSchools, viewerSchools] = useMemo(() => {
-        const primary = allSchools.filter((s) => s.role === "Primary");
-        const admin = allSchools.filter((s) => s.role === "Admin");
-        const viewer = allSchools.filter((s) => s.role === "Viewer");
+        const primary = allSchools.filter((s) => s.role === ROLES.PRIMARY);
+        const admin = allSchools.filter((s) => s.role === ROLES.ADMIN);
+        const viewer = allSchools.filter((s) => s.role === ROLES.VIEWER);
         return [primary, admin, viewer];
     }, [allSchools]);
 
@@ -51,7 +51,6 @@ export default function Schools() {
 
     return (
         <>
-            <SchoolBreadcrumb selectedSchool={selectedSchool} />
             {selectedSchool ? (
                 <SingleSchool
                     key={selectedSchool.school_id}
