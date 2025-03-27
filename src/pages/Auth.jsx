@@ -20,8 +20,7 @@ export default function Login() {
   const [loggingIn, setLoggingIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalLoaded, setIsModalLoaded] = useState(false);
-  const [_, notificationContextHolder] =
-    notification.useNotification();
+  const [_, notificationContextHolder] = notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
   const [loggingOut, setLoggingOut] = useState(false);
 

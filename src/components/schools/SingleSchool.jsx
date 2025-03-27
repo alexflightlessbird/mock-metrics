@@ -25,7 +25,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
 
   const triggerReloadSingle = () => {
     setReload(!reload);
-  }
+  };
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -36,7 +36,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .order("name");
       if (error) console.error("Error fetching teams:", error);
       else setAllTeams(data);
-    }
+    };
 
     const fetchStudents = async () => {
       const { data, error } = await supabase
@@ -46,7 +46,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .order("name");
       if (error) console.error("Error fetching students:", error);
       else setAllStudents(data);
-    }
+    };
 
     const fetchTournaments = async () => {
       const { data, error } = await supabase
@@ -56,7 +56,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .order("year", { ascending: false });
       if (error) console.error("Error fetching tournaments:", error);
       else setAllTournaments(data);
-    }
+    };
 
     const fetchUsers = async () => {
       if (selectedSchool.role === ROLES.PRIMARY) {
@@ -67,7 +67,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         if (error) console.error("Error fetching users:", error);
         else setAllUsers(data);
       }
-    }
+    };
 
     const fetchStudentTeams = async () => {
       const { data, error } = await supabase
@@ -76,7 +76,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .eq("students.school_id", selectedSchool.schools.id);
       if (error) console.error("Error fetching student teams:", error);
       else setAllStudentTeams(data);
-    }
+    };
 
     const fetchTeamsTournaments = async () => {
       const { data, error } = await supabase
@@ -85,7 +85,7 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
         .eq("teams.school_id", selectedSchool.schools.id);
       if (error) console.error("Error fetching teams tournaments:", error);
       else setAllTeamsTournaments(data);
-    }
+    };
 
     fetchTeams();
     fetchStudents();
@@ -98,39 +98,84 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
   const renderContent = () => {
     if (teamId) {
       const team = allTeams.find((t) => t.id === parseInt(teamId));
-      if (!team) return <SingleTeam selectedSchool={selectedSchool} selectedTeam="Not found" />
-      return <SingleTeam selectedSchool={selectedSchool} selectedTeam={team} allStudentTeams={allStudentTeams} allTeamsTournaments={allTeamsTournaments} triggerReload={triggerReloadSingle} />
+      if (!team)
+        return (
+          <SingleTeam
+            selectedSchool={selectedSchool}
+            selectedTeam="Not found"
+          />
+        );
+      return (
+        <SingleTeam
+          selectedSchool={selectedSchool}
+          selectedTeam={team}
+          allStudentTeams={allStudentTeams}
+          allTeamsTournaments={allTeamsTournaments}
+          triggerReload={triggerReloadSingle}
+        />
+      );
     }
 
     if (studentId) {
       const student = allStudents.find((s) => s.id === parseInt(studentId));
-      if (!student) return <SingleStudent selectedSchool={selectedSchool} selectedStudent="Not found" />
-      return <SingleStudent selectedSchool={selectedSchool} selectedStudent={student} allTeams={allTeams} allStudentTeams={allStudentTeams} triggerReload={triggerReloadSingle} />
+      if (!student)
+        return (
+          <SingleStudent
+            selectedSchool={selectedSchool}
+            selectedStudent="Not found"
+          />
+        );
+      return (
+        <SingleStudent
+          selectedSchool={selectedSchool}
+          selectedStudent={student}
+          allTeams={allTeams}
+          allStudentTeams={allStudentTeams}
+          triggerReload={triggerReloadSingle}
+        />
+      );
     }
 
     if (tournamentId) {
-      const tournament = allTournaments.find((t) => t.id === parseInt(tournamentId));
-      if (!tournament) return <SingleTournament selectedSchool={selectedSchool} selectedTournament="Not found" />
-      return <SingleTournament selectedSchool={selectedSchool} selectedTournament={tournament} allTeams={allTeams} allTeamsTournaments={allTeamsTournaments} triggerReload={triggerReloadSingle} />
+      const tournament = allTournaments.find(
+        (t) => t.id === parseInt(tournamentId)
+      );
+      if (!tournament)
+        return (
+          <SingleTournament
+            selectedSchool={selectedSchool}
+            selectedTournament="Not found"
+          />
+        );
+      return (
+        <SingleTournament
+          selectedSchool={selectedSchool}
+          selectedTournament={tournament}
+          allTeams={allTeams}
+          allTeamsTournaments={allTeamsTournaments}
+          triggerReload={triggerReloadSingle}
+        />
+      );
     }
 
-    return <SingleSchoolDetails 
-      selectedSchool={selectedSchool} 
-      allUsers={allUsers} 
-      allStudents={allStudents} 
-      allTeams={allTeams} 
-      allTournaments={allTournaments} 
-      triggerReload={triggerReload}
-      triggerReloadSingle={triggerReloadSingle}
-      currentTab={currentTab}
-      setCurrentTab={setCurrentTab}
-    />;
-  }
-  
+    return (
+      <SingleSchoolDetails
+        selectedSchool={selectedSchool}
+        allUsers={allUsers}
+        allStudents={allStudents}
+        allTeams={allTeams}
+        allTournaments={allTournaments}
+        triggerReload={triggerReload}
+        triggerReloadSingle={triggerReloadSingle}
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
+      />
+    );
+  };
 
   return (
     <>
-      <SchoolBreadcrumb 
+      <SchoolBreadcrumb
         selectedSchool={selectedSchool}
         allStudents={allStudents}
         allTeams={allTeams}
@@ -138,7 +183,5 @@ export default function SingleSchool({ selectedSchool, triggerReload }) {
       />
       {renderContent()}
     </>
-  )
-
-
+  );
 }

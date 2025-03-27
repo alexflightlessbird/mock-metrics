@@ -103,9 +103,9 @@ function RootLayout() {
             color: theme.colors.darkBlue[0],
           }}
         >
-            <Flex direction="column">
+          <Flex direction="column">
             <Outlet />
-            </Flex>
+          </Flex>
         </AppShell.Main>
         <AppShell.Footer
           p="xs"

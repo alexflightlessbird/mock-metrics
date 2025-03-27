@@ -1,3 +1,9 @@
-export default function SingleStudent({ selectedSchool, selectedTeam, allStudentTeams, allTeamsTournaments, triggerReload }) {
-    return <>Team Page</>
+export default function SingleStudent({
+  selectedSchool,
+  selectedTeam,
+  allStudentTeams,
+  allTeamsTournaments,
+  triggerReload,
+}) {
+  return <>Team Page</>;
 }

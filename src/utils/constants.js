@@ -7,5 +7,5 @@ export const ROLES = {
 export const PREMIUM_LIMITS = {
   PRIMARY: 1,
   ADMIN: 1,
-  VIEWER: 1
+  VIEWER: 1,
 };

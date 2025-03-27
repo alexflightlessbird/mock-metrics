@@ -25,36 +25,37 @@ export default function UserSettings() {
         .single();
       if (error) console.error("Error fetching user:", error);
       else setUser(data);
-    }
+    };
     fetchUser();
   }, [userId, reload]);
 
   const triggerReload = () => {
     setReload(!reload);
-  }
+  };
 
   useEffect(() => {
     setDocumentTitle({ title: "User Settings" });
   }, []);
 
   useEffect(() => {
-    setDetailItems(
-      [
-        `Name: ${user?.name}`,
-        `Email: ${user?.email}`,
-        `User ID (for support purposes only): ${userId}`
-      ]
-    )
+    setDetailItems([
+      `Name: ${user?.name}`,
+      `Email: ${user?.email}`,
+      `User ID (for support purposes only): ${userId}`,
+    ]);
   }, [user, userId]);
 
   const editUserForm = useForm({
-    mode: 'uncontrolled',
+    mode: "uncontrolled",
     initialValues: {
       name: user?.name || "",
     },
     validate: {
-      name: hasLength({ min: 2, max: 40 }, "Names must be 2-40 characters long")
-    }
+      name: hasLength(
+        { min: 2, max: 40 },
+        "Names must be 2-40 characters long"
+      ),
+    },
   });
 
   const handleEditSubmit = async (values, e) => {
@@ -75,8 +76,7 @@ export default function UserSettings() {
     } catch (error) {
       console.error("Error updating user:", error);
     }
-  }
-
+  };
 
   return (
     <div style={{ height: "200vh" }}>

@@ -7,10 +7,12 @@ function setDocumentTitle({ title, isHomePage = false }) {
 }
 
 function filterAssigneesByRole(assignees, role) {
-  return assignees
-    ?.filter((a) => a.role === role)
-    .map((a) => a.users)
-    .flat() || null;
+  return (
+    assignees
+      ?.filter((a) => a.role === role)
+      .map((a) => a.users)
+      .flat() || null
+  );
 }
 
 export { setDocumentTitle, filterAssigneesByRole };

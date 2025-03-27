@@ -20,7 +20,7 @@ export default function Cases() {
   const selectedCase = useMemo(() => {
     if (!id) return null;
     const found = allCases.find((c) => c.id === parseInt(id));
-    return found ? {...found} : null;
+    return found ? { ...found } : null;
   }, [id, allCases]);
 
   useEffect(() => {
@@ -43,13 +43,11 @@ export default function Cases() {
   return (
     <>
       <CaseBreadcrumb selectedCase={selectedCase} />
-      {selectedCase 
-        ? (<SingleCase selectedCase={selectedCase} />) 
-        : (<AllCases 
-            activeCases={activeCases} 
-            inactiveCases={inactiveCases} 
-          />)
-      }
+      {selectedCase ? (
+        <SingleCase selectedCase={selectedCase} />
+      ) : (
+        <AllCases activeCases={activeCases} inactiveCases={inactiveCases} />
+      )}
     </>
   );
 }

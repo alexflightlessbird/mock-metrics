@@ -9,14 +9,14 @@ export default function TeamList({ teams }) {
       acc[schoolId] = {
         schoolName: team.schools?.name || "Unknown School",
         shortName: team.schools?.short_name || "UNK",
-        teams: []
+        teams: [],
       };
     }
     acc[schoolId].teams.push(team);
     return acc;
   }, {});
 
-  const schoolGroups = Object.values(teamsBySchool).sort((a, b) => 
+  const schoolGroups = Object.values(teamsBySchool).sort((a, b) =>
     a.schoolName.localeCompare(b.schoolName)
   );
 
@@ -27,13 +27,20 @@ export default function TeamList({ teams }) {
   return (
     <>
       {schoolGroups.map((school) => (
-        <div key={`${school.schoolName}-${school.shortName}`} style={{ marginBottom: "1rem" }}>
-          <h4>{school.schoolName} ({school.shortName})</h4>
-          <List items={school.teams.map((team) => (
-            <Link to={`/teams?id=${team.id}`}>{team.name}</Link>
-          ))} />
+        <div
+          key={`${school.schoolName}-${school.shortName}`}
+          style={{ marginBottom: "1rem" }}
+        >
+          <h4>
+            {school.schoolName} ({school.shortName})
+          </h4>
+          <List
+            items={school.teams.map((team) => (
+              <Link to={`/teams?id=${team.id}`}>{team.name}</Link>
+            ))}
+          />
         </div>
       ))}
     </>
-  )
+  );
 }

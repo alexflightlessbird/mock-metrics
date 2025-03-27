@@ -19,7 +19,7 @@ const componentMap = {
   Cases: lazy(() => import("../pages/Cases")),
   Witnesses: lazy(() => import("../pages/Witnesses")),
   Schools: lazy(() => import("../pages/Schools")),
-  Teams: lazy(() => import("../pages/Teams"))
+  Teams: lazy(() => import("../pages/Teams")),
 };
 
 function createRouteElements(routes) {

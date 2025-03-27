@@ -8,63 +8,63 @@ import AllSchools from "../components/schools/AllSchools";
 import { ROLES } from "../utils/constants";
 
 export default function Schools() {
-    const [allSchools, setAllSchools] = useState([]);
-    const [searchParams] = useSearchParams();
-    const { userId } = useSession();
-    const schoolId = searchParams.get("schoolId");
-    const [reload, setReload] = useState(false);
+  const [allSchools, setAllSchools] = useState([]);
+  const [searchParams] = useSearchParams();
+  const { userId } = useSession();
+  const schoolId = searchParams.get("schoolId");
+  const [reload, setReload] = useState(false);
 
-    const [primaryAdminSchools, adminSchools, viewerSchools] = useMemo(() => {
-        const primary = allSchools.filter((s) => s.role === ROLES.PRIMARY);
-        const admin = allSchools.filter((s) => s.role === ROLES.ADMIN);
-        const viewer = allSchools.filter((s) => s.role === ROLES.VIEWER);
-        return [primary, admin, viewer];
-    }, [allSchools]);
+  const [primaryAdminSchools, adminSchools, viewerSchools] = useMemo(() => {
+    const primary = allSchools.filter((s) => s.role === ROLES.PRIMARY);
+    const admin = allSchools.filter((s) => s.role === ROLES.ADMIN);
+    const viewer = allSchools.filter((s) => s.role === ROLES.VIEWER);
+    return [primary, admin, viewer];
+  }, [allSchools]);
 
-    const selectedSchool = useMemo(() => {
-        if (!schoolId) return null;
-        const found = allSchools.find((s) => s.school_id === parseInt(schoolId));
-        return found ? {...found} : null;
-    }, [schoolId, allSchools]);
+  const selectedSchool = useMemo(() => {
+    if (!schoolId) return null;
+    const found = allSchools.find((s) => s.school_id === parseInt(schoolId));
+    return found ? { ...found } : null;
+  }, [schoolId, allSchools]);
 
-    const triggerReload = () => {
-        setReload(!reload);
-    }
+  const triggerReload = () => {
+    setReload(!reload);
+  };
 
-    useEffect(() => {
-        const fetchSchools = async () => {
-            const { data, error } = await supabase
-                .from("users_schools")
-                .select("*, schools(*)")
-                .eq("user_id", userId)
-                .order("schools(name)");
-            if (error) console.error("Error fetching schools:", error);
-            else setAllSchools(data);
-        }
-        fetchSchools();
-    }, [reload, userId]);
+  useEffect(() => {
+    const fetchSchools = async () => {
+      const { data, error } = await supabase
+        .from("users_schools")
+        .select("*, schools(*)")
+        .eq("user_id", userId)
+        .order("schools(name)");
+      if (error) console.error("Error fetching schools:", error);
+      else setAllSchools(data);
+    };
+    fetchSchools();
+  }, [reload, userId]);
 
-    useEffect(() => {
-        const currentTitle = selectedSchool?.schools?.name || "Schools";
-        setDocumentTitle({ title: currentTitle });
-    }, [selectedSchool?.schools?.name]);
+  useEffect(() => {
+    const currentTitle = selectedSchool?.schools?.name || "Schools";
+    setDocumentTitle({ title: currentTitle });
+  }, [selectedSchool?.schools?.name]);
 
-    return (
-        <>
-            {selectedSchool ? (
-                <SingleSchool
-                    key={selectedSchool.school_id}
-                    selectedSchool={selectedSchool}
-                    triggerReload={triggerReload}
-                />
-            ) : (
-                <AllSchools
-                    key="all-schools"
-                    primaryAdminSchools={primaryAdminSchools}
-                    adminSchools={adminSchools}
-                    viewerSchools={viewerSchools}
-                />
-            )}
-        </>
-    )
+  return (
+    <>
+      {selectedSchool ? (
+        <SingleSchool
+          key={selectedSchool.school_id}
+          selectedSchool={selectedSchool}
+          triggerReload={triggerReload}
+        />
+      ) : (
+        <AllSchools
+          key="all-schools"
+          primaryAdminSchools={primaryAdminSchools}
+          adminSchools={adminSchools}
+          viewerSchools={viewerSchools}
+        />
+      )}
+    </>
+  );
 }

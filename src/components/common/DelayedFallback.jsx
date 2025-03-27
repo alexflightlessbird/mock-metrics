@@ -1,17 +1,17 @@
 import React, { useState, useEffect, memo } from "react";
 
 const DelayedFallback = memo(({ initialFallback, delayedFallback, delay }) => {
-    const [fallback, setFallback] = useState(initialFallback);
+  const [fallback, setFallback] = useState(initialFallback);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setFallback(delayedFallback);
-        }, delay);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFallback(delayedFallback);
+    }, delay);
 
-        return () => clearTimeout(timer);
-    }, [initialFallback, delayedFallback, delay]);
+    return () => clearTimeout(timer);
+  }, [initialFallback, delayedFallback, delay]);
 
-    return fallback;
-})
+  return fallback;
+});
 
 export default DelayedFallback;
