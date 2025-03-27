@@ -67,28 +67,3 @@ export default function SingleCase({ selectedCase }) {
     </>
   );
 }
-
-/*
-
-    const detailItems = [
-        `Year: ${selectedCase.year}`,
-        `Status: ${selectedCase.is_active ? "Active" : "Inactive"}`,
-        `Type: ${selectedCase.type}`,
-        `Area: ${selectedCase.area}`
-    ];
-
-    return (
-        <>
-            <h1>{selectedCase.name}</h1>
-            <h2>Case Details</h2>
-            <List items={detailItems}/>
-            <h2>Associated Witnesses</h2>
-            <h3>Plaintiff</h3>
-            <WitnessList witnesses={pWitnesses} />
-            <h3>Defense</h3>
-            <WitnessList witnesses={dWitnesses} />
-            <h3>Swing</h3>
-            <WitnessList witnesses={sWitnesses} />
-        </>
-    )
-}*/
