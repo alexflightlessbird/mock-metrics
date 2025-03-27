@@ -21,6 +21,7 @@ export default function SingleStudent({
       editStudentForm.setValues({
         name: selectedStudent.name,
         active: selectedStudent.is_active,
+        teamId: allStudentTeams.filter((t) => t.student_id === selectedStudent.id && t.is_active)[0].team_id || []
       }),
     onClose: () => editStudentForm.reset(),
   });
@@ -48,8 +49,40 @@ export default function SingleStudent({
     onSubmitPreventDefault: "always",
   });
 
+  if (selectedStudent === "Not found") {
+    return <div>Student not found.</div>
+  }
+
+  if (isLoading) return <div>Loading student data...</div>;
+
   const handleEditStudentSubmit = async (values) => {
-    console.log(values);
+    const { name, active } = values;
+    const originalName = selectedStudent.name;
+    const originalStatus = selectedStudent.is_active;
+
+    const nameChanged = name !== originalName;
+    const statusChanged = active !== originalStatus;
+
+    if (!nameChanged && !statusChanged) {
+      close();
+      return;
+    }
+
+    const updates = {};
+    if (nameChanged) updates.name = name;
+    if (statusChanged) updates.is_active = active;
+
+    try {
+      const { error } = await supabase
+        .from("students")
+        .update(updates)
+        .eq("id", selectedStudent.id);
+      if (error) throw error;
+      close();
+      triggerReload();
+    } catch (error) {
+      console.error("Error updating student:", error);
+    }
   };
 
   return (
