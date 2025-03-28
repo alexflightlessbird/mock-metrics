@@ -1,14 +1,10 @@
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import AllCasesTabs from "../components/tabs/AllCasesTabs";
 import { Text } from "@mantine/core";
+import { useCaseFilters } from "../hooks/useCaseFilters";
 
 export default function AllCasesView({ allCases, currentAllCaseTab, setCurrentAllCaseTab }) {
-    const [activeCases, inactiveCases] = useMemo(() => {
-        const active = allCases.filter((c) => c.is_active);
-        const inactive = allCases.filter((c) => !c.is_active);
-        return [active, inactive];
-    }, [allCases]);
+    const [activeCases, inactiveCases] = useCaseFilters(allCases);
 
     const amtaItem = <Link to="https://www.collegemocktrial.org/resources/case-materials/" target="_blank">AMTA Case Materials</Link>
 

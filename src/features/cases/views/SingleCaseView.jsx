@@ -1,16 +1,11 @@
-import { useMemo } from "react";
 import List from "../../../common/components/List";
 import SingleCaseTabs from "../components/tabs/SingleCaseTabs";
+import { useWitnessFilters } from "../hooks/useWitnessFilters";
 
 export default function SingleCaseView({ selectedCase, allCaseWitnesses, currentTab, setCurrentTab }) {
     const pSide = selectedCase.type === "Civil" ? "Plaintiff" : "Prosecution";
 
-    const [pWitnesses, dWitnesses, sWitnesses] = useMemo(() => {
-        const p = allCaseWitnesses.filter((w) => w.side === pSide);
-        const d = allCaseWitnesses.filter((w) => w.side === "Defense");
-        const s = allCaseWitnesses.filter((w) => w.side === "Swing");
-        return [p, d, s];
-    }, [allCaseWitnesses, pSide]);
+    const [pWitnesses, dWitnesses, sWitnesses] = useWitnessFilters(allCaseWitnesses, pSide);
 
     if (!selectedCase || selectedCase === "Not found") {
         return <div>No case found for that ID.</div>

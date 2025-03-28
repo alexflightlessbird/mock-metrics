@@ -3,6 +3,7 @@ import { useCaseWitnesses } from "../../../hooks/api/useCases";
 import { useMemo, useState } from "react";
 import SingleCaseView from "../views/SingleCaseView";
 import SingleWitnessView from "../views/SingleWitnessView";
+import NotFound from "../../../common/components/NotFound";
 
 export default function SingleCaseRouter({ selectedCase }) {
     const [searchParams] = useSearchParams();
@@ -20,6 +21,6 @@ export default function SingleCaseRouter({ selectedCase }) {
     if (isPending) return <div>Loading case...</div>;
 
     if (!witnessId) return <SingleCaseView selectedCase={selectedCase} allCaseWitnesses={allCaseWitnesses} currentTab={currentCaseTab} setCurrentTab={setCurrentCaseTab} />;
-    if (witnessId && !selectedWitness) return <SingleWitnessView selectedWitness="Not found" />;
+    if (witnessId && !selectedWitness) return <NotFound type="witness" />;
     if (selectedWitness) return <SingleWitnessView selectedWitness={selectedWitness} />;
 }
