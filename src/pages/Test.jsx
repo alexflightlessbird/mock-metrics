@@ -5,7 +5,7 @@ import { setDocumentTitle } from "../utils/helpers";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
 const IconButton = lazy(() =>
-  import("../components/common/buttons/IconButton")
+  import("../common/components/NewIconButton")
 );
 
 const example1 = {

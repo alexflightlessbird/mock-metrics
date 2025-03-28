@@ -1,5 +1,5 @@
 import React from "react";
-import Breadcrumb from "../common/Breadcrumb";
+import Breadcrumb from "../../common/components/Breadcrumb";
 import { Pill, useMantineTheme } from "@mantine/core";
 import { Link, useSearchParams } from "react-router-dom";
 

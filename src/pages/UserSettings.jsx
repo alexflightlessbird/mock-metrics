@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
 import { useSession } from "../hooks/auth/useSession";
 import { setDocumentTitle } from "../utils/helpers";
-import List from "../components/common/List";
+import List from "../common/components/List";
 import { Flex, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { hasLength, useForm } from "@mantine/form";
-import { EditIcon } from "../components/common/ActionIcons";
-import IconButton from "../components/common/buttons/NewIconButton";
+import { EditIcon } from "../common/components/ActionIcons";
+import IconButton from "../common/components/NewIconButton";
 
 export default function UserSettings() {
   const { userId } = useSession();

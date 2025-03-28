@@ -1,11 +1,11 @@
 import React from "react";
-import List from "../common/List";
+import List from "../../common/components/List";
 import { Flex, TextInput, Modal, FocusTrap } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../utils/constants";
-import { EditIcon } from "../common/ActionIcons";
-import IconButton from "../common/buttons/NewIconButton";
+import { EditIcon } from "../../common/components/ActionIcons";
+import IconButton from "../../common/components/NewIconButton";
 import SchoolTabs from "./SchoolTabs";
 import { useSchoolMutations } from "../../hooks/api/useSchools";
 

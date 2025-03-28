@@ -1,5 +1,5 @@
 import React from "react";
-import List from "../common/List";
+import List from "../../common/components/List";
 import { Link } from "react-router-dom";
 import { Text } from "@mantine/core";
 

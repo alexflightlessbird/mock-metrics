@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import Countdown from "../components/common/Countdown";
-import IconButton from "../components/common/buttons/IconButton";
+import Countdown from "../common/components/Countdown";
+import IconButton from "../common/components/NewIconButton";
 import { setDocumentTitle } from "../utils/helpers";
 
 export default function NotFound() {

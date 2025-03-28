@@ -6,9 +6,9 @@ import notification from "antd/es/notification";
 import message from "antd/es/message";
 import Steps from "antd/es/steps";
 const { Step } = Steps;
-import IconButton from "../common/buttons/IconButton";
+import IconButton from "../../common/components/NewIconButton";
 const InputGroup = lazy(() => import("./InputGroup"));
-const Countdown = lazy(() => import("../common/Countdown"));
+const Countdown = lazy(() => import("../../common/components/Countdown"));
 
 function getInitialFormValues(inputGroups) {
   const initialValues = {};

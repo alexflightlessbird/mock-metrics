@@ -32,15 +32,12 @@ export default function Schools() {
 
   if (isPending) return <div>Loading schools...</div>;
 
-  const triggerReload = () => console.log("Reload");
-
   return (
     <>
       {selectedSchool ? (
         <SingleSchool
           key={selectedSchool.schools.id}
           selectedSchool={selectedSchool}
-          triggerReload={triggerReload}
         />
       ) : (
         <AllSchools

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import List from "../common/List";
+import List from "../../common/components/List";
 
 export default function SchoolList({ schools }) {
   const mappedSchools = [];

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { supabase } from "../../services/supabaseClient";
-import List from "../common/List";
+import List from "../../common/components/List";
 import WitnessList from "./WitnessList";
 import { Tabs } from "@mantine/core";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, useMantineTheme } from "@mantine/core";
-import icons from "../../../utils/icons";
+import icons from "../../utils/icons";
 
 export default function IconButton({
   icon = null,

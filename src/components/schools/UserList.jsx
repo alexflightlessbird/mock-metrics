@@ -1,10 +1,10 @@
 import React from "react";
-import List from "../common/List";
+import List from "../../common/components/List";
 import { Flex, Text, Select } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
-import { EditIcon, DeleteIcon } from "../common/ActionIcons";
-import IconButton from "../common/buttons/NewIconButton";
+import { EditIcon, DeleteIcon } from "../../common/components/ActionIcons";
+import IconButton from "../../common/components/NewIconButton";
 import { ROLES } from "../../utils/constants";
 import { useSession } from "../../hooks/auth/useSession";
 import { useSchoolDataMutations } from "../../hooks/api/useSchoolData";

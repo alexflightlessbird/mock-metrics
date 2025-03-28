@@ -10,7 +10,7 @@ import { useSession } from "../hooks/auth/useSession";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
 const IconButton = lazy(() =>
-  import("../components/common/buttons/IconButton")
+  import("../common/components/NewIconButton")
 );
 
 export default function Login() {
