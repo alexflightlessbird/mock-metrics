@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useSession } from "../hooks/auth/useSession";
+import { useSession } from "../../hooks/auth/useSession";
 //import Spin from "antd/es/spin";
 
 export default function ProtectedRoute({ children, redirectPath = "/" }) {

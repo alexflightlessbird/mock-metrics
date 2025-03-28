@@ -6,20 +6,20 @@ import {
 } from "react-router-dom";
 import ProtectedRouteWrapper from "./ProtectedRouteWrapper";
 import routesConfig from "./routes.json";
-import RootLayout from "../layouts/RootLayout";
+import RootLayout from "../../layouts/RootLayout";
 
 //pages
-const NotFound = lazy(() => import("../pages/NotFound"));
+const NotFound = lazy(() => import("../../pages/NotFound"));
 
 const componentMap = {
-  Home: lazy(() => import("../pages/Home")),
-  Test: lazy(() => import("../pages/Test")),
-  UserSettings: lazy(() => import("../pages/UserSettings")),
-  Auth: lazy(() => import("../pages/Auth")),
-  Cases: lazy(() => import("../pages/Cases")),
-  Witnesses: lazy(() => import("../pages/Witnesses")),
-  Schools: lazy(() => import("../pages/Schools")),
-  Teams: lazy(() => import("../pages/Teams")),
+  Home: lazy(() => import("../../pages/Home")),
+  Test: lazy(() => import("../../pages/Test")),
+  UserSettings: lazy(() => import("../../pages/UserSettings")),
+  Auth: lazy(() => import("../../pages/Auth")),
+  Cases: lazy(() => import("../../pages/Cases")),
+  Witnesses: lazy(() => import("../../pages/Witnesses")),
+  Schools: lazy(() => import("../../pages/Schools")),
+  Teams: lazy(() => import("../../pages/Teams")),
 };
 
 function createRouteElements(routes) {
