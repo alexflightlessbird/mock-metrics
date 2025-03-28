@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { setDocumentTitle } from "../utils/helpers";
-import { useSession } from "../hooks/auth/useSession";
+import { useSession } from "../common/hooks/auth/useSession";
 import SingleSchool from "../components/schools/SingleSchool";
 import AllSchools from "../components/schools/AllSchools";
 import { ROLES } from "../utils/constants";

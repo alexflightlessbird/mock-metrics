@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { Outlet, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { useSession } from "../hooks/auth/useSession";
+import { useSession } from "../common/hooks/auth/useSession";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import { useDisclosure } from "@mantine/hooks";

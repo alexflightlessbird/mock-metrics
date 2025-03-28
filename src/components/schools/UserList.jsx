@@ -6,7 +6,7 @@ import { useForm } from "@mantine/form";
 import { EditIcon, DeleteIcon } from "../../common/components/ActionIcons";
 import IconButton from "../../common/components/NewIconButton";
 import { ROLES } from "../../utils/constants";
-import { useSession } from "../../hooks/auth/useSession";
+import { useSession } from "../../common/hooks/auth/useSession";
 import { useSchoolDataMutations } from "../../hooks/api/useSchoolData";
 
 export default function UserList({

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
-import { useSession } from "../hooks/auth/useSession";
+import { useSession } from "../common/hooks/auth/useSession";
 import { setDocumentTitle } from "../utils/helpers";
 import List from "../common/components/List";
 import { Flex, Modal, TextInput } from "@mantine/core";

@@ -6,7 +6,7 @@ import message from "antd/es/message";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { setDocumentTitle } from "../utils/helpers";
-import { useSession } from "../hooks/auth/useSession";
+import { useSession } from "../common/hooks/auth/useSession";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
 const IconButton = lazy(() =>
