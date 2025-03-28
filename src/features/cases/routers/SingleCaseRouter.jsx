@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useCaseWitnesses } from "../../../hooks/api/useCases";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import SingleCaseView from "../views/SingleCaseView";
 import SingleWitnessView from "../views/SingleWitnessView";
 
@@ -15,9 +15,11 @@ export default function SingleCaseRouter({ selectedCase }) {
         return allCaseWitnesses.find((w) => w.id === parseInt(witnessId)) || null;
     }, [witnessId, allCaseWitnesses]);
 
+    const [currentCaseTab, setCurrentCaseTab] = useState(selectedCase.type === "Civil" ? "Plaintiff" : "Prosecution");
+
     if (isPending) return <div>Loading case...</div>;
 
-    if (!witnessId) return <SingleCaseView selectedCase={selectedCase} allCaseWitnesses={allCaseWitnesses} />;
+    if (!witnessId) return <SingleCaseView selectedCase={selectedCase} allCaseWitnesses={allCaseWitnesses} currentTab={currentCaseTab} setCurrentTab={setCurrentCaseTab} />;
     if (witnessId && !selectedWitness) return <SingleWitnessView selectedWitness="Not found" />;
     if (selectedWitness) return <SingleWitnessView selectedWitness={selectedWitness} />;
 }
