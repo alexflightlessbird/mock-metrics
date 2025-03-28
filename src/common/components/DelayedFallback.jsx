@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo } from "react";
 
 const DelayedFallback = memo(({ initialFallback, delayedFallback, delay }) => {
   const [fallback, setFallback] = useState(initialFallback);

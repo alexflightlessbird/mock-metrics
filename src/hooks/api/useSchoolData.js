@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../services/supabaseClient";
-import _ from "lodash";
 
 export const useSchoolTeams = (schoolId) => {
     return useQuery({

@@ -1,4 +1,3 @@
-import React from "react";
 import List from "../../common/components/List";
 import { Flex, TextInput, Modal, FocusTrap } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";

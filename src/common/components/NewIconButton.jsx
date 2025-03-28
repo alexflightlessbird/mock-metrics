@@ -1,4 +1,4 @@
-import React from "react";
+import { createElement } from "react";
 import { Button, useMantineTheme } from "@mantine/core";
 import icons from "../../utils/icons";
 
@@ -19,11 +19,11 @@ export default function IconButton({
   if (icon) {
     if (iconPosition === "right") {
       iconProps = {
-        rightSection: React.createElement(icons[icon]),
+        rightSection: createElement(icons[icon]),
       };
     } else {
       iconProps = {
-        leftSection: React.createElement(icons[icon]),
+        leftSection: createElement(icons[icon]),
       };
     }
   }

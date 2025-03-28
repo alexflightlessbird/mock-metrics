@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment } from "react";
 import Breadcrumb from "../../common/components/Breadcrumb";
 import { Pill, useMantineTheme } from "@mantine/core";
 import { Link, useSearchParams } from "react-router-dom";
@@ -89,7 +89,7 @@ export default function SchoolBreadcrumb({
   };
 
   const breadcrumbItems = getBreadcrumbItems().map((item, index) => (
-    <React.Fragment key={index}>{item.title}</React.Fragment>
+    <Fragment key={index}>{item.title}</Fragment>
   ));
 
   return <Breadcrumb>{breadcrumbItems}</Breadcrumb>;

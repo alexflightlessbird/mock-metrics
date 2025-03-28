@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import Skeleton from "antd/es/skeleton";
 const Form = lazy(() => import("./Form"));
 

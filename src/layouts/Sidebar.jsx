@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, createElement } from "react";
 import {
   Tooltip,
   Flex,
@@ -21,7 +21,7 @@ export default function Sidebar({ session, opened, toggle }) {
   const commonItems = [
     {
       label: "Home",
-      icon: React.createElement(icons.home),
+      icon: createElement(icons.home),
       navigatePath: "/",
     },
   ];
@@ -31,22 +31,22 @@ export default function Sidebar({ session, opened, toggle }) {
   const loggedInItems = [
     {
       label: "Test",
-      icon: React.createElement(icons.dashboard),
+      icon: createElement(icons.dashboard),
       navigatePath: "/test",
     },
     {
       label: "Details",
-      icon: React.createElement(icons.info),
+      icon: createElement(icons.info),
       navigatePath: null,
       children: [
         {
           label: "Cases",
-          icon: React.createElement(icons.openbook),
+          icon: createElement(icons.openbook),
           navigatePath: "/cases",
         },
         {
           label: "Schools",
-          icon: React.createElement(icons.school),
+          icon: createElement(icons.school),
           navigatePath: "/schools",
         },
       ],
@@ -57,19 +57,19 @@ export default function Sidebar({ session, opened, toggle }) {
     ? [
         {
           label: "Logout",
-          icon: React.createElement(icons.logout),
+          icon: createElement(icons.logout),
           navigatePath: "/auth",
         },
         {
           label: "Profile Settings",
-          icon: React.createElement(icons.settings),
+          icon: createElement(icons.settings),
           navigatePath: "/settings",
         },
       ]
     : [
         {
           label: "Login/Register",
-          icon: React.createElement(icons.login),
+          icon: createElement(icons.login),
           navigatePath: "/auth",
         },
       ];
@@ -132,8 +132,8 @@ export default function Sidebar({ session, opened, toggle }) {
               {item.children && (
                 <Text size="xs" style={{ paddingLeft: "5px" }}>
                   {expandedItems[item.label]
-                    ? React.createElement(icons.up)
-                    : React.createElement(icons.down)}
+                    ? createElement(icons.up)
+                    : createElement(icons.down)}
                 </Text>
               )}
             </Box>
@@ -170,8 +170,8 @@ export default function Sidebar({ session, opened, toggle }) {
             {item.children && (
               <Text size="xs" style={{ paddingLeft: "10px" }}>
                 {expandedItems[item.label]
-                  ? React.createElement(icons.up)
-                  : React.createElement(icons.down)}
+                  ? createElement(icons.up)
+                  : createElement(icons.down)}
               </Text>
             )}
           </Box>

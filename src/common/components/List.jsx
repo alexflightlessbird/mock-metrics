@@ -1,4 +1,3 @@
-import React from "react";
 import { List } from "@mantine/core";
 
 export default function ListComponent({ items }) {

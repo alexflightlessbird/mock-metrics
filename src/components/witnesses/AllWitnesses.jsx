@@ -1,4 +1,3 @@
-import React from "react";
 import WitnessList from "./WitnessList";
 
 export default function AllWitnesses({ activeWitnesses, inactiveWitnesses }) {

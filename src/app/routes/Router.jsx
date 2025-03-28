@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import { lazy } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -20,6 +20,7 @@ const componentMap = {
   Witnesses: lazy(() => import("../../pages/Witnesses")),
   Schools: lazy(() => import("../../pages/Schools")),
   Teams: lazy(() => import("../../pages/Teams")),
+  CasesTest: lazy(() => import("../../features/cases/Cases"))
 };
 
 function createRouteElements(routes) {

@@ -1,7 +1,6 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import Skeleton from "antd/es/skeleton";
 import AntForm from "antd/es/form";
-import Input from "antd/es/input";
 import notification from "antd/es/notification";
 import message from "antd/es/message";
 import Steps from "antd/es/steps";
@@ -64,7 +63,7 @@ export default function Form({
     if (currentStep > 0) setCurrentStep((prev) => prev - 1);
   };
 
-  const handleFailedSubmit = (values) => {
+  const handleFailedSubmit = () => {
     showErrorMessage();
   };
 
@@ -163,7 +162,7 @@ export default function Form({
         });
         setSubmitEnabled(!hasErrors);
       });
-  }, [values, inputGroups]);
+  }, [values, inputGroups, form]);
 
   const showSubmitButton = currentStep === inputGroups.length - 1;
 
@@ -272,7 +271,7 @@ export default function Form({
                   tooltipPlacement="top"
                   tooltipText="Complete all required questions"
                   className="submit-button"
-                  htmlType="submit"
+                  type="submit"
                 />
               )}
           </div>

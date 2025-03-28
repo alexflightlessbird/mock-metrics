@@ -1,4 +1,3 @@
-import React from "react";
 import CaseList from "./CaseList";
 
 export default function AllCases({ activeCases, inactiveCases }) {

@@ -23,6 +23,10 @@
       "component": "Cases"
     },
     {
+      "path": "/cases-test",
+      "component": "CasesTest"
+    },
+    {
       "path": "/schools",
       "component": "Schools"
     }

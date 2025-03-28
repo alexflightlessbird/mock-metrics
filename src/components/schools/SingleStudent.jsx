@@ -1,4 +1,3 @@
-import React from "react";
 import List from "../../common/components/List";
 import { Link } from "react-router-dom";
 import { Checkbox, Flex, Text, TextInput, Modal, Select } from "@mantine/core";

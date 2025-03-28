@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import IconButton from "../../common/components/NewIconButton";
 import Spin from "antd/es/spin";
 import AntModal from "antd/es/modal";

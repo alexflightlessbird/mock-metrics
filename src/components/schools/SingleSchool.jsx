@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import SchoolBreadcrumb from "./SchoolBreadcrumb";
 import SingleTeam from "./SingleTeam";

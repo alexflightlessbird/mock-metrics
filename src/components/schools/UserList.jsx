@@ -1,4 +1,3 @@
-import React from "react";
 import List from "../../common/components/List";
 import { Flex, Text, Select } from "@mantine/core";
 import { modals } from "@mantine/modals";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import Skeleton from "antd/es/skeleton";
 import Steps from "antd/es/steps";
 const { Step } = Steps;

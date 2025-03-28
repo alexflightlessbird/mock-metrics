@@ -1,4 +1,4 @@
-import React from "react";
+import { createElement } from "react";
 import { useMantineTheme, ActionIcon } from "@mantine/core";
 import icons from "../../utils/icons";
 
@@ -11,7 +11,7 @@ function EditIcon({ onClick }) {
       onClick={onClick}
       style={{ color: theme.colors.primaryBlue[0] }}
     >
-      {React.createElement(icons.edit)}
+      {createElement(icons.edit)}
     </ActionIcon>
   );
 }
@@ -25,7 +25,7 @@ function DeleteIcon({ onClick }) {
       onClick={onClick}
       style={{ color: theme.colors.red[5] }}
     >
-      {React.createElement(icons.delete)}
+      {createElement(icons.delete)}
     </ActionIcon>
   );
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import TeamList from "./TeamList";
 
 export default function AllTeams({ activeTeams, inactiveTeams }) {

@@ -1,4 +1,3 @@
-import React from "react";
 import SchoolList from "./SchoolList";
 import SchoolBreadcrumb from "./SchoolBreadcrumb";
 
