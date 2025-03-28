@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import SingleCaseView from "../views/SingleCaseView";
 import AllCasesView from "../views/AllCasesView";
 import SingleCaseRouter from "./SingleCaseRouter";
 import NotFound from "../../../common/components/NotFound";
