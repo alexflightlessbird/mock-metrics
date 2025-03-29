@@ -4,9 +4,7 @@ import Button from "antd/es/button";
 import { setDocumentTitle } from "../utils/helpers";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
-const IconButton = lazy(() =>
-  import("../common/components/NewIconButton")
-);
+const IconButton = lazy(() => import("../common/components/IconButton"));
 
 const example1 = {
   className: "testing",

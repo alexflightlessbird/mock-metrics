@@ -2,7 +2,7 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import Skeleton from "antd/es/skeleton";
 import Steps from "antd/es/steps";
 const { Step } = Steps;
-import IconButton from "../../common/components/NewIconButton";
+import IconButton from "../../common/components/IconButton";
 const FormGroup = lazy(() => import("./FormGroup"));
 
 export default function Fieldset({

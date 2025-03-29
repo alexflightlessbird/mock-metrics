@@ -7,7 +7,7 @@ import { Flex, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { hasLength, useForm } from "@mantine/form";
 import { EditIcon } from "../common/components/ActionIcons";
-import IconButton from "../common/components/NewIconButton";
+import IconButton from "../common/components/IconButton";
 
 export default function UserSettings() {
   const { userId } = useSession();

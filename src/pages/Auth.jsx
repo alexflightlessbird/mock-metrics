@@ -9,9 +9,7 @@ import { setDocumentTitle } from "../utils/helpers";
 import { useSession } from "../common/hooks/auth/useSession";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
-const IconButton = lazy(() =>
-  import("../common/components/NewIconButton")
-);
+const IconButton = lazy(() => import("../common/components/IconButton"));
 
 export default function Login() {
   const { session } = useSession();

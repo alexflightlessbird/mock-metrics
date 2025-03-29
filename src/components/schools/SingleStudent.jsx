@@ -5,7 +5,7 @@ import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../utils/constants";
 import { EditIcon } from "../../common/components/ActionIcons";
-import IconButton from "../../common/components/NewIconButton";
+import IconButton from "../../common/components/IconButton";
 import { useSchoolDataMutations } from "../../hooks/api/useSchoolData";
 
 export default function SingleStudent({
@@ -17,29 +17,26 @@ export default function SingleStudent({
   const { updateStudent } = useSchoolDataMutations();
 
   const [opened, { open, close }] = useDisclosure(false, {
-    onOpen: () => 
+    onOpen: () =>
       editStudentForm.setValues({
         name: selectedStudent.name,
         active: selectedStudent.is_active,
-        teamId: currentTeam?.team_id?.toString() || "null"
+        teamId: currentTeam?.team_id?.toString() || "null",
       }),
-      onClose: () => editStudentForm.reset(),
-    });
-    
-    const editStudentForm = useForm({
-      mode: "uncontrolled",
-      validate: {
-        name: hasLength(
-          { min: 2, max: 40 },
-          "Must be 2-40 characters"
-        ),
-      },
-      validateInputOnBlur: true,
-      onSubmitPreventDefault: "always"
-    });
-    
+    onClose: () => editStudentForm.reset(),
+  });
+
+  const editStudentForm = useForm({
+    mode: "uncontrolled",
+    validate: {
+      name: hasLength({ min: 2, max: 40 }, "Must be 2-40 characters"),
+    },
+    validateInputOnBlur: true,
+    onSubmitPreventDefault: "always",
+  });
+
   if (selectedStudent === "Not found" || !selectedStudent) {
-    return <Text>Student not found.</Text>
+    return <Text>Student not found.</Text>;
   }
 
   const handleEditStudentSubmit = async (values) => {
@@ -67,23 +64,27 @@ export default function SingleStudent({
         is_active: statusChanged ? active : undefined,
         newTeamId: teamChanged ? parsedTeamId : undefined,
         originalTeamId: originalTeamId,
-        schoolId: selectedSchool.school_id
+        schoolId: selectedSchool.school_id,
       });
       close();
     } catch (error) {
       console.error("Student update failed:", error);
     }
-
-  }
+  };
 
   const activeTeams = allTeams.filter((t) => t.is_active);
 
   const teamOptions = [
     { value: "null", label: "None" },
-    ...activeTeams.map(team => ({ value: team.id.toString(), label: team.name }))
+    ...activeTeams.map((team) => ({
+      value: team.id.toString(),
+      label: team.name,
+    })),
   ];
 
-  const currentTeam = allStudentTeams.find((t) => t.student_id === selectedStudent.id && t.is_active);
+  const currentTeam = allStudentTeams.find(
+    (t) => t.student_id === selectedStudent.id && t.is_active
+  );
 
   const schoolItem = (
     <Link to={`/schools?schoolId=${selectedSchool.school_id}`}>
@@ -91,9 +92,15 @@ export default function SingleStudent({
     </Link>
   );
 
-  const teamItem = currentTeam 
-    ? <Link to={`/schools?schoolId=${selectedSchool.school_id}&teamId=${currentTeam.team_id}`}>{currentTeam.teams.name}</Link>
-    : "None";
+  const teamItem = currentTeam ? (
+    <Link
+      to={`/schools?schoolId=${selectedSchool.school_id}&teamId=${currentTeam.team_id}`}
+    >
+      {currentTeam.teams.name}
+    </Link>
+  ) : (
+    "None"
+  );
 
   const detailItems = [
     `Name: ${selectedStudent.name}`,
@@ -105,16 +112,27 @@ export default function SingleStudent({
   return (
     <>
       <h1>{selectedStudent.name}</h1>
-      <Flex style={{ alignItems: "center", "gap": "7px" }}>
+      <Flex style={{ alignItems: "center", gap: "7px" }}>
         <h2>Student Details</h2>
-        {(selectedSchool.role === ROLES.PRIMARY || selectedSchool.role === ROLES.ADMIN) && (
+        {(selectedSchool.role === ROLES.PRIMARY ||
+          selectedSchool.role === ROLES.ADMIN) && (
           <>
             <EditIcon onClick={open} />
-            <Modal opened={opened} onClose={close} title="Edit Student Details" centered={true}>
-              <form onSubmit={editStudentForm.onSubmit(handleEditStudentSubmit, (errors) => {
-                const firstErrorPath = Object.keys(errors)[0];
-                editStudentForm.getInputNode(firstErrorPath)?.focus();
-              })}>
+            <Modal
+              opened={opened}
+              onClose={close}
+              title="Edit Student Details"
+              centered={true}
+            >
+              <form
+                onSubmit={editStudentForm.onSubmit(
+                  handleEditStudentSubmit,
+                  (errors) => {
+                    const firstErrorPath = Object.keys(errors)[0];
+                    editStudentForm.getInputNode(firstErrorPath)?.focus();
+                  }
+                )}
+              >
                 <TextInput
                   data-autofocus
                   placeholder="Enter the student's name"
@@ -133,7 +151,9 @@ export default function SingleStudent({
                 <Checkbox
                   label="Active"
                   style={{ cursor: "pointer" }}
-                  {...editStudentForm.getInputProps("active", { type: "checkbox" })}
+                  {...editStudentForm.getInputProps("active", {
+                    type: "checkbox",
+                  })}
                 />
                 <br />
                 <IconButton icon="save" type="submit" buttonText="Submit" />
@@ -144,6 +164,5 @@ export default function SingleStudent({
       </Flex>
       <List items={detailItems} />
     </>
-  )
-
+  );
 }

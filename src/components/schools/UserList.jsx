@@ -3,17 +3,12 @@ import { Flex, Text, Select } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 import { EditIcon, DeleteIcon } from "../../common/components/ActionIcons";
-import IconButton from "../../common/components/NewIconButton";
+import IconButton from "../../common/components/IconButton";
 import { ROLES } from "../../utils/constants";
 import { useSession } from "../../common/hooks/auth/useSession";
 import { useSchoolDataMutations } from "../../hooks/api/useSchoolData";
 
-export default function UserList({
-  users,
-  isPremium,
-  schoolId,
-  schoolName
-}) {
+export default function UserList({ users, isPremium, schoolId, schoolName }) {
   const { updateUserRole, removeUserFromSchool } = useSchoolDataMutations();
   const { userId } = useSession();
 
@@ -43,7 +38,7 @@ export default function UserList({
     } catch (error) {
       console.error("User role update failed:", error);
     }
-  }
+  };
 
   const editUserModal = (user) => {
     editUserForm.reset();
@@ -70,12 +65,14 @@ export default function UserList({
               {isPremium ? (
                 <span>To make changes, add another primary admin first.</span>
               ) : (
-                <span>To change the primary admin, please contact MSU Mock Trial.</span>
+                <span>
+                  To change the primary admin, please contact MSU Mock Trial.
+                </span>
               )}
             </Text>
           </>
-        )
-      })
+        ),
+      });
     }
 
     if (user.user_id === userId) {
@@ -86,8 +83,8 @@ export default function UserList({
           <>
             <Text>You can't modify your own role in a school assignment.</Text>
           </>
-        )
-      })
+        ),
+      });
     }
 
     modals.open({
@@ -109,9 +106,9 @@ export default function UserList({
             <IconButton icon="save" type="submit" buttonText="Submit" />
           </form>
         </>
-      )
-    })
-  }
+      ),
+    });
+  };
 
   const removeUserModal = (user) => {
     if (user.role === ROLES.PRIMARY && users.length === 1) {
@@ -122,7 +119,7 @@ export default function UserList({
           <>
             <Text>You can't remove the only primary admin!</Text>
           </>
-        )
+        ),
       });
     }
 
@@ -134,30 +131,34 @@ export default function UserList({
           <>
             <Text>You can't remove yourself from a school assignment.</Text>
           </>
-        )
-      })
+        ),
+      });
     }
 
     modals.openConfirmModal({
       title: "Remove User",
       centered: true,
       children: (
-        <Text>Are you sure you want to remove {user.users.name} from {schoolName}?</Text>
+        <Text>
+          Are you sure you want to remove {user.users.name} from {schoolName}?
+        </Text>
       ),
       labels: { confirm: "Remove User", cancel: "Cancel" },
       onConfirm: async () => {
         await removeUserFromSchool({ userId: user.user_id, schoolId });
         modals.closeAll();
-      }
-    })
-  }
+      },
+    });
+  };
 
   const mappedUsers = [];
 
   users.map((u) => {
     mappedUsers.push(
       <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <Text>{u.users.name} ({u.users.email})</Text>
+        <Text>
+          {u.users.name} ({u.users.email})
+        </Text>
         {u.user_id !== userId && (
           <>
             <EditIcon onClick={() => editUserModal(u)} />
@@ -165,8 +166,8 @@ export default function UserList({
           </>
         )}
       </Flex>
-    )
-  })
+    );
+  });
 
   if (mappedUsers.length == 0) mappedUsers.push("None");
 

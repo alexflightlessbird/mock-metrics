@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import Countdown from "../common/components/Countdown";
-import IconButton from "../common/components/NewIconButton";
+import IconButton from "../common/components/IconButton";
 import { setDocumentTitle } from "../utils/helpers";
 
 export default function NotFound() {
