@@ -72,7 +72,7 @@ function RootLayout() {
               gap="xs"
               style={{ cursor: "pointer" }}
             >
-              <Image src={logo} h={75} w={75} />
+              <Image src={logo} h={75} w={75} alt="logo" />
               <Text style={{ fontFamily: "Trirong", fontSize: "2rem" }}>
                 MockMetrics
               </Text>

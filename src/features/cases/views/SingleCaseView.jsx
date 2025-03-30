@@ -16,10 +16,6 @@ export default function SingleCaseView({
     pSide
   );
 
-  if (!selectedCase || selectedCase === "Not found") {
-    return <NotFound type="case" />;
-  }
-
   const detailItems = [
     `Year: ${selectedCase.year}`,
     `Status: ${selectedCase.is_active ? "Active" : "Inactive"}`,

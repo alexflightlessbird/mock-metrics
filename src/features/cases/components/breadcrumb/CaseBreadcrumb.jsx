@@ -43,7 +43,9 @@ export default function CaseBreadcrumb() {
 
     if (!witnessId) {
       items.push({
-        title: <BreadcrumbPill active>{selectedCase.name}</BreadcrumbPill>,
+        title: (
+          <BreadcrumbPill active>Case: {selectedCase.name}</BreadcrumbPill>
+        ),
       });
       return items;
     }
@@ -62,7 +64,9 @@ export default function CaseBreadcrumb() {
     }
 
     items.push({
-      title: <BreadcrumbPill active>{selectedWitness.name}</BreadcrumbPill>,
+      title: (
+        <BreadcrumbPill active>Witness: {selectedWitness.name}</BreadcrumbPill>
+      ),
     });
     return items;
   };

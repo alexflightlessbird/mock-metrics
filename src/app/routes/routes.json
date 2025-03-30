@@ -23,8 +23,8 @@
       "component": "Cases"
     },
     {
-      "path": "/cases-test",
-      "component": "CasesTest"
+      "path": "/schools-test",
+      "component": "SchoolsTest"
     },
     {
       "path": "/schools",

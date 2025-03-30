@@ -18,9 +18,9 @@ const componentMap = {
   Auth: lazy(() => import("../../pages/Auth")),
   Cases: lazy(() => import("../../features/cases/Cases")),
   Witnesses: lazy(() => import("../../pages/Witnesses")),
-  Schools: lazy(() => import("../../pages/Schools")),
+  Schools: lazy(() => import("../../features/schools/Schools")),
   Teams: lazy(() => import("../../pages/Teams")),
-  CasesTest: lazy(() => import("../../features/cases/Cases"))
+  SchoolsTest: lazy(() => import("../../features/schools/Schools")),
 };
 
 function createRouteElements(routes) {
