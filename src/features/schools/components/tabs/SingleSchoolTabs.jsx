@@ -118,7 +118,6 @@ export default function SingleSchoolTabs({
         <>
           <br />
           <Text>To add additional users, please contact MSU Mock Trial.</Text>
-          <br />
           <h3>
             Primary Admins
             {isPremium ? (
