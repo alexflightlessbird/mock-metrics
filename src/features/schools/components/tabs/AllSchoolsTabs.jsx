@@ -8,38 +8,40 @@ export default function AllSchoolsTabs({
   currentTab,
   setCurrentTab,
 }) {
-  const tabs = [
-    {
-      value: "primary",
-      label: "Primary Admin",
-      content: (
-        <>
-          <h3>Primary Admin Schools</h3>
-          <SchoolList schools={primarySchools} />
-        </>
-      ),
-    },
-    {
-      value: "admin",
-      label: "Admin",
-      content: (
-        <>
-          <h3>Admin Schools</h3>
-          <SchoolList schools={adminSchools} />
-        </>
-      ),
-    },
-    {
-      value: "viewer",
-      label: "Viewer",
-      content: (
-        <>
-          <h3>Viewer Schools</h3>
-          <SchoolList schools={viewerSchools} />
-        </>
-      ),
-    },
-  ];
+  const tabs = [];
+
+  if (primarySchools.length > 0) tabs.push({
+    value: "primary",
+    label: "Primary Admin",
+    content: (
+      <>
+        <h3>Primary Admin Schools</h3>
+        <SchoolList schools={primarySchools} />
+      </>
+    )
+  })
+
+  if (adminSchools.length > 0) tabs.push({
+    value: "admin",
+    label: "Admin",
+    content: (
+      <>
+        <h3>Admin Schools</h3>
+        <SchoolList schools={adminSchools} />
+      </>
+    )
+  })
+
+  if (viewerSchools.length > 0) tabs.push({
+    value: "viewer",
+    label: "Viewer",
+    content: (
+      <>
+        <h3>Viewer Schools</h3>
+        <SchoolList schools={viewerSchools} />
+      </>
+    )
+  })
 
   return (
     <TabbedView
