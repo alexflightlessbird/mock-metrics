@@ -1,11 +1,11 @@
 import List from "../../../common/components/List";
-import { Checkbox, Flex, TextInput, Modal, Select } from "@mantine/core";
+import { Checkbox, TextInput, Modal, Select } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
-import { EditIcon } from "../../../common/components/ActionIcons";
 import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
+import EntityHeader from "../components/EntityHeader";
 
 export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const { updateTeam } = useSchoolDataMutations();
@@ -69,49 +69,44 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
 
   return (
     <>
-      <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <h1>{selectedTeam.name}</h1>
-        {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
-          <>
-            <EditIcon onClick={open} />
-            <Modal opened={opened} onClose={close} title="Edit Team" centered={true}>
-              <form onSubmit = {editTeamForm.onSubmit(
-                handleEditTeamSubmit,
-                (errors) => {
-                  const firstErrorPath = Object.keys(errors)[0];
-                  editTeamForm.getInputNode(firstErrorPath)?.focus();
-                }
-              )}
-              >
-                <TextInput
-                  data-autofocus
-                  placeholder="Enter the team's name"
-                  withAsterisk
-                  label="Name"
-                  {...editTeamForm.getInputProps("name")}
-                />
-                <br />
-                <Select
-                  label="Type"
-                  allowDeselect={false}
-                  data={typeOptions}
-                  {...editTeamForm.getInputProps("type")}
-                />
-                <br />
-                <Checkbox
-                  label="Active"
-                  style={{ cursor: "pointer" }}
-                  {...editTeamForm.getInputProps("active", {
-                    type: "checkbox"
-                  })}
-                />
-                <br />
-                <IconButton icon="save" type="submit" buttonText="Submit" />
-              </form>
-            </Modal>
-          </>
-        )}
-      </Flex>
+      <EntityHeader title={selectedTeam.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
+      {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
+        <Modal opened={opened} onClose={close} title="Edit Team" centered={true}>
+          <form onSubmit = {editTeamForm.onSubmit(
+            handleEditTeamSubmit,
+            (errors) => {
+              const firstErrorPath = Object.keys(errors)[0];
+              editTeamForm.getInputNode(firstErrorPath)?.focus();
+            }
+          )}
+          >
+            <TextInput
+              data-autofocus
+              placeholder="Enter the team's name"
+              withAsterisk
+              label="Name"
+              {...editTeamForm.getInputProps("name")}
+            />
+            <br />
+            <Select
+              label="Type"
+              allowDeselect={false}
+              data={typeOptions}
+              {...editTeamForm.getInputProps("type")}
+            />
+            <br />
+            <Checkbox
+              label="Active"
+              style={{ cursor: "pointer" }}
+              {...editTeamForm.getInputProps("active", {
+                type: "checkbox"
+              })}
+            />
+            <br />
+            <IconButton icon="save" type="submit" buttonText="Submit" />
+          </form>
+        </Modal>
+      )}
       <List items={detailItems} />
     </>
   );

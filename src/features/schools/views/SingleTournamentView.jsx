@@ -9,6 +9,7 @@ import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations, useSchoolTeamsTournaments } from "../../../hooks/api/useSchoolData";
 import { useCases } from "../../../hooks/api/useCases";
 import Loading from "../../../common/components/Loading";
+import EntityHeader from "../components/EntityHeader";
 
 export default function SingleTournamentView({ selectedTournament, schoolRole }) {
   const { updateTournament } = useSchoolDataMutations();
@@ -113,76 +114,72 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     `Status: ${selectedTournament.is_active ? "Active" : "Inactive"}`,
     <Text>Linked Case: {caseItem}</Text>
   ]
+
   return (
     <>
-      <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <h1>{selectedTournament.name}</h1>
-        {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
-          <>
-            <EditIcon onClick={open} />
-            <Modal opened={opened} onClose={close} title="Edit Tournament" centered={true}>
-              <form onSubmit = {editTournamentForm.onSubmit(
-                handleEditTournamentSubmit,
-                (errors) => {
-                  const firstErrorPath = Object.keys(errors)[0];
-                  editTournamentForm.getInputNode(firstErrorPath)?.focus();
-                }
-              )}
-              >
-                <TextInput
-                  data-autofocus
-                  placeholder="Enter the tournament's name"
-                  withAsterisk
-                  label="Name"
-                  {...editTournamentForm.getInputProps("name")}
-                />
-                <br />
-                <Select
-                  label="Type"
-                  allowDeselect={false}
-                  data={typeOptions}
-                  {...editTournamentForm.getInputProps("type")}
-                />
-                <br />
-                <Select
-                  label="Area"
-                  allowDeselect={false}
-                  data={areaOptions}
-                  {...editTournamentForm.getInputProps("area")}
-                />
-                <br />
-                <NumberInput
-                  placeholder="Enter the tournament's year"
-                  withAsterisk
-                  label="Year"
-                  allowNegative={false}
-                  allowDecimal={false}
-                  min={1985}
-                  max={new Date().getFullYear()}
-                  {...editTournamentForm.getInputProps("year")}
-                />
-                <br />
-                <Select
-                  label="Linked Case"
-                  allowDeselect={false}
-                  data={caseOptions}
-                  {...editTournamentForm.getInputProps("caseId")}
-                />
-                <br />
-                <Checkbox
-                  label="Active"
-                  style={{ cursor: "pointer" }}
-                  {...editTournamentForm.getInputProps("active", {
-                    type: "checkbox"
-                  })}
-                />
-                <br />
-                <IconButton icon="save" type="submit" buttonText="Submit" />
-              </form>
-            </Modal>
-          </>
-        )}
-      </Flex>
+      <EntityHeader title={selectedTournament.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
+      {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
+        <Modal opened={opened} onClose={close} title="Edit Tournament" centered={true}>
+          <form onSubmit = {editTournamentForm.onSubmit(
+            handleEditTournamentSubmit,
+            (errors) => {
+              const firstErrorPath = Object.keys(errors)[0];
+              editTournamentForm.getInputNode(firstErrorPath)?.focus();
+            }
+          )}
+          >
+            <TextInput
+              data-autofocus
+              placeholder="Enter the tournament's name"
+              withAsterisk
+              label="Name"
+              {...editTournamentForm.getInputProps("name")}
+            />
+            <br />
+            <Select
+              label="Type"
+              allowDeselect={false}
+              data={typeOptions}
+              {...editTournamentForm.getInputProps("type")}
+            />
+            <br />
+            <Select
+              label="Area"
+              allowDeselect={false}
+              data={areaOptions}
+              {...editTournamentForm.getInputProps("area")}
+            />
+            <br />
+            <NumberInput
+              placeholder="Enter the tournament's year"
+              withAsterisk
+              label="Year"
+              allowNegative={false}
+              allowDecimal={false}
+              min={1985}
+              max={new Date().getFullYear()}
+              {...editTournamentForm.getInputProps("year")}
+            />
+            <br />
+            <Select
+              label="Linked Case"
+              allowDeselect={false}
+              data={caseOptions}
+              {...editTournamentForm.getInputProps("caseId")}
+            />
+            <br />
+            <Checkbox
+              label="Active"
+              style={{ cursor: "pointer" }}
+              {...editTournamentForm.getInputProps("active", {
+                type: "checkbox"
+              })}
+            />
+            <br />
+            <IconButton icon="save" type="submit" buttonText="Submit" />
+          </form>
+        </Modal>
+      )}
       <List items={detailItems} />
     </>
   );

@@ -1,12 +1,12 @@
 import List from "../../../common/components/List";
 import SingleSchoolTabs from "../components/tabs/SingleSchoolTabs";
 import { useSchoolMutations } from "../../../hooks/api/useSchools";
-import { Flex, TextInput, Modal } from "@mantine/core";
+import { TextInput, Modal } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
-import { EditIcon } from "../../../common/components/ActionIcons";
 import IconButton from "../../../common/components/IconButton";
+import EntityHeader from "../components/EntityHeader";
 
 export default function SingleSchoolView({
   selectedSchool,
@@ -84,35 +84,30 @@ export default function SingleSchoolView({
 
   return (
     <>
-      <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <h1>{selectedSchool.schools.name}</h1>
-        {selectedSchool.role === ROLES.PRIMARY && (
-          <>
-            <EditIcon onClick={open} />
-            <Modal opened={opened} onClose={close} title="Edit School" centered>
-              <form
-                onSubmit={editSchoolForm.onSubmit(
-                  handleEditSchoolSubmit,
-                  (errors) => {
-                    const firstErrorPath = Object.keys(errors)[0];
-                    editSchoolForm.getInputNode(firstErrorPath)?.focus();
-                  }
-                )}
-              >
-                <TextInput
-                  data-autofocus
-                  label="Short Name"
-                  withAsterisk
-                  placeholder="Enter the school's short name"
-                  {...editSchoolForm.getInputProps("shortName")}
-                />
-                <br />
-                <IconButton type="submit" icon="save" buttonText="Submit" />
-              </form>
-            </Modal>
-          </>
-        )}
-      </Flex>
+      <EntityHeader title={selectedSchool.schools.name} canEdit={[ROLES.PRIMARY].includes(selectedSchool.role)} onEdit={open} />
+      {[ROLES.PRIMARY].includes(selectedSchool.role) && (
+        <Modal opened={opened} onClose={close} title="Edit School" centered>
+          <form
+            onSubmit={editSchoolForm.onSubmit(
+              handleEditSchoolSubmit,
+              (errors) => {
+                const firstErrorPath = Object.keys(errors)[0];
+                editSchoolForm.getInputNode(firstErrorPath)?.focus();
+              }
+            )}
+          >
+            <TextInput
+              data-autofocus
+              label="Short Name"
+              withAsterisk
+              placeholder="Enter the school's short name"
+              {...editSchoolForm.getInputProps("shortName")}
+            />
+            <br />
+            <IconButton type="submit" icon="save" buttonText="Submit" />
+          </form>
+        </Modal>
+      )}
       <List items={detailItems} />
       <br />
       <h2>School Details</h2>
