@@ -1,6 +1,5 @@
 import List from "../../../common/components/List";
 import SingleSchoolTabs from "../components/tabs/SingleSchoolTabs";
-import NotFound from "../../../common/components/NotFound";
 import { useSchoolMutations } from "../../../hooks/api/useSchools";
 import { Flex, TextInput, Modal } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";

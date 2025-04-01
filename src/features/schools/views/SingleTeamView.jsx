@@ -1,13 +1,11 @@
 import List from "../../../common/components/List";
-import { Link } from "react-router-dom";
-import { Checkbox, Flex, Text, TextInput, Modal, Select } from "@mantine/core";
+import { Checkbox, Flex, TextInput, Modal, Select } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
 import { EditIcon } from "../../../common/components/ActionIcons";
 import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
-import Loading from "../../../common/components/Loading";
 
 export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const { updateTeam } = useSchoolDataMutations();

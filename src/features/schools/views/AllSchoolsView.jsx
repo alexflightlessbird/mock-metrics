@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import AllSchoolsTabs from "../components/tabs/AllSchoolsTabs";
 import { Text } from "@mantine/core";
 import { useSchoolFilters } from "../hooks/useSchoolFilters";
