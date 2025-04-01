@@ -1,5 +1,5 @@
 import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
-import { useUserFilters } from "../../hooks/useUserFilters";
+import { useRoleFilters } from "../../hooks/useRoleFilters";
 import TabbedView from "../../../../common/components/TabbedView";
 import UserList from "../lists/UserList";
 import TeamList from "../lists/TeamList";
@@ -24,7 +24,7 @@ export default function SingleSchoolTabs({
   const { active: activeStudents, inactive: inactiveStudents } = useActiveFilters(allStudents);
   const { active: activeTournaments, inactive: inactiveTournaments } =
     useActiveFilters(allTournaments);
-  const [primaryAdminUsers, adminUsers, viewerUsers] = useUserFilters(allUsers);
+  const { primary: primaryAdminUsers, admin: adminUsers, viewer: viewerUsers } = useRoleFilters(allUsers);
 
   const teamTabs = [
     {
