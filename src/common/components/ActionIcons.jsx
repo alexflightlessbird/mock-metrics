@@ -30,4 +30,18 @@ function DeleteIcon({ onClick }) {
   );
 }
 
-export { EditIcon, DeleteIcon };
+function AddIcon({ onClick }) {
+  const theme = useMantineTheme();
+
+  return (
+    <ActionIcon
+      variant="subtle"
+      onClick={onClick}
+      style={{ color: theme.colors.primaryBlue[0] }}
+    >
+      {createElement(icons.add)}
+    </ActionIcon>
+  )
+}
+
+export { EditIcon, DeleteIcon, AddIcon };

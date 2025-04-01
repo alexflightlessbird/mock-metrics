@@ -1,25 +1,39 @@
-import List from "../../../common/components/List";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Text } from "@mantine/core";
-import { hasLength, isInRange, useForm } from "@mantine/form";
+import { Flex, Text } from "@mantine/core";
+import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { ROLES } from "../../../utils/constants";
-import { TYPES, AREAS } from "../utils/schoolConstants";
-import { useSchoolDataMutations, useSchoolTeamsTournaments } from "../../../hooks/api/useSchoolData";
-import { useCases } from "../../../hooks/api/useCases";
+
+import List from "../../../common/components/List";
 import Loading from "../../../common/components/Loading";
 import EntityHeader from "../components/EntityHeader";
 import EditModal from "../components/EditModal";
+import AddModal from "../components/AddModal";
+import TournamentTeamList from "../components/lists/TournamentTeamList";
+import { AddIcon } from "../../../common/components/ActionIcons";
 
-export default function SingleTournamentView({ selectedTournament, schoolRole }) {
-  const { updateTournament } = useSchoolDataMutations();
+import { ROLES } from "../../../utils/constants";
+import { TYPES, AREAS } from "../utils/schoolConstants";
+
+import { useSchoolDataMutations, useSchoolTeamsTournaments, useSchoolTeams } from "../../../hooks/api/useSchoolData";
+import { useCases } from "../../../hooks/api/useCases";
+import { useTournamentFilters } from "../hooks/useTournamentFilters";
+import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
+
+export default function SingleTournamentView({ selectedTournament, schoolRole, schoolName }) {
+  const { updateTournament, addTeamToTournament } = useSchoolDataMutations();
 
   const { data: allCases = [], isPending: isCasesPending } = useCases();
+  const { data: allTeams = [], isPending: isTeamsPending } = useSchoolTeams(selectedTournament.school_id);
   const { data: allTeamsTournaments = [], isPending: isTeamsTournamentsPending } = useSchoolTeamsTournaments(selectedTournament.school_id);
   
-  const linkedCase = allCases.find((c) => c.id === selectedTournament.case_id);
+  const linkedCase = useMemo(() => allCases.find((c) => c.id === selectedTournament.case_id), [allCases, selectedTournament]);
+  const filteredTeams = useTournamentFilters({ tournamentId: selectedTournament.id, allTeamsTournaments })
+    .sort((a, b) => a.teams.name.localeCompare(b.teams.name));
 
-  const [opened, { open, close }] = useDisclosure(false, {
+  const { active: allActiveTeams } = useActiveFilters(allTeams);
+
+  const [editOpened, { open: editOpen, close: editClose }] = useDisclosure(false, {
     onOpen: () => editTournamentForm.setValues({
       name: selectedTournament.name,
       active: selectedTournament.is_active,
@@ -31,6 +45,10 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     onClose: () => editTournamentForm.reset(),
   });
 
+  const [addOpened, { open: addOpen, close: addClose }] = useDisclosure(false, {
+    onClose: () => addTeamForm.reset()
+  });
+
   const editTournamentForm = useForm({
     mode: "uncontrolled",
     validate: {
@@ -40,9 +58,46 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     validateInputOnBlur: true,
     onSubmitPreventDefault: "always",
   });
-  
-  if (isCasesPending || isTeamsTournamentsPending) return <Loading />;
 
+  const addTeamForm = useForm({
+    mode: "uncontrolled",
+    validate: {
+      teamId: isNotEmpty("Must select a team to add")
+    },
+    validateInputOnBlur: true,
+    onSubmitPreventDefault: "always"
+  });
+
+  const filteredActiveTeams = useMemo(() => 
+    allActiveTeams.filter(activeTeam => 
+      !allTeamsTournaments.some(teamTournament => 
+        teamTournament.team_id === activeTeam.id &&
+        teamTournament.tournament_id === selectedTournament.id
+      )
+    ),
+    [allActiveTeams, allTeamsTournaments, selectedTournament.id]
+  );
+
+  const getCaseOptions = useMemo(() => 
+    allCases.map((c) => ({
+      value: c.id.toString(),
+      label: c.name,
+    })),
+    [allCases]
+  );
+
+  const getTeamOptions = useMemo(() => 
+    filteredActiveTeams
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((t) => ({
+        value: t.id.toString(),
+        label: t.name
+      })),
+    [filteredActiveTeams]
+  );
+
+  if (isCasesPending || isTeamsTournamentsPending || isTeamsPending) return <Loading />;
+  
   const handleEditTournamentSubmit = async (values) => {
     const { name, active, year, type, area, caseId } = values;
     const originalName = selectedTournament.name;
@@ -62,7 +117,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     const caseChanged = parsedCaseId !== originalCaseId;
 
     if (!nameChanged && !statusChanged && !yearChanged && !typeChanged && !areaChanged && !caseChanged) {
-      close();
+      editClose();
       return;
     }
 
@@ -77,18 +132,28 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
         is_active: statusChanged ? active : undefined,
         caseId: caseChanged ? parsedCaseId : undefined,
       });
-      close();
+      editClose();
     } catch (error) {
       console.error("Tournament update failed:", error);
     }
   }
 
-  const caseOptions = [
-    ...allCases.map((c) => ({
-      value: c.id.toString(),
-      label: c.name,
-    })),
-  ];
+  const handleAddTeamSubmit = async (values) => {
+    const { teamId } = values;
+    const parsedTeamId = Number(teamId);
+
+    try {
+      await addTeamToTournament({
+        tournamentId: selectedTournament.id,
+        schoolId: selectedTournament.school_id,
+        teamId: parsedTeamId,
+      });
+      addClose();
+    } catch (error) {
+      console.error("Team add failed:", error);
+    }
+
+  }
 
   const typeOptions = [
     { value: TYPES.PRESTACK, label: TYPES.PRESTACK },
@@ -116,8 +181,8 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
   ];
 
   const editModalProps = {
-    opened,
-    onClose: close,
+    opened: editOpened,
+    onClose: editClose,
     title: "Edit Tournament",
     onSubmit: handleEditTournamentSubmit,
     form: editTournamentForm,
@@ -157,7 +222,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
         name: "caseId",
         required: true,
         label: "Linked Case",
-        options: caseOptions
+        options: getCaseOptions
       },
       {
         type: "checkbox",
@@ -165,15 +230,46 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
         label: "Active"
       }
     ]
-  }
+  };
+
+  const addModalProps = {
+    opened: addOpened,
+    onClose: addClose,
+    title: "Add Team to Tournament",
+    onSubmit: handleAddTeamSubmit,
+    form: addTeamForm,
+    fields: [
+      {
+        type: "select",
+        name: "teamId",
+        required: true,
+        label: "Team to Add",
+        options: getTeamOptions
+      }
+    ]
+  };
+
+  const hasEditPermissions = [ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole);
+  const canAddTeam = hasEditPermissions && filteredActiveTeams.length > 0;
 
   return (
     <>
-      <EntityHeader title={selectedTournament.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
+      <EntityHeader title={selectedTournament.name} canEdit={hasEditPermissions} onEdit={editOpen} />
       {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
         <EditModal {...editModalProps} />
       )}
       <List items={detailItems} />
+      <br />
+      <Flex style={{ alignItems: "center", gap: "7px" }}>
+        <h3>Teams Assigned to Tournament</h3>
+        {canAddTeam && (
+          <>
+            <AddIcon onClick={addOpen} />
+            <AddModal {...addModalProps} />
+          </>
+        )}
+      </Flex>
+      <TournamentTeamList teams={filteredTeams} schoolName={schoolName} schoolRole={schoolRole} />
     </>
   );
 }

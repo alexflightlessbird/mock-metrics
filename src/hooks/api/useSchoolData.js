@@ -56,7 +56,8 @@ export const useSchoolUsers = (schoolId, enabled) => {
             const { data, error } = await supabase
                 .from("users_schools")
                 .select("*, users(*)")
-                .eq("school_id", schoolId);
+                .eq("school_id", schoolId)
+                .order("users(name)");
             if (error) throw new Error(error.message);
             return data;
         },
@@ -195,5 +196,25 @@ export const useSchoolDataMutations = () => {
         return data;
     }
 
-    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament };
+    const removeTeamFromTournament = async({ tournamentId, teamId, schoolId }) => {
+        const { data, error } = await supabase
+            .from("teams_tournaments")
+            .delete()
+            .eq("team_id", teamId)
+            .eq("tournament_id", tournamentId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["teamsTournaments", schoolId]);
+        return data;
+    }
+
+    const addTeamToTournament = async({ tournamentId, teamId, schoolId }) => {
+        const { data, error } = await supabase
+            .from("teams_tournaments")
+            .insert([{ team_id: teamId, tournament_id: tournamentId }]);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["teamsTournaments", schoolId]);
+        return data;
+    }
+
+    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament };
 }

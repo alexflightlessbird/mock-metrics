@@ -79,6 +79,6 @@ export default function SingleSchoolRouter({ selectedSchool }) {
   } else if (selectedStudent) {
     return <SingleStudentView selectedStudent={selectedStudent} schoolRole={selectedSchool.role} />;
   } else if (selectedTournament) {
-    return <SingleTournamentView selectedTournament={selectedTournament} schoolRole={selectedSchool.role} />;
+    return <SingleTournamentView selectedTournament={selectedTournament} schoolRole={selectedSchool.role} schoolName={selectedSchool.schools.name} />;
   }
 }
