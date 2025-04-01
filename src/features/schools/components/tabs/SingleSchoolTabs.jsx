@@ -20,9 +20,9 @@ export default function SingleSchoolTabs({
   currentTab,
   setCurrentTab,
 }) {
-  const [activeTeams, inactiveTeams] = useActiveFilters(allTeams);
-  const [activeStudents, inactiveStudents] = useActiveFilters(allStudents);
-  const [activeTournaments, inactiveTournaments] =
+  const { active: activeTeams, inactive: inactiveTeams } = useActiveFilters(allTeams);
+  const { active: activeStudents, inactive: inactiveStudents } = useActiveFilters(allStudents);
+  const { active: activeTournaments, inactive: inactiveTournaments } =
     useActiveFilters(allTournaments);
   const [primaryAdminUsers, adminUsers, viewerUsers] = useUserFilters(allUsers);
 

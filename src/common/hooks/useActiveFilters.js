@@ -5,6 +5,6 @@ export function useActiveFilters(allItems) {
     const safeItems = allItems || [];
     const active = safeItems.filter((i) => i.is_active);
     const inactive = safeItems.filter((i) => !i.is_active);
-    return [active, inactive];
+    return {active, inactive};
   }, [allItems]);
 }
