@@ -99,7 +99,7 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
             <Select
               label="New Role"
               withAsterisk
-              placeholder="Pick Role"
+              allowDeselect={false}
               key={editUserForm.key("role")}
               data={[ROLES.PRIMARY, ROLES.ADMIN, ROLES.VIEWER]}
               {...editUserForm.getInputProps("role")}

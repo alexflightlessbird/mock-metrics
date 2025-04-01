@@ -75,10 +75,10 @@ export default function SingleSchoolRouter({ selectedSchool }) {
     return <NotFound type="tournament" />;
 
   if (selectedTeam) {
-    return <SingleTeamView selectedTeam={selectedTeam} />;
+    return <SingleTeamView selectedTeam={selectedTeam} schoolRole={selectedSchool.role} />;
   } else if (selectedStudent) {
-    return <SingleStudentView selectedStudent={selectedStudent} />;
+    return <SingleStudentView selectedStudent={selectedStudent} schoolRole={selectedSchool.role} />;
   } else if (selectedTournament) {
-    return <SingleTournamentView selectedTournament={selectedTournament} />;
+    return <SingleTournamentView selectedTournament={selectedTournament} schoolRole={selectedSchool.role} />;
   }
 }

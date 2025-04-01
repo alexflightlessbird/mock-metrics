@@ -79,6 +79,21 @@ export const useSchoolStudentTeams = (schoolId) => {
     })
 }
 
+export const useSchoolTeamsTournaments = (schoolId) => {
+    return useQuery({
+        queryKey: ["teamsTournaments", schoolId],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from("teams_tournaments")
+                .select("*, teams(*), tournaments(*)")
+                .eq("teams.school_id", schoolId);
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        enabled: !!schoolId,
+    })
+}
+
 export const useSchoolDataMutations = () => {
     const queryClient = useQueryClient();
 
@@ -158,5 +173,27 @@ export const useSchoolDataMutations = () => {
         queryClient.invalidateQueries(["studentTeams", schoolId]);
     }
 
-    return { updateUserRole, removeUserFromSchool, updateStudent };
+    const updateTeam = async({ teamId, schoolId, is_active, type, name }) => {
+        const { data, error } = await supabase
+            .from("teams")
+            .update({ is_active, type, name })
+            .eq("id", teamId)
+            .eq("school_id", schoolId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolTeams", schoolId]);
+        return data;
+    }
+
+    const updateTournament = async({ tournamentId, schoolId, year, type, name, area, is_active, caseId }) => {
+        const { data, error } = await supabase
+            .from("tournaments")
+            .update({ name, type, year, area, is_active, case_id: caseId })
+            .eq("id", tournamentId)
+            .eq("school_id", schoolId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolTournaments", schoolId]);
+        return data;
+    }
+
+    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament };
 }
