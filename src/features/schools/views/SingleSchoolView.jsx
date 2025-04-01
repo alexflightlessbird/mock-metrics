@@ -7,6 +7,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
 import IconButton from "../../../common/components/IconButton";
 import EntityHeader from "../components/EntityHeader";
+import EditModal from "../components/EditModal";
 
 export default function SingleSchoolView({
   selectedSchool,
@@ -82,31 +83,29 @@ export default function SingleSchoolView({
     setCurrentTab,
   };
 
+  const editModalProps = {
+    opened,
+    onClose: close,
+    title: "Edit School",
+    onSubmit: handleEditSchoolSubmit,
+    form: editSchoolForm,
+    fields: [
+      {
+        type: "text",
+        name: "shortName",
+        required: true,
+        placeholder: "Enter the school's short name",
+        autofocus: true,
+        label: "Short Name",
+      }
+    ]
+  }
+
   return (
     <>
       <EntityHeader title={selectedSchool.schools.name} canEdit={[ROLES.PRIMARY].includes(selectedSchool.role)} onEdit={open} />
       {[ROLES.PRIMARY].includes(selectedSchool.role) && (
-        <Modal opened={opened} onClose={close} title="Edit School" centered>
-          <form
-            onSubmit={editSchoolForm.onSubmit(
-              handleEditSchoolSubmit,
-              (errors) => {
-                const firstErrorPath = Object.keys(errors)[0];
-                editSchoolForm.getInputNode(firstErrorPath)?.focus();
-              }
-            )}
-          >
-            <TextInput
-              data-autofocus
-              label="Short Name"
-              withAsterisk
-              placeholder="Enter the school's short name"
-              {...editSchoolForm.getInputProps("shortName")}
-            />
-            <br />
-            <IconButton type="submit" icon="save" buttonText="Submit" />
-          </form>
-        </Modal>
+        <EditModal {...editModalProps} />
       )}
       <List items={detailItems} />
       <br />

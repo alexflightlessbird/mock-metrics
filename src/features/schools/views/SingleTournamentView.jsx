@@ -1,15 +1,15 @@
 import List from "../../../common/components/List";
 import { Link } from "react-router-dom";
-import { Text, Checkbox, TextInput, Modal, Select, NumberInput } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { hasLength, isInRange, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
 import { TYPES, AREAS } from "../utils/schoolConstants";
-import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations, useSchoolTeamsTournaments } from "../../../hooks/api/useSchoolData";
 import { useCases } from "../../../hooks/api/useCases";
 import Loading from "../../../common/components/Loading";
 import EntityHeader from "../components/EntityHeader";
+import EditModal from "../components/EditModal";
 
 export default function SingleTournamentView({ selectedTournament, schoolRole }) {
   const { updateTournament } = useSchoolDataMutations();
@@ -113,72 +113,65 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     `Area: ${selectedTournament.area}`,
     `Status: ${selectedTournament.is_active ? "Active" : "Inactive"}`,
     <Text>Linked Case: {caseItem}</Text>
-  ]
+  ];
+
+  const editModalProps = {
+    opened,
+    onClose: close,
+    title: "Edit Tournament",
+    onSubmit: handleEditTournamentSubmit,
+    form: editTournamentForm,
+    fields: [
+      {
+        type: "text",
+        name: "name",
+        autofocus: true,
+        placeholder: "Enter the tournament's name",
+        required: true,
+        label: "Name",
+      },
+      {
+        type: "select",
+        name: "type",
+        required: true,
+        label: "Type",
+        options: typeOptions
+      },
+      {
+        type: "select",
+        name: "area",
+        required: true,
+        label: "Area",
+        options: areaOptions
+      },
+      {
+        type: "number",
+        name: "year",
+        required: true,
+        min: 1985,
+        max: new Date().getFullYear(),
+        label: "Year"
+      },
+      {
+        type: "select",
+        name: "caseId",
+        required: true,
+        label: "Linked Case",
+        options: caseOptions
+      },
+      {
+        type: "checkbox",
+        name: "active",
+        label: "Active"
+      }
+    ]
+  }
 
   return (
     <>
       <EntityHeader title={selectedTournament.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
       {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
-        <Modal opened={opened} onClose={close} title="Edit Tournament" centered={true}>
-          <form onSubmit = {editTournamentForm.onSubmit(
-            handleEditTournamentSubmit,
-            (errors) => {
-              const firstErrorPath = Object.keys(errors)[0];
-              editTournamentForm.getInputNode(firstErrorPath)?.focus();
-            }
-          )}
-          >
-            <TextInput
-              data-autofocus
-              placeholder="Enter the tournament's name"
-              withAsterisk
-              label="Name"
-              {...editTournamentForm.getInputProps("name")}
-            />
-            <br />
-            <Select
-              label="Type"
-              allowDeselect={false}
-              data={typeOptions}
-              {...editTournamentForm.getInputProps("type")}
-            />
-            <br />
-            <Select
-              label="Area"
-              allowDeselect={false}
-              data={areaOptions}
-              {...editTournamentForm.getInputProps("area")}
-            />
-            <br />
-            <NumberInput
-              placeholder="Enter the tournament's year"
-              withAsterisk
-              label="Year"
-              allowNegative={false}
-              allowDecimal={false}
-              min={1985}
-              max={new Date().getFullYear()}
-              {...editTournamentForm.getInputProps("year")}
-            />
-            <br />
-            <Select
-              label="Linked Case"
-              allowDeselect={false}
-              data={caseOptions}
-              {...editTournamentForm.getInputProps("caseId")}
-            />
-            <br />
-            <Checkbox
-              label="Active"
-              style={{ cursor: "pointer" }}
-              {...editTournamentForm.getInputProps("active", {
-                type: "checkbox"
-              })}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
-        </Modal>
+        <EditModal {...editModalProps} />
       )}
       <List items={detailItems} />
     </>

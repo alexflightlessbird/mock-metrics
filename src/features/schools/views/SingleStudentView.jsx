@@ -1,15 +1,15 @@
 import List from "../../../common/components/List";
 import { Link } from "react-router-dom";
-import { Checkbox, Text, TextInput, Modal, Select } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
-import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
 import { useSchoolStudentTeams, useSchoolTeams } from "../../../hooks/api/useSchoolData";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 import Loading from "../../../common/components/Loading";
 import EntityHeader from "../components/EntityHeader";
+import EditModal from "../components/EditModal";
 
 export default function SingleStudentView({ selectedStudent, schoolRole }) {
   const { updateStudent } = useSchoolDataMutations();
@@ -90,46 +90,42 @@ export default function SingleStudentView({ selectedStudent, schoolRole }) {
     `Status: ${selectedStudent.is_active ? "Active" : "Inactive"}`,
     <Text>Current Team: {teamItem}</Text>
   ];
+
+  const editModalProps = {
+    opened,
+    onClose: close,
+    title: "Edit Student",
+    onSubmit: handleEditStudentSubmit,
+    form: editStudentForm,
+    fields: [
+      {
+        type: "text",
+        name: "name",
+        autofocus: true,
+        placeholder: "Enter the student's name",
+        required: true,
+        label: "Name",
+      },
+      {
+        type: "select",
+        name: "teamId",
+        label: "Assigned Team",
+        options: teamOptions,
+        required: true,
+      },
+      {
+        type: "checkbox",
+        name: "active",
+        label: "Active"
+      }
+    ]
+  }
   
   return (
     <>
       <EntityHeader title={selectedStudent.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
       {[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole) && (
-        <Modal opened={opened} onClose={close} title="Edit Student" centered={true}>
-          <form onSubmit={editStudentForm.onSubmit(
-            handleEditStudentSubmit,
-            (errors) => {
-              const firstErrorPath = Object.keys(errors)[0];
-              editStudentForm.getInputNode(firstErrorPath)?.focus();
-            }
-          )}
-          >
-            <TextInput
-              data-autofocus
-              placeholder="Enter the student's name"
-              withAsterisk
-              label="Name"
-              {...editStudentForm.getInputProps("name")}
-            />
-            <br />
-            <Select
-              label="Assigned Team"
-              allowDeselect={false}
-              data={teamOptions}
-              {...editStudentForm.getInputProps("teamId")}
-            />
-            <br />
-            <Checkbox
-              label="Active"
-              style={{ cursor: "pointer" }}
-              {...editStudentForm.getInputProps("active", {
-                type: "checkbox"
-              })}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
-        </Modal>
+        <EditModal {...editModalProps} />
       )}
       <List items={detailItems} />
     </>
