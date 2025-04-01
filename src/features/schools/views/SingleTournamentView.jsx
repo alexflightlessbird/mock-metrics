@@ -1,10 +1,10 @@
 import List from "../../../common/components/List";
 import { Link } from "react-router-dom";
-import { Text, Checkbox, Flex, TextInput, Modal, Select, NumberInput } from "@mantine/core";
+import { Text, Checkbox, TextInput, Modal, Select, NumberInput } from "@mantine/core";
 import { hasLength, isInRange, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
-import { EditIcon } from "../../../common/components/ActionIcons";
+import { TYPES, AREAS } from "../utils/schoolConstants";
 import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations, useSchoolTeamsTournaments } from "../../../hooks/api/useSchoolData";
 import { useCases } from "../../../hooks/api/useCases";
@@ -91,18 +91,18 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
   ];
 
   const typeOptions = [
-    { value: "Pre-Stack", label: "Pre-Stack" },
-    { value: "Post-Stack", label: "Post-Stack" }
+    { value: TYPES.PRESTACK, label: TYPES.PRESTACK },
+    { value: TYPES.POSTSTACK, label: TYPES.POSTSTACK }
   ];
 
   const areaOptions = [
-    { value: "Invitational", label: "Invitational" },
-    { value: "Regionals", label: "Regionals" },
-    { value: "ORCS", label: "ORCS" },
-    { value: "Nationals", label: "Nationals" },
-    { value: "Rookie Rumble", label: "Rookie Rumble" },
-    { value: "OLT", label: "OLT" },
-    { value: "Other", label: "Other" }
+    { value: AREAS.INVITATIONAL, label: AREAS.INVITATIONAL },
+    { value: AREAS.REGIONALS, label: AREAS.REGIONALS },
+    { value: AREAS.ORCS, label: AREAS.ORCS },
+    { value: AREAS.NATIONALS, label: AREAS.NATIONALS },
+    { value: AREAS.ROOKIERUMBLE, label: AREAS.ROOKIERUMBLE },
+    { value: AREAS.OLT, label: AREAS.OLT },
+    { value: AREAS.OTHER, label: AREAS.OTHER }
   ];
 
   const caseItem = <Link to={`/cases?caseId=${selectedTournament.case_id}`}>{linkedCase.name}</Link>;

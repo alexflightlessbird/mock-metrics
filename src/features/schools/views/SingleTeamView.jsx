@@ -3,6 +3,7 @@ import { Checkbox, TextInput, Modal, Select } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ROLES } from "../../../utils/constants";
+import { TYPES } from "../utils/schoolConstants";
 import IconButton from "../../../common/components/IconButton";
 import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
 import EntityHeader from "../components/EntityHeader";
@@ -58,8 +59,8 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
   }
 
   const typeOptions = [
-    { value: "Pre-Stack", label: "Pre-Stack" },
-    { value: "Post-Stack", label: "Post-Stack" }
+    { value: TYPES.PRESTACK, label: TYPES.PRESTACK },
+    { value: TYPES.POSTSTACK, label: TYPES.POSTSTACK }
   ];
 
   const detailItems = [
