@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 // Services imports
 import { supabase } from "../../services/supabaseClient";
 
-const useSchoolTeams = (schoolId) => {
+function useSchoolTeams (schoolId) {
     return useQuery({
         queryKey: ["schoolTeams", schoolId],
         queryFn: async () => {
@@ -20,7 +20,7 @@ const useSchoolTeams = (schoolId) => {
     });
 };
 
-const useSchoolStudents = (schoolId) => {
+function useSchoolStudents (schoolId) {
     return useQuery({
         queryKey: ["schoolStudents", schoolId],
         queryFn: async () => {
@@ -36,7 +36,7 @@ const useSchoolStudents = (schoolId) => {
     });
 };
 
-const useSchoolTournaments = (schoolId) => {
+function useSchoolTournaments (schoolId) {
     return useQuery({
         queryKey: ["schoolTournaments", schoolId],
         queryFn: async () => {
@@ -52,7 +52,7 @@ const useSchoolTournaments = (schoolId) => {
     });
 };
 
-const useSchoolUsers = (schoolId, enabled) => {
+function useSchoolUsers (schoolId, enabled) {
     return useQuery({
         queryKey: ["schoolUsers", schoolId],
         queryFn: async () => {
@@ -68,7 +68,7 @@ const useSchoolUsers = (schoolId, enabled) => {
     });
 };
 
-const useSchoolStudentTeams = (schoolId) => {
+function useSchoolStudentTeams (schoolId) {
     return useQuery({
         queryKey: ["studentTeams", schoolId],
         queryFn: async () => {
@@ -83,7 +83,7 @@ const useSchoolStudentTeams = (schoolId) => {
     })
 }
 
-const useSchoolTeamsTournaments = (schoolId) => {
+function useSchoolTeamsTournaments (schoolId) {
     return useQuery({
         queryKey: ["teamsTournaments", schoolId],
         queryFn: async () => {
@@ -98,10 +98,10 @@ const useSchoolTeamsTournaments = (schoolId) => {
     })
 }
 
-const useSchoolDataMutations = () => {
+function useSchoolDataMutations () {
     const queryClient = useQueryClient();
 
-    const updateUserRole = async ({ userId, schoolId, role }) => {
+    async function updateUserRole ({ userId, schoolId, role }) {
         const { data, error } = await supabase
             .from("users_schools")
             .update({ role })
@@ -113,7 +113,7 @@ const useSchoolDataMutations = () => {
         return data;
     }
 
-    const removeUserFromSchool = async ({ userId, schoolId }) => {
+    async function removeUserFromSchool ({ userId, schoolId }) {
         const { data, error } = await supabase
             .from("users_schools")
             .delete()
@@ -125,7 +125,7 @@ const useSchoolDataMutations = () => {
         return data;
     }
 
-    const updateStudent = async({ studentId, name, is_active, newTeamId, originalTeamId, schoolId }) => {
+    async function updateStudent ({ studentId, name, is_active, newTeamId, originalTeamId, schoolId }) {
         if (name !== undefined || is_active !== undefined) {
             const { error: studentError } = await supabase
                 .from("students")
@@ -177,7 +177,7 @@ const useSchoolDataMutations = () => {
         queryClient.invalidateQueries(["studentTeams", schoolId]);
     }
 
-    const updateTeam = async({ teamId, schoolId, is_active, type, name }) => {
+    async function updateTeam ({ teamId, schoolId, is_active, type, name }) {
         const { data, error } = await supabase
             .from("teams")
             .update({ is_active, type, name })
@@ -188,7 +188,7 @@ const useSchoolDataMutations = () => {
         return data;
     }
 
-    const updateTournament = async({ tournamentId, schoolId, year, type, name, area, is_active, caseId }) => {
+    async function updateTournament ({ tournamentId, schoolId, year, type, name, area, is_active, caseId }) {
         const { data, error } = await supabase
             .from("tournaments")
             .update({ name, type, year, area, is_active, case_id: caseId })
@@ -199,7 +199,7 @@ const useSchoolDataMutations = () => {
         return data;
     }
 
-    const removeTeamFromTournament = async({ tournamentId, teamId, schoolId }) => {
+    async function removeTeamFromTournament ({ tournamentId, teamId, schoolId }) {
         const { data, error } = await supabase
             .from("teams_tournaments")
             .delete()
@@ -210,7 +210,7 @@ const useSchoolDataMutations = () => {
         return data;
     }
 
-    const addTeamToTournament = async({ tournamentId, teamId, schoolId }) => {
+    async function addTeamToTournament ({ tournamentId, teamId, schoolId }) {
         const { data, error } = await supabase
             .from("teams_tournaments")
             .insert([{ team_id: teamId, tournament_id: tournamentId }]);

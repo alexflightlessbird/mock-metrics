@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 // Services imports
 import { supabase } from "../../services/supabaseClient";
 
-const useCases = () => {
+function useCases () {
     return useQuery({
         queryKey: ["cases"],
         queryFn: async () => {
@@ -18,7 +18,7 @@ const useCases = () => {
     });
 };
 
-const useCaseWitnesses = (caseId) => {
+function useCaseWitnesses (caseId) {
     return useQuery({
         queryKey: ["caseWitnesses", caseId],
         queryFn: async () => {

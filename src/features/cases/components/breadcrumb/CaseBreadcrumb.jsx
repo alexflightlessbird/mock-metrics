@@ -27,7 +27,7 @@ export default function CaseBreadcrumb() {
 
   if (isCasesPending || (isCaseWitnessesPending && caseId)) return;
 
-  const getBreadcrumbItems = () => {
+  function getBreadcrumbItems () {
     if (!caseId)
       return [{ title: <BreadcrumbPill active>Cases</BreadcrumbPill> }];
 

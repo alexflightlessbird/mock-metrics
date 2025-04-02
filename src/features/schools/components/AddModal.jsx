@@ -5,7 +5,7 @@ import { Modal, Select } from "@mantine/core";
 import IconButton from "../../../common/components/IconButton";
 
 export default function AddModal({ opened, onClose, title, form, onSubmit, fields }) {
-    const renderField = (field) => {
+    function renderField (field) {
         switch (field.type) {
             case "select":
                 if (!field.name || !field.options || field.options.length < 1) return console.error("Error with field - type select");

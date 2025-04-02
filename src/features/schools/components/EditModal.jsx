@@ -5,7 +5,7 @@ import { Select, TextInput, NumberInput, Checkbox, Modal } from "@mantine/core";
 import IconButton from "../../../common/components/IconButton";
 
 export default function EditModal ({ opened, onClose, title, form, onSubmit, fields }) {
-    const renderField = (field) => {
+    function renderField (field) {
         switch (field.type) {
             case "text":
                 if (!field.name) return console.error("Error with field - type text");

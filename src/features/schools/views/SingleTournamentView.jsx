@@ -102,7 +102,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
 
   if (isCasesPending || isTeamsTournamentsPending || isTeamsPending) return <Loading />;
   
-  const handleEditTournamentSubmit = async (values) => {
+  async function handleEditTournamentSubmit (values) {
     const { name, active, year, type, area, caseId } = values;
     const originalName = selectedTournament.name;
     const originalActive = selectedTournament.active;
@@ -142,7 +142,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     }
   }
 
-  const handleAddTeamSubmit = async (values) => {
+  async function handleAddTeamSubmit (values) {
     const { teamId } = values;
     const parsedTeamId = Number(teamId);
 

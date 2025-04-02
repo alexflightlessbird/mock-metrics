@@ -58,7 +58,7 @@ export default function SingleSchoolView({
     onSubmitPreventDefault: "always",
   });
 
-  const handleEditSchoolSubmit = async (values) => {
+  async function handleEditSchoolSubmit (values) {
     try {
       if (values.shortName === selectedSchool.schools.short_name) {
         close();

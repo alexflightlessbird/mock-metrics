@@ -47,7 +47,7 @@ export default function SingleStudentView({ selectedStudent, schoolRole }) {
 
   if (isStudentTeamsPending || isTeamsPending) return <Loading />;
 
-  const handleEditStudentSubmit = async (values) => {
+  async function handleEditStudentSubmit (values) {
     const { name, active, teamId } = values;
     const originalName = selectedStudent.name;
     const originalActive = selectedStudent.is_active;

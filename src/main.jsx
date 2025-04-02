@@ -10,7 +10,6 @@ import AppProviders from "./app/providers/AppProviders";
 // Component imports
 import App from "./App";
 
-
 setTimeout(() => {
   const splashScreen = document.getElementById("splash-screen");
   if (splashScreen) {

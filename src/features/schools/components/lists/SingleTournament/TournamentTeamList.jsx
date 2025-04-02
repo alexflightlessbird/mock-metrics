@@ -16,7 +16,7 @@ import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 export default function TourmamentTeamList({ teams, schoolRole }) {
     const { removeTeamFromTournament } = useSchoolDataMutations();
 
-    const removeTeamModal = (team) => {
+    function removeTeamModal (team) {
         modals.openConfirmModal({
             title: `Remove Team: ${team.teams.name}`,
             centered: true,

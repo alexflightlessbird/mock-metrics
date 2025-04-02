@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 // Services imports
 import { supabase } from "../../services/supabaseClient";
 
-const useSchools = (userId) => {
+function useSchools (userId) {
     return useQuery({
         queryKey: ["schools", userId],
         queryFn: async () => {
@@ -20,10 +20,10 @@ const useSchools = (userId) => {
     });
 };
 
-const useSchoolMutations = () => {
+function useSchoolMutations () {
     const queryClient = useQueryClient();
 
-    const updateSchool = async ({ schoolId, updates }) => {
+    async function updateSchool ({ schoolId, updates }) {
         const { data, error } = await supabase
             .from("schools")
             .update(updates)

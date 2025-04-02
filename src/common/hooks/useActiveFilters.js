@@ -1,7 +1,7 @@
 // Dependency imports
 import { useMemo } from "react";
 
-export function useActiveFilters(allItems) {
+function useActiveFilters(allItems) {
   return useMemo(() => {
     const safeItems = allItems || [];
     const active = safeItems.filter((i) => i.is_active);
@@ -9,3 +9,5 @@ export function useActiveFilters(allItems) {
     return {active, inactive};
   }, [allItems]);
 }
+
+export { useActiveFilters };

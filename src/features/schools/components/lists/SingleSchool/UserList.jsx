@@ -28,7 +28,7 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
     validateInputOnBlur: true,
   });
 
-  const handleEditUserSubmit = async (values) => {
+  async function handleEditUserSubmit (values) {
     const { role, currentRole, user_id } = values;
     const roleChanged = role !== currentRole;
 
@@ -49,7 +49,7 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
     }
   };
 
-  const editUserModal = (user) => {
+  function editUserModal (user) {
     editUserForm.reset();
     editUserForm.setInitialValues({
       role: user.role,
@@ -118,8 +118,7 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
       ),
     });
   };
-
-  const removeUserModal = (user) => {
+  function removeUserModal (user) {
     if (user.role === ROLES.PRIMARY && users.length === 1) {
       return modals.open({
         title: "Oops",

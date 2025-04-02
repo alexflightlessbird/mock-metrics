@@ -81,23 +81,23 @@ export default function Sidebar({ session, opened, toggle }) {
     ? commonItems.concat(loggedInItems)
     : commonItems.concat(loggedOutItems);
 
-  const handleNavigate = (path) => {
+  function handleNavigate (path) {
     if (opened) toggle(); // Close the sidebar if it's in the mobile view
     navigate(path);
   };
 
-  const toggleChildren = (label) => {
+  function toggleChildren (label) {
     setExpandedItems((prev) => ({
       ...prev,
       [label]: !prev[label],
     }));
   };
 
-  const isChildActive = (children) => {
+  function isChildActive (children) {
     return children?.some((child) => location.pathname === child.navigatePath);
   };
 
-  const renderItem = (item, index) => {
+  function renderItem (item, index) {
     const isActive = location.pathname === item.navigatePath;
     const hasActiveChild = isChildActive(item.children);
 

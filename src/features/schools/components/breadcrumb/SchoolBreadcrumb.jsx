@@ -61,7 +61,7 @@ export default function SchoolBreadcrumb() {
     return;
   }
 
-  const getBreadcrumbItems = () => {
+  function getBreadcrumbItems() {
     if (!schoolId)
       return [{ title: <BreadcrumbPill active>Schools</BreadcrumbPill> }];
 

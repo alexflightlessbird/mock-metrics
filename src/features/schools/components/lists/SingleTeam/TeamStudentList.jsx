@@ -15,8 +15,7 @@ import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
 export default function TeamStudentList({ students, schoolRole }) {
     const { updateStudent } = useSchoolDataMutations();
-
-    const removeStudentModal = (student) => {
+    function removeStudentModal (student) {
         modals.openConfirmModal({
             title: `Remove Student: ${student.students.name}`,
             centered: true,
