@@ -1,10 +1,10 @@
 import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
 import { useRoleFilters } from "../../hooks/useRoleFilters";
 import TabbedView from "../../../../common/components/TabbedView";
-import UserList from "../lists/UserList";
-import TeamList from "../lists/TeamList";
-import StudentList from "../lists/StudentList";
-import TournamentList from "../lists/TournamentList";
+import UserList from "../lists/SingleSchool/UserList";
+import TeamList from "../lists/SingleSchool/TeamList";
+import StudentList from "../lists/SingleSchool/StudentList";
+import TournamentList from "../lists/SingleSchool/TournamentList";
 import { Text, Tooltip } from "@mantine/core";
 import { PREMIUM_LIMITS, ROLES } from "../../../../utils/constants";
 

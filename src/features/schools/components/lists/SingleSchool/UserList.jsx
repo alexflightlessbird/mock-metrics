@@ -1,15 +1,15 @@
-import List from "../../../../common/components/List";
+import List from "../../../../../common/components/List";
 import { Flex, Text, Select } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 import {
   EditIcon,
   DeleteIcon,
-} from "../../../../common/components/ActionIcons";
-import IconButton from "../../../../common/components/IconButton";
-import { ROLES } from "../../../../utils/constants";
-import { useSession } from "../../../../common/hooks/auth/useSession";
-import { useSchoolDataMutations } from "../../../../hooks/api/useSchoolData";
+} from "../../../../../common/components/ActionIcons";
+import IconButton from "../../../../../common/components/IconButton";
+import { ROLES } from "../../../../../utils/constants";
+import { useSession } from "../../../../../common/hooks/auth/useSession";
+import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
 export default function UserList({ users, isPremium, schoolId, schoolName }) {
   const { updateUserRole, removeUserFromSchool } = useSchoolDataMutations();

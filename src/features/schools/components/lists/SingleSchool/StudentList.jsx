@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import List from "../../../../common/components/List";
+import List from "../../../../../common/components/List";
 
 export default function StudentList({ students }) {
   const mappedStudents = [];

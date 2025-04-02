@@ -13,8 +13,8 @@ import Loading from "../../../common/components/Loading";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 import { AddIcon } from "../../../common/components/ActionIcons";
 import AddModal from "../components/AddModal";
-import TeamStudentList from "../components/lists/TeamStudentList";
-import TeamTournamentList from "../components/lists/TeamTournamentList";
+import TeamStudentList from "../components/lists/SingleTeam/TeamStudentList";
+import TeamTournamentList from "../components/lists/SingleTeam/TeamTournamentList";
 
 export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const { updateTeam, updateStudent, addTeamToTournament } = useSchoolDataMutations();

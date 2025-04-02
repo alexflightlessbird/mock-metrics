@@ -1,6 +1,6 @@
 import { Text } from "@mantine/core";
 import TabbedView from "../../../../common/components/TabbedView";
-import SchoolList from "../lists/SchoolList";
+import SchoolList from "../lists/AllSchools/SchoolList";
 
 export default function AllSchoolsTabs({
   primarySchools,

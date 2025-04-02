@@ -1,10 +1,10 @@
-import List from "../../../../common/components/List";
+import List from "../../../../../common/components/List";
 import { Link } from "react-router-dom";
 import { Flex, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { DeleteIcon } from "../../../../common/components/ActionIcons";
-import { ROLES } from "../../../../utils/constants";
-import { useSchoolDataMutations } from "../../../../hooks/api/useSchoolData";
+import { DeleteIcon } from "../../../../../common/components/ActionIcons";
+import { ROLES } from "../../../../../utils/constants";
+import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
 export default function TeamStudentList({ students, schoolRole }) {
     const { updateStudent } = useSchoolDataMutations();
