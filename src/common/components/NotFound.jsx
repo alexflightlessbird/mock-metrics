@@ -1,3 +1,4 @@
+// Dependency imports
 import { Text } from "@mantine/core";
 
 export default function NotFound({ type = "case" }) {

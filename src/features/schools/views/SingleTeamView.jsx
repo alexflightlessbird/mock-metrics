@@ -1,20 +1,27 @@
+// Dependency imports
 import { useMemo } from "react";
-import List from "../../../common/components/List";
 import { Flex } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { ROLES } from "../../../utils/constants";
-import { TYPES } from "../utils/schoolConstants";
-import { useSchoolDataMutations, useSchoolTournaments, useSchoolTeamsTournaments, useSchoolStudents, useSchoolStudentTeams } from "../../../hooks/api/useSchoolData";
-import { useStudentTeamFilters, useTournamentTeamFilters } from "../hooks/useTeamFilters";
+
+// Component imports
 import EntityHeader from "../components/EntityHeader";
 import EditModal from "../components/EditModal";
-import Loading from "../../../common/components/Loading";
-import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
-import { AddIcon } from "../../../common/components/ActionIcons";
 import AddModal from "../components/AddModal";
 import TeamStudentList from "../components/lists/SingleTeam/TeamStudentList";
 import TeamTournamentList from "../components/lists/SingleTeam/TeamTournamentList";
+import { AddIcon } from "../../../common/components/ActionIcons";
+import List from "../../../common/components/List";
+import Loading from "../../../common/components/Loading";
+
+// Utils imports
+import { ROLES } from "../../../utils/constants";
+import { TYPES } from "../utils/schoolConstants";
+
+// Hooks imports
+import { useSchoolDataMutations, useSchoolTournaments, useSchoolTeamsTournaments, useSchoolStudents, useSchoolStudentTeams } from "../../../hooks/api/useSchoolData";
+import { useStudentTeamFilters, useTournamentTeamFilters } from "../hooks/useTeamFilters";
+import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
 export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const { updateTeam, updateStudent, addTeamToTournament } = useSchoolDataMutations();

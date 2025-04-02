@@ -1,3 +1,4 @@
+// Dependency imports
 import { Pill, useMantineTheme } from "@mantine/core";
 
 export default function BreadcrumbPill({ active, children, ...props }) {

@@ -1,5 +1,6 @@
-import TabbedView from "../../../../common/components/TabbedView";
+// Component imports
 import WitnessList from "../lists/WitnessList";
+import TabbedView from "../../../../common/components/TabbedView";
 
 export default function SingleCaseTabs({
   pWitnesses,

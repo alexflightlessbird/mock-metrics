@@ -1,4 +1,6 @@
+// Dependency imports
 import { useState, createElement } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Tooltip,
   Flex,
@@ -7,8 +9,9 @@ import {
   useMantineTheme,
   Divider,
 } from "@mantine/core";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
+
+// Utils imports
 import icons from "../utils/icons";
 
 export default function Sidebar({ session, opened, toggle }) {

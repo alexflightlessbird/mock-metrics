@@ -1,4 +1,7 @@
+// Dependency imports
 import { Link } from "react-router-dom";
+
+// Component imports
 import List from "../../../../../common/components/List";
 
 export default function TeamList({ teams }) {

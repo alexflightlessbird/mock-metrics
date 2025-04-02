@@ -1,7 +1,10 @@
+// Dependency imports
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+// Other imports
 import { theme } from "../theme";
 
 const queryClient = new QueryClient({

@@ -1,8 +1,15 @@
+// Dependency imports
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import AllCasesView from "../views/AllCasesView";
+
+// Router imports
 import SingleCaseRouter from "./SingleCaseRouter";
+
+// Component imports
+import AllCasesView from "../views/AllCasesView";
 import NotFound from "../../../common/components/NotFound";
+
+// Hooks imports
 import { useSelectedItem } from "../../../common/hooks/useSelectedItem";
 
 export default function CasesRouter({ allCases }) {

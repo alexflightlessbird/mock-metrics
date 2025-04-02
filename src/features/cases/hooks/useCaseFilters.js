@@ -1,6 +1,7 @@
+// Dependency imports
 import { useMemo } from "react";
 
-export function useCaseFilters(allCases) {
+function useCaseFilters(allCases) {
   return useMemo(() => {
     const safeCases = allCases || [];
     const active = safeCases.filter((c) => c.is_active);
@@ -8,3 +9,5 @@ export function useCaseFilters(allCases) {
     return [active, inactive];
   }, [allCases]);
 }
+
+export { useCaseFilters };

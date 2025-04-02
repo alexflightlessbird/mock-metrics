@@ -1,6 +1,7 @@
+// Dependency imports
 import { useMemo } from "react";
 
-export function useWitnessFilters(allCaseWitnesses, pSide = "Plaintiff") {
+function useWitnessFilters(allCaseWitnesses, pSide = "Plaintiff") {
     return useMemo(() => {
         const safeWitnesses = allCaseWitnesses || [];
         const p = safeWitnesses.filter((w) => w.side === pSide);
@@ -9,3 +10,5 @@ export function useWitnessFilters(allCaseWitnesses, pSide = "Plaintiff") {
         return [p, d, s];
     }, [allCaseWitnesses, pSide]);
 }
+
+export { useWitnessFilters };

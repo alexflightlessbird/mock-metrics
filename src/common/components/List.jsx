@@ -1,3 +1,4 @@
+// Dependency imports
 import { List } from "@mantine/core";
 
 export default function ListComponent({ items }) {

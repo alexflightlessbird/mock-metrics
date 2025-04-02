@@ -1,4 +1,7 @@
+// Dependency imports
 import { Modal, Select } from "@mantine/core";
+
+// Component imports
 import IconButton from "../../../common/components/IconButton";
 
 export default function AddModal({ opened, onClose, title, form, onSubmit, fields }) {

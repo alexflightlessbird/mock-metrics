@@ -1,8 +1,15 @@
+// Dependency imports
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import AllSchoolsView from "../views/AllSchoolsView";
+
+// Router imports
 import SingleSchoolRouter from "./SingleSchoolRouter";
+
+// Component imports
+import AllSchoolsView from "../views/AllSchoolsView";
 import NotFound from "../../../common/components/NotFound";
+
+// Hooks imports
 import { useSelectedItem } from "../../../common/hooks/useSelectedItem";
 
 export default function SchoolRouter({ allSchools }) {

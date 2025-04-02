@@ -1,5 +1,6 @@
-import TabbedView from "../../../../common/components/TabbedView";
+// Component imports
 import CaseList from "../lists/CaseList";
+import TabbedView from "../../../../common/components/TabbedView";
 
 export default function AllCasesTabs({
   activeCases,

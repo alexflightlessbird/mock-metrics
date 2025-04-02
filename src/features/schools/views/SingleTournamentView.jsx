@@ -1,20 +1,24 @@
+// Dependency imports
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Flex, Text } from "@mantine/core";
 import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
-import List from "../../../common/components/List";
-import Loading from "../../../common/components/Loading";
+// Component imports
 import EntityHeader from "../components/EntityHeader";
 import EditModal from "../components/EditModal";
 import AddModal from "../components/AddModal";
 import TournamentTeamList from "../components/lists/SingleTournament/TournamentTeamList";
 import { AddIcon } from "../../../common/components/ActionIcons";
+import List from "../../../common/components/List";
+import Loading from "../../../common/components/Loading";
 
+// Utils imports
 import { ROLES } from "../../../utils/constants";
 import { TYPES, AREAS } from "../utils/schoolConstants";
 
+// Hooks imports
 import { useSchoolDataMutations, useSchoolTeamsTournaments, useSchoolTeams } from "../../../hooks/api/useSchoolData";
 import { useCases } from "../../../hooks/api/useCases";
 import { useTournamentFilters } from "../hooks/useTournamentFilters";

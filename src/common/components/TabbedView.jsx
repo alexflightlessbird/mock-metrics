@@ -1,3 +1,4 @@
+// Dependency imports
 import { Tabs } from "@mantine/core";
 
 export default function TabbedView({ tabs = [], defaultTab, onTabChange }) {

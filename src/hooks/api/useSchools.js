@@ -1,7 +1,10 @@
+// Dependency imports
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Services imports
 import { supabase } from "../../services/supabaseClient";
 
-export const useSchools = (userId) => {
+const useSchools = (userId) => {
     return useQuery({
         queryKey: ["schools", userId],
         queryFn: async () => {
@@ -17,7 +20,7 @@ export const useSchools = (userId) => {
     });
 };
 
-export const useSchoolMutations = () => {
+const useSchoolMutations = () => {
     const queryClient = useQueryClient();
 
     const updateSchool = async ({ schoolId, updates }) => {
@@ -33,3 +36,4 @@ export const useSchoolMutations = () => {
     return { updateSchool };
 }
 
+export { useSchools, useSchoolMutations }

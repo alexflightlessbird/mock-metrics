@@ -1,9 +1,9 @@
-export const TYPES = {
+const TYPES = {
     POSTSTACK: "Post-Stack",
     PRESTACK: "Pre-Stack"
 }
 
-export const AREAS = {
+const AREAS = {
     INVITATIONAL: "Invitational",
     REGIONALS: "Regionals",
     ORCS: "ORCS",
@@ -12,3 +12,5 @@ export const AREAS = {
     OLT: "OLT",
     OTHER: "Other"
 }
+
+export { TYPES, AREAS };

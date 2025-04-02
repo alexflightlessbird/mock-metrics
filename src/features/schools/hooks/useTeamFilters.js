@@ -1,6 +1,7 @@
+// Dependency imports
 import { useMemo } from "react";
 
-export function useStudentTeamFilters({ teamId, allStudentTeams }) {
+function useStudentTeamFilters({ teamId, allStudentTeams }) {
     console.log(teamId, allStudentTeams);
     return useMemo(() => {
         const safeItems = allStudentTeams || [];
@@ -8,9 +9,11 @@ export function useStudentTeamFilters({ teamId, allStudentTeams }) {
     }, [teamId, allStudentTeams])
 }
 
-export function useTournamentTeamFilters({ teamId, allTeamsTournaments }) {
+function useTournamentTeamFilters({ teamId, allTeamsTournaments }) {
     return useMemo(() => {
         const safeItems = allTeamsTournaments || [];
         return safeItems.filter((i) => i.team_id === teamId);
     }, [teamId, allTeamsTournaments])
 }
+
+export { useStudentTeamFilters, useTournamentTeamFilters };

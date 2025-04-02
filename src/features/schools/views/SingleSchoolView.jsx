@@ -1,13 +1,20 @@
-import List from "../../../common/components/List";
-import SingleSchoolTabs from "../components/tabs/SingleSchoolTabs";
-import { useSchoolMutations } from "../../../hooks/api/useSchools";
+// Dependency imports
 import { TextInput, Modal } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { ROLES } from "../../../utils/constants";
-import IconButton from "../../../common/components/IconButton";
+
+// Component imports
 import EntityHeader from "../components/EntityHeader";
 import EditModal from "../components/EditModal";
+import SingleSchoolTabs from "../components/tabs/SingleSchoolTabs";
+import List from "../../../common/components/List";
+import IconButton from "../../../common/components/IconButton";
+
+// Utils imports
+import { ROLES } from "../../../utils/constants";
+
+// Hooks imports
+import { useSchoolMutations } from "../../../hooks/api/useSchools";
 
 export default function SingleSchoolView({
   selectedSchool,

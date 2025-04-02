@@ -1,7 +1,10 @@
+// Dependency imports
 import { useMemo } from "react";
+
+// Utils imports
 import { ROLES } from "../../../utils/constants";
 
-export function useRoleFilters(allItems) {
+function useRoleFilters(allItems) {
     return useMemo(() => {
         const safeItems = allItems || [];
         const primary = safeItems.filter((i) => i.role === ROLES.PRIMARY);
@@ -10,3 +13,5 @@ export function useRoleFilters(allItems) {
         return { primary, admin, viewer };
     }, [allItems]);
 }
+
+export { useRoleFilters };

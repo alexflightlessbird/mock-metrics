@@ -1,6 +1,7 @@
+// Dependency imports
 import { createTheme } from "@mantine/core";
 
-export const theme = createTheme({
+const theme = createTheme({
     colors: {
       darkBlue: ["#0a1f3c"],
       lightGray: ["#f7f5f3"],
@@ -30,3 +31,5 @@ export const theme = createTheme({
     autoContrast: true,
     cursorType: "pointer",
   });
+
+  export { theme };

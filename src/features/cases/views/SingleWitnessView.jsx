@@ -1,3 +1,4 @@
+// Component imports
 import List from "../../../common/components/List";
 import NotFound from "../../../common/components/NotFound";
 

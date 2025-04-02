@@ -1,3 +1,4 @@
+// Dependency imports
 import { Button, Flex } from "@mantine/core";
 import { useFullscreen } from "@mantine/hooks";
 

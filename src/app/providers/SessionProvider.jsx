@@ -1,8 +1,13 @@
+// Dependency imports
 import { useEffect, useState, useMemo } from "react";
+
+// Services imports
 import { supabase } from "../../services/supabaseClient";
+
+// Context imports
 import { SessionContext } from "../../contexts/SessionContext";
 
-export const SessionProvider = ({ children }) => {
+const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
@@ -47,3 +52,6 @@ export const SessionProvider = ({ children }) => {
     </SessionContext.Provider>
   );
 };
+
+
+export { SessionProvider };

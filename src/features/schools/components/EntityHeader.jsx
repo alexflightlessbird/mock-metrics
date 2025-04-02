@@ -1,4 +1,7 @@
+// Dependency imports
 import { Flex } from "@mantine/core";
+
+// Component imports
 import { EditIcon } from "../../../common/components/ActionIcons";
 
 export default function EntityHeader({ title, canEdit, onEdit }) {

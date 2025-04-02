@@ -1,5 +1,10 @@
-import AllSchoolsTabs from "../components/tabs/AllSchoolsTabs";
+// Dependency imports
 import { Text } from "@mantine/core";
+
+// Component imports
+import AllSchoolsTabs from "../components/tabs/AllSchoolsTabs";
+
+// Hooks imports
 import { useRoleFilters } from "../hooks/useRoleFilters";
 
 export default function AllSchoolsView({

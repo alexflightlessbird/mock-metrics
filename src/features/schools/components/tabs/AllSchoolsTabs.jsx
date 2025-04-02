@@ -1,6 +1,9 @@
+// Dependency imports
 import { Text } from "@mantine/core";
-import TabbedView from "../../../../common/components/TabbedView";
+
+// Component imports
 import SchoolList from "../lists/AllSchools/SchoolList";
+import TabbedView from "../../../../common/components/TabbedView";
 
 export default function AllSchoolsTabs({
   primarySchools,

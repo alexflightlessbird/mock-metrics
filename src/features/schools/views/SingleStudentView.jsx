@@ -1,15 +1,22 @@
-import List from "../../../common/components/List";
+// Dependency imports
 import { Link } from "react-router-dom";
 import { Text } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+
+// Component imports
+import EntityHeader from "../components/EntityHeader";
+import EditModal from "../components/EditModal";
+import List from "../../../common/components/List";
+import Loading from "../../../common/components/Loading";
+
+// Utils imports
 import { ROLES } from "../../../utils/constants";
+
+// Hooks imports
 import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
 import { useSchoolStudentTeams, useSchoolTeams } from "../../../hooks/api/useSchoolData";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
-import Loading from "../../../common/components/Loading";
-import EntityHeader from "../components/EntityHeader";
-import EditModal from "../components/EditModal";
 
 export default function SingleStudentView({ selectedStudent, schoolRole }) {
   const { updateStudent } = useSchoolDataMutations();

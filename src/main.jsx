@@ -1,9 +1,15 @@
+// Dependency imports
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@mantine/core/styles.css";
-import App from "./App";
+
+// Provider imports
 import { SessionProvider } from "./app/providers/SessionProvider";
 import AppProviders from "./app/providers/AppProviders";
+
+// Component imports
+import App from "./App";
+
 
 setTimeout(() => {
   const splashScreen = document.getElementById("splash-screen");

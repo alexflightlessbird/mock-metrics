@@ -1,3 +1,4 @@
+// Dependency imports
 import { Breadcrumbs, Divider, Flex, Space } from "@mantine/core";
 
 export default function Breadcrumb({ children }) {

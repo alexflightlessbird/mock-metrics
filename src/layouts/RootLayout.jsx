@@ -1,4 +1,6 @@
+// Dependency imports
 import { useEffect, memo } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import {
   AppShell,
   Image,
@@ -9,12 +11,15 @@ import {
   Group,
   ScrollArea,
 } from "@mantine/core";
-import { Outlet, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
-import { useSession } from "../common/hooks/auth/useSession";
+import { useDisclosure } from "@mantine/hooks";
+
+// Component imports
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
-import { useDisclosure } from "@mantine/hooks";
+import logo from "../assets/logo.png";
+
+// Hooks imports
+import { useSession } from "../common/hooks/auth/useSession";
 
 function RootLayout() {
   const theme = useMantineTheme();

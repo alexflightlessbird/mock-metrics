@@ -1,3 +1,4 @@
+// Dependency imports
 import { useState, useEffect, memo } from "react";
 
 const DelayedFallback = memo(({ initialFallback, delayedFallback, delay }) => {

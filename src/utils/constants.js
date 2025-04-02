@@ -1,11 +1,13 @@
-export const ROLES = {
+const ROLES = {
   PRIMARY: "Primary",
   ADMIN: "Admin",
   VIEWER: "Viewer",
 };
 
-export const PREMIUM_LIMITS = {
+const PREMIUM_LIMITS = {
   PRIMARY: 1,
   ADMIN: 1,
   VIEWER: 1,
 };
+
+export { ROLES, PREMIUM_LIMITS };

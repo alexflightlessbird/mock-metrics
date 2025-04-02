@@ -1,7 +1,10 @@
+// Dependency imports
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Services imports
 import { supabase } from "../../services/supabaseClient";
 
-export const useSchoolTeams = (schoolId) => {
+const useSchoolTeams = (schoolId) => {
     return useQuery({
         queryKey: ["schoolTeams", schoolId],
         queryFn: async () => {
@@ -17,7 +20,7 @@ export const useSchoolTeams = (schoolId) => {
     });
 };
 
-export const useSchoolStudents = (schoolId) => {
+const useSchoolStudents = (schoolId) => {
     return useQuery({
         queryKey: ["schoolStudents", schoolId],
         queryFn: async () => {
@@ -33,7 +36,7 @@ export const useSchoolStudents = (schoolId) => {
     });
 };
 
-export const useSchoolTournaments = (schoolId) => {
+const useSchoolTournaments = (schoolId) => {
     return useQuery({
         queryKey: ["schoolTournaments", schoolId],
         queryFn: async () => {
@@ -49,7 +52,7 @@ export const useSchoolTournaments = (schoolId) => {
     });
 };
 
-export const useSchoolUsers = (schoolId, enabled) => {
+const useSchoolUsers = (schoolId, enabled) => {
     return useQuery({
         queryKey: ["schoolUsers", schoolId],
         queryFn: async () => {
@@ -65,7 +68,7 @@ export const useSchoolUsers = (schoolId, enabled) => {
     });
 };
 
-export const useSchoolStudentTeams = (schoolId) => {
+const useSchoolStudentTeams = (schoolId) => {
     return useQuery({
         queryKey: ["studentTeams", schoolId],
         queryFn: async () => {
@@ -80,7 +83,7 @@ export const useSchoolStudentTeams = (schoolId) => {
     })
 }
 
-export const useSchoolTeamsTournaments = (schoolId) => {
+const useSchoolTeamsTournaments = (schoolId) => {
     return useQuery({
         queryKey: ["teamsTournaments", schoolId],
         queryFn: async () => {
@@ -95,7 +98,7 @@ export const useSchoolTeamsTournaments = (schoolId) => {
     })
 }
 
-export const useSchoolDataMutations = () => {
+const useSchoolDataMutations = () => {
     const queryClient = useQueryClient();
 
     const updateUserRole = async ({ userId, schoolId, role }) => {
@@ -218,3 +221,5 @@ export const useSchoolDataMutations = () => {
 
     return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament };
 }
+
+export { useSchoolTeams, useSchoolStudents, useSchoolTournaments, useSchoolUsers, useSchoolStudentTeams, useSchoolTeamsTournaments, useSchoolDataMutations };

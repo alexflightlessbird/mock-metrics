@@ -1,4 +1,7 @@
+// Dependency imports
 import { useContext } from "react";
+
+// Context imports
 import { SessionContext } from "../../../contexts/SessionContext";
 
 export const useSession = () => {

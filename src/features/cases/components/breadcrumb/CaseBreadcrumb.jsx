@@ -1,9 +1,14 @@
+// Dependency imports
+import { Fragment } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+
+// Component imports
 import Breadcrumb from "../../../../common/components/Breadcrumb";
 import BreadcrumbPill from "../../../../common/components/BreadcrumbPill";
-import { Link, useSearchParams } from "react-router-dom";
+
+// Hooks imports
 import { useCases, useCaseWitnesses } from "../../../../hooks/api/useCases";
 import { useSelectedItem } from "../../../../common/hooks/useSelectedItem";
-import { Fragment } from "react";
 
 export default function CaseBreadcrumb() {
   const [searchParams] = useSearchParams();

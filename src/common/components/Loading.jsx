@@ -1,3 +1,4 @@
+// Dependency imports
 import { Loader, useMantineTheme } from "@mantine/core";
 
 export default function Loading() {

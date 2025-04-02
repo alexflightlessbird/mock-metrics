@@ -1,9 +1,16 @@
-import List from "../../../../../common/components/List";
+// Dependency imports
 import { Link } from "react-router-dom";
 import { Flex, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
+
+// Component imports
+import List from "../../../../../common/components/List";
 import { DeleteIcon } from "../../../../../common/components/ActionIcons";
+
+// Utils imports
 import { ROLES } from "../../../../../utils/constants";
+
+// Hooks imports
 import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
 export default function TeamTournamentList({ tournaments, schoolRole }) {

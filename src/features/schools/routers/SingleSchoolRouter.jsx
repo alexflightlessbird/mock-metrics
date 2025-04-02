@@ -1,19 +1,26 @@
-import { useSearchParams } from "react-router-dom";
-import {
-  useSchoolTeams,
-  useSchoolStudents,
-  useSchoolTournaments,
-  useSchoolUsers,
-} from "../../../hooks/api/useSchoolData";
+// Dependency imports
 import { useState } from "react";
-import { useSelectedItem } from "../../../common/hooks/useSelectedItem";
+import { useSearchParams } from "react-router-dom";
+
+// Component imports
 import SingleSchoolView from "../views/SingleSchoolView";
 import SingleTeamView from "../views/SingleTeamView";
 import SingleStudentView from "../views/SingleStudentView";
 import SingleTournamentView from "../views/SingleTournamentView";
 import NotFound from "../../../common/components/NotFound";
 import Loading from "../../../common/components/Loading";
+
+// utils imports
 import { ROLES } from "../../../utils/constants";
+
+// Hooks imports
+import {
+  useSchoolTeams,
+  useSchoolStudents,
+  useSchoolTournaments,
+  useSchoolUsers,
+} from "../../../hooks/api/useSchoolData";
+import { useSelectedItem } from "../../../common/hooks/useSelectedItem";
 
 export default function SingleSchoolRouter({ selectedSchool }) {
   const [searchParams] = useSearchParams();

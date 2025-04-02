@@ -1,7 +1,10 @@
+// Dependency imports
 import { useQuery } from "@tanstack/react-query";
+
+// Services imports
 import { supabase } from "../../services/supabaseClient";
 
-export const useCases = () => {
+const useCases = () => {
     return useQuery({
         queryKey: ["cases"],
         queryFn: async () => {
@@ -15,7 +18,7 @@ export const useCases = () => {
     });
 };
 
-export const useCaseWitnesses = (caseId) => {
+const useCaseWitnesses = (caseId) => {
     return useQuery({
         queryKey: ["caseWitnesses", caseId],
         queryFn: async () => {
@@ -30,3 +33,5 @@ export const useCaseWitnesses = (caseId) => {
         enabled: !!caseId
     })
 }
+
+export { useCases, useCaseWitnesses };

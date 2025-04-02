@@ -1,7 +1,10 @@
-import List from "../../../common/components/List";
+// Component imports
 import SingleCaseTabs from "../components/tabs/SingleCaseTabs";
-import { useWitnessFilters } from "../hooks/useWitnessFilters";
+import List from "../../../common/components/List";
 import NotFound from "../../../common/components/NotFound";
+
+// Hooks imports
+import { useWitnessFilters } from "../hooks/useWitnessFilters";
 
 export default function SingleCaseView({
   selectedCase,

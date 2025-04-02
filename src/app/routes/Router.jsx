@@ -1,16 +1,17 @@
+// Dependency imports
 import { lazy } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
+
+// Component imports
 import ProtectedRouteWrapper from "./ProtectedRouteWrapper";
-import routesConfig from "./routes.json";
 import RootLayout from "../../layouts/RootLayout";
 
-//pages
+// Pages imports
 const NotFound = lazy(() => import("../../pages/NotFound"));
-
 const componentMap = {
   Home: lazy(() => import("../../pages/Home")),
   Test: lazy(() => import("../../pages/Test")),
@@ -22,6 +23,9 @@ const componentMap = {
   Teams: lazy(() => import("../../pages/Teams")),
   SchoolsTest: lazy(() => import("../../features/schools/Schools")),
 };
+
+// Other imports
+import routesConfig from "./routes.json";
 
 function createRouteElements(routes) {
   return routes.map((route) => {

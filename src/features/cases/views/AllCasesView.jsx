@@ -1,6 +1,11 @@
+// Dependency imports
 import { Link } from "react-router-dom";
-import AllCasesTabs from "../components/tabs/AllCasesTabs";
 import { Text } from "@mantine/core";
+
+// Component imports
+import AllCasesTabs from "../components/tabs/AllCasesTabs";
+
+// Hooks imports
 import { useCaseFilters } from "../hooks/useCaseFilters";
 
 export default function AllCasesView({ allCases, currentAllCaseTab, setCurrentAllCaseTab }) {

@@ -1,7 +1,12 @@
+// Router imports
 import CaseRouter from "./routers/CaseRouter";
-import { useCases } from "../../hooks/api/useCases";
+
+// Component imports
 import CaseBreadcrumb from "./components/breadcrumb/CaseBreadcrumb";
 import Loading from "../../common/components/Loading";
+
+// Hooks imports
+import { useCases } from "../../hooks/api/useCases";
 
 export default function Cases() {
   const { data: allCases = [], isPending } = useCases();

@@ -1,5 +1,8 @@
+// Dependency imports
 import { createElement } from "react";
 import { useMantineTheme, ActionIcon } from "@mantine/core";
+
+// Utils imports
 import icons from "../../utils/icons";
 
 function EditIcon({ onClick }) {

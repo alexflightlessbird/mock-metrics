@@ -1,15 +1,20 @@
+// Dependency imoprts
+import { Link, useSearchParams } from "react-router-dom";
+import { Fragment } from "react";
+
+// Component imports
 import Breadcrumb from "../../../../common/components/Breadcrumb";
 import BreadcrumbPill from "../../../../common/components/BreadcrumbPill";
-import { Link, useSearchParams } from "react-router-dom";
+
+// Hooks imports
 import { useSchools } from "../../../../hooks/api/useSchools";
-import { useSession } from "../../../../common/hooks/auth/useSession";
 import {
   useSchoolTeams,
   useSchoolStudents,
   useSchoolTournaments,
 } from "../../../../hooks/api/useSchoolData";
 import { useSelectedItem } from "../../../../common/hooks/useSelectedItem";
-import { Fragment } from "react";
+import { useSession } from "../../../../common/hooks/auth/useSession";
 
 export default function SchoolBreadcrumb() {
   const [searchParams] = useSearchParams();

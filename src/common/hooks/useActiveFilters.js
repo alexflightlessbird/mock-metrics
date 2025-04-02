@@ -1,3 +1,4 @@
+// Dependency imports
 import { useMemo } from "react";
 
 export function useActiveFilters(allItems) {

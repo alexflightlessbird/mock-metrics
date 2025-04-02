@@ -1,12 +1,19 @@
-import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
-import { useRoleFilters } from "../../hooks/useRoleFilters";
-import TabbedView from "../../../../common/components/TabbedView";
+// Dependency imports
+import { Text, Tooltip } from "@mantine/core";
+
+// Component imports
 import UserList from "../lists/SingleSchool/UserList";
 import TeamList from "../lists/SingleSchool/TeamList";
 import StudentList from "../lists/SingleSchool/StudentList";
 import TournamentList from "../lists/SingleSchool/TournamentList";
-import { Text, Tooltip } from "@mantine/core";
+import TabbedView from "../../../../common/components/TabbedView";
+
+// Utils imports
 import { PREMIUM_LIMITS, ROLES } from "../../../../utils/constants";
+
+// Hooks imports
+import { useRoleFilters } from "../../hooks/useRoleFilters";
+import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
 
 export default function SingleSchoolTabs({
   role,

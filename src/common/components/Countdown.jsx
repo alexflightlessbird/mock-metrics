@@ -1,3 +1,4 @@
+// Dependency imports
 import { useEffect, useState } from "react";
 
 export default function Countdown({ initialSeconds, onComplete, children }) {

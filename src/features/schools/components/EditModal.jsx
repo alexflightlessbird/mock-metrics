@@ -1,4 +1,7 @@
+// Dependency imports
 import { Select, TextInput, NumberInput, Checkbox, Modal } from "@mantine/core";
+
+// Component imports
 import IconButton from "../../../common/components/IconButton";
 
 export default function EditModal ({ opened, onClose, title, form, onSubmit, fields }) {

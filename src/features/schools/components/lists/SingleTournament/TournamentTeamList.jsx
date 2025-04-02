@@ -1,11 +1,17 @@
-import List from "../../../../../common/components/List";
+// Dependency imports
 import { Link } from "react-router-dom";
 import { Flex, Text, Select } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { DeleteIcon } from "../../../../../common/components/ActionIcons";
-import { ROLES } from "../../../../../utils/constants";
-import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
+// Component imports
+import List from "../../../../../common/components/List";
+import { DeleteIcon } from "../../../../../common/components/ActionIcons";
+
+// Utils imports
+import { ROLES } from "../../../../../utils/constants";
+
+// Hooks imports
+import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
 export default function TourmamentTeamList({ teams, schoolRole }) {
     const { removeTeamFromTournament } = useSchoolDataMutations();
