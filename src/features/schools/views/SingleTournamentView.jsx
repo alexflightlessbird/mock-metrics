@@ -20,7 +20,7 @@ import { useCases } from "../../../hooks/api/useCases";
 import { useTournamentFilters } from "../hooks/useTournamentFilters";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
-export default function SingleTournamentView({ selectedTournament, schoolRole, schoolName }) {
+export default function SingleTournamentView({ selectedTournament, schoolRole }) {
   const { updateTournament, addTeamToTournament } = useSchoolDataMutations();
 
   const { data: allCases = [], isPending: isCasesPending } = useCases();
@@ -255,13 +255,13 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
   return (
     <>
       <EntityHeader title={selectedTournament.name} canEdit={hasEditPermissions} onEdit={editOpen} />
-      {(schoolRole === ROLES.PRIMARY || schoolRole === ROLES.ADMIN) && (
+      {hasEditPermissions && (
         <EditModal {...editModalProps} />
       )}
       <List items={detailItems} />
       <br />
       <Flex style={{ alignItems: "center", gap: "7px" }}>
-        <h3>Teams Assigned to Tournament</h3>
+        <h2>Teams Assigned to Tournament</h2>
         {canAddTeam && (
           <>
             <AddIcon onClick={addOpen} />
@@ -269,7 +269,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
           </>
         )}
       </Flex>
-      <TournamentTeamList teams={filteredTeams} schoolName={schoolName} schoolRole={schoolRole} />
+      <TournamentTeamList teams={filteredTeams} schoolRole={schoolRole} />
     </>
   );
 }

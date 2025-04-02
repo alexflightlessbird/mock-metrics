@@ -7,7 +7,7 @@ import { ROLES } from "../../../../utils/constants";
 import { useSchoolDataMutations } from "../../../../hooks/api/useSchoolData";
 
 
-export default function TourmamentTeamList({ teams, schoolName, schoolRole }) {
+export default function TourmamentTeamList({ teams, schoolRole }) {
     const { removeTeamFromTournament } = useSchoolDataMutations();
 
     const removeTeamModal = (team) => {
@@ -16,7 +16,7 @@ export default function TourmamentTeamList({ teams, schoolName, schoolRole }) {
             centered: true,
             children: (
                 <Text>
-                    Are you sure you want to remove {team.teams.name} from {schoolName}?<br /><br />Removing the team will remove all data (including ballots) associated between this team and this tournament. This action is not reversible and data cannot be recovered.
+                    Are you sure you want to remove {team.teams.name} from {team.tournaments.name}?<br /><br />Removing the team will remove all data (including ballots) associated between this team and this tournament. This action is not reversible and data cannot be recovered.
                 </Text>
             ),
             labels: { confirm: "Remove", cancel: "Cancel" },
