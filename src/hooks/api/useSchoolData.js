@@ -177,10 +177,10 @@ function useSchoolDataMutations () {
         queryClient.invalidateQueries(["studentTeams", schoolId]);
     }
 
-    async function updateTeam ({ teamId, schoolId, is_active, type, name }) {
+    async function updateTeam ({ teamId, schoolId, is_active, type, name, year, caseId }) {
         const { data, error } = await supabase
             .from("teams")
-            .update({ is_active, type, name })
+            .update({ is_active, type, name, year, case_id: caseId })
             .eq("id", teamId)
             .eq("school_id", schoolId);
         if (error) throw new Error(error.message);
