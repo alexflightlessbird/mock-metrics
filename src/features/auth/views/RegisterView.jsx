@@ -42,7 +42,7 @@ export default function RegisterView({ onToggleView }) {
                 email: values.email.toLowerCase(),
                 password: values.password,
                 options: {
-                    emailRedirectTo: `${window.location.origin}/auth?verified=true`
+                    emailRedirectTo: `https://mock-metrics.onrender.com/auth?type=email-verification`
                 }
             });
 
@@ -56,7 +56,7 @@ export default function RegisterView({ onToggleView }) {
             }
 
             if (data.user?.identities?.length === 0) {
-                setError("This email is already registered with another provider.");
+                setError("This email is already registered. Please log in or use a different email.");
                 return;
             }
 
