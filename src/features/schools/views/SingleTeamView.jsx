@@ -1,7 +1,8 @@
 // Dependency imports
 import { useMemo } from "react";
-import { Flex } from "@mantine/core";
-import { hasLength, isNotEmpty, useForm } from "@mantine/form";
+import { Link } from "react-router-dom";
+import { Flex, Text } from "@mantine/core";
+import { hasLength, isNotEmpty, useForm, isInRange } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
@@ -20,17 +21,20 @@ import { TYPES } from "../utils/schoolConstants";
 
 // Hooks imports
 import { useSchoolDataMutations, useSchoolTournaments, useSchoolTeamsTournaments, useSchoolStudents, useSchoolStudentTeams } from "../../../hooks/api/useSchoolData";
+import { useCases } from "../../../hooks/api/useCases";
 import { useStudentTeamFilters, useTournamentTeamFilters } from "../hooks/useTeamFilters";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
 export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const { updateTeam, updateStudent, addTeamToTournament } = useSchoolDataMutations();
 
+  const { data: allCases = [], isPending: isCasesPending } = useCases();
   const { data: allTournaments = [], isPending: isTournamentsPending } = useSchoolTournaments(selectedTeam.school_id);
   const { data: allTeamsTournaments = [], isPending: isTeamsTournamentsPending } = useSchoolTeamsTournaments(selectedTeam.school_id);
   const { data: allStudents = [], isPending: isStudentsPending } = useSchoolStudents(selectedTeam.school_id);
   const { data: allStudentTeams = [], isPending: isStudentTeamsPending } = useSchoolStudentTeams(selectedTeam.school_id);
 
+  const linkedCase = useMemo(() => allCases.find((c) => c.id === selectedTeam.case_id), [allCases, selectedTeam]);
   const filteredStudents = useStudentTeamFilters({ teamId: selectedTeam.id, allStudentTeams })
     .sort((a, b) => a.students.name.localeCompare(b.students.name));
 
@@ -43,8 +47,10 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const [editOpened, { open: editOpen, close: editClose }] = useDisclosure(false, {
     onOpen: () => editTeamForm.setValues({
       name: selectedTeam.name,
+      year: selectedTeam.year,
       active: selectedTeam.is_active,
       type: selectedTeam.type,
+      caseId: linkedCase?.id?.toString() || "null"
     }),
     onClose: () => editTeamForm.reset(),
   });
@@ -60,7 +66,9 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
   const editTeamForm = useForm({
     mode: "uncontrolled",
     validate: {
-      name: hasLength({ min: 1, max: 15 }, "Must be 1-15 characters")
+      name: hasLength({ min: 1, max: 15 }, "Must be 1-15 characters"),
+      year: isInRange({ min: 1985, max: new Date().getFullYear() }, "Enter a valid year"),
+      caseId: isNotEmpty("Select an option")
     },
     validateInputOnBlur: true,
     onSubmitPreventDefault: "always"
@@ -105,6 +113,16 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
     [allActiveTournaments, allTeamsTournaments, selectedTeam.id]
   );
 
+  const getCaseOptions = useMemo(() => [
+          { value: "null", label: "None" },
+          ...allCases.map((c) => ({
+            value: c.id.toString(),
+            label: c.name,
+          }))
+        ],
+        [allCases]
+  );
+
   const getStudentOptions = useMemo(() => 
     filteredActiveStudents
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -130,20 +148,26 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
       [filteredActiveTournaments]
   );
 
-  if (isTournamentsPending || isTeamsTournamentsPending || isStudentsPending || isStudentTeamsPending) return <Loading />
+  if (isCasesPending || isTournamentsPending || isTeamsTournamentsPending || isStudentsPending || isStudentTeamsPending) return <Loading />
 
   async function handleEditTeamSubmit (values) {
-    const { name, active, type } = values;
+    const { name, active, type, year, caseId } = values;
     const originalName = selectedTeam.name;
     const originalActive = selectedTeam.is_active;
     const originalType = selectedTeam.type;
+    const originalYear = selectedTeam.year;
+    const originalCaseId = selectedTeam?.case_id;
+
+    const parsedCaseId = caseId === "null" ? null : Number(caseId);
 
     const nameChanged = name !== originalName;
     const statusChanged = active !== originalActive;
     const typeChanged = type !== originalType;
+    const yearChanged = year !== originalYear;
+    const caseChanged = parsedCaseId !== originalCaseId;
 
-    if (!nameChanged && !statusChanged && !typeChanged) {
-      close();
+    if (!nameChanged && !statusChanged && !typeChanged && !yearChanged && !caseChanged) {
+      editClose();
       return;
     }
 
@@ -154,8 +178,10 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
         type: typeChanged ? type : undefined,
         schoolId: selectedTeam.school_id,
         teamId: selectedTeam.id,
+        year: yearChanged ? year : undefined,
+        caseId: caseChanged ? parsedCaseId : undefined,
       });
-      close();
+      editClose();
     } catch (error) {
       console.error("Team update failed:", error);
     }
@@ -202,9 +228,13 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
     { value: TYPES.POSTSTACK, label: TYPES.POSTSTACK }
   ];
 
+  const caseItem = selectedTeam.case_id ? <Link to={`/cases?caseId=${selectedTeam.case_id}`}>{linkedCase.name}</Link> : "None";
+
   const detailItems = [
     `Type: ${selectedTeam.type}`,
-    `Status: ${selectedTeam.is_active ? "Active" : "Inactive"}`
+    `Status: ${selectedTeam.is_active ? "Active" : "Inactive"}`,
+    `Year: ${selectedTeam.year}`,
+    <Text>Linked Case: {caseItem}</Text>
   ];
 
   const editModalProps = {
@@ -228,6 +258,21 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
         required: true,
         label: "Type",
         options: typeOptions
+      },
+      {
+        type: "number",
+        name: "year",
+        required: true,
+        min: 1985,
+        max: new Date().getFullYear(),
+        label: "Year"
+      },
+      {
+        type: "select",
+        name: "caseId",
+        required: true,
+        label: "Linked Case",
+        options: getCaseOptions
       },
       {
         type: "checkbox",
