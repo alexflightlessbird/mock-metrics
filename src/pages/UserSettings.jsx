@@ -83,7 +83,7 @@ export default function UserSettings() {
       <h1>Settings Page</h1>
       <Flex style={{ alignItems: "center", gap: "7px" }}>
         <h2>User Details</h2>
-        <EditIcon handleClick={open} />
+        <EditIcon onClick={open} />
         <Modal opened={opened} onClose={close} title="Edit User Details">
           <form onSubmit={editUserForm.onSubmit(handleEditSubmit)}>
             <TextInput
