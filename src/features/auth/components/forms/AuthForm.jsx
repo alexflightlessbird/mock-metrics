@@ -10,7 +10,8 @@ export default function AuthForm({
     isLoading,
     error,
     submitLabel = "Submit",
-    showConfirmPassword = false
+    showConfirmPassword = false,
+    icon
 }) {
     return (
         <form onSubmit={form.onSubmit(onSubmit)}>
@@ -43,7 +44,7 @@ export default function AuthForm({
                 </>
             )}
             <br />
-            <IconButton type="submit" fullWidth loading={isLoading} icon="save" buttonText={submitLabel} />
+            <IconButton type="submit" fullWidth loading={isLoading} icon={icon} buttonText={submitLabel} />
         </form>
     )
 }
