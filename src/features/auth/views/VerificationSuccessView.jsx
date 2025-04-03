@@ -1,5 +1,4 @@
 // Dependency imports
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Text } from "@mantine/core";
 
@@ -11,10 +10,9 @@ export default function VerificationSuccessView() {
 
     return (
         <>
-            <h1>Email Verified!</h1>
+            <h1>Email Verified</h1>
             <Text>Your email has been successfully verified. You can now log in to your account.</Text>
-            <br />
-            <IconButton onClick={() => navigate("/auth")} buttonText="Go to Login" />
+            <IconButton onClick={() => navigate("/auth")} buttonText="Go to Login" variant="subtle" fontColor="green" />
         </>
     )
 }
