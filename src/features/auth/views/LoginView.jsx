@@ -36,7 +36,7 @@ export default function LoginView({ onToggleView }) {
         setError(null);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabase.auth.signInWithPassword({
                 email: values.email,
                 password: values.password,
             });
@@ -44,6 +44,32 @@ export default function LoginView({ onToggleView }) {
             if (error) {
                 setError(error.message);
                 return;
+            }
+
+            const { data: existingRelationship, error: selectError } = await supabase
+                .from("users")
+                .select("*")
+                .eq("email", values.email)
+                .maybeSingle();
+
+            if (existingRelationship) console.log("Existing:", existingRelationship);
+            if (selectError) console.log("Error selecting:", selectError);
+            
+            if (!existingRelationship) {
+                try {
+                    console.log("Inserting user");
+                    const { data: insertData, error: insertError } = await supabase
+                    .from("users")
+                    .insert({ 
+                        id: data.user.id,
+                        email: data.user.email
+                    });
+                    console.log("Insert Data:", insertData);
+                    console.log("Insert error:", insertError);
+                    if (insertError) throw new Error(insertError);
+                } catch (error) {
+                    console.error(error);
+                }
             }
 
             navigate("/settings");
