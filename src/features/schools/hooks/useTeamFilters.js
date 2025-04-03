@@ -2,7 +2,6 @@
 import { useMemo } from "react";
 
 function useStudentTeamFilters({ teamId, allStudentTeams }) {
-    console.log(teamId, allStudentTeams);
     return useMemo(() => {
         const safeItems = allStudentTeams || [];
         return safeItems.filter((i) => i.team_id === teamId && i.is_active == true);
