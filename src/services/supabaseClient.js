@@ -6,8 +6,9 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: {
-        autoRefreshToken: true,
-        persistSession: true,
+        flowType: "implicit",
+        autoRefreshToken: false,
         detectSessionInUrl: false,
+        persistSession: true,
     }
 });
