@@ -12,6 +12,7 @@ import { supabase } from "../../../services/supabaseClient";
 
 export default function RegisterView({ onToggleView }) {
     const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState("");
     const [error, setError] = useState(null);
     const theme = useMantineTheme();
     const [isSuccess, setIsSuccess] = useState(false);
@@ -38,16 +39,31 @@ export default function RegisterView({ onToggleView }) {
 
         try {
             const { data, error } = await supabase.auth.signUp({
-                email: values.email,
-                password: values.password
+                email: values.email.toLowerCase(),
+                password: values.password,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/auth?verified=true`
+                }
             });
 
             if (error) {
-                setError(error.message);
+                if (error.message.includes("User already resigstered")) {
+                    setError("This email is already registered. Please log in or use a different email.");
+                } else {
+                    setError(error.message);
+                }
                 return;
             }
 
-            setIsSuccess(true);
+            if (data.user?.identities?.length === 0) {
+                setError("This email is already registered with another provider.");
+                return;
+            }
+
+            if (data.user) {
+                setIsSuccess(true);
+                setEmail(values.email.toLowerCase());
+            }
         } catch (error) {
             setError("An unexpected error occurred");
         } finally {
@@ -59,7 +75,8 @@ export default function RegisterView({ onToggleView }) {
         return (
             <>
                 <h1>Registration Successful</h1>
-                <Text>Please check your email to verify your account.</Text>
+                <Text>We've sent a confirmation email to {email}.</Text>
+                <Text mb="md">Please check your inbox and verify your email address.</Text>
                 <IconButton onClick={onToggleView} buttonText="Back to Login" variant="subtle" fontColor={theme.colors.primaryBlue[0]} />
             </>
         )
