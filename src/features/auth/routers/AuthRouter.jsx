@@ -13,8 +13,6 @@ export default function AuthRouter({ session }) {
     const [searchParams] = useSearchParams();
     const isVerificationSuccess = searchParams.get("type");
 
-    console.log(isVerificationSuccess);
-
     if (!session) {
         if (isVerificationSuccess === "email-verification") return <VerificationSuccessView />;
         
