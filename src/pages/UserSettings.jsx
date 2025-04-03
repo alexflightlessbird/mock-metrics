@@ -39,7 +39,7 @@ export default function UserSettings() {
 
   useEffect(() => {
     setDetailItems([
-      `Name: ${user?.name}`,
+      `Name: ${user?.name === null ? "Not yet set" : user?.name}`,
       `Email: ${user?.email}`,
       `User ID (for support purposes only): ${userId}`,
     ]);
