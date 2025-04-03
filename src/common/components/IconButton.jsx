@@ -14,6 +14,7 @@ export default function IconButton({
   type = "button",
   onClick,
   fontColor,
+  ...otherProps
 }) {
   const theme = useMantineTheme();
 
@@ -39,6 +40,7 @@ export default function IconButton({
       style={{ color: fontColor || "white" }}
       type={type}
       onClick={onClick}
+      {...otherProps}
     >
       {buttonText}
     </Button>
