@@ -1,19 +1,21 @@
 // Dependency imports
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Text } from "@mantine/core";
+import { Text, Group, useMantineTheme } from "@mantine/core";
 import { hasLength, isEmail, useForm } from "@mantine/form";
 
 // Component imports
 import AuthForm from "../components/forms/AuthForm";
+import IconButton from "../../../common/components/IconButton";
 
 // Services imports
 import { supabase } from "../../../services/supabaseClient";
 
-export default function LoginView() {
+export default function LoginView({ onToggleView }) {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const theme = useMantineTheme();
 
     const loginForm = useForm({
         mode: "uncontrolled",
@@ -56,14 +58,20 @@ export default function LoginView() {
         <>
             <h1>Login</h1>
             <Text>Welcome back! Please enter your credentials.</Text>
-
+            <br />
             <AuthForm
                 form={loginForm}
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
                 error={error}
                 submitLabel="Login"
+                icon="login"
             />
+
+            <Group justify="center" mt="md">
+                <Text>Don't have an account?</Text>
+                <IconButton variant="subtle" onClick={onToggleView} fontColor={theme.colors.primaryBlue[0]} buttonText="Register here" />
+            </Group>
         </>
     )
 }
