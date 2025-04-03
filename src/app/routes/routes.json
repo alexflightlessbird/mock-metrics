@@ -1,3 +1,4 @@
+src/app/routes/routes.json:
 {
   "public_routes": [
     {
@@ -21,10 +22,6 @@
     {
       "path": "/cases",
       "component": "Cases"
-    },
-    {
-      "path": "/schools-test",
-      "component": "SchoolsTest"
     },
     {
       "path": "/schools",
