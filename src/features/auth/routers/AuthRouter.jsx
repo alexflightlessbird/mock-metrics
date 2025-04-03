@@ -1,5 +1,5 @@
 // Dependency imports
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // Component imports
@@ -11,22 +11,16 @@ import VerificationSuccessView from "../views/VerificationSuccessView";
 export default function AuthRouter({ session }) {
     const [currentView, setCurrentView] = useState("login");
     const [searchParams] = useSearchParams();
-    const isVerificationSuccess = searchParams.get("verified") === "true";
-
-    useEffect(() => {
-        if (isVerificationSuccess) {
-            setCurrentView("verification-success");
-        }
-    }, [isVerificationSuccess]);
+    const isVerificationSuccess = searchParams.get("type") === "email-verification";
 
     if (!session) {
+        if (isVerificationSuccess) return <VerificationSuccessView />;
+        
         switch (currentView) {
             case "login":
                 return <LoginView onToggleView={() => setCurrentView("register")} />
             case "register":
                 return <RegisterView onToggleView={() => setCurrentView("login")} />
-            case "verification-success":
-                return <VerificationSuccessView />;
             default:
                 return <LoginView onToggleView={() => setCurrentView("register")} />
         }
