@@ -1,7 +1,7 @@
 // Dependency imports
 import { Link } from "react-router-dom";
 import { Text } from "@mantine/core";
-import { hasLength, useForm } from "@mantine/form";
+import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
@@ -40,6 +40,7 @@ export default function SingleStudentView({ selectedStudent, schoolRole }) {
     mode: "uncontrolled",
     validate: {
       name: hasLength({ min: 2, max: 40 }, "Must be 2-40 characters"),
+      teamId: isNotEmpty("Select an option")
     },
     validateInputOnBlur: true,
     onSubmitPreventDefault: "always",
