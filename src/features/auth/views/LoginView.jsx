@@ -41,20 +41,21 @@ export default function LoginView({ onToggleView }) {
                 password: values.password,
             });
 
-            if (error) {
-                setError(error.message);
-                return;
-            }
+            if (error) return setError(error.message);
+
+            navigate("/settings");
 
             const { data: existingRelationship, error: selectError } = await supabase
                 .from("users")
                 .select("*")
                 .eq("email", values.email)
                 .maybeSingle();
+
+            if (selectError) setError(selectError.message);
             
             if (!existingRelationship) {
                 try {
-                    const { data: insertData, error: insertError } = await supabase
+                    const { error: insertError } = await supabase
                     .from("users")
                     .insert({ 
                         id: data.user.id,
@@ -65,10 +66,8 @@ export default function LoginView({ onToggleView }) {
                     console.error(error);
                 }
             }
-
-            navigate("/settings");
         } catch (error) {
-            setError("An unexpected error occurred");
+            setError("An unexpected error occurred: ", error.message);
         } finally {
             setIsLoading(false);
         }
@@ -84,6 +83,7 @@ export default function LoginView({ onToggleView }) {
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
                 error={error}
+                setError={setError}
                 submitLabel="Login"
                 icon="login"
             />

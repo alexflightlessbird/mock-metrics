@@ -65,7 +65,7 @@ export default function RegisterView({ onToggleView }) {
                 setEmail(values.email.toLowerCase());
             }
         } catch (error) {
-            setError("An unexpected error occurred");
+            setError("An unexpected error occurred", error.message);
         } finally {
             setIsLoading(false);
         }
@@ -92,6 +92,7 @@ export default function RegisterView({ onToggleView }) {
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
                 error={error}
+                setError={setError}
                 submitLabel="Register"
                 showConfirmPassword={true}
             />
