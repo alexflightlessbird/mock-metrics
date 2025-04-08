@@ -219,7 +219,52 @@ function useSchoolDataMutations () {
         return data;
     }
 
-    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament };
+    async function addTeam ({ schoolId, name, type, year, caseId }) {
+        const { error } = await supabase
+            .from("teams")
+            .insert({
+                school_id: schoolId,
+                name,
+                type,
+                is_active: true,
+                year,
+                case_id: caseId
+            });
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolTeams", schoolId]);
+        return;
+    }
+
+    async function addStudent({ schoolId, name }) {
+        const { error } = await supabase
+            .from("students")
+            .insert({
+                name,
+                school_id: schoolId,
+            });
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolStudents", schoolId]);
+        return;
+    }
+
+    async function addTournament({ schoolId, name, year, type, area, caseId }) {
+        const { error } = await supabase
+            .from("tournaments")
+            .insert({
+                name,
+                year,
+                type,
+                area,
+                is_active: true,
+                case_id: caseId,
+                school_id: schoolId
+            });
+            if (error) throw new Error(error.message);
+            queryClient.invalidateQueries(["schoolTournaments", schoolId]);
+            return;
+    }
+
+    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament, addTeam, addStudent, addTournament };
 }
 
 export { useSchoolTeams, useSchoolStudents, useSchoolTournaments, useSchoolUsers, useSchoolStudentTeams, useSchoolTeamsTournaments, useSchoolDataMutations };

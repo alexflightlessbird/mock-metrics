@@ -114,13 +114,13 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
   );
 
   const getCaseOptions = useMemo(() => [
-          { value: "null", label: "None" },
-          ...allCases.map((c) => ({
-            value: c.id.toString(),
-            label: c.name,
-          }))
-        ],
-        [allCases]
+      { value: "null", label: "None" },
+      ...allCases.map((c) => ({
+        value: c.id.toString(),
+        label: c.name,
+      }))
+    ],
+    [allCases]
   );
 
   const getStudentOptions = useMemo(() => 
