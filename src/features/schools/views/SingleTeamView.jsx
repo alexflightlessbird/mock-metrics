@@ -1,8 +1,9 @@
 // Dependency imports
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Flex, Text } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm, isInRange } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
@@ -25,8 +26,10 @@ import { useCases } from "../../../hooks/api/useCases";
 import { useStudentTeamFilters, useTournamentTeamFilters } from "../hooks/useTeamFilters";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
-export default function SingleTeamView({ selectedTeam, schoolRole }) {
-  const { updateTeam, updateStudent, addTeamToTournament } = useSchoolDataMutations();
+export default function SingleTeamView({ selectedTeam, schoolRole, schoolName }) {
+  const { updateTeam, updateStudent, addTeamToTournament, deleteTeam } = useSchoolDataMutations();
+
+  const navigate = useNavigate();
 
   const { data: allCases = [], isPending: isCasesPending } = useCases();
   const { data: allTournaments = [], isPending: isTournamentsPending } = useSchoolTournaments(selectedTeam.school_id);
@@ -54,6 +57,33 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
     }),
     onClose: () => editTeamForm.reset(),
   });
+
+  function deleteTeamModal () {
+    modals.openConfirmModal({
+      title: `Delete Team: ${selectedTeam.name}`,
+      centered: true,
+      children: (
+        <Text>
+          Are you sure you want to delete {selectedTeam.name} from {schoolName}?
+          <br />
+          This action is not reversible and data cannot be recovered. All data, including ballots, will be 100% removed.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      onConfirm: async () => {
+        try {
+          await deleteTeam({
+            teamId: selectedTeam.id,
+            schoolId: selectedTeam.school_id
+          });
+          modals.closeAll();
+          navigate(`/schools?schoolId=${selectedTeam.school_id}`);
+        } catch (error) {
+          console.error("Team deletion failed:", error);
+        }
+      }
+    })
+  }
 
   const [addStudentOpened, { open: addStudentOpen, close: addStudentClose }] = useDisclosure(false, {
     onClose: () => addStudentForm.reset()
@@ -322,7 +352,7 @@ export default function SingleTeamView({ selectedTeam, schoolRole }) {
 
   return (
     <>
-      <EntityHeader title={selectedTeam.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={editOpen} />
+      <EntityHeader title={selectedTeam.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={editOpen} canDelete={[ROLES.PRIMARY].includes(schoolRole)} onDelete={deleteTeamModal} />
       {hasEditPermissions && (
         <EditModal {...editModalProps} />
       )}

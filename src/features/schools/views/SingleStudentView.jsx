@@ -1,7 +1,8 @@
 // Dependency imports
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Text } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
@@ -18,8 +19,10 @@ import { useSchoolDataMutations } from "../../../hooks/api/useSchoolData";
 import { useSchoolStudentTeams, useSchoolTeams } from "../../../hooks/api/useSchoolData";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
-export default function SingleStudentView({ selectedStudent, schoolRole }) {
-  const { updateStudent } = useSchoolDataMutations();
+export default function SingleStudentView({ selectedStudent, schoolRole, schoolName }) {
+  const { updateStudent, deleteStudent } = useSchoolDataMutations();
+
+  const navigate = useNavigate();
   
   const { data: allStudentTeams = [], isPending: isStudentTeamsPending } = useSchoolStudentTeams(selectedStudent.school_id);
   const { data: allTeams = [], isPending: isTeamsPending } = useSchoolTeams(selectedStudent.school_id);
@@ -35,6 +38,33 @@ export default function SingleStudentView({ selectedStudent, schoolRole }) {
     }),
     onClose: () => editStudentForm.reset(),
   });
+
+  function deleteStudentModal () {
+    modals.openConfirmModal({
+      title: `Delete Student: ${selectedStudent.name}`,
+      centered: true,
+      children: (
+        <Text>
+          Are you sure you want to delete {selectedStudent.name} from {schoolName}?
+          <br />
+          This action is not reversible and data cannot be recovered. All data, including roles on ballots assigned to this student, will be 100% removed.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      onConfirm: async () => {
+        try {
+          await deleteStudent({
+            studentId: selectedStudent.id,
+            schoolId: selectedStudent.school_id
+          });
+          modals.closeAll();
+          navigate(`/schools?schoolId=${selectedStudent.school_id}`);
+        } catch (error) {
+          console.error("Student deletion failed:", error);
+        }
+      }
+    })
+  }
 
   const editStudentForm = useForm({
     mode: "uncontrolled",
@@ -131,7 +161,7 @@ export default function SingleStudentView({ selectedStudent, schoolRole }) {
   
   return (
     <>
-      <EntityHeader title={selectedStudent.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} />
+      <EntityHeader title={selectedStudent.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} canDelete={[ROLES.PRIMARY].includes(schoolRole)} onDelete={deleteStudentModal} />
       {[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole) && (
         <EditModal {...editModalProps} />
       )}

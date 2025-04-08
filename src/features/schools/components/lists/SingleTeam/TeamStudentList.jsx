@@ -21,7 +21,7 @@ export default function TeamStudentList({ students, schoolRole }) {
             centered: true,
             children: (
                 <Text>
-                    Are you sure you want to remove {student.students.name} from {student.teams.name}?<br /><br />This is a non-destructive action and will simply archive this relationship between the student and the team. This action is reversible.
+                    Are you sure you want to remove {student.students.name} from {student.teams.name}?
                 </Text>
             ),
             labels: { confirm: "Remove", cancel: "Cancel" },

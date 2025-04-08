@@ -52,6 +52,36 @@ function useSchoolTournaments (schoolId) {
     });
 };
 
+function useTournamentRounds (tournamentId) {
+    return useQuery({
+        queryKey: ["tournamentRounds", tournamentId],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from("rounds")
+                .select("*, tournaments(*), teams(*)")
+                .eq("tournament_id", tournamentId)
+                .order("round_number");
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        enabled: !!tournamentId,
+    })
+}
+
+function useSchoolRounds (schoolId) {
+    return useQuery({
+        queryKey: ["schoolRounds", schoolId],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from("rounds")
+                .select("*");
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        enabled: !!schoolId
+    })
+}
+
 function useSchoolUsers (schoolId, enabled) {
     return useQuery({
         queryKey: ["schoolUsers", schoolId],
@@ -264,7 +294,40 @@ function useSchoolDataMutations () {
             return;
     }
 
-    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament, addTeam, addStudent, addTournament };
+    async function deleteTeam ({ schoolId, teamId }) {
+        const { error } = await supabase
+            .from("teams")
+            .delete()
+            .eq("id", teamId)
+            .eq("school_id", schoolId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolTeams", schoolId]);
+        return;
+    }
+
+    async function deleteStudent ({ schoolId, studentId }) {
+        const { error } = await supabase
+            .from("students")
+            .delete()
+            .eq("id", studentId)
+            .eq("school_id", schoolId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolStudents", schoolId]);
+        return;
+    }
+
+    async function deleteTournament ({ schoolId, tournamentId }) {
+        const { error } = await supabase
+            .from("tournaments")
+            .delete()
+            .eq("id", tournamentId)
+            .eq("school_id", schoolId);
+        if (error) throw new Error(error.message);
+        queryClient.invalidateQueries(["schoolTournaments", schoolId]);
+        return;
+    }
+
+    return { updateUserRole, removeUserFromSchool, updateStudent, updateTeam, updateTournament, removeTeamFromTournament, addTeamToTournament, addTeam, addStudent, addTournament, deleteTeam, deleteStudent, deleteTournament };
 }
 
-export { useSchoolTeams, useSchoolStudents, useSchoolTournaments, useSchoolUsers, useSchoolStudentTeams, useSchoolTeamsTournaments, useSchoolDataMutations };
+export { useSchoolTeams, useTournamentRounds, useSchoolRounds, useSchoolStudents, useSchoolTournaments, useSchoolUsers, useSchoolStudentTeams, useSchoolTeamsTournaments, useSchoolDataMutations };

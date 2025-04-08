@@ -62,7 +62,7 @@ export default function SingleSchoolTabs({
   const [addTournamentOpened, { open: addTournamentOpen, close: addTournamentClose }] = useDisclosure(false, {
     onOpen: () => addTournamentForm.setValues({
       year: new Date().getFullYear(),
-      caseId: "null",
+      caseId: allCases[0].id.toString(),
       type: TYPES.PRESTACK,
       area: AREAS.INVITATIONAL
     }),
@@ -118,12 +118,14 @@ export default function SingleSchoolTabs({
   async function handleAddTeamSubmit (values) {
     const { name, type, year, caseId } = values;
 
+    const parsedCaseId = caseId === "null" ? null : Number(caseId);
+
     try {
       await addTeam({
         name,
         type,
         year,
-        caseId,
+        caseId: parsedCaseId,
         schoolId,
       });
       addTeamClose();
@@ -149,13 +151,15 @@ export default function SingleSchoolTabs({
   async function handleAddTournamentSubmit (values) {
     const { name, year, type, area, caseId } = values;
 
+    const parsedCaseId = caseId === "null" ? null : Number(caseId);
+
     try {
       await addTournament({
         name,
         year,
         type,
         area,
-        caseId,
+        caseId: parsedCaseId,
         schoolId,
       });
       addTournamentClose();
@@ -279,7 +283,7 @@ export default function SingleSchoolTabs({
         name: "caseId",
         required: true,
         label: "Linked Case",
-        options: getCaseOptions
+        options: getCaseOptions.filter((c) => c.value !== "null")
       }
     ]
   }

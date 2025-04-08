@@ -1,8 +1,9 @@
 // Dependency imports
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Flex, Text } from "@mantine/core";
 import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
@@ -24,8 +25,10 @@ import { useCases } from "../../../hooks/api/useCases";
 import { useTournamentFilters } from "../hooks/useTournamentFilters";
 import { useActiveFilters } from "../../../common/hooks/useActiveFilters";
 
-export default function SingleTournamentView({ selectedTournament, schoolRole }) {
-  const { updateTournament, addTeamToTournament } = useSchoolDataMutations();
+export default function SingleTournamentView({ selectedTournament, schoolRole, schoolName }) {
+  const { updateTournament, addTeamToTournament, deleteTournament } = useSchoolDataMutations();
+
+  const navigate = useNavigate();
 
   const { data: allCases = [], isPending: isCasesPending } = useCases();
   const { data: allTeams = [], isPending: isTeamsPending } = useSchoolTeams(selectedTournament.school_id);
@@ -48,6 +51,33 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
     }),
     onClose: () => editTournamentForm.reset(),
   });
+
+  function deleteTournamentModal () {
+    modals.openConfirmModal({
+      title: `Delete Tournament: ${selectedTournament.name}`,
+      centered: true,
+      children: (
+        <Text>
+          Are you sure you want to delete {selectedTournament.name} from {schoolName}?
+          <br />
+          This action is not reversible and data cannot be recovered. All data, including ballots, will be 100% removed.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      onConfirm: async () => {
+        try {
+          await deleteTournament({
+            tournamentId: selectedTournament.id,
+            schoolId: selectedTournament.school_id
+          });
+          modals.closeAll();
+          navigate(`/schools?schoolId=${selectedTournament.school_id}`);
+        } catch (error) {
+          console.error("Tournament deletion failed:", error);
+        }
+      }
+    })
+  }
 
   const [addOpened, { open: addOpen, close: addClose }] = useDisclosure(false, {
     onClose: () => addTeamForm.reset()
@@ -258,7 +288,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
 
   return (
     <>
-      <EntityHeader title={selectedTournament.name} canEdit={hasEditPermissions} onEdit={editOpen} />
+      <EntityHeader title={selectedTournament.name} canEdit={hasEditPermissions} onEdit={editOpen} canDelete={[ROLES.PRIMARY].includes(schoolRole)} onDelete={deleteTournamentModal} />
       {hasEditPermissions && (
         <EditModal {...editModalProps} />
       )}
@@ -273,7 +303,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole })
           </>
         )}
       </Flex>
-      <TournamentTeamList teams={filteredTeams} schoolRole={schoolRole} />
+      <TournamentTeamList teams={filteredTeams} schoolRole={schoolRole} schoolId={selectedTournament.school_id} tournamentId={selectedTournament.id} />
     </>
   );
 }

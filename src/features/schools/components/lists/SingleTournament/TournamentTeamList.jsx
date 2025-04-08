@@ -11,10 +11,12 @@ import { DeleteIcon } from "../../../../../common/components/ActionIcons";
 import { ROLES } from "../../../../../utils/constants";
 
 // Hooks imports
-import { useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
+import { useTournamentRounds, useSchoolDataMutations } from "../../../../../hooks/api/useSchoolData";
 
-export default function TourmamentTeamList({ teams, schoolRole }) {
+export default function TourmamentTeamList({ teams, schoolRole, schoolId, tournamentId }) {
     const { removeTeamFromTournament } = useSchoolDataMutations();
+
+    let { data: allTournamentRounds } = useTournamentRounds(tournamentId);
 
     function removeTeamModal (team) {
         modals.openConfirmModal({
@@ -43,12 +45,15 @@ export default function TourmamentTeamList({ teams, schoolRole }) {
 
     const mappedTeams = [];
     teams.map((t) => mappedTeams.push(
-        <Flex style={{ alignItems: "center", gap: "7px" }} key={t.team_id}>
-            <Link to={`/schools?schoolId=${t.teams.school_id}&teamId=${t.team_id}`}>{t.teams.name}</Link>
-            {[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole) && (
-                <DeleteIcon onClick={() => removeTeamModal(t)} />
-            )}
-        </Flex>
+        <>
+            <Flex style={{ alignItems: "center", gap: "7px" }} key={t.team_id}>
+                <Link to={`/schools?schoolId=${t.teams.school_id}&teamId=${t.team_id}`}>{t.teams.name}</Link>
+                {[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole) && (
+                    <DeleteIcon onClick={() => removeTeamModal(t)} />
+                )}
+            </Flex>
+            {allTournamentRounds?.filter((r) => r.team_id === t.team_id).length > 0 ? "List" : "None" }
+        </>
     ));
     if (mappedTeams.length == 0) mappedTeams.push("None");
     return <List items={mappedTeams} />

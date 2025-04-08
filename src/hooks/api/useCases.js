@@ -11,6 +11,7 @@ function useCases () {
             const { data, error } = await supabase
                 .from("cases")
                 .select("*")
+                .order("is_active", { ascending: false })
                 .order("year", { ascending: false });
             if (error) throw new Error(error.message);
             return data;
