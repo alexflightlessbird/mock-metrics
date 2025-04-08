@@ -5,6 +5,7 @@ import { Group, Text } from "@mantine/core";
 
 // Component imports
 import IconButton from "../../../common/components/IconButton";
+import Loading from "../../../common/components/Loading";
 
 // Services imports
 import { supabase } from "../../../services/supabaseClient";
@@ -25,6 +26,8 @@ export default function LogoutView() {
             setIsLoading(false);
         }
     }
+
+    if (isLoading) return <Loading />
 
     return (
         <>

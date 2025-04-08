@@ -13,7 +13,7 @@ const SessionProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    async function fetchSession(params) {
+    async function fetchSession() {
       const {
         data: { session: sess },
         error,
