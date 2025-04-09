@@ -13,6 +13,7 @@ function EditIcon({ onClick }) {
       variant="subtle"
       onClick={onClick}
       style={{ color: theme.colors.primaryBlue[0] }}
+      fz="xl"
     >
       {createElement(icons.edit)}
     </ActionIcon>
@@ -27,6 +28,7 @@ function DeleteIcon({ onClick }) {
       variant="subtle"
       onClick={onClick}
       style={{ color: theme.colors.red[5] }}
+      fz="xl"
     >
       {createElement(icons.delete)}
     </ActionIcon>
@@ -41,10 +43,11 @@ function AddIcon({ onClick }) {
       variant="subtle"
       onClick={onClick}
       style={{ color: theme.colors.primaryBlue[0] }}
+      fz="xl"
     >
       {createElement(icons.add)}
     </ActionIcon>
-  )
+  );
 }
 
 export { EditIcon, DeleteIcon, AddIcon };

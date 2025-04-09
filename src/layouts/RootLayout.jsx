@@ -108,7 +108,7 @@ function RootLayout() {
             color: theme.colors.darkBlue[0],
           }}
         >
-          <Flex direction="column">
+          <Flex direction="column" style={{ marginBottom: 50 }}>
             <Outlet />
           </Flex>
         </AppShell.Main>

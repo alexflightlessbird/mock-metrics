@@ -1,12 +1,13 @@
 // Dependency imports
 import { List } from "@mantine/core";
 
-export default function ListComponent({ items }) {
+export default function ListComponent({ items, withPadding = true }) {
   const listProps = {
     spacing: "xs",
     size: "md",
     center: true,
-    withPadding: true,
+    withPadding,
+    listStyleType: "disc",
   };
 
   const filteredItems = items.filter((item) => item !== "");

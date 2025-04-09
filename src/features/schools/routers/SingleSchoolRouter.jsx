@@ -7,6 +7,7 @@ import SingleSchoolView from "../views/SingleSchoolView";
 import SingleTeamView from "../views/SingleTeamView";
 import SingleStudentView from "../views/SingleStudentView";
 import SingleTournamentView from "../views/SingleTournamentView";
+import SingleRoundView from "../views/SingleRoundView";
 import NotFound from "../../../common/components/NotFound";
 import Loading from "../../../common/components/Loading";
 
@@ -19,6 +20,7 @@ import {
   useSchoolStudents,
   useSchoolTournaments,
   useSchoolUsers,
+  useSchoolRounds,
 } from "../../../hooks/api/useSchoolData";
 import { useSelectedItem } from "../../../common/hooks/useSelectedItem";
 
@@ -27,6 +29,7 @@ export default function SingleSchoolRouter({ selectedSchool }) {
   const teamId = searchParams.get("teamId");
   const studentId = searchParams.get("studentId");
   const tournamentId = searchParams.get("tournamentId");
+  const roundId = searchParams.get("roundId");
 
   const { data: allSchoolTeams = [], isPending: isPendingTeams } =
     useSchoolTeams(selectedSchool.school_id);
@@ -39,6 +42,8 @@ export default function SingleSchoolRouter({ selectedSchool }) {
       selectedSchool.school_id,
       selectedSchool.role === ROLES.PRIMARY
     );
+  const { data: allSchoolRounds = [], isPending: isPendingRounds } =
+    useSchoolRounds(selectedSchool.school_id);
 
   const selectedTeam = useSelectedItem({
     items: allSchoolTeams,
@@ -52,6 +57,10 @@ export default function SingleSchoolRouter({ selectedSchool }) {
     items: allSchoolTournaments,
     id: tournamentId,
   });
+  const selectedRound = useSelectedItem({
+    items: allSchoolRounds,
+    id: roundId,
+  });
 
   const [currentSchoolTab, setCurrentSchoolTab] = useState("teams");
 
@@ -59,12 +68,13 @@ export default function SingleSchoolRouter({ selectedSchool }) {
     isPendingTeams ||
     isPendingStudents ||
     isPendingTournaments ||
-    (isPendingUsers && selectedSchool.role === ROLES.PRIMARY)
+    (isPendingUsers && selectedSchool.role === ROLES.PRIMARY) ||
+    isPendingRounds
   ) {
     return <Loading />;
   }
 
-  if (!teamId && !studentId && !tournamentId)
+  if (!teamId && !studentId && !tournamentId && !roundId)
     return (
       <SingleSchoolView
         selectedSchool={selectedSchool}
@@ -80,12 +90,39 @@ export default function SingleSchoolRouter({ selectedSchool }) {
   if (studentId && !selectedStudent) return <NotFound type="student" />;
   if (tournamentId && !selectedTournament)
     return <NotFound type="tournament" />;
+  if (roundId && !selectedRound) return <NotFound type="round" />;
 
   if (selectedTeam) {
-    return <SingleTeamView selectedTeam={selectedTeam} schoolRole={selectedSchool.role} schoolName={selectedSchool.schools.name} />;
+    return (
+      <SingleTeamView
+        selectedTeam={selectedTeam}
+        schoolRole={selectedSchool.role}
+        schoolName={selectedSchool.schools.name}
+      />
+    );
   } else if (selectedStudent) {
-    return <SingleStudentView selectedStudent={selectedStudent} schoolRole={selectedSchool.role} schoolName={selectedSchool.schools.name} />;
+    return (
+      <SingleStudentView
+        selectedStudent={selectedStudent}
+        schoolRole={selectedSchool.role}
+        schoolName={selectedSchool.schools.name}
+      />
+    );
   } else if (selectedTournament) {
-    return <SingleTournamentView selectedTournament={selectedTournament} schoolRole={selectedSchool.role} schoolName={selectedSchool.schools.name} />;
+    return (
+      <SingleTournamentView
+        selectedTournament={selectedTournament}
+        schoolRole={selectedSchool.role}
+        schoolName={selectedSchool.schools.name}
+      />
+    );
+  } else if (selectedRound) {
+    return (
+      <SingleRoundView
+        selectedRound={selectedRound}
+        schoolRole={selectedSchool.role}
+        schoolName={selectedSchool.schools.name}
+      />
+    );
   }
 }

@@ -12,6 +12,7 @@ import {
   useSchoolTeams,
   useSchoolStudents,
   useSchoolTournaments,
+  useSchoolRounds,
 } from "../../../../hooks/api/useSchoolData";
 import { useSelectedItem } from "../../../../common/hooks/useSelectedItem";
 import { useSession } from "../../../../common/hooks/auth/useSession";
@@ -22,6 +23,7 @@ export default function SchoolBreadcrumb() {
   const teamId = searchParams.get("teamId");
   const studentId = searchParams.get("studentId");
   const tournamentId = searchParams.get("tournamentId");
+  const roundId = searchParams.get("roundId");
 
   const { userId } = useSession();
 
@@ -33,6 +35,8 @@ export default function SchoolBreadcrumb() {
     useSchoolStudents(schoolId);
   const { data: allSchoolTournaments = [], isPending: isTournamentsPending } =
     useSchoolTournaments(schoolId);
+  const { data: allSchoolRounds = [], isPending: isRoundsPending } =
+    useSchoolRounds(schoolId);
 
   const selectedSchool = useSelectedItem({
     items: allSchools,
@@ -51,12 +55,17 @@ export default function SchoolBreadcrumb() {
     items: allSchoolTournaments,
     id: tournamentId,
   });
+  const selectedRound = useSelectedItem({
+    items: allSchoolRounds,
+    id: roundId,
+  });
 
   if (
     isSchoolsPending ||
     (isTeamsPending && schoolId) ||
     (isStudentsPending && schoolId) ||
-    (isTournamentsPending && schoolId)
+    (isTournamentsPending && schoolId) ||
+    (isRoundsPending && schoolId)
   ) {
     return;
   }
@@ -80,7 +89,7 @@ export default function SchoolBreadcrumb() {
       return items;
     }
 
-    if (!teamId && !studentId && !tournamentId) {
+    if (!teamId && !studentId && !tournamentId && !roundId) {
       items.push({
         title: (
           <BreadcrumbPill active>
@@ -101,7 +110,12 @@ export default function SchoolBreadcrumb() {
       ),
     });
 
-    if (!selectedTeam && !selectedStudent && !selectedTournament) {
+    if (
+      !selectedTeam &&
+      !selectedStudent &&
+      !selectedTournament &&
+      !selectedRound
+    ) {
       items.push({ title: <BreadcrumbPill active>Not Found</BreadcrumbPill> });
       return items;
     }
@@ -128,9 +142,27 @@ export default function SchoolBreadcrumb() {
           </BreadcrumbPill>
         ),
       });
+    } else if (selectedRound) {
+      items.push({
+        title: (
+          <Link
+            to={`/schools?schoolId=${schoolId}&tournamentId=${selectedRound.tournament_id}`}
+          >
+            <BreadcrumbPill>{selectedRound.tournaments.name}</BreadcrumbPill>
+          </Link>
+        ),
+      });
+      items.push({
+        title: (
+          <BreadcrumbPill active>
+            Round: {selectedRound.round_number} (Team:{" "}
+            {selectedRound.teams.name})
+          </BreadcrumbPill>
+        ),
+      });
     }
     return items;
-  };
+  }
 
   const breadcrumbItems = getBreadcrumbItems().map((item, index) => (
     <Fragment key={index}>{item.title}</Fragment>
