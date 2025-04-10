@@ -28,6 +28,7 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
                         label={field.label || ""}
                         allowDeselect={field.allowDeselect ?? false}
                         searchable={field.searchable ?? true}
+                        nothingFoundMessage="Nothing found..."
                         data={field.options}
                         {...form.getInputProps(field.name)}
                     />
