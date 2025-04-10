@@ -27,6 +27,7 @@ export default function AddModal({ opened, onClose, title, form, onSubmit, field
                         withAsterisk={field.required ?? false}
                         label={field.label || ""}
                         allowDeselect={field.allowDeselect ?? false}
+                        searchable={field.searchable ?? true}
                         data={field.options}
                         {...form.getInputProps(field.name)}
                     />
