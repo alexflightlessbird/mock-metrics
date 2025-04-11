@@ -103,7 +103,7 @@ export default function Sidebar({ session, opened, toggle }) {
     const hasActiveChild = isChildActive(item.children);
 
     return (
-      <Box key={index} maw="70px" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box key={index} w="90%" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         {isLargeScreen ? (
           <Tooltip label={item.label} position="right" withArrow>
             <Box
@@ -112,11 +112,12 @@ export default function Sidebar({ session, opened, toggle }) {
                 else handleNavigate(item.navigatePath);
               }}
               style={{
+                width: "90%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 //padding: "10px",
-                padding: "5px 0px",
+                padding: "5px 10px",
                 //margin: "5px",
                 //borderRadius: "8px",
                 cursor: "pointer",
@@ -163,6 +164,7 @@ export default function Sidebar({ session, opened, toggle }) {
             style={{
               display: "flex",
               alignItems: "center",
+              width: "90%",
               justifyContent: "flex-start",
               padding: "15px",
               margin: "5px 0",
@@ -209,7 +211,8 @@ export default function Sidebar({ session, opened, toggle }) {
       <br />
       <br />
       <br />
-      <Divider w="70px"/>
+      <Divider w="90%"/>
+      <br />
       {sessionItem.map((item, index) => renderItem(item, index))}
       <Divider />
     </Flex>

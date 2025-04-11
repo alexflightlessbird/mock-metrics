@@ -98,9 +98,7 @@ function RootLayout() {
             overscrollBehavior="contain"
             scrollbars="y"
           >
-            <Flex direction="column" align="center">
-              <Sidebar opened={opened} toggle={toggle} session={session} />
-            </Flex>
+            <Sidebar opened={opened} toggle={toggle} session={session} />
           </ScrollArea>
         </AppShell.Navbar>
         <AppShell.Main
