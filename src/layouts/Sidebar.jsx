@@ -8,6 +8,7 @@ import {
   Text,
   useMantineTheme,
   Divider,
+  ActionIcon
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -102,7 +103,7 @@ export default function Sidebar({ session, opened, toggle }) {
     const hasActiveChild = isChildActive(item.children);
 
     return (
-      <Box key={index}>
+      <Box key={index} maw="70px" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         {isLargeScreen ? (
           <Tooltip label={item.label} position="right" withArrow>
             <Box
@@ -114,13 +115,14 @@ export default function Sidebar({ session, opened, toggle }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "15px",
-                margin: "5px 0",
-                borderRadius: "8px",
+                //padding: "10px",
+                padding: "5px 0px",
+                //margin: "5px",
+                //borderRadius: "8px",
                 cursor: "pointer",
-                backgroundColor: isActive
-                  ? theme.colors.primaryBlue[0]
-                  : "transparent",
+                //backgroundColor: isActive
+                //? theme.colors.primaryBlue[0]
+                //  : "transparent",
                 color: hasActiveChild
                   ? theme.colors.primaryBlue[0]
                   : theme.colors.lightGray[0],
@@ -131,9 +133,20 @@ export default function Sidebar({ session, opened, toggle }) {
                 },
               }}
             >
-              {item.icon}
+              <ActionIcon
+                variant={isActive ? "filled" : "transparent"}
+                color={isActive ? theme.colors.primaryBlue[0] : theme.colors.lightGray[0]}
+                size="xl"
+                style={{
+                  color: hasActiveChild ? theme.colors.primaryBlue[0] : theme.colors.lightGray[0],
+                  transition: "background-color 0.3s, color 0.3s",
+                  borderRadius: "8px"
+                }}
+              >
+                {item.icon}
+              </ActionIcon>
               {item.children && (
-                <Text size="xs" style={{ paddingLeft: "5px" }}>
+                <Text size="xs">
                   {expandedItems[item.label]
                     ? createElement(icons.up)
                     : createElement(icons.down)}
@@ -180,23 +193,23 @@ export default function Sidebar({ session, opened, toggle }) {
           </Box>
         )}
         {item.children && expandedItems[item.label] && (
-          <Box pl="md">
+          <>
             {item.children.map((child, childIndex) =>
               renderItem(child, childIndex)
             )}
-          </Box>
+          </>
         )}
       </Box>
     );
   };
 
   return (
-    <Flex direction="column" p="xs">
+    <Flex direction="column" style={{ alignItems: "center" }}>
       {mainItems.map((item, index) => renderItem(item, index))}
       <br />
       <br />
       <br />
-      <Divider />
+      <Divider w="70px"/>
       {sessionItem.map((item, index) => renderItem(item, index))}
       <Divider />
     </Flex>

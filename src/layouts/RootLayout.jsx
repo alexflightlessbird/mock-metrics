@@ -86,6 +86,7 @@ function RootLayout() {
         </AppShell.Header>
         <AppShell.Navbar
           p="xs"
+          withBorder={false}
           style={{
             backgroundColor: theme.colors.darkBlue[0],
             color: theme.colors.lightGray[0],
@@ -94,8 +95,8 @@ function RootLayout() {
         >
           <ScrollArea
             type="scroll"
-            offsetScrollbars
             overscrollBehavior="contain"
+            scrollbars="y"
           >
             <Flex direction="column" align="center">
               <Sidebar opened={opened} toggle={toggle} session={session} />
