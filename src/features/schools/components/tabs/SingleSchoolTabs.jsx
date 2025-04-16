@@ -203,7 +203,8 @@ export default function SingleSchoolTabs({
         name: "type",
         required: true,
         label: "Type",
-        options: typeOptions
+        options: typeOptions,
+        searchable: false
       },
       {
         type: "number",
@@ -261,7 +262,8 @@ export default function SingleSchoolTabs({
         name: "type",
         required: true,
         label: "Type",
-        options: typeOptions
+        options: typeOptions,
+        searchable: false,
       },
       {
         type: "select",
