@@ -315,6 +315,20 @@ function useSchoolDataMutations() {
     return;
   }
 
+  async function addTournamentRound({ tournamentId, teamId, roundNumber, side }) {
+    const { error } = await supabase
+      .from("rounds")
+      .insert({
+        tournament_id: tournamentId,
+        team_id: teamId,
+        round_number: Number(roundNumber),
+        side
+      });
+      if (error) throw new Error(error.message);
+      queryClient.invalidateQueries(["tournamentRounds", tournamentId]);
+      return;
+  }
+
   async function deleteTeam({ schoolId, teamId }) {
     const { error } = await supabase
       .from("teams")
@@ -359,6 +373,7 @@ function useSchoolDataMutations() {
     addTeam,
     addStudent,
     addTournament,
+    addTournamentRound,
     deleteTeam,
     deleteStudent,
     deleteTournament,

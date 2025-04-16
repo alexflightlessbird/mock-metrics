@@ -234,7 +234,8 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
         name: "type",
         required: true,
         label: "Type",
-        options: typeOptions
+        options: typeOptions,
+        searchable: false,
       },
       {
         type: "select",
@@ -303,7 +304,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
           </>
         )}
       </Flex>
-      <TournamentTeamList teams={filteredTeams} schoolRole={schoolRole} schoolId={selectedTournament.school_id} tournamentId={selectedTournament.id} />
+      <TournamentTeamList teams={filteredTeams} schoolRole={schoolRole} schoolId={selectedTournament.school_id} tournamentId={selectedTournament.id} pSide={linkedCase.type === "Civil" ? "Plaintiff" : "Prosecution"} />
     </>
   );
 }
