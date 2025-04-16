@@ -106,7 +106,7 @@ export default function TeamItem({
 
     async function handleAddRoundSubmit (values) {
         const { roundNumber, side } = values;
-        setIsSubmitting
+        setIsSubmitting(true);
         try {
             await addTournamentRound({
                 tournamentId, 
