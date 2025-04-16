@@ -43,7 +43,7 @@
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "vite": "^6.2.2",
+    "vite": "^6.3.0",
     "vite-plugin-pwa": "^0.21.2"
   }
 }
