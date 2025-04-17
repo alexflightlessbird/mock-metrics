@@ -18,9 +18,7 @@ const componentMap = {
   UserSettings: lazy(() => import("../../pages/UserSettings")),
   Auth: lazy(() => import("../../features/auth/Auth")),
   Cases: lazy(() => import("../../features/cases/Cases")),
-  Witnesses: lazy(() => import("../../pages/Witnesses")),
   Schools: lazy(() => import("../../features/schools/Schools")),
-  Teams: lazy(() => import("../../pages/Teams")),
 };
 
 // Other imports
