@@ -10,6 +10,7 @@ import {
   Burger,
   Group,
   ScrollArea,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -40,14 +41,16 @@ function RootLayout() {
       <ScrollToTopOnMount />
       <AppShell
         padding="xs"
+        style={{ minHeight: "100vh", overflow: "hidden" }}
+        w="100%"
         transitionDuration={500}
         navbar={{
           width: { base: "55vw", xs: "95px" },
           breakpoint: "xs",
           collapsed: { mobile: !opened },
         }}
-        header={{ height: 95 }}
-        footer={{ height: 60 }}
+        header={{ height: "95px" }}
+        footer={{ height: "60px" }}
       >
         <AppShell.Header
           p="xs"
@@ -105,11 +108,21 @@ function RootLayout() {
           style={{
             backgroundColor: theme.colors.lightGray[0],
             color: theme.colors.darkBlue[0],
+            height: "calc(100vh - 95px - 60px)",
+            overflow: "hidden"
           }}
         >
-          <Flex direction="column" style={{ marginBottom: 50 }}>
-            <Outlet />
-          </Flex>
+          <ScrollArea
+            h="100%"
+            type="scroll"
+            scrollbars="y"
+          >
+            <Flex direction="column" style={{ marginBottom: 50 }}>
+              <Box maw="100%" pl="sm" pr="sm">
+                <Outlet />
+              </Box>
+            </Flex>
+          </ScrollArea>
         </AppShell.Main>
         <AppShell.Footer
           p="xs"

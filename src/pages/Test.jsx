@@ -2,6 +2,8 @@ import React, { lazy, useState, Suspense } from "react";
 import Spin from "antd/es/spin";
 import Button from "antd/es/button";
 import { setDocumentTitle } from "../utils/helpers";
+import Card from "../common/components/Card";
+import { useMantineTheme } from "@mantine/core";
 
 const Modal = lazy(() => import("../components/paginating-forms/Modal"));
 const IconButton = lazy(() => import("../common/components/IconButton"));
@@ -217,6 +219,8 @@ export default function Test() {
   const [isOpen, setisOpen] = useState(false);
   const [isModalLoaded, setIsModalLoaded] = useState(false);
 
+  const theme = useMantineTheme();
+
   const handleOpenModal = () => {
     setisOpen(true);
     setIsModalLoaded(true);
@@ -246,6 +250,18 @@ export default function Test() {
           <Modal {...example} isOpen={isOpen} onClose={handleCloseModal} />
         </Suspense>
       )}
+      <br /> <br />
+      <Card
+        content={{
+          title: "Test",
+          badge: {
+            text: "Testing",
+            color: theme.colors.darkBlue[0],
+            fontColor: theme.colors.lightGray[0]
+          },
+          text: "This is the best day ever!"
+        }}
+      />
     </div>
   );
 }

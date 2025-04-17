@@ -236,3 +236,22 @@ a {
   text-decoration: none;
   color: var(--mantine-color-primaryBlue-0);
 }
+
+
+/* Hide browser scrollbar globally */
+html {
+  overflow: -moz-scrollbars-none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Webkit */
+}
+
+/* Ensure body takes full height */
+body {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
