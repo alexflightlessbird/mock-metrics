@@ -1,7 +1,7 @@
 // Dependency imports
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Text, Tooltip, SegmentedControl } from "@mantine/core";
+import { Text, Tooltip, SegmentedControl, Stack } from "@mantine/core";
 import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -44,39 +44,67 @@ export default function SingleSchoolTabs({
     useActiveFilters(allTournaments);
   const { primary: primaryAdminUsers, admin: adminUsers, viewer: viewerUsers } = useRoleFilters(allUsers);
 
-  const teamsFilter = searchParams.get("teamsfilter") || "active";
-  const studentsFilter = searchParams.get("studentsfilter") || "active";
-  const tournamentsFilter = searchParams.get("tournamentsfilter") || "active";
+  const teamStatusFilter = searchParams.get("teamstatus") || "active";
+  const teamTypeFilter = searchParams.get("teamtype") || "all";
+  const studentStatusFilter = searchParams.get("studentstatus") || "active";
+  const tournamentStatusFilter = searchParams.get("tournamentstatus") || "active";
+  const tournamentTypeFilter = searchParams.get("tournamenttype") || "all";
+  const tournamentAreaFilter = searchParams.get("tournamentarea") || "all";
 
-  const handleTeamFilterChange = (newFilter) => {
+  const handleTeamStatusFilterChange = (newFilter) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("teamsfilter", newFilter);
+    newSearchParams.set("teamstatus", newFilter);
     setSearchParams(newSearchParams);
   }
 
-  const handleStudentFilterChange = (newFilter) => {
+  const handleTeamTypeFilterChange = (newFilter) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("studentsfilter", newFilter);
+    newSearchParams.set("teamtype", newFilter);
     setSearchParams(newSearchParams);
   }
 
-  const handleTournamentFilterChange = (newFilter) => {
+  const handleStudentStatusFilterChange = (newFilter) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("tournamentsfilter", newFilter);
+    newSearchParams.set("studentstatus", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const handleTournamentStatusFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tournamentstatus", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const handleTournamentTypeFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tournamenttype", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const handleTournamentAreaFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tournamentarea", newFilter);
     setSearchParams(newSearchParams);
   }
 
   const getFilteredTeams = () => {
-    switch (teamsFilter) {
-      case "active": return activeTeams;
-      case "inactive": return inactiveTeams;
-      case "all": return [...activeTeams, ...inactiveTeams];
-      default: return activeTeams;
+    let filtered = [];
+    switch (teamStatusFilter) {
+      case "active": filtered = activeTeams; break;
+      case "inactive": filtered = inactiveTeams; break;
+      case "all": filtered = [...activeTeams, ...inactiveTeams]; break;
+      default: filtered = activeTeams; break;
     }
+
+    if (teamTypeFilter !== "all") {
+      filtered = filtered.filter(t => t.type.toLowerCase() === teamTypeFilter);
+    }
+
+    return filtered;
   }
 
   const getFilteredStudents = () => {
-    switch (studentsFilter) {
+    switch (studentStatusFilter) {
       case "active": return activeStudents;
       case "inactive": return inactiveStudents;
       case "all": return [...activeStudents, ...inactiveStudents];
@@ -85,35 +113,72 @@ export default function SingleSchoolTabs({
   }
 
   const getFilteredTournaments = () => {
-    switch (tournamentsFilter) {
-      case "active": return activeTournaments;
-      case "inactive": return inactiveTournaments;
-      case "all": return [...activeTournaments, ...inactiveTournaments];
-      default: return activeTournaments;
+    let filtered = [];
+    switch (tournamentStatusFilter) {
+      case "active": filtered = activeTournaments; break;
+      case "inactive": filtered = inactiveTournaments; break;
+      case "all": filtered = [...activeTournaments, ...inactiveTournaments]; break;
+      default: filtered = activeTournaments; break;
     }
+
+    if (tournamentTypeFilter !== "all") {
+      filtered = filtered.filter(t => t.type.toLowerCase() === tournamentTypeFilter);
+    }
+
+    if (tournamentAreaFilter !== "all") {
+      filtered = filtered.filter(t => t.area.toLowerCase() === tournamentAreaFilter);
+    }
+
+    return filtered;
   }
 
-  const teamFilterOptions = [
+  const teamStatusFilterOptions = [
     { label: "All", value: "all" },
     ...(activeTeams.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
     ...(inactiveTeams.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
   ]
 
-  const studentFilterOptions = [
+  const teamTypeFilterOptions = [
+    { label: "All", value: "all" },
+    { label: "Pre-Stack", value: "pre-stack" },
+    { label: "Post-Stack", value: "post-stack" }
+  ]
+
+  const studentStatusFilterOptions = [
     { label: "All", value: "all" },
     ...(activeStudents.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
     ...(inactiveStudents.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
   ]
 
-  const tournamentFilterOptions = [
+  const tournamentStatusFilterOptions = [
     { label: "All", value: "all" },
     ...(activeTournaments.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
     ...(inactiveTournaments.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
   ]
 
-  const currentTeamFilter = (teamsFilter === "inactive" && inactiveTeams.length === 0) || (teamsFilter === "active" && activeTeams.length === 0) ? "all" : teamsFilter;
-  const currentStudentFilter = (studentsFilter === "inactive" && inactiveStudents.length === 0) || (studentsFilter === "active" && activeStudents.length === 0) ? "all" : studentsFilter;
-  const currentTournamentFilter = (tournamentsFilter === "inactive" && inactiveTournaments.length === 0) || (tournamentsFilter === "active" && activeTournaments.length === 0) ? "all" : tournamentsFilter;
+  const tournamentTypeFilterOptions = [
+    { label: "All", value: "all" },
+    { label: "Pre-Stack", value: "pre-stack" },
+    { label: "Post-Stack", value: "post-stack" }
+  ]
+
+  const tournamentAreaFilterOptions = [
+    { label: "All", value: "all" },
+    { label: "Invitational", value: "invitational" },
+    { label: "Regionals", value: "regionals" },
+    { label: "ORCS", value: "orcs" },
+    { label: "Nationals", value: "nationals" },
+    { label: "Rookie Rumble", value: "rookie rumble" },
+    { label: "OLT", value: "olt" },
+    { label: "Other", value: "other" }
+  ]
+
+  const currentTeamStatusFilter = (teamStatusFilter === "inactive" && inactiveTeams.length === 0) || (teamStatusFilter === "active" && activeTeams.length === 0) ? "all" : teamStatusFilter;
+  const currentTeamTypeFilter = teamTypeFilter;
+  const currentStudentStatusFilter = (studentStatusFilter === "inactive" && inactiveStudents.length === 0) || (studentStatusFilter === "active" && activeStudents.length === 0) ? "all" : studentStatusFilter;
+  const currentTournamentStatusFilter = (tournamentStatusFilter === "inactive" && inactiveTournaments.length === 0) || (tournamentStatusFilter === "active" && activeTournaments.length === 0) ? "all" : tournamentStatusFilter;
+  const currentTournamentTypeFilter = tournamentTypeFilter;
+  const currentTournamentAreaFilter = tournamentAreaFilter;
 
   const { addTeam, addStudent, addTournament } = useSchoolDataMutations();
 
@@ -450,13 +515,21 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <SegmentedControl
-            value={currentTeamFilter}
-            onChange={handleTeamFilterChange}
-            data={teamFilterOptions}
-            mb="md"
-            disabled={allTeams.length > 0 ? false : true}
-          />
+          <Stack gap="xs" mb="md" maw="700px">
+            <SegmentedControl
+              value={currentTeamStatusFilter}
+              onChange={handleTeamStatusFilterChange}
+              data={teamStatusFilterOptions}
+              disabled={allTeams.length > 0 ? false : true}
+            />
+            <SegmentedControl
+              value={currentTeamTypeFilter}
+              onChange={handleTeamTypeFilterChange}
+              data={teamTypeFilterOptions}
+              disabled={allTeams.length > 0 ? false : true}
+              size="xs"
+            />
+          </Stack>
           <TeamList teams={getFilteredTeams()} />
         </>
       ),
@@ -476,9 +549,9 @@ export default function SingleSchoolTabs({
             </>
           )}
           <SegmentedControl
-            value={currentStudentFilter}
-            onChange={handleStudentFilterChange}
-            data={studentFilterOptions}
+            value={currentStudentStatusFilter}
+            onChange={handleStudentStatusFilterChange}
+            data={studentStatusFilterOptions}
             mb="md"
             disabled={allStudents.length > 0 ? false : true}
           />
@@ -500,13 +573,28 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <SegmentedControl
-            value={currentTournamentFilter}
-            onChange={handleTournamentFilterChange}
-            data={tournamentFilterOptions}
-            mb="md"
-            disabled={allTournaments.length > 0 ? false : true}
-          />
+          <Stack gap="xs" mb="md" maw="700px">
+            <SegmentedControl
+              value={currentTournamentStatusFilter}
+              onChange={handleTournamentStatusFilterChange}
+              data={tournamentStatusFilterOptions}
+              disabled={allTournaments.length > 0 ? false : true}
+            />
+            <SegmentedControl
+              value={currentTournamentTypeFilter}
+              onChange={handleTournamentTypeFilterChange}
+              data={tournamentTypeFilterOptions}
+              disabled={allTournaments.length > 0 ? false : true}
+              size="xs"
+            />
+            <SegmentedControl
+              value={currentTournamentAreaFilter}
+              onChange={handleTournamentAreaFilterChange}
+              data={tournamentAreaFilterOptions}
+              disabled={allTournaments.length > 0 ? false : true}
+              size="xs"
+            />
+          </Stack>
           <TournamentList tournaments={getFilteredTournaments()} />
         </>
       ),
