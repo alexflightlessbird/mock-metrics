@@ -1,6 +1,6 @@
 // Dependency imports
 import { Link } from "react-router-dom";
-import { useMantineTheme, Flex, Group } from "@mantine/core";
+import { useMantineTheme, Group } from "@mantine/core";
 
 // Component imports
 import List from "../../../../common/components/List";
@@ -24,12 +24,7 @@ export default function CaseList({ cases }) {
         text: <Group maw="100%"><List withPadding={false} items={textList} listStyleType="none" /></Group>
       }
     )
-  }
-  )
-
-  mappedCases.push(
-    { title: "None" }
-  )
+  })
 
   return (
     <>

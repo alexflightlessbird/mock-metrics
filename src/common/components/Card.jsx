@@ -1,4 +1,4 @@
-import { Card, Image, Text, Badge, Group, Flex } from "@mantine/core";
+import { Card, Image, Text, Badge, Group, Flex, Stack } from "@mantine/core";
 import IconButton from "./IconButton";
 
 export default function CardComponent({ content = {}, image }) {
@@ -21,7 +21,34 @@ export default function CardComponent({ content = {}, image }) {
 
             <Group justify="space-between" mt="xs" mb="xs" wrap="nowrap">
                 {content.title && <Text fw={800}>{content.title}</Text>}
-                {content.badge && <Badge color={content.badge?.color || "blue"} style={{ color: content.badge?.fontColor, flexShrink: 0 }}>{content.badge.text}</Badge>}
+                {content.badges && (
+                    <Stack gap="xs" align="flex-end">
+                        {content.badges.map((badge, index) => (
+                            <Badge
+                                key={index}
+                                color={badge?.color || "blue"}
+                                style={{
+                                    color: badge?.fontColor,
+                                    flexShrink: 0,
+                                    width: "fit-content"
+                                }}
+                            >
+                                {badge.text}
+                            </Badge>
+                        ))}
+                    </Stack>
+                )}
+                {!content.badges && content.badge && (
+                    <Badge
+                        color={content.badge?.color || "blue"}
+                        style={{
+                            color: content.badge?.fontColor,
+                            flexShrink: 0
+                        }}
+                    >
+                        {content.badge.text}
+                    </Badge>
+                )}
             </Group>
 
             <Text size="sm" c="dimmed">

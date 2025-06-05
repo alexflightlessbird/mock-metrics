@@ -1,5 +1,4 @@
 // Dependency imports
-import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // Router imports
@@ -21,16 +20,9 @@ export default function CasesRouter({ allCases }) {
     id: caseId,
   });
 
-  const [currentAllCaseTab, setCurrentAllCaseTab] = useState("active");
 
   if (!caseId)
-    return (
-      <AllCasesView
-        allCases={allCases}
-        currentAllCaseTab={currentAllCaseTab}
-        setCurrentAllCaseTab={setCurrentAllCaseTab}
-      />
-    );
+    return <AllCasesView allCases={allCases} />;
   if (caseId && !selectedCase) return <NotFound type="case" />;
   if (selectedCase) return <SingleCaseRouter selectedCase={selectedCase} />;
 }

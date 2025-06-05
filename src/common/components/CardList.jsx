@@ -11,7 +11,7 @@ export default function CardList({ items }) {
             spacing="xs"
             verticalSpacing="xs"
         >
-        {filteredItems.length === 0 && <List items={["None"]} />}
+        {filteredItems.length === 0 && <Card key="none" content={{title: "None"}} />}
         {filteredItems.length > 0 && filteredItems.map((i, index) => (
             <>
                 <Card
@@ -20,6 +20,7 @@ export default function CardList({ items }) {
                     content={{
                         title: i?.title,
                         text: i?.text,
+                        badges: i?.badges || (i?.badge ? [i.badge] : undefined),
                         badge: i?.badge,
                         button: i?.button
                     }}

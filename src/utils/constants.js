@@ -10,4 +10,12 @@ const PREMIUM_LIMITS = {
   VIEWER: 1,
 };
 
-export { ROLES, PREMIUM_LIMITS };
+const WITNESS_TYPES = {
+  CHARACTER: "Character",
+  EXPERT: "Expert",
+  PARTY_REP: "Party Rep",
+  POLICE_INVESTIGATOR: "Police/Investigator",
+  OTHER: "Other"
+}
+
+export { ROLES, PREMIUM_LIMITS, WITNESS_TYPES };

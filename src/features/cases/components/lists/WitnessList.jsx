@@ -1,18 +1,34 @@
 // Dependency imports
 import { Link } from "react-router-dom";
+import { useMantineTheme } from "@mantine/core";
 
 // Component imports
-import List from "../../../../common/components/List";
+import CardList from "../../../../common/components/CardList";
 
 export default function WitnessList({ witnesses }) {
+  const theme = useMantineTheme();
+
   const mappedWitnesses = [];
-  witnesses.map((w) =>
+
+  witnesses.map((w) => {
     mappedWitnesses.push(
-      <Link key={w.id} to={`/cases?caseId=${w.case_id}&witnessId=${w.id}`}>
-        {w.name}
-      </Link>
+      {
+        title: w.name,
+        badges: [
+          {
+            text: w.side,
+            color: theme.colors.darkBlue[0]
+          },
+          {
+            text: w.type,
+            color: theme.colors.primaryBlue[0]
+          }
+        ],
+      }
     )
+  })
+
+  return (
+    <CardList items={mappedWitnesses} />
   );
-  if (mappedWitnesses.length == 0) mappedWitnesses.push("None");
-  return <List items={mappedWitnesses} />;
 }
