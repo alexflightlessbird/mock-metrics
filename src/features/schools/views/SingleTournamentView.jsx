@@ -242,7 +242,8 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
         name: "area",
         required: true,
         label: "Area",
-        options: areaOptions
+        options: areaOptions,
+        searchable: false,
       },
       {
         type: "number",

@@ -1,6 +1,6 @@
 // Dependency imports
 import { useSearchParams } from "react-router-dom";
-import { SegmentedControl, Group } from "@mantine/core";
+import { SegmentedControl, Stack } from "@mantine/core";
 
 // Component imports
 import WitnessList from "../components/lists/WitnessList";
@@ -102,7 +102,7 @@ export default function SingleCaseView({
       <List items={detailItems} />
       <br />
       <h2>All Witnesses</h2>
-      <Group gap="xs" mb="md">
+      <Stack gap="xs" mb="md" maw="700px">
         <SegmentedControl
           value={currentSideFilter}
           onChange={handleSideFilterChange}
@@ -114,8 +114,9 @@ export default function SingleCaseView({
           onChange={handleTypeFilterChange}
           data={witnessTypes}
           disabled={allCaseWitnesses.length > 0 ? false : true}
+          size="xs"
         />
-      </Group>
+      </Stack>
       <WitnessList witnesses={getFilteredWitnesses()} />
     </>
   )

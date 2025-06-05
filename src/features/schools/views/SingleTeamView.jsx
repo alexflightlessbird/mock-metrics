@@ -287,7 +287,8 @@ export default function SingleTeamView({ selectedTeam, schoolRole, schoolName })
         name: "type",
         required: true,
         label: "Type",
-        options: typeOptions
+        options: typeOptions,
+        searchable: false
       },
       {
         type: "number",

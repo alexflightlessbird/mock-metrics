@@ -1,18 +1,41 @@
 // Dependency imports
 import { Link } from "react-router-dom";
+import { Group, useMantineTheme } from "@mantine/core";
 
 // Component imports
+import CardList from "../../../../../common/components/CardList";
 import List from "../../../../../common/components/List";
+import Loading from "../../../../../common/components/Loading";
+
+// Hooks imports
+import { useCases } from "../../../../../hooks/api/useCases";
 
 export default function TeamList({ teams }) {
+  const theme = useMantineTheme();
+
+  const { data: allCases = [], isPending: isCasesPending } = useCases();
+
+  if (isCasesPending) return <Loading />;
+
   const mappedTeams = [];
-  teams.map((t) =>
+  
+  teams.map((t) => {
+    const linkedCaseName = allCases.find(c => c.id === t.case_id).name;
+    const textList = [`Case: ${linkedCaseName}`];
+
     mappedTeams.push(
-      <Link to={`/schools?schoolId=${t.school_id}&teamId=${t.id}`}>
-        {t.name}
-      </Link>
+      {
+        title: <Link to={`/schools?schoolId=${t.school_id}&teamId=${t.id}`}>{t.name} ({t.year})</Link>,
+        badges: [
+          {
+            text: t.type,
+            color: t.type === "Post-Stack" ? theme.colors.darkBlue[0] : theme.colors.primaryBlue[0]
+          }
+        ],
+        text: <Group maw="100%"><List withPadding={false} items={textList} listStyleType="none" /></Group>
+      }
     )
+  }
   );
-  if (mappedTeams.length == 0) mappedTeams.push("None");
-  return <List items={mappedTeams} />;
+  return <CardList items={mappedTeams} />;
 }

@@ -7,6 +7,7 @@ import List from "../../../../common/components/List";
 import CardList from "../../../../common/components/CardList";
 
 export default function CaseList({ cases }) {
+  console.log(cases);
   const theme = useMantineTheme();
 
   const mappedCases = [];
@@ -19,7 +20,7 @@ export default function CaseList({ cases }) {
         title: <Link to={`/cases?caseId=${c.id}`}>{c.name}</Link>,
         badge: {
           text: c.type,
-          color: theme.colors.darkBlue[0]
+          color: c.type.toLowerCase() === "civil" ? theme.colors.darkBlue[0] : theme.colors.primaryBlue[0]
         },
         text: <Group maw="100%"><List withPadding={false} items={textList} listStyleType="none" /></Group>
       }

@@ -1,6 +1,7 @@
 // Dependency imports
 import { useMemo } from "react";
-import { Text, Tooltip } from "@mantine/core";
+import { useSearchParams } from "react-router-dom";
+import { Text, Tooltip, SegmentedControl } from "@mantine/core";
 import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -36,11 +37,83 @@ export default function SingleSchoolTabs({
   currentTab,
   setCurrentTab,
 }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { active: activeTeams, inactive: inactiveTeams } = useActiveFilters(allTeams);
   const { active: activeStudents, inactive: inactiveStudents } = useActiveFilters(allStudents);
   const { active: activeTournaments, inactive: inactiveTournaments } =
     useActiveFilters(allTournaments);
   const { primary: primaryAdminUsers, admin: adminUsers, viewer: viewerUsers } = useRoleFilters(allUsers);
+
+  const teamsFilter = searchParams.get("teamsfilter") || "active";
+  const studentsFilter = searchParams.get("studentsfilter") || "active";
+  const tournamentsFilter = searchParams.get("tournamentsfilter") || "active";
+
+  const handleTeamFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("teamsfilter", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const handleStudentFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("studentsfilter", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const handleTournamentFilterChange = (newFilter) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("tournamentsfilter", newFilter);
+    setSearchParams(newSearchParams);
+  }
+
+  const getFilteredTeams = () => {
+    switch (teamsFilter) {
+      case "active": return activeTeams;
+      case "inactive": return inactiveTeams;
+      case "all": return [...activeTeams, ...inactiveTeams];
+      default: return activeTeams;
+    }
+  }
+
+  const getFilteredStudents = () => {
+    switch (studentsFilter) {
+      case "active": return activeStudents;
+      case "inactive": return inactiveStudents;
+      case "all": return [...activeStudents, ...inactiveStudents];
+      default: return activeStudents;
+    }
+  }
+
+  const getFilteredTournaments = () => {
+    switch (tournamentsFilter) {
+      case "active": return activeTournaments;
+      case "inactive": return inactiveTournaments;
+      case "all": return [...activeTournaments, ...inactiveTournaments];
+      default: return activeTournaments;
+    }
+  }
+
+  const teamFilterOptions = [
+    { label: "All", value: "all" },
+    ...(activeTeams.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
+    ...(inactiveTeams.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
+  ]
+
+  const studentFilterOptions = [
+    { label: "All", value: "all" },
+    ...(activeStudents.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
+    ...(inactiveStudents.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
+  ]
+
+  const tournamentFilterOptions = [
+    { label: "All", value: "all" },
+    ...(activeTournaments.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
+    ...(inactiveTournaments.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
+  ]
+
+  const currentTeamFilter = (teamsFilter === "inactive" && inactiveTeams.length === 0) || (teamsFilter === "active" && activeTeams.length === 0) ? "all" : teamsFilter;
+  const currentStudentFilter = (studentsFilter === "inactive" && inactiveStudents.length === 0) || (studentsFilter === "active" && activeStudents.length === 0) ? "all" : studentsFilter;
+  const currentTournamentFilter = (tournamentsFilter === "inactive" && inactiveTournaments.length === 0) || (tournamentsFilter === "active" && activeTournaments.length === 0) ? "all" : tournamentsFilter;
 
   const { addTeam, addStudent, addTournament } = useSchoolDataMutations();
 
@@ -290,75 +363,6 @@ export default function SingleSchoolTabs({
     ]
   }
 
-  const teamTabs = [
-    {
-      value: "active",
-      label: "Active Teams",
-      content: (
-        <>
-          <br />
-          <TeamList teams={activeTeams} />
-        </>
-      ),
-    },
-    {
-      value: "inactive",
-      label: "Inactive Teams",
-      content: (
-        <>
-          <br />
-          <TeamList teams={inactiveTeams} />
-        </>
-      ),
-    },
-  ];
-
-  const studentTabs = [
-    {
-      value: "active",
-      label: "Active Students",
-      content: (
-        <>
-          <br />
-          <StudentList students={activeStudents} />
-        </>
-      ),
-    },
-    {
-      value: "inactive",
-      label: "Inactive Students",
-      content: (
-        <>
-          <br />
-          <StudentList students={inactiveStudents} />
-        </>
-      ),
-    },
-  ];
-
-  const tournamentTabs = [
-    {
-      value: "active",
-      label: "Active Tournaments",
-      content: (
-        <>
-          <br />
-          <TournamentList tournaments={activeTournaments} />
-        </>
-      ),
-    },
-    {
-      value: "inactive",
-      label: "Inactive Tournaments",
-      content: (
-        <>
-          <br />
-          <TournamentList tournaments={inactiveTournaments} />
-        </>
-      ),
-    },
-  ];
-
   const tabs = [];
 
   if (role === ROLES.PRIMARY) {
@@ -446,7 +450,14 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <TabbedView tabs={teamTabs} defaultTab="active" />
+          <SegmentedControl
+            value={currentTeamFilter}
+            onChange={handleTeamFilterChange}
+            data={teamFilterOptions}
+            mb="md"
+            disabled={allTeams.length > 0 ? false : true}
+          />
+          <TeamList teams={getFilteredTeams()} />
         </>
       ),
     },
@@ -464,7 +475,14 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <TabbedView tabs={studentTabs} defaultTab="active" />
+          <SegmentedControl
+            value={currentStudentFilter}
+            onChange={handleStudentFilterChange}
+            data={studentFilterOptions}
+            mb="md"
+            disabled={allStudents.length > 0 ? false : true}
+          />
+          <StudentList students={getFilteredStudents()} />
         </>
       ),
     },
@@ -482,7 +500,14 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <TabbedView tabs={tournamentTabs} defaultTab="active" />
+          <SegmentedControl
+            value={currentTournamentFilter}
+            onChange={handleTournamentFilterChange}
+            data={tournamentFilterOptions}
+            mb="md"
+            disabled={allTournaments.length > 0 ? false : true}
+          />
+          <TournamentList tournaments={getFilteredTournaments()} />
         </>
       ),
     }
