@@ -1,20 +1,22 @@
-import { Stack } from "@mantine/core";
-import SegmentedFilterControl from "./SegmentedFilterControl";
+import FilterContainer from "./FilterContainer";
+import StatusFilter from "./StatusFilter";
 
 export default function StudentFilters({
     statusValue,
     onStatusChange,
-    statusOptions,
+    activeStudents = [],
+    inactiveStudents = [],
     disabled = false
 }) {
     return (
-        <Stack gap="xs" mb="md" maw="700px">
-            <SegmentedFilterControl
+        <FilterContainer>
+            <StatusFilter
                 value={statusValue}
                 onChange={onStatusChange}
-                options={statusOptions}
+                activeItems={activeStudents}
+                inactiveItems={inactiveStudents}
                 disabled={disabled}
             />
-        </Stack>
+        </FilterContainer>
     )
 }

@@ -1,42 +1,41 @@
-import { Stack } from "@mantine/core";
-import SegmentedFilterControl from "./SegmentedFilterControl";
-import ResponsiveFilter from "./ResponsiveFilter";
+import FilterContainer from "./FilterContainer";
+import StatusFilter from "./StatusFilter";
+import TypeFilter from "./TypeFilter";
+import AreaFilter from "./AreaFilter";
 
 export default function TournamentFilters({
     statusValue,
     onStatusChange,
-    statusOptions,
+    activeTournaments = [],
+    inactiveTournaments = [],
     typeValue,
     onTypeChange,
-    typeOptions,
     areaValue,
     onAreaChange,
-    areaOptions,
-    disabled = false
+    disabled
 }) {
     return (
-        <Stack gap="xs" mb="md" maw="700px">
-            <SegmentedFilterControl
+        <FilterContainer>
+            <StatusFilter
                 value={statusValue}
                 onChange={onStatusChange}
-                options={statusOptions}
+                activeItems={activeTournaments}
+                inactiveItems={inactiveTournaments}
                 disabled={disabled}
             />
-            <SegmentedFilterControl
+            <TypeFilter
                 value={typeValue}
                 onChange={onTypeChange}
-                options={typeOptions}
                 disabled={disabled}
                 size="xs"
             />
-            <ResponsiveFilter
+            <AreaFilter
                 value={areaValue}
                 onChange={onAreaChange}
-                options={areaOptions}
-                disabled={disabled}
                 label="Tournament Area"
+                disabled={disabled}
                 size="xs"
             />
-        </Stack>
+        </FilterContainer>
     )
 }

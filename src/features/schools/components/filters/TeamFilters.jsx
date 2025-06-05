@@ -1,30 +1,31 @@
-import { Stack } from "@mantine/core";
-import SegmentedFilterControl from "./SegmentedFilterControl";
+import FilterContainer from "./FilterContainer";
+import StatusFilter from "./StatusFilter";
+import TypeFilter from "./TypeFilter";
 
 export default function TeamFilters({
     statusValue,
     onStatusChange,
-    statusOptions,
+    activeTeams = [],
+    inactiveTeams = [],
     typeValue,
     onTypeChange,
-    typeOptions,
     disabled = false
 }) {
     return (
-        <Stack gap="xs" mb="md" maw="700px">
-            <SegmentedFilterControl
+        <FilterContainer>
+            <StatusFilter
                 value={statusValue}
                 onChange={onStatusChange}
-                options={statusOptions}
+                activeItems={activeTeams}
+                inactiveItems={inactiveTeams}
                 disabled={disabled}
             />
-            <SegmentedFilterControl
+            <TypeFilter
                 value={typeValue}
                 onChange={onTypeChange}
-                options={typeOptions}
                 disabled={disabled}
                 size="xs"
             />
-        </Stack>
+        </FilterContainer>
     )
 }

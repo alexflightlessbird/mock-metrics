@@ -135,47 +135,6 @@ export default function SingleSchoolTabs({
     return filtered;
   }
 
-  const teamStatusFilterOptions = [
-    { label: "All", value: "all" },
-    ...(activeTeams.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
-    ...(inactiveTeams.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
-  ]
-
-  const teamTypeFilterOptions = [
-    { label: "All", value: "all" },
-    { label: "Pre-Stack", value: "pre-stack" },
-    { label: "Post-Stack", value: "post-stack" }
-  ]
-
-  const studentStatusFilterOptions = [
-    { label: "All", value: "all" },
-    ...(activeStudents.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
-    ...(inactiveStudents.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
-  ]
-
-  const tournamentStatusFilterOptions = [
-    { label: "All", value: "all" },
-    ...(activeTournaments.length > 0 ? [{ label: "Active", value: "active" }] : [{ label: "Active", value: "active", disabled: true }]),
-    ...(inactiveTournaments.length > 0 ? [{ label: "Inactive", value: "inactive" }] : [{ label: "Inactive", value: "inactive", disabled: true }])
-  ]
-
-  const tournamentTypeFilterOptions = [
-    { label: "All", value: "all" },
-    { label: "Pre-Stack", value: "pre-stack" },
-    { label: "Post-Stack", value: "post-stack" }
-  ]
-
-  const tournamentAreaFilterOptions = [
-    { label: "All", value: "all" },
-    { label: "Invitational", value: "invitational" },
-    { label: "Regionals", value: "regionals" },
-    { label: "ORCS", value: "orcs" },
-    { label: "Nationals", value: "nationals" },
-    { label: "Rookie Rumble", value: "rookie rumble" },
-    { label: "OLT", value: "olt" },
-    { label: "Other", value: "other" }
-  ]
-
   const currentTeamStatusFilter = (teamStatusFilter === "inactive" && inactiveTeams.length === 0) || (teamStatusFilter === "active" && activeTeams.length === 0) ? "all" : teamStatusFilter;
   const currentTeamTypeFilter = teamTypeFilter;
   const currentStudentStatusFilter = (studentStatusFilter === "inactive" && inactiveStudents.length === 0) || (studentStatusFilter === "active" && activeStudents.length === 0) ? "all" : studentStatusFilter;
@@ -521,11 +480,11 @@ export default function SingleSchoolTabs({
           <TeamFilters
             statusValue={currentTeamStatusFilter}
             onStatusChange={handleTeamStatusFilterChange}
-            statusOptions={teamStatusFilterOptions}
+            activeTeams={activeTeams}
+            inactiveTeams={inactiveTeams}
             typeValue={currentTeamTypeFilter}
             onTypeChange={handleTeamTypeFilterChange}
-            typeOptions={teamTypeFilterOptions}
-            disabled={allTeams.length > 0 ? false : true}
+            disabled={allTeams.length === 0}
           />
           <TeamList teams={getFilteredTeams()} />
         </>
@@ -548,8 +507,9 @@ export default function SingleSchoolTabs({
           <StudentFilters
             statusValue={currentStudentStatusFilter}
             onStatusChange={handleStudentStatusFilterChange}
-            statusOptions={studentStatusFilterOptions}
-            disabled={allStudents.length > 0 ? false : true}
+            activeStudents={activeStudents}
+            inactiveStudents={inactiveStudents}
+            disabled={allStudents.length === 0}
           />
           <StudentList students={getFilteredStudents()} />
         </>
@@ -572,14 +532,13 @@ export default function SingleSchoolTabs({
           <TournamentFilters
             statusValue={currentTournamentStatusFilter}
             onStatusChange={handleTournamentStatusFilterChange}
-            statusOptions={tournamentStatusFilterOptions}
+            activeTournaments={activeTournaments}
+            inactiveTournaments={inactiveTournaments}
             typeValue={currentTournamentTypeFilter}
             onTypeChange={handleTournamentTypeFilterChange}
-            typeOptions={tournamentTypeFilterOptions}
             areaValue={currentTournamentAreaFilter}
             onAreaChange={handleTournamentAreaFilterChange}
-            areaOptions={tournamentAreaFilterOptions}
-            disabled={allTournaments.length > 0 ? false : true}
+            disabled={allTournaments.length === 0}
           />
           <TournamentList tournaments={getFilteredTournaments()} />
         </>
