@@ -1,7 +1,7 @@
 // Dependency imports
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Text, Tooltip, SegmentedControl, Stack } from "@mantine/core";
+import { Text, Tooltip } from "@mantine/core";
 import { hasLength, isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -24,6 +24,9 @@ import { useRoleFilters } from "../../hooks/useRoleFilters";
 import { useSchoolDataMutations } from "../../../../hooks/api/useSchoolData";
 import { useCases } from "../../../../hooks/api/useCases";
 import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
+import TeamFilters from "../filters/TeamFilters";
+import StudentFilters from "../filters/StudentFilters";
+import TournamentFilters from "../filters/TournamentFilters";
 
 export default function SingleSchoolTabs({
   role,
@@ -515,21 +518,15 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <Stack gap="xs" mb="md" maw="700px">
-            <SegmentedControl
-              value={currentTeamStatusFilter}
-              onChange={handleTeamStatusFilterChange}
-              data={teamStatusFilterOptions}
-              disabled={allTeams.length > 0 ? false : true}
-            />
-            <SegmentedControl
-              value={currentTeamTypeFilter}
-              onChange={handleTeamTypeFilterChange}
-              data={teamTypeFilterOptions}
-              disabled={allTeams.length > 0 ? false : true}
-              size="xs"
-            />
-          </Stack>
+          <TeamFilters
+            statusValue={currentTeamStatusFilter}
+            onStatusChange={handleTeamStatusFilterChange}
+            statusOptions={teamStatusFilterOptions}
+            typeValue={currentTeamTypeFilter}
+            onTypeChange={handleTeamTypeFilterChange}
+            typeOptions={teamTypeFilterOptions}
+            disabled={allTeams.length > 0 ? false : true}
+          />
           <TeamList teams={getFilteredTeams()} />
         </>
       ),
@@ -548,11 +545,10 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <SegmentedControl
-            value={currentStudentStatusFilter}
-            onChange={handleStudentStatusFilterChange}
-            data={studentStatusFilterOptions}
-            mb="md"
+          <StudentFilters
+            statusValue={currentStudentStatusFilter}
+            onStatusChange={handleStudentStatusFilterChange}
+            statusOptions={studentStatusFilterOptions}
             disabled={allStudents.length > 0 ? false : true}
           />
           <StudentList students={getFilteredStudents()} />
@@ -573,28 +569,18 @@ export default function SingleSchoolTabs({
               <br />
             </>
           )}
-          <Stack gap="xs" mb="md" maw="700px">
-            <SegmentedControl
-              value={currentTournamentStatusFilter}
-              onChange={handleTournamentStatusFilterChange}
-              data={tournamentStatusFilterOptions}
-              disabled={allTournaments.length > 0 ? false : true}
-            />
-            <SegmentedControl
-              value={currentTournamentTypeFilter}
-              onChange={handleTournamentTypeFilterChange}
-              data={tournamentTypeFilterOptions}
-              disabled={allTournaments.length > 0 ? false : true}
-              size="xs"
-            />
-            <SegmentedControl
-              value={currentTournamentAreaFilter}
-              onChange={handleTournamentAreaFilterChange}
-              data={tournamentAreaFilterOptions}
-              disabled={allTournaments.length > 0 ? false : true}
-              size="xs"
-            />
-          </Stack>
+          <TournamentFilters
+            statusValue={currentTournamentStatusFilter}
+            onStatusChange={handleTournamentStatusFilterChange}
+            statusOptions={tournamentStatusFilterOptions}
+            typeValue={currentTournamentTypeFilter}
+            onTypeChange={handleTournamentTypeFilterChange}
+            typeOptions={tournamentTypeFilterOptions}
+            areaValue={currentTournamentAreaFilter}
+            onAreaChange={handleTournamentAreaFilterChange}
+            areaOptions={tournamentAreaFilterOptions}
+            disabled={allTournaments.length > 0 ? false : true}
+          />
           <TournamentList tournaments={getFilteredTournaments()} />
         </>
       ),

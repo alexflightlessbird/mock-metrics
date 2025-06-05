@@ -41,7 +41,9 @@ export default function TournamentTeamList({
         theme={theme}
       />
     )
-  }) || ["None"];
+  });
+
+  if (mappedTeams.length === 0) mappedTeams.push("None");
 
   return <List items={mappedTeams} />
 }
