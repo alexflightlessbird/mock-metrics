@@ -6,6 +6,7 @@ const theme = createTheme({
       darkBlue: ["#0a1f3c"],
       lightGray: ["#f7f5f3"],
       primaryBlue: ["#2dace6"],
+      errorRed: ["#ff6b6b"],
     },
     fontFamily:
       "Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",

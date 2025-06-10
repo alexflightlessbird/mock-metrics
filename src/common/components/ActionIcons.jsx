@@ -5,49 +5,29 @@ import { useMantineTheme, ActionIcon } from "@mantine/core";
 // Utils imports
 import icons from "../../utils/icons";
 
-function EditIcon({ onClick }) {
+function ActionIconComp ({ onClick, color, colorLoc = 0, icon, fontSize = "xl" }) {
   const theme = useMantineTheme();
 
   return (
     <ActionIcon
       variant="subtle"
       onClick={onClick}
-      style={{ color: theme.colors.primaryBlue[0] }}
-      fz="xl"
+      style={{ color: theme.colors[color][colorLoc] }}
+      fz={fontSize}
     >
-      {createElement(icons.edit)}
+      {createElement(icons[icon])}
     </ActionIcon>
-  );
+  )
 }
 
-function DeleteIcon({ onClick }) {
-  const theme = useMantineTheme();
-
-  return (
-    <ActionIcon
-      variant="subtle"
-      onClick={onClick}
-      style={{ color: theme.colors.red[5] }}
-      fz="xl"
-    >
-      {createElement(icons.delete)}
-    </ActionIcon>
-  );
+export function EditIcon({ onClick }) {
+  return <ActionIconComp onClick={onClick} color="primaryBlue" icon="edit" />;
 }
 
-function AddIcon({ onClick }) {
-  const theme = useMantineTheme();
-
-  return (
-    <ActionIcon
-      variant="subtle"
-      onClick={onClick}
-      style={{ color: theme.colors.primaryBlue[0] }}
-      fz="xl"
-    >
-      {createElement(icons.add)}
-    </ActionIcon>
-  );
+export function DeleteIcon({ onClick }) {
+  return <ActionIconComp onClick={onClick} color="errorRed" icon="delete" />;
 }
 
-export { EditIcon, DeleteIcon, AddIcon };
+export function AddIcon({ onClick }) {
+  return <ActionIconComp onClick={onClick} color="primaryBlue" icon="add" />;
+}
