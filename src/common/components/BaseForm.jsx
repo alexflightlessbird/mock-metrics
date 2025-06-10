@@ -1,10 +1,7 @@
-// Dependency imports
-import { Select, TextInput, NumberInput, Checkbox, Modal } from "@mantine/core";
+import { TextInput, Select, NumberInput, Checkbox } from "@mantine/core";
+import IconButton from "./IconButton";
 
-// Component imports
-import IconButton from "../../../common/components/IconButton";
-
-export default function EditModal ({ opened, onClose, title, form, onSubmit, fields }) {
+export default function BaseForm({ fields, form, onSubmit }) {
     function renderField (field) {
         switch (field.type) {
             case "text":
@@ -16,11 +13,12 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
                         placeholder={field.placeholder || ""}
                         withAsterisk={field.required ?? false}
                         label={field.label || ""}
+                        disabled={field.disabled ?? false}
                         {...form.getInputProps(field.name)}
                     />
-                );
+                )
             case "select":
-                if (!field.name || !field.options || field.options.length < 1) return console.error("Error with field - type select"); 
+                if (!field.name || !field.options || field.options.length < 1) return console.error("Error with field - type select");
                 return (
                     <Select
                         key={field.name}
@@ -30,9 +28,10 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
                         searchable={field.searchable ?? true}
                         nothingFoundMessage="Nothing found..."
                         data={field.options}
+                        disabled={field.disabled ?? false}
                         {...form.getInputProps(field.name)}
                     />
-                );
+                )
             case "number":
                 if (!field.name) return console.error("Error with field - type number");
                 return (
@@ -45,6 +44,7 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
                         allowDecimal={field.allowDecimal ?? false}
                         min={field.min}
                         max={field.max}
+                        disabled={field.disabled ?? false}
                         {...form.getInputProps(field.name)}
                     />
                 )
@@ -55,6 +55,7 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
                         key={field.name}
                         label={field.label || ""}
                         style={{ cursor: "pointer" }}
+                        disabled={field.disabled ?? false}
                         {...form.getInputProps(field.name, { type: "checkbox" })}
                     />
                 )
@@ -64,19 +65,17 @@ export default function EditModal ({ opened, onClose, title, form, onSubmit, fie
     }
 
     return (
-        <Modal opened={opened} onClose={onClose} title={title} centered>
-            <form onSubmit={form.onSubmit(onSubmit, (errors) => {
-                const firstErrorPath = Object.keys(errors)[0];
-                form.getInputNode(firstErrorPath)?.focus();
-            })}>
-                {fields.map((field) => (
-                    <div key={field.name}>
-                        {renderField(field)}
-                        <br />
-                    </div>
-                ))}
-                <IconButton icon="save" type="submit" buttonText="Submit" />
-            </form>
-        </Modal>
+        <form onSubmit={form.onSubmit(onSubmit, (errors) => {
+            const firstErrorPath = Object.keys(errors)[0];
+            form.getInputNode(firstErrorPath)?.focus();
+        })}>
+            {fields.map((field) => (
+                <div key={field.name}>
+                    {renderField(field)}
+                    <br />
+                </div>
+            ))}
+            <IconButton icon="save" type="submit" buttonText="Submit" />
+        </form>
     )
 }

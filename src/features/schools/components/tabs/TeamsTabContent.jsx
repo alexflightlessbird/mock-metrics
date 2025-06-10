@@ -2,7 +2,7 @@ import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
 import TeamList from "../lists/SingleSchool/TeamList";
 import TeamFilters from "../filters/TeamFilters";
 import IconButton from "../../../../common/components/IconButton";
-import AddModal from "../AddModal";
+import FormModal from "../../../../common/components/FormModal";
 import { useTeamFilters } from "../../hooks/useSingleSchoolTabs";
 
 export default function TeamsTabContent({
@@ -31,52 +31,54 @@ export default function TeamsTabContent({
         return filtered;
     }
 
+    const modalProps = {
+        opened: addTeamForm.opened,
+        onClose: addTeamForm.close,
+        title: "Add Team to School",
+        onSubmit: addTeamForm.handleSubmit,
+        form: addTeamForm.form,
+        fields: [
+            {
+                type: "text",
+                name: "name",
+                autofocus: true,
+                placeholder: "Enter the team's name",
+                required: true,
+                label: "Name"
+            },
+            {
+                type: "select",
+                name: "type",
+                required: true,
+                label: "Type",
+                options: addTeamForm.typeOptions,
+                searchable: false
+            },
+            {
+                type: "number",
+                name: "year",
+                required: true,
+                min: 1985,
+                max: new Date().getFullYear(),
+                label: "Year"
+            },
+            {
+                type: "select",
+                name: "caseId",
+                required: true,
+                label: "Linked Case",
+                options: addTeamForm.caseOptions
+            }
+        ]
+    }
+
     return (
         <>
             <br />
             {hasAddPermissions && (
                 <>
                     <IconButton icon="add" buttonText="Add Team" onClick={addTeamForm.open} />
-                    <AddModal
-                        opened={addTeamForm.opened}
-                        onClose={addTeamForm.close}
-                        title="Add Team to School"
-                        onSubmit={addTeamForm.handleSubmit}
-                        form={addTeamForm.form}
-                        fields={[
-                            {
-                                type: "text",
-                                name: "name",
-                                autofocus: true,
-                                placeholder: "Enter the team's name",
-                                required: true,
-                                label: "Name"
-                            },
-                            {
-                                type: "select",
-                                name: "type",
-                                required: true,
-                                label: "Type",
-                                options: addTeamForm.typeOptions,
-                                searchable: false
-                            },
-                            {
-                                type: "number",
-                                name: "year",
-                                required: true,
-                                min: 1985,
-                                max: new Date().getFullYear(),
-                                label: "Year"
-                            },
-                            {
-                                type: "select",
-                                name: "caseId",
-                                required: true,
-                                label: "Linked Case",
-                                options: addTeamForm.caseOptions
-                            }
-                        ]}
-                    />
+                    <FormModal {...modalProps} />
                     <br />
                     <br />
                 </>

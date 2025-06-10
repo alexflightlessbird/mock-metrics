@@ -10,6 +10,7 @@ import {
   DeleteIcon,
 } from "../../../../../common/components/ActionIcons";
 import IconButton from "../../../../../common/components/IconButton";
+import BaseForm from "../../../../../common/components/BaseForm";
 
 // Utils imports
 import { ROLES } from "../../../../../utils/constants";
@@ -48,6 +49,24 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
       console.error("User role update failed:", error);
     }
   };
+
+  const editUserFields = [
+    {
+      type: "text",
+      name: "user_id",
+      label: "User ID",
+      disabled: true
+    },
+    {
+      type: "select",
+      name: "role",
+      label: "New Role",
+      required: true,
+      allowDeselect: false,
+      searchable: false,
+      options: [ROLES.PRIMARY, ROLES.ADMIN, ROLES.VIEWER]
+    }
+  ];
 
   function editUserModal (user) {
     editUserForm.reset();
@@ -101,19 +120,11 @@ export default function UserList({ users, isPremium, schoolId, schoolName }) {
       centered: true,
       children: (
         <>
-          <Text>User ID: {user.user_id}</Text>
-          <form onSubmit={editUserForm.onSubmit(handleEditUserSubmit)}>
-            <Select
-              label="New Role"
-              withAsterisk
-              allowDeselect={false}
-              key={editUserForm.key("role")}
-              data={[ROLES.PRIMARY, ROLES.ADMIN, ROLES.VIEWER]}
-              {...editUserForm.getInputProps("role")}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
+          <BaseForm
+            fields={editUserFields}
+            form={editUserForm}
+            onSubmit={handleEditUserSubmit}
+          />
         </>
       ),
     });

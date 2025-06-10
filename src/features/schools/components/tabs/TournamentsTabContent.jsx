@@ -2,7 +2,7 @@ import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
 import TournamentList from "../lists/SingleSchool/TournamentList";
 import TournamentFilters from "../filters/TournamentFilters";
 import IconButton from "../../../../common/components/IconButton";
-import AddModal from "../AddModal";
+import FormModal from "../../../../common/components/FormModal";
 import { useTournamentFilters } from "../../hooks/useSingleSchoolTabs";
 
 export default function TournamentsTabContent({
@@ -35,59 +35,61 @@ export default function TournamentsTabContent({
         return filtered;
     }
 
+    const modalProps = {
+        opened: addTournamentForm.opened,
+        onClose: addTournamentForm.close,
+        title: "Add Tournament to School",
+        onSubmit: addTournamentForm.handleSubmit,
+        form: addTournamentForm.form,
+        fields: [
+            {
+                type: "text",
+                name: "name",
+                autofocus: true,
+                placeholder: "Enter the tournament's name",
+                required: true,
+                label: "Name"
+            },
+            {
+                type: "select",
+                name: "type",
+                required: true,
+                label: "Type",
+                options: addTournamentForm.typeOptions,
+                searchable: false
+            },
+            {
+                type: "select",
+                name: "area",
+                required: true,
+                label: "Area",
+                options: addTournamentForm.areaOptions
+            },
+            {
+                type: "number",
+                name: "year",
+                required: true,
+                min: 1985,
+                max: new Date().getFullYear(),
+                label: "Year"
+            },
+            {
+                type: "select",
+                name: "caseId",
+                required: true,
+                label: "Linked Case",
+                options: addTournamentForm.caseOptions.filter((c) => c.value !== "null")
+            }
+        ]
+    }
+
     return (
         <>
             <br />
             {hasAddPermissions && (
                 <>
                     <IconButton icon="add" buttonText="AddTournament" onClick={addTournamentForm.open} />
-                    <AddModal
-                        opened={addTournamentForm.opened}
-                        onClose={addTournamentForm.close}
-                        title="Add Tournament to School"
-                        onSubmit={addTournamentForm.handleSubmit}
-                        form={addTournamentForm.form}
-                        fields={[
-                            {
-                                type: "text",
-                                name: "name",
-                                autofocus: true,
-                                placeholder: "Enter the tournament's name",
-                                required: true,
-                                label: "Name"
-                            },
-                            {
-                                type: "select",
-                                name: "type",
-                                required: true,
-                                label: "Type",
-                                options: addTournamentForm.typeOptions,
-                                searchable: false,
-                            },
-                            {
-                                type: "select",
-                                name: "area",
-                                required: true,
-                                label: "Area",
-                                options: addTournamentForm.areaOptions
-                            },
-                            {
-                                type: "number",
-                                name: "year",
-                                required: true,
-                                min: 1985,
-                                max: new Date().getFullYear(),
-                                label: "Year"
-                            },
-                            {
-                                type: "select",
-                                name: "caseId",
-                                required: true,
-                                label: "Linked Case",
-                                options: addTournamentForm.caseOptions.filter((c) => c.value !== "null")
-                            }
-                        ]}
-                    />
+                    <FormModal {...modalProps} />
                     <br />
                     <br />
                 </>

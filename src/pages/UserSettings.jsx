@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
 import { useSession } from "../common/hooks/auth/useSession";
 import { setDocumentTitle } from "../utils/helpers";
 import List from "../common/components/List";
-import { Flex, Modal, TextInput } from "@mantine/core";
+import { Flex, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { hasLength, useForm } from "@mantine/form";
 import { EditIcon } from "../common/components/ActionIcons";
-import IconButton from "../common/components/IconButton";
+import BaseForm from "../common/components/BaseForm";
 
 export default function UserSettings() {
   const { userId } = useSession();
@@ -78,6 +78,16 @@ export default function UserSettings() {
     }
   };
 
+  const editUserFields = [
+    {
+      type: "text",
+      name: "name",
+      label: "Name",
+      required: true,
+      placeholder: "Enter your preferred name"
+    }
+  ]
+
   return (
     <div style={{ height: "200vh" }}>
       <h1>Settings Page</h1>
@@ -85,17 +95,11 @@ export default function UserSettings() {
         <h2>User Details</h2>
         <EditIcon onClick={open} />
         <Modal opened={opened} onClose={close} title="Edit User Details">
-          <form onSubmit={editUserForm.onSubmit(handleEditSubmit)}>
-            <TextInput
-              label="Name"
-              withAsterisk
-              key={editUserForm.key("name")}
-              placeholder="Enter your preferred name"
-              {...editUserForm.getInputProps("name")}
-            />
-            <br />
-            <IconButton icon="save" type="submit" buttonText="Submit" />
-          </form>
+          <BaseForm
+            fields={editUserFields}
+            form={editUserForm}
+            onSubmit={handleEditSubmit}
+          />
         </Modal>
       </Flex>
       <List items={detailItems} />

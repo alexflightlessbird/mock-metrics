@@ -70,20 +70,3 @@ export default function Home() {
     </div>
   );
 }
-
-/*
-             <img 
-                alt="image" 
-                src={image} 
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  maxHeight: maxColHeight,
-                  display: "block",
-                  objectFit: "contain",
-                  objectPosition: "left center",
-                  borderRadius: "1rem"
-                }}
-              />
- 
-*/

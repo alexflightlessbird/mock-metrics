@@ -8,8 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
 import EntityHeader from "../components/EntityHeader";
-import EditModal from "../components/EditModal";
-import AddModal from "../components/AddModal";
+import FormModal from "../../../common/components/FormModal";
 import TournamentTeamList from "../components/lists/SingleTournament/TournamentTeamList";
 import { AddIcon } from "../../../common/components/ActionIcons";
 import List from "../../../common/components/List";
@@ -214,7 +213,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
     <Text>Linked Case: {caseItem}</Text>
   ];
 
-  const editModalProps = {
+  const editTournamentModalProps = {
     opened: editOpened,
     onClose: editClose,
     title: "Edit Tournament",
@@ -268,7 +267,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
     ]
   };
 
-  const addModalProps = {
+  const addTeamModalProps = {
     opened: addOpened,
     onClose: addClose,
     title: "Add Team to Tournament",
@@ -292,7 +291,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
     <>
       <EntityHeader title={selectedTournament.name} canEdit={hasEditPermissions} onEdit={editOpen} canDelete={[ROLES.PRIMARY].includes(schoolRole)} onDelete={deleteTournamentModal} />
       {hasEditPermissions && (
-        <EditModal {...editModalProps} />
+        <FormModal {...editTournamentModalProps} />
       )}
       <List items={detailItems} />
       <br />
@@ -301,7 +300,7 @@ export default function SingleTournamentView({ selectedTournament, schoolRole, s
         {canAddTeam && (
           <>
             <AddIcon onClick={addOpen} />
-            <AddModal {...addModalProps} />
+            <FormModal {...addTeamModalProps} />
           </>
         )}
       </Flex>

@@ -8,8 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
 import EntityHeader from "../components/EntityHeader";
-import EditModal from "../components/EditModal";
-import AddModal from "../components/AddModal";
+import FormModal from "../../../common/components/FormModal";
 
 // Utils imports
 import { ROLES } from "../../../utils/constants";

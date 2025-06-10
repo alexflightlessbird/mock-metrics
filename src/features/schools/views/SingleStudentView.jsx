@@ -7,7 +7,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
 import EntityHeader from "../components/EntityHeader";
-import EditModal from "../components/EditModal";
+import ModalForm from "../../../common/components/FormModal";
 import List from "../../../common/components/List";
 import Loading from "../../../common/components/Loading";
 
@@ -129,7 +129,7 @@ export default function SingleStudentView({ selectedStudent, schoolRole, schoolN
     <Text>Current Team: {teamItem}</Text>
   ];
 
-  const editModalProps = {
+  const modalProps = {
     opened,
     onClose: close,
     title: "Edit Student",
@@ -163,7 +163,7 @@ export default function SingleStudentView({ selectedStudent, schoolRole, schoolN
     <>
       <EntityHeader title={selectedStudent.name} canEdit={[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole)} onEdit={open} canDelete={[ROLES.PRIMARY].includes(schoolRole)} onDelete={deleteStudentModal} />
       {[ROLES.PRIMARY, ROLES.ADMIN].includes(schoolRole) && (
-        <EditModal {...editModalProps} />
+        <ModalForm {...modalProps} />
       )}
       <List items={detailItems} />
     </>

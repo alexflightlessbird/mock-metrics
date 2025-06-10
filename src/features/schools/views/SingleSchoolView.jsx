@@ -1,14 +1,12 @@
 // Dependency imports
-import { TextInput, Modal } from "@mantine/core";
 import { useForm, hasLength } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
 // Component imports
 import EntityHeader from "../components/EntityHeader";
-import EditModal from "../components/EditModal";
+import FormModal from "../../../common/components/FormModal";
 import SingleSchoolTabs from "../components/tabs/SingleSchoolTabs";
 import List from "../../../common/components/List";
-import IconButton from "../../../common/components/IconButton";
 
 // Utils imports
 import { ROLES } from "../../../utils/constants";
@@ -90,7 +88,7 @@ export default function SingleSchoolView({
     setCurrentTab,
   };
 
-  const editModalProps = {
+  const modalProps = {
     opened,
     onClose: close,
     title: "Edit School",
@@ -112,7 +110,7 @@ export default function SingleSchoolView({
     <>
       <EntityHeader title={selectedSchool.schools.name} canEdit={[ROLES.PRIMARY].includes(selectedSchool.role)} onEdit={open} />
       {[ROLES.PRIMARY].includes(selectedSchool.role) && (
-        <EditModal {...editModalProps} />
+        <FormModal {...modalProps} />
       )}
       <List items={detailItems} />
       <br />

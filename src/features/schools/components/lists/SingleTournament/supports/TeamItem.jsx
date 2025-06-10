@@ -1,15 +1,13 @@
 // Dependency imports
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Flex, Text, Space } from "@mantine/core";
 import { modals } from "@mantine/modals";
 
 // Component imports
-import AddModal from "../../../AddModal";
 import List from "../../../../../../common/components/List";
 import { DeleteIcon } from "../../../../../../common/components/ActionIcons";
 import IconButton from "../../../../../../common/components/IconButton";
-import Loading from "../../../../../../common/components/Loading";
+import FormModal from "../../../../../../common/components/FormModal";
 
 // Utils imports
 import { ROLES } from "../../../../../../utils/constants";
@@ -28,8 +26,6 @@ export default function TeamItem({
     teamRounds,
     theme
 }) {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     const { removeTeamFromTournament, addTournamentRound } = useSchoolDataMutations();
 
     const roundOptions = useMemo(() => 
@@ -106,7 +102,6 @@ export default function TeamItem({
 
     async function handleAddRoundSubmit (values) {
         const { roundNumber, side } = values;
-        setIsSubmitting(true);
         try {
             await addTournamentRound({
                 tournamentId, 
@@ -120,7 +115,7 @@ export default function TeamItem({
         }
     }
 
-    const addModalProps = {
+    const addRoundModalProps = {
         opened: addRoundOpened,
         onClose: addRoundClose,
         title: `Add Round - ${team.teams.name}`,
@@ -174,7 +169,7 @@ export default function TeamItem({
                         onClick={addRoundOpen}
                         disabled={allRoundsAssigned}
                     />
-                    <AddModal {...addModalProps} />
+                    <FormModal {...addRoundModalProps} />
                     <Space h="xs" />
                 </>
             )}

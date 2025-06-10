@@ -2,7 +2,7 @@ import { useActiveFilters } from "../../../../common/hooks/useActiveFilters";
 import StudentList from "../lists/SingleSchool/StudentList";
 import StudentFilters from "../filters/StudentFilters";
 import IconButton from "../../../../common/components/IconButton";
-import AddModal from "../AddModal";
+import FormModal from "../../../../common/components/FormModal";
 import { useStudentFilters } from "../../hooks/useSingleSchoolTabs";
 
 export default function StudentsTabContent({
@@ -24,29 +24,31 @@ export default function StudentsTabContent({
         }
     }
 
+    const modalProps = {
+        opened: addStudentForm.opened,
+        onClose: addStudentForm.close,
+        title: "Add Student to School",
+        onSubmit: addStudentForm.handleSubmit,
+        form: addStudentForm.form,
+        fields: [
+            {
+                type: "text",
+                name: "name",
+                autofocus: true,
+                placeholder: "Enter the student's name",
+                required: true,
+                label: "Name"
+            }
+        ]
+    }
+
     return (
         <>
             <br />
             {hasAddPermissions && (
                 <>
                     <IconButton icon="add" buttonText="Add Student" onClick={addStudentForm.open} />
-                    <AddModal
-                        opened={addStudentForm.opened}
-                        onClose={addStudentForm.close}
-                        title="Add Student to School"
-                        onSubmit={addStudentForm.handleSubmit}
-                        form={addStudentForm.form}
-                        fields={[
-                            {
-                                type: "text",
-                                name: "name",
-                                autofocus: true,
-                                placeholder: "Enter the student's name",
-                                required: true,
-                                label: "Name"
-                            }
-                        ]}
-                    />
+                    <FormModal {...modalProps} />
                     <br />
                     <br />
                 </>
