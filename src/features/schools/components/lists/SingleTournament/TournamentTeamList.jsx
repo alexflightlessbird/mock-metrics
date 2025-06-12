@@ -1,6 +1,3 @@
-// Dependency imports
-import { useMantineTheme } from "@mantine/core";
-
 // Component imports
 import List from "../../../../../common/components/List";
 import Loading from "../../../../../common/components/Loading";
@@ -15,8 +12,6 @@ export default function TournamentTeamList({
   tournamentId,
   pSide
 }) {
-  const theme = useMantineTheme();
-
   const { data: allTournamentRounds, isRoundsLoading } = useTournamentRounds(tournamentId);
 
   function filterRounds(teamId) {
@@ -38,7 +33,6 @@ export default function TournamentTeamList({
         tournamentId={tournamentId}
         pSide={pSide}
         teamRounds={teamRounds}
-        theme={theme}
       />
     )
   });

@@ -1,6 +1,6 @@
 // Dependency imports
 import { createElement } from "react";
-import { Button, useMantineTheme } from "@mantine/core";
+import { Button } from "@mantine/core";
 
 // Utils imports
 import icons from "../../utils/icons";
@@ -18,8 +18,6 @@ export default function IconButton({
   fontColor,
   ...otherProps
 }) {
-  const theme = useMantineTheme();
-
   let iconProps;
 
   if (icon) {
@@ -39,7 +37,7 @@ export default function IconButton({
       className={disabled ? styles.disabled : styles.regular}
       variant={disabled ? "outline" : variant}
       {...iconProps}
-      color={color || theme.colors.primaryBlue[0]}
+      color={color || "primaryBlue"}
       style={{ color: fontColor || "white" }}
       type={type}
       disabled={disabled}

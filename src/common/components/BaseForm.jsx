@@ -56,6 +56,7 @@ export default function BaseForm({ fields, form, onSubmit }) {
                         label={field.label || ""}
                         style={{ cursor: "pointer" }}
                         disabled={field.disabled ?? false}
+                        iconColor="lightGray"
                         {...form.getInputProps(field.name, { type: "checkbox" })}
                     />
                 )

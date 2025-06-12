@@ -3,7 +3,7 @@ import { Tabs } from "@mantine/core";
 
 export default function TabbedView({ tabs = [], defaultTab, onTabChange }) {
   return (
-    <Tabs defaultValue={defaultTab} onChange={onTabChange}>
+    <Tabs defaultValue={defaultTab} onChange={onTabChange} color="primaryBlue">
       <Tabs.List>
         {tabs.map((tab) => (
           <Tabs.Tab key={tab.value} value={tab.value}>

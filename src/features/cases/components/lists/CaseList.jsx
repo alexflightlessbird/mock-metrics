@@ -1,15 +1,12 @@
 // Dependency imports
 import { Link } from "react-router-dom";
-import { useMantineTheme, Group } from "@mantine/core";
+import { Group } from "@mantine/core";
 
 // Component imports
 import List from "../../../../common/components/List";
 import CardList from "../../../../common/components/CardList";
 
 export default function CaseList({ cases }) {
-  console.log(cases);
-  const theme = useMantineTheme();
-
   const mappedCases = [];
 
   cases.map((c) => {
@@ -20,7 +17,7 @@ export default function CaseList({ cases }) {
         title: <Link to={`/cases?caseId=${c.id}`}>{c.name}</Link>,
         badge: {
           text: c.type,
-          color: c.type.toLowerCase() === "civil" ? theme.colors.darkBlue[0] : theme.colors.primaryBlue[0]
+          color: c.type.toLowerCase() === "civil" ? "darkBlue" : "primaryBlue"
         },
         text: <Group maw="100%"><List withPadding={false} items={textList} listStyleType="none" /></Group>
       }

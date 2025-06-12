@@ -1,6 +1,5 @@
-import React from "react";
 import { setDocumentTitle } from "../utils/helpers";
-import { Box, Grid, Title, useMantineTheme, em, Image } from "@mantine/core";
+import { Box, Grid, Title, useMantineTheme, em } from "@mantine/core";
 import image from "../assets/graph.svg";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -10,7 +9,7 @@ export default function Home() {
   const isSm = useMediaQuery(`(min-width: ${em(theme.breakpoints.sm)})`);
 
   const spanStyleEmp = {
-    color: theme.colors.primaryBlue[0]
+    color: theme.colors.primaryBlue
   };
   const spanStyleSt = {
     fontSize: isSm ? "1.8rem" : "1.4rem",

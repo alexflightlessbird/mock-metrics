@@ -7,7 +7,17 @@ const theme = createTheme({
       lightGray: ["#f7f5f3"],
       primaryBlue: ["#2dace6"],
       errorRed: ["#ff6b6b"],
+      emerald: ["#2ecc71"],
+      sunshine: ["#f9ca24"],
+      lavender: ["#9b59b6"],
+      coral: ["#ff7f50"],
+      mint: ["#48d1cc"],
+      slate: ["#95a5a6"],
+      forest: ["#27ae60"],
+      peach: ["#ffb347"]
     },
+    primaryShade: 0,
+    primaryColor: "primaryBlue",
     fontFamily:
       "Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     headings: {

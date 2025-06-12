@@ -20,7 +20,7 @@ export default function VerificationSuccessView() {
             <Text>Your email has been successfully verified. You can now log in to your account.</Text>
             <br />
             <div>
-                <IconButton onClick={() => navigate("/auth")} icon="login" buttonText="Go to Login" variant="outline" fontColor={theme.colors.primaryBlue[0]} />
+                <IconButton onClick={() => navigate("/auth")} icon="login" buttonText="Go to Login" variant="outline" fontColor={theme.colors.primaryBlue} />
             </div>
         </>
     )

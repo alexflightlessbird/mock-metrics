@@ -77,7 +77,7 @@ export default function RegisterView({ onToggleView }) {
                 <h1>Registration Successful</h1>
                 <Text>We've sent a confirmation email to {email}.</Text>
                 <Text mb="md">Please check your inbox and verify your email address.</Text>
-                <IconButton onClick={onToggleView} buttonText="Back to Login" variant="subtle" fontColor={theme.colors.primaryBlue[0]} />
+                <IconButton onClick={onToggleView} buttonText="Back to Login" variant="subtle" fontColor={theme.colors.primaryBlue} />
             </>
         )
     }
@@ -99,7 +99,7 @@ export default function RegisterView({ onToggleView }) {
 
             <Group justify="center" mt="md">
                 <Text>Already have an account?</Text>
-                <IconButton variant="subtle" onClick={onToggleView} fontColor={theme.colors.primaryBlue[0]} buttonText="Login here" />
+                <IconButton variant="subtle" onClick={onToggleView} fontColor={theme.colors.primaryBlue} buttonText="Login here" />
             </Group>
         </>
     )

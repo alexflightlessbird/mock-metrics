@@ -5,7 +5,7 @@ import { useMantineTheme, ActionIcon } from "@mantine/core";
 // Utils imports
 import icons from "../../utils/icons";
 
-function ActionIconComp ({ onClick, color, colorLoc = 0, icon, fontSize = "xl" }) {
+function ActionIconComp ({ onClick, color, colorLoc, icon, fontSize = "xl" }) {
   const theme = useMantineTheme();
 
   return (
@@ -20,14 +20,14 @@ function ActionIconComp ({ onClick, color, colorLoc = 0, icon, fontSize = "xl" }
   )
 }
 
-export function EditIcon({ onClick }) {
-  return <ActionIconComp onClick={onClick} color="primaryBlue" icon="edit" />;
+export function EditIcon({ onClick, color = "primaryBlue", colorLoc = 0 }) {
+  return <ActionIconComp onClick={onClick} color={color} colorLoc={colorLoc} icon="edit" />;
 }
 
-export function DeleteIcon({ onClick }) {
-  return <ActionIconComp onClick={onClick} color="errorRed" icon="delete" />;
+export function DeleteIcon({ onClick, color = "errorRed", colorLoc = 0 }) {
+  return <ActionIconComp onClick={onClick} color={color} colorLoc={colorLoc} icon="delete" />;
 }
 
-export function AddIcon({ onClick }) {
-  return <ActionIconComp onClick={onClick} color="primaryBlue" icon="add" />;
+export function AddIcon({ onClick, color = "primaryBlue", colorLoc = 0 }) {
+  return <ActionIconComp onClick={onClick} color={color} colorLoc={colorLoc} icon="add" />;
 }

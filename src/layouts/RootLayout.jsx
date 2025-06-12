@@ -71,7 +71,7 @@ function RootLayout() {
               onClick={toggle}
               hiddenFrom="xs"
               size="sm"
-              color={theme.colors.lightGray[0]}
+              color="lightGray"
               style={{ position: "absolute", left: "5vw" }}
             />
             <Group

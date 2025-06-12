@@ -1,6 +1,6 @@
 // Dependency imports
 import { Link } from "react-router-dom";
-import { Group, useMantineTheme } from "@mantine/core";
+import { Group } from "@mantine/core";
 
 // Component imports
 import CardList from "../../../../../common/components/CardList";
@@ -11,8 +11,6 @@ import Loading from "../../../../../common/components/Loading";
 import { useCases } from "../../../../../hooks/api/useCases";
 
 export default function TeamList({ teams }) {
-  const theme = useMantineTheme();
-
   const { data: allCases = [], isPending: isCasesPending } = useCases();
 
   if (isCasesPending) return <Loading />;
@@ -29,7 +27,7 @@ export default function TeamList({ teams }) {
         badges: [
           {
             text: t.type,
-            color: t.type === "Post-Stack" ? theme.colors.darkBlue[0] : theme.colors.primaryBlue[0]
+            color: t.type === "Post-Stack" ? "darkBlue" : "primaryBlue"
           }
         ],
         text: <Group maw="100%"><List withPadding={false} items={textList} listStyleType="none" /></Group>

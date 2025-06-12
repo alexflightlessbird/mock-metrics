@@ -24,7 +24,6 @@ export default function TeamItem({
     tournamentId,
     pSide,
     teamRounds,
-    theme
 }) {
     const { removeTeamFromTournament, addTournamentRound } = useSchoolDataMutations();
 
@@ -165,7 +164,6 @@ export default function TeamItem({
                     <IconButton
                         buttonText="Add Round"
                         icon="add"
-                        color={theme.colors.primaryBlue[0]}
                         onClick={addRoundOpen}
                         disabled={allRoundsAssigned}
                     />

@@ -1,5 +1,5 @@
 // Dependency imports
-import { Flex, Text, Select } from "@mantine/core";
+import { Flex, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 
@@ -9,7 +9,6 @@ import {
   EditIcon,
   DeleteIcon,
 } from "../../../../../common/components/ActionIcons";
-import IconButton from "../../../../../common/components/IconButton";
 import BaseForm from "../../../../../common/components/BaseForm";
 
 // Utils imports

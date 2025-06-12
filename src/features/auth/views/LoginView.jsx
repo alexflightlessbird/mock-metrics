@@ -90,7 +90,7 @@ export default function LoginView({ onToggleView }) {
 
             <Group justify="center" mt="md">
                 <Text>Don't have an account?</Text>
-                <IconButton variant="subtle" onClick={onToggleView} fontColor={theme.colors.primaryBlue[0]} buttonText="Register here" />
+                <IconButton variant="subtle" onClick={onToggleView} fontColor={theme.colors.primaryBlue} buttonText="Register here" />
             </Group>
         </>
     )

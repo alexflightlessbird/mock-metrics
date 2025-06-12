@@ -72,7 +72,6 @@ export default function SingleRound({ selectedRound, schoolRole, schoolName }) {
     });
   }
 
-  console.log(selectedRound);
   return (
     <div>
       Round page for {selectedRound.round_number} of{" "}

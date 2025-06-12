@@ -7,17 +7,17 @@ export default function BreadcrumbPill({ active, children, ...props }) {
   const inactiveProps = {
     size: "md",
     style: {
-      backgroundColor: theme.colors.lightGray[0],
-      color: theme.colors.darkBlue[0],
-      border: "1px solid " + theme.colors.darkBlue[0],
+      backgroundColor: theme.colors.lightGray,
+      color: theme.colors.darkBlue,
+      border: "1px solid " + theme.colors.darkBlue,
     },
   };
 
   const activeProps = {
     size: "lg",
     style: {
-      backgroundColor: theme.colors.primaryBlue[0],
-      color: theme.colors.darkBlue[0],
+      backgroundColor: theme.colors.primaryBlue,
+      color: theme.colors.darkBlue,
     },
   };
 
