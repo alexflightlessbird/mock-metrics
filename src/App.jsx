@@ -1,12 +1,28 @@
-// Dependency imports
-import { RouterProvider } from "react-router-dom";
-
-// Router imports
-import Router from "./app/routes/Router";
-
-// Other imports
-import "./assets/styles/App.css";
+import { Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import { Loader } from "@mantine/core";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
-  return <RouterProvider router={Router} />;
+    const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
+
+    if (loading || superAdminLoading) {
+        console.log("loading");
+        return <Loader />;
+    }
+
+    console.log(isSuperAdmin);
+
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/auth" element={!user ? <AuthPage /> : <Navigate to="/" />} />
+                <Route path="/admin" element={isSuperAdmin ? <AdminDashboard /> : <Navigate to="/" />} />
+                <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/auth" />} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
