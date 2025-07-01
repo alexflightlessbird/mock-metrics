@@ -1,32 +1,43 @@
 import { useAuth } from "../context/AuthContext";
-import { Tabs } from "@mantine/core";
-import UsersManagement from "../components/admin/UsersManagement";
-import SchoolsManagement from "../components/admin/SchoolsManagement";
+import { Tabs, Button, Title, Container, Group, Space } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import UsersManagement from "../features/adminDashboard/UsersManagement";
+import SchoolsManagement from "../features/adminDashboard/SchoolsManagement";
+import CasesManagement from "../features/adminDashboard/CasesManagement";
 
 export default function AdminDashboard() {
-    const { signOut } = useAuth();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
-    return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <button onClick={signOut}>Sign Out</button>
+  return (
+    <Container>
+      <Title order={1}>Admin Dashboard</Title>
+      <Space h="md" />
+      <Group>
+        <Button onClick={signOut}>Sign Out</Button>
+        <Button onClick={() => navigate("/")}>Go to User Dashboard</Button>
+      </Group>
+      <Space h="md" />
 
-            <Tabs defaultValue="users">
-                <Tabs.List>
-                    <Tabs.Tab value="users">Users</Tabs.Tab>
-                    <Tabs.Tab value="schools">Schools</Tabs.Tab>
-                    <Tabs.Tab value="cases">Cases</Tabs.Tab>
-                    <Tabs.Tab value="assignments">Assignments</Tabs.Tab>
-                </Tabs.List>
+      <Tabs defaultValue="schools">
+        <Tabs.List>
+          <Tabs.Tab value="schools">Schools</Tabs.Tab>
+          <Tabs.Tab value="users">Users</Tabs.Tab>
+          <Tabs.Tab value="cases">Cases</Tabs.Tab>
+        </Tabs.List>
 
-                <Tabs.Panel value="users">
-                    <UsersManagement />
-                </Tabs.Panel>
+        <Tabs.Panel value="users">
+          <UsersManagement />
+        </Tabs.Panel>
 
-                <Tabs.Panel value="schools">
-                    <SchoolsManagement />
-                </Tabs.Panel>
-            </Tabs>
-        </div>
-    )
+        <Tabs.Panel value="schools">
+          <SchoolsManagement />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="cases">
+          <CasesManagement />
+        </Tabs.Panel>
+      </Tabs>
+    </Container>
+  );
 }
