@@ -8,7 +8,7 @@ export default function DashboardPage() {
 
   return (
     <Container>
-      <Title order={1}>Regular User</Title>
+      <Title order={1}>User Dashboard</Title>
       <Space h="md" />
       <Group>
         <Button onClick={signOut}>Sign Out</Button>
