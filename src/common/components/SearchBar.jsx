@@ -1,4 +1,4 @@
-import { Flex, Select, TextInput, ActionIcon, Button, Space } from "@mantine/core";
+import { Flex, Select, TextInput, ActionIcon, Button, Space, Group } from "@mantine/core";
 import { AiOutlineSearch, AiOutlineReload, AiOutlinePlus } from "react-icons/ai";
 import { useViewportSize } from "@mantine/hooks";
 
@@ -14,15 +14,15 @@ export default function SearchBar({ value, onChange, placeholder = "Search...", 
                     onChange={(e) => onChange(e.target.value)}
                     leftSection={<AiOutlineSearch />}
                     flex={1}
-                    />
+                />
                 {columns.length > 0 && (
                     <Select
-                    placeholder="All"
-                    data={[{ value: "all", label: "All" }, ...columns]}
-                    value={selectedColumn}
-                    onChange={onColumnChange}
-                    allowDeselect={false}
-                    w="20%"
+                        placeholder="All"
+                        data={[{ value: "all", label: "All" }, ...columns]}
+                        value={selectedColumn}
+                        onChange={onColumnChange}
+                        allowDeselect={false}
+                        w="20%"
                     />
                 )}
                 {resetEnabled && (
