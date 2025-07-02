@@ -15,29 +15,31 @@ export default function AdminDashboard() {
       <Space h="md" />
       <Group>
         <Button onClick={signOut}>Sign Out</Button>
-        <Button onClick={() => navigate("/")}>Go to User Dashboard</Button>
+        <Button onClick={() => navigate("/")}>User Dashboard</Button>
       </Group>
       <Space h="md" />
 
-      <Tabs defaultValue="schools">
-        <Tabs.List>
-          <Tabs.Tab value="schools">Schools</Tabs.Tab>
-          <Tabs.Tab value="users">Users</Tabs.Tab>
-          <Tabs.Tab value="cases">Cases</Tabs.Tab>
-        </Tabs.List>
+      <Container fluid px={0}>
+        <Tabs defaultValue="schools">
+          <Tabs.List>
+            <Tabs.Tab value="schools">Schools</Tabs.Tab>
+            <Tabs.Tab value="users">Users</Tabs.Tab>
+            <Tabs.Tab value="cases">Cases</Tabs.Tab>
+          </Tabs.List>
 
-        <Tabs.Panel value="users">
-          <UsersManagement />
-        </Tabs.Panel>
+          <Tabs.Panel value="users">
+            <UsersManagement />
+          </Tabs.Panel>
 
-        <Tabs.Panel value="schools">
-          <SchoolsManagement />
-        </Tabs.Panel>
+          <Tabs.Panel value="schools">
+            <SchoolsManagement />
+          </Tabs.Panel>
 
-        <Tabs.Panel value="cases">
-          <CasesManagement />
-        </Tabs.Panel>
-      </Tabs>
+          <Tabs.Panel value="cases">
+            <CasesManagement />
+          </Tabs.Panel>
+        </Tabs>
+      </Container>
     </Container>
   );
 }
