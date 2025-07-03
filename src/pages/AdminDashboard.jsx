@@ -3,7 +3,7 @@ import { Tabs, Button, Title, Container, Group, Space } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import UsersManagement from "../features/adminDashboard/UsersManagement";
 import SchoolsManagement from "../features/adminDashboard/schoolsManagement/SchoolsManagement";
-import CasesManagement from "../features/adminDashboard/CasesManagement";
+import CasesManagement from "../features/adminDashboard/casesManagement/CasesManagement";
 
 export default function AdminDashboard() {
   const { signOut } = useAuth();

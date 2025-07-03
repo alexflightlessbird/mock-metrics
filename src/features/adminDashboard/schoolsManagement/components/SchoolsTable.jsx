@@ -29,8 +29,8 @@ export default function SchoolsTable ({ schools, onSelectSchool }) {
                         <Table.Td>{school.short_name || "-"}</Table.Td>
                         <Table.Td>
                             {school.is_premium 
-                                ? <Checkbox checked /> 
-                                : <Checkbox checked={false} />
+                                ? <Checkbox checked readOnly /> 
+                                : <Checkbox checked={false} readOnly />
                             }
                         </Table.Td>
                         <Table.Td>

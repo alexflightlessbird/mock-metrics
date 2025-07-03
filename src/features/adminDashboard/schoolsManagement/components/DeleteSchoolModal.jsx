@@ -27,7 +27,12 @@ export default function DeleteSchoolModal ({ opened, onClose, school, onSubmit }
             <Text fx="xs">This action cannot be reversed and will permanently remove all information associated with the school.</Text>
             <Space h="sm" />
             <Flex direction="row" align="center" justify="space-between">
-                <Button color="red" w="45%" onClick={handleSubmit} loading={isLoading}>
+                <Button 
+                    color="red" 
+                    w="45%" 
+                    onClick={handleSubmit} 
+                    loading={isLoading}
+                >
                     Delete{school?.short_name?.length > 0 ? " " + school.short_name : ""}
                 </Button>
                 <Button data-autofocus color="gray" w="45%" onClick={onClose} loading={isLoading}>

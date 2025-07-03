@@ -1,14 +1,24 @@
 import { Input, Modal, Radio, Group, Space, Divider, TextInput, Checkbox, Button, Text } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function EditSchoolModal ({ opened, onClose, school, onSubmit }) {
     const [editType, setEditType] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
     const [formValues, setFormValues] = useState({
-        name: school.name,
-        short_name: school.short_name,
-        is_premium: school.is_premium
+        name: school?.name,
+        short_name: school?.short_name,
+        is_premium: school?.is_premium
     });
+
+    useEffect(() => {
+        if (school) {
+            setFormValues({
+                name: school.name || "",
+                short_name: school.short_name || "",
+                is_premium: school.is_premium !== undefined ? school.is_premium : false
+            });
+        }
+    }, [school]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,11 +99,6 @@ export default function EditSchoolModal ({ opened, onClose, school, onSubmit }) 
 
                 {editType === "assignment" && (
                     <Text>Test = Assignment</Text>
-                )}
-
-                {editType !== null && (
-                  <>
-                  </>
                 )}
             </form>
         </Modal>
