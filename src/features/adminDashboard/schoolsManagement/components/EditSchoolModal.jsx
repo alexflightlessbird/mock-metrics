@@ -12,6 +12,7 @@ export default function EditSchoolModal ({ opened, onClose, school, onSubmit }) 
 
     useEffect(() => {
         if (school) {
+            setEditType(null);
             setFormValues({
                 name: school.name || "",
                 short_name: school.short_name || "",

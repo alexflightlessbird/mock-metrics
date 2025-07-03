@@ -10,6 +10,7 @@ export default function EditUserModal ({ opened, onClose, user, onSubmit }) {
 
     useEffect(() => {
         if (user) {
+            setEditType(null);
             setFormValues({
                 name: user.name || ""
             });
