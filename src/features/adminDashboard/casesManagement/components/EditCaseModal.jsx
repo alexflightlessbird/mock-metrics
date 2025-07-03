@@ -14,6 +14,7 @@ export default function EditCaseModal ({ opened, onClose, caseVal, onSubmit }) {
 
     useEffect(() => {
         if (caseVal) {
+            setEditType(null);
             setFormValues({
                 name: caseVal.name || "",
                 year: caseVal.year || new Date().getFullYear(),
