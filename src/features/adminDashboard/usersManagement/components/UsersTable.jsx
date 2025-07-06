@@ -1,6 +1,7 @@
 import { Flex, ActionIcon, Table } from "@mantine/core";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import DataTable from "../../../../common/components/DataTable";
+import { useAuth } from "../../../../context/AuthContext";
 
 const splitEmail = (email) => {
   if (!email) return "-";
@@ -21,7 +22,9 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-export default function UsersTable({ users, onSelectUser }) {
+export default function UsersTable({ data, onSelect }) {
+  const { isDbManager } = useAuth();
+
   const renderRow = (user) => (
     <Table.Tr key={user.id}>
       <Table.Td style={{ wordBreak: "break-all" }}>{user.id}</Table.Td>
@@ -29,12 +32,14 @@ export default function UsersTable({ users, onSelectUser }) {
       <Table.Td>{user.name || "-"}</Table.Td>
       <Table.Td>
         <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelectUser(user, "edit")}>
+          <ActionIcon size="md" onClick={() => onSelect(user, "edit")}>
             <AiOutlineEdit />
           </ActionIcon>
-          <ActionIcon size="md" onClick={() => onSelectUser(user, "delete")}>
-            <AiOutlineDelete />
-          </ActionIcon>
+          {isDbManager && (
+            <ActionIcon size="md" onClick={() => onSelect(user, "delete")}>
+              <AiOutlineDelete />
+            </ActionIcon>
+          )}
         </Flex>
       </Table.Td>
     </Table.Tr>
@@ -43,7 +48,7 @@ export default function UsersTable({ users, onSelectUser }) {
   return (
     <DataTable
       columns={columns}
-      data={users}
+      data={data}
       emptyMessage="No users available"
       renderRow={renderRow}
     />
