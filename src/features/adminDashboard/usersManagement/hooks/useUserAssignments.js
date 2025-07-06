@@ -17,6 +17,7 @@ export function useUserAssignments(userId) {
           .select("school_id, role, schools:school_id (id, name)")
           .eq("user_id", userId);
         if (error) throw error;
+        if (data?.length === 0) return [];
         return data;
       } catch (error) {
         showError({
@@ -42,6 +43,7 @@ export function useUserAssignments(userId) {
         if (!assignedSchools?.length) {
           const { data, error } = await supabase.from("schools").select("id");
           if (error) throw error;
+          if (data?.length === 0) return [];
           return data;
         }
 
@@ -52,6 +54,7 @@ export function useUserAssignments(userId) {
           .select("id")
           .not("id", "in", `(${assignedSchoolIds.join(",")})`);
         if (error) throw error;
+        if (data?.length === 0) return [];
         return data;
       } catch (error) {
         showError({

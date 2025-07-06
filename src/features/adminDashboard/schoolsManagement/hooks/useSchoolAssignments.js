@@ -15,9 +15,9 @@ export function useSchoolAssignments(schoolId) {
         const { data, error } = await supabase
           .from("users_schools")
           .select("user_id, role, users:user_id (id, email, name)")
-          .eq("school_id", schoolId)
-          .order("users.name");
+          .eq("school_id", schoolId);
         if (error) throw error;
+        if (data?.length === 0) return [];
         return data;
       } catch (error) {
         showError({
@@ -43,6 +43,7 @@ export function useSchoolAssignments(schoolId) {
         if (!assignedUsers?.length) {
           const { data, error } = await supabase.from("users").select("id");
           if (error) throw error;
+          if (data?.length === 0) return [];
           return data;
         }
 
@@ -53,6 +54,7 @@ export function useSchoolAssignments(schoolId) {
           .select("id")
           .not("id", "in", `(${assignedUserIds.join(",")})`);
         if (error) throw error;
+        if (data?.length === 0) return [];
         return data;
       } catch (error) {
         showError({

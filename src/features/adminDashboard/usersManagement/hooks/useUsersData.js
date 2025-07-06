@@ -10,11 +10,17 @@ export default function useUsersData() {
     queryKey: ["admin-users"],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .order("email");
+        const { data, error } = await supabase.from("users").select("*");
         if (error) throw error;
+        if (data?.length === 0) return [];
+
+        data.sort((a, b) => {
+          if (a.email && b.email) {
+            return a.email.localeCompare(b.email);
+          }
+          return 0; // If emails are not available, keep original order
+        });
+
         return data;
       } catch (error) {
         showError({ title: "Failed to load users", message: error.message });
