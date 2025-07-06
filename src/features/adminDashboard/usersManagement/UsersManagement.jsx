@@ -1,5 +1,5 @@
-import { USER_COLUMNS } from "../columns";
-import EntityManagement from "../EntityManagement";
+import { USER_COLUMNS } from "../common/columns";
+import EntityManagement from "../common/EntityManagement";
 import useUsersData from "./hooks/useUsersData";
 import useUsersFilter from "./hooks/useUsersFilter";
 import UsersTable from "./components/UsersTable";
