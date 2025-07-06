@@ -14,7 +14,14 @@ import { useSchoolAssignments } from "../hooks/useSchoolAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
 import BaseModal from "../../../../common/components/BaseModal";
 
-export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
+export default function EditSchoolModal({
+  opened,
+  onClose,
+  selected,
+  onSubmit,
+}) {
+  const school = selected;
+
   const [editType, setEditType] = useState(null);
 
   const [assignmentView, setAssignmentView] = useState("view");

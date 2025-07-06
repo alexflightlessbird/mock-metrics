@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Text, Space, Flex, Button } from "@mantine/core";
 import BaseModal from "../../../../common/components/BaseModal";
 
-export default function DeleteUserModal({ opened, onClose, user, onSubmit }) {
+export default function DeleteUserModal({
+  opened,
+  onClose,
+  selected,
+  onSubmit,
+}) {
+  const user = selected;
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {

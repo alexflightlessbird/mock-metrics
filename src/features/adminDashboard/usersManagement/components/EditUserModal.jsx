@@ -12,7 +12,9 @@ import { useUserAssignments } from "../hooks/useUserAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
 import BaseModal from "../../../../common/components/BaseModal";
 
-export default function EditUserModal({ opened, onClose, user, onSubmit }) {
+export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
+  const user = selected;
+
   const [editType, setEditType] = useState(null);
 
   const [assignmentView, setAssignmentView] = useState("view");

@@ -259,7 +259,9 @@ export function AddWitness({ onSubmit, isLoading, caseType, setType }) {
         allowDeselect={false}
       />
       <Button
-        onClick={() => {
+        type="submit"
+        onClick={(e) => {
+          e.preventDefault();
           if (formValues.name) {
             onSubmit(formValues);
             setFormValues({

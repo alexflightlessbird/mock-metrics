@@ -5,9 +5,11 @@ import BaseModal from "../../../../common/components/BaseModal";
 export default function DeleteSchoolModal({
   opened,
   onClose,
-  school,
+  selected,
   onSubmit,
 }) {
+  const school = selected;
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {

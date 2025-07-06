@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 
-export default function useSchoolsFilter({
-  schools,
-  searchTerm,
-  searchColumn,
-}) {
+export default function useSchoolsFilter({ data, searchTerm, searchColumn }) {
+  const schools = data;
   return useMemo(() => {
     if (!schools) return [];
     if (!searchTerm) return schools;

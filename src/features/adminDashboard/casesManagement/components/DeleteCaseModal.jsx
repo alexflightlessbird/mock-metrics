@@ -5,9 +5,11 @@ import BaseModal from "../../../../common/components/BaseModal";
 export default function DeleteCaseModal({
   opened,
   onClose,
-  caseVal,
+  selected,
   onSubmit,
 }) {
+  const caseVal = selected;
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {

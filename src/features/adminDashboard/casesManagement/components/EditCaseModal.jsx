@@ -16,7 +16,9 @@ import useCaseWitnesses from "../hooks/useCaseWitnesses";
 import { ViewWitnesses, AddWitness } from "./WitnessViews";
 import BaseModal from "../../../../common/components/BaseModal";
 
-export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
+export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
+  const caseVal = selected;
+
   const [editType, setEditType] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
   const [formValues, setFormValues] = useState({
