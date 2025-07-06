@@ -2,7 +2,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
 import { notifications } from "@mantine/notifications";
 
-export function useSchoolAssignments(schoolId) {
+export function useUserAssignments(userId) {
   const showNotification = ({
     title,
     message,
@@ -19,49 +19,49 @@ export function useSchoolAssignments(schoolId) {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["admin-school-assignments", schoolId],
+    queryKey: ["admin-user-assignments", userId],
     queryFn: async () => {
-      if (!schoolId) return [];
+      if (!userId) return [];
 
       const { data, error } = await supabase
         .from("users_schools")
-        .select("user_id, role, users:user_id (id, email, name)")
-        .eq("school_id", schoolId);
+        .select("school_id, role, schools:school_id (id, name)")
+        .eq("user_id", userId);
       if (error) throw error;
       return data;
     },
   });
 
-  const { data: availableUsers } = useQuery({
-    queryKey: ["admin-available-users", schoolId],
+  const { data: availableSchools } = useQuery({
+    queryKey: ["admin-available-schools", userId],
     queryFn: async () => {
-      if (!schoolId) return [];
+      if (!userId) return [];
 
-      const { data: assignedUsers, error: assignedError } = await supabase
+      const { data: assignedSchools, error: assignedError } = await supabase
         .from("users_schools")
-        .select("user_id")
-        .eq("school_id", schoolId);
+        .select("school_id")
+        .eq("user_id", userId);
       if (assignedError) throw assignedError;
 
-      if (!assignedUsers?.length) {
-        const { data, error } = await supabase.from("users").select("id");
+      if (!assignedSchools?.length) {
+        const { data, error } = await supabase.from("schools").select("id");
         if (error) throw error;
         return data;
       }
 
-      const assignedUserIds = assignedUsers.map((u) => u.user_id);
+      const assignedSchoolIds = assignedSchools.map((s) => s.school_id);
 
       const { data, error } = await supabase
-        .from("users")
+        .from("schools")
         .select("id")
-        .not("id", "in", `(${assignedUserIds.join(",")})`);
+        .not("id", "in", `(${assignedSchoolIds.join(",")})`);
       if (error) throw error;
       return data;
     },
   });
 
   const addMutation = useMutation({
-    mutationFn: async ({ userId, role }) => {
+    mutationFn: async ({ schoolId, role }) => {
       const { error } = await supabase
         .from("users_schools")
         .insert({ user_id: userId, school_id: schoolId, role });
@@ -69,25 +69,25 @@ export function useSchoolAssignments(schoolId) {
     },
     onSuccess: () => {
       refetch();
-      queryClient.invalidateQueries(["admin-available-users", schoolId]);
-      queryClient.invalidateQueries(["admin-school-assignments", schoolId]);
+      queryClient.invalidateQueries(["admin-available-schools", userId]);
+      queryClient.invalidateQueries(["admin-user-assignments", userId]);
       showNotification({
         title: "Success",
-        message: "User assigned successfully",
+        message: "School assigned successfully",
         color: "green",
       });
     },
     onError: (error) => {
       showNotification({
-        title: "Assignment failed",
-        message: error.message || "Failed to assign user",
+        title: "Error",
+        message: error.message || "Failed to assign school",
         color: "red",
       });
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ userId, role }) => {
+    mutationFn: async ({ schoolId, role }) => {
       const { error } = await supabase
         .from("users_schools")
         .update({ role })
@@ -97,8 +97,8 @@ export function useSchoolAssignments(schoolId) {
     },
     onSuccess: () => {
       refetch();
-      queryClient.invalidateQueries(["admin-available-users", schoolId]);
-      queryClient.invalidateQueries(["admin-school-assignments", schoolId]);
+      queryClient.invalidateQueries(["admin-available-schools", userId]);
+      queryClient.invalidateQueries(["admin-user-assignments", userId]);
       showNotification({
         title: "Success",
         message: "Assignment updated successfully",
@@ -107,7 +107,7 @@ export function useSchoolAssignments(schoolId) {
     },
     onError: (error) => {
       showNotification({
-        title: "Update failed",
+        title: "Error",
         message: error.message || "Failed to update assignment",
         color: "red",
       });
@@ -115,18 +115,18 @@ export function useSchoolAssignments(schoolId) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async ({ userId }) => {
+    mutationFn: async ({ schoolId }) => {
       const { error } = await supabase
         .from("users_schools")
         .delete()
-        .eq("user_id", userId)
-        .eq("school_id", schoolId);
+        .eq("school_id", schoolId)
+        .eq("user_id", userId);
       if (error) throw error;
     },
     onSuccess: () => {
       refetch();
-      queryClient.invalidateQueries(["admin-available-users", schoolId]);
-      queryClient.invalidateQueries(["admin-school-assignments", schoolId]);
+      queryClient.invalidateQueries(["admin-available-schools", userId]);
+      queryClient.invalidateQueries(["admin-user-assignments", userId]);
       showNotification({
         title: "Success",
         message: "Assignment deleted successfully",
@@ -135,7 +135,7 @@ export function useSchoolAssignments(schoolId) {
     },
     onError: (error) => {
       showNotification({
-        title: "Delete failed",
+        title: "Error",
         message: error.message || "Failed to delete assignment",
         color: "red",
       });
@@ -144,7 +144,7 @@ export function useSchoolAssignments(schoolId) {
 
   return {
     assignments,
-    availableUsers,
+    availableSchools,
     isLoading,
     addAssignment: addMutation.mutateAsync,
     updateAssignment: updateMutation.mutateAsync,
