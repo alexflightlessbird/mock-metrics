@@ -11,18 +11,48 @@ import {
   Space,
 } from "@mantine/core";
 import { useState } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineCheck,
+  AiOutlineClose,
+} from "react-icons/ai";
+
+const roleOptions = [
+  { value: "primary", label: "Primary Admin" },
+  { value: "admin", label: "Admin" },
+  { value: "viewer", label: "Viewer" },
+];
 
 export function ViewAssignments({
   assignments,
   onUpdate,
   onRemove,
-  editOpen,
-  setEditOpen,
   editSchoolId,
+  setEditSchoolId,
 }) {
+  const [editValues, setEditValues] = useState({});
+
   if (!assignments?.length)
     return <Text>No schools assigned to this user</Text>;
+
+  const handleEditStart = (assignment) => {
+    setEditSchoolId(assignment.school_id);
+    setEditValues({
+      role: assignment.role,
+    });
+  };
+
+  const handleEditCancel = () => {
+    setEditSchoolId(null);
+    setEditValues({});
+  };
+
+  const handleEditSubmit = (id) => {
+    onUpdate({ schoolId: id, role: editValues.role });
+    setEditSchoolId(null);
+    setEditValues({});
+  };
 
   return (
     <Table
@@ -43,54 +73,66 @@ export function ViewAssignments({
       </Table.Thead>
       <Table.Tbody>
         {assignments.map((assignment) => {
-          const editIconProps = {
-            color: "blue",
-            variant: "filled",
-          };
-          if (
-            editSchoolId &&
-            editSchoolId === assignment.school_id &&
-            editOpen
-          ) {
-            editIconProps.variant = "outline";
-          }
           return (
             <Table.Tr key={assignment.school_id}>
-              <Table.Td>{assignment.school_id}</Table.Td>
+              <Table.Td style={{ wordBreak: "break-all" }}>
+                {assignment.school_id}
+              </Table.Td>
               <Table.Td>
-                {assignment.role === "admin"
-                  ? "Admin"
-                  : assignment.role === "primary"
-                  ? "Primary Admin"
-                  : assignment.role === "viewer"
-                  ? "Viewer"
-                  : "-"}
+                {editSchoolId === assignment.school_id ? (
+                  <Select
+                    data={roleOptions}
+                    value={editValues.role}
+                    onChange={(value) =>
+                      setEditValues((v) => ({ ...v, role: value }))
+                    }
+                  />
+                ) : assignment.role === "admin" ? (
+                  "Admin"
+                ) : assignment.role === "primary" ? (
+                  "Primary Admin"
+                ) : assignment.role === "viewer" ? (
+                  "Viewer"
+                ) : (
+                  "-"
+                )}
               </Table.Td>
               <Table.Td>
                 <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-                  <ActionIcon
-                    size="lg"
-                    color={editIconProps.color}
-                    variant={editIconProps.variant}
-                    onClick={() => {
-                      if (editOpen) {
-                        setEditOpen(false);
-                      } else {
-                        onUpdate({
-                          schoolId: assignment.school_id,
-                          role: assignment.role,
-                        });
-                      }
-                    }}
-                  >
-                    <AiOutlineEdit />
-                  </ActionIcon>
-                  <ActionIcon
-                    size="lg"
-                    onClick={() => onRemove({ schoolId: assignment.school_id })}
-                  >
-                    <AiOutlineDelete />
-                  </ActionIcon>
+                  {editSchoolId === assignment.school_id ? (
+                    <>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => handleEditSubmit(assignment.school_id)}
+                      >
+                        <AiOutlineCheck />
+                      </ActionIcon>
+                      <ActionIcon
+                        color="gray"
+                        size="lg"
+                        onClick={handleEditCancel}
+                      >
+                        <AiOutlineClose />
+                      </ActionIcon>
+                    </>
+                  ) : (
+                    <>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => handleEditStart(assignment)}
+                      >
+                        <AiOutlineEdit />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() =>
+                          onRemove({ schoolId: assignment.school_id })
+                        }
+                      >
+                        <AiOutlineDelete />
+                      </ActionIcon>
+                    </>
+                  )}
                 </Flex>
               </Table.Td>
             </Table.Tr>
@@ -122,11 +164,7 @@ export function AddAssignment({ availableSchools, onAdd, isLoading, setType }) {
         nothingFoundMessage="No schools found"
       />
       <Select
-        data={[
-          { value: "primary", label: "Primary Admin" },
-          { value: "admin", label: "Admin" },
-          { value: "viewer", label: "Viewer" },
-        ]}
+        data={roleOptions}
         allowDeselect={false}
         value={selectedRole}
         onChange={setSelectedRole}
