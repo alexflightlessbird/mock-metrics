@@ -10,11 +10,17 @@ export default function useSchoolsData() {
     queryKey: ["admin-schools"],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase
-          .from("schools")
-          .select("*")
-          .order("name");
+        const { data, error } = await supabase.from("schools").select("*");
         if (error) throw error;
+        if (data?.length === 0) return [];
+
+        data.sort((a, b) => {
+          if (a.name && b.name) {
+            return a.name.localeCompare(b.name);
+          }
+          return 0; // If names are not available, keep original order
+        });
+
         return data;
       } catch (error) {
         showError({ title: "Failed to load schools", message: error.message });

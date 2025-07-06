@@ -10,11 +10,16 @@ export default function useCasesData() {
     queryKey: ["admin-cases"],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase
-          .from("cases")
-          .select("*")
-          .order("is_active", { ascending: false });
+        const { data, error } = await supabase.from("cases").select("*");
         if (error) throw error;
+        if (data?.length === 0) return [];
+
+        data.sort((a, b) => {
+          if (a.is_active && !b.is_active) return -1; // Active cases first
+          if (!a.is_active && b.is_active) return 1; // Inactive cases
+          return 0; // Keep original order for same status
+        });
+
         return data;
       } catch (error) {
         showError({ title: "Failed to load cases", message: error.message });

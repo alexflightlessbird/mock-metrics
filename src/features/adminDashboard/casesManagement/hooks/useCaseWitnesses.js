@@ -15,9 +15,17 @@ export default function useCaseWitnesses(caseId) {
         const { data, error } = await supabase
           .from("witnesses")
           .select("*")
-          .eq("case_id", caseId)
-          .order("name");
+          .eq("case_id", caseId);
         if (error) throw error;
+        if (data?.length === 0) return [];
+
+        data.sort((a, b) => {
+          if (a.name && b.name) {
+            return a.name.localeCompare(b.name);
+          }
+          return 0; // If names are not available, keep original order
+        });
+
         return data;
       } catch (error) {
         showError({
