@@ -1,19 +1,13 @@
 import { useState } from "react";
 import { Container, Loader } from "@mantine/core";
-import SearchControls from "./components/SearchControls";
 import CasesTable from "./components/CasesTable";
 import AddCaseModal from "./components/AddCaseModal";
 import EditCaseModal from "./components/EditCaseModal";
 import DeleteCaseModal from "./components/DeleteCaseModal";
 import useCasesData from "./hooks/useCasesData";
 import useCasesFilter from "./hooks/useCasesFilter";
-
-const CASE_COLUMNS = [
-  { value: "name", label: "Name" },
-  { value: "year", label: "Year" },
-  { value: "type", label: "Type" },
-  { value: "area", label: "Area" },
-];
+import SearchBar from "../../../common/components/SearchBar";
+import { CASE_COLUMNS } from "../columns";
 
 export default function CasesManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,7 +45,7 @@ export default function CasesManagement() {
 
   return (
     <Container fluid px={0}>
-      <SearchControls
+      <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
         placeholder="Search cases..."
@@ -59,6 +53,7 @@ export default function CasesManagement() {
         selectedColumn={searchColumn}
         onColumnChange={setSearchColumn}
         onReset={handleResetSearch}
+        addEnabled={true}
         onAdd={() => setAddModalOpen(true)}
       />
 
