@@ -11,18 +11,48 @@ import {
   Space,
 } from "@mantine/core";
 import { useState } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import {
+  AiOutlineDelete,
+  AiOutlineEdit,
+  AiOutlineCheck,
+  AiOutlineClose,
+} from "react-icons/ai";
+
+const roleOptions = [
+  { value: "primary", label: "Primary Admin" },
+  { value: "admin", label: "Admin" },
+  { value: "viewer", label: "Viewer" },
+];
 
 export function ViewAssignments({
   assignments,
   onUpdate,
   onRemove,
-  editOpen,
-  setEditOpen,
   editUserId,
+  setEditUserId,
 }) {
+  const [editValues, setEditValues] = useState({});
+
   if (!assignments?.length)
     return <Text>No users assigned to this school</Text>;
+
+  const handleEditStart = (assignment) => {
+    setEditUserId(assignment.user_id);
+    setEditValues({
+      role: assignment.role,
+    });
+  };
+
+  const handleEditCancel = () => {
+    setEditUserId(null);
+    setEditValues({});
+  };
+
+  const handleEditSubmit = (id) => {
+    onUpdate({ userId: id, role: editValues.role });
+    setEditUserId(null);
+    setEditValues({});
+  };
 
   return (
     <Table
@@ -43,50 +73,64 @@ export function ViewAssignments({
       </Table.Thead>
       <Table.Tbody>
         {assignments.map((assignment) => {
-          const editIconProps = {
-            color: "blue",
-            variant: "filled",
-          };
-          if (editUserId && editUserId === assignment.user_id && editOpen) {
-            editIconProps.variant = "outline";
-          }
           return (
             <Table.Tr key={assignment.user_id}>
-              <Table.Td>{assignment.user_id}</Table.Td>
+              <Table.Td style={{ wordBreak: "break-all" }}>
+                {assignment.user_id}
+              </Table.Td>
               <Table.Td>
-                {assignment.role === "admin"
-                  ? "Admin"
-                  : assignment.role === "primary"
-                  ? "Primary Admin"
-                  : assignment.role === "viewer"
-                  ? "Viewer"
-                  : "-"}
+                {editUserId === assignment.user_id ? (
+                  <Select
+                    data={roleOptions}
+                    value={editValues.role}
+                    onChange={(value) =>
+                      setEditValues((v) => ({ ...v, role: value }))
+                    }
+                  />
+                ) : assignment.role === "admin" ? (
+                  "Admin"
+                ) : assignment.role === "primary" ? (
+                  "Primary Admin"
+                ) : assignment.role === "viewer" ? (
+                  "Viewer"
+                ) : (
+                  "-"
+                )}
               </Table.Td>
               <Table.Td>
                 <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-                  <ActionIcon
-                    size="lg"
-                    color={editIconProps.color}
-                    variant={editIconProps.variant}
-                    onClick={() => {
-                      if (editOpen) {
-                        setEditOpen(false);
-                      } else {
-                        onUpdate({
-                          userId: assignment.user_id,
-                          role: assignment.role,
-                        });
-                      }
-                    }}
-                  >
-                    <AiOutlineEdit />
-                  </ActionIcon>
-                  <ActionIcon
-                    size="lg"
-                    onClick={() => onRemove({ userId: assignment.user_id })}
-                  >
-                    <AiOutlineDelete />
-                  </ActionIcon>
+                  {editUserId === assignment.user_id ? (
+                    <>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => handleEditSubmit(assignment.user_id)}
+                      >
+                        <AiOutlineCheck />
+                      </ActionIcon>
+                      <ActionIcon
+                        color="gray"
+                        size="lg"
+                        onClick={handleEditCancel}
+                      >
+                        <AiOutlineClose />
+                      </ActionIcon>
+                    </>
+                  ) : (
+                    <>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => handleEditStart(assignment)}
+                      >
+                        <AiOutlineEdit />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="lg"
+                        onClick={() => onRemove({ userId: assignment.user_id })}
+                      >
+                        <AiOutlineDelete />
+                      </ActionIcon>
+                    </>
+                  )}
                 </Flex>
               </Table.Td>
             </Table.Tr>

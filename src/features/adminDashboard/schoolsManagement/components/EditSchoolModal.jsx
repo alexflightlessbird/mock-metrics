@@ -21,9 +21,7 @@ export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
 
   const [assignmentView, setAssignmentView] = useState("view");
 
-  const [editAssignmentOpen, setEditAssignmentOpen] = useState(false);
   const [editAssignmentUserId, setEditAssignmentUserId] = useState(null);
-  const [editAssignmentRole, setEditAssignmentRole] = useState(null);
 
   const [formLoading, setFormLoading] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -46,9 +44,7 @@ export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
     if (school) {
       setEditType(null);
       setAssignmentView("view");
-      setEditAssignmentOpen(false);
       setEditAssignmentUserId(null);
-      setEditAssignmentRole(null);
       setFormLoading(false);
       setFormValues({
         name: school.name || "",
@@ -163,43 +159,12 @@ export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
                     assignments={assignments}
                     onRemove={(data) => deleteAssignment(data)}
                     onUpdate={(data) => {
-                      setEditAssignmentOpen(true);
                       setEditAssignmentUserId(data.userId);
-                      setEditAssignmentRole(data.role);
+                      updateAssignment(data);
                     }}
-                    editOpen={editAssignmentOpen}
-                    setEditOpen={setEditAssignmentOpen}
                     editUserId={editAssignmentUserId}
+                    setEditUserId={setEditAssignmentUserId}
                   />
-
-                  {editAssignmentOpen && (
-                    <>
-                      <Text>{editAssignmentUserId}</Text>
-                      <Select
-                        value={editAssignmentRole}
-                        onChange={setEditAssignmentRole}
-                        data={[
-                          { value: "primary", label: "Primary Admin" },
-                          { value: "admin", label: "Admin" },
-                          { value: "viewer", label: "Viewer" },
-                        ]}
-                      />
-                      <Space h="xs" />
-                      <Button
-                        onClick={() => {
-                          updateAssignment({
-                            userId: editAssignmentUserId,
-                            role: editAssignmentRole,
-                          });
-                          setEditAssignmentOpen(false);
-                          setEditAssignmentRole(null);
-                          setEditAssignmentUserId(null);
-                        }}
-                      >
-                        Submit
-                      </Button>
-                    </>
-                  )}
                 </>
               )}
 
