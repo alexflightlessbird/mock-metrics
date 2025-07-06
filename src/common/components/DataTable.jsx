@@ -1,4 +1,4 @@
-import { Table, Text, Flex } from "@mantine/core";
+import { Table, Text } from "@mantine/core";
 
 export default function DataTable({
   columns,

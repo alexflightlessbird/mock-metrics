@@ -1,4 +1,4 @@
-import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
+import { Flex, ActionIcon, Table } from "@mantine/core";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import DataTable from "../../../../common/components/DataTable";
 
