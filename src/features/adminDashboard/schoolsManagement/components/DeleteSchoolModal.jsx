@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Modal, Text, Space, Flex, Button } from "@mantine/core";
+import { Text, Space, Flex, Button } from "@mantine/core";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function DeleteSchoolModal({
   opened,
@@ -20,14 +21,10 @@ export default function DeleteSchoolModal({
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
-      title="Delete School"
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
+      title={`Delete School (${school?.name})`}
     >
       <Text>
         Woah, hold up! Are you sure you want to delete
@@ -40,7 +37,8 @@ export default function DeleteSchoolModal({
       <Space h="sm" />
       <Flex direction="row" align="center" justify="space-between">
         <Button color="red" w="45%" onClick={handleSubmit} loading={isLoading}>
-          Delete{school?.short_name?.length > 0 ? " " + school.short_name : ""}
+          Delete
+          {school?.short_name?.length > 0 ? " " + school.short_name : ""}
         </Button>
         <Button
           data-autofocus
@@ -52,6 +50,6 @@ export default function DeleteSchoolModal({
           Cancel
         </Button>
       </Flex>
-    </Modal>
+    </BaseModal>
   );
 }

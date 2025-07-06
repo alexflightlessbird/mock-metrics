@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Modal, Text, Space, Flex, Button } from "@mantine/core";
+import { Text, Space, Flex, Button } from "@mantine/core";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function DeleteCaseModal({
   opened,
@@ -20,13 +21,10 @@ export default function DeleteCaseModal({
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
-      title="Delete Case"
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
+      title={`Delete Case (${caseVal?.name})`}
     >
       <Text>
         Woah, hold up! Are you sure you want to delete
@@ -51,6 +49,6 @@ export default function DeleteCaseModal({
           Cancel
         </Button>
       </Flex>
-    </Modal>
+    </BaseModal>
   );
 }

@@ -1,12 +1,6 @@
-import {
-  Modal,
-  TextInput,
-  Checkbox,
-  Button,
-  Space,
-  Input,
-} from "@mantine/core";
+import { TextInput, Checkbox, Button, Space, Input } from "@mantine/core";
 import { useState } from "react";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function AddSchoolModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,15 +27,7 @@ export default function AddSchoolModal({ opened, onClose, onSubmit }) {
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title="Add School"
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
-    >
+    <BaseModal opened={opened} onClose={onClose} title="Add School">
       <form onSubmit={handleSubmit}>
         <TextInput
           value={formValues.name}
@@ -74,6 +60,6 @@ export default function AddSchoolModal({ opened, onClose, onSubmit }) {
           Submit
         </Button>
       </form>
-    </Modal>
+    </BaseModal>
   );
 }

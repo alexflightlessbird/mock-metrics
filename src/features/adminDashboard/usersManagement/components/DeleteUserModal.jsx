@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Modal, Text, Space, Flex, Button } from "@mantine/core";
+import { Text, Space, Flex, Button } from "@mantine/core";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function DeleteUserModal({ opened, onClose, user, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,14 +16,10 @@ export default function DeleteUserModal({ opened, onClose, user, onSubmit }) {
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
-      title="Delete User"
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
+      title={`Delete User (${user?.name})`}
     >
       <Text>
         Woah, hold up! Are you sure you want to delete
@@ -47,6 +44,6 @@ export default function DeleteUserModal({ opened, onClose, user, onSubmit }) {
           Cancel
         </Button>
       </Flex>
-    </Modal>
+    </BaseModal>
   );
 }
