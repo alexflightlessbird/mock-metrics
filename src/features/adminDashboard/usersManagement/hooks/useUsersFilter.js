@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
-export default function useUsersFilter({ users, searchTerm, searchColumn }) {
+export default function useUsersFilter({ data, searchTerm, searchColumn }) {
+  const users = data;
   return useMemo(() => {
     if (!users) return [];
     if (!searchTerm) return users;

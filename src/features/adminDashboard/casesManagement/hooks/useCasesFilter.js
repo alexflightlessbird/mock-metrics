@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
-export default function useCasesFilter({ cases, searchTerm, searchColumn }) {
+export default function useCasesFilter({ data, searchTerm, searchColumn }) {
+  const cases = data;
   return useMemo(() => {
     if (!cases) return [];
     if (!searchTerm) return cases;
