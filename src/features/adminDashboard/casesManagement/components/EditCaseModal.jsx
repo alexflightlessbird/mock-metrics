@@ -12,8 +12,11 @@ import {
   Select,
   NumberInput,
   Loader,
+  Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import useCaseWitnesses from "../hooks/useCaseWitnesses";
+import { ViewWitnesses, AddWitness } from "./WitnessViews";
 
 export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
   const [editType, setEditType] = useState(null);
@@ -25,6 +28,17 @@ export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
     area: caseVal?.area,
     is_active: caseVal?.is_active,
   });
+
+  const [witnessView, setWitnessView] = useState("view");
+  const [editWitnessId, setEditWitnessId] = useState(null);
+
+  const {
+    witnesses,
+    isLoading: witnessesLoading,
+    addWitness,
+    updateWitness,
+    deleteWitness,
+  } = useCaseWitnesses(caseVal?.id);
 
   useEffect(() => {
     if (caseVal) {
@@ -70,6 +84,7 @@ export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
       centered
       withCloseButton
       overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
+      size="100%"
     >
       <form onSubmit={handleSubmit}>
         <Radio.Group
@@ -162,7 +177,36 @@ export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
           </>
         )}
 
-        {editType === "witness" && <Text>Test = Witness</Text>}
+        {editType === "witness" && (
+          <Stack>
+            <Radio.Group value={witnessView} onChange={setWitnessView}>
+              <Group>
+                <Radio value="view" label="View Witnesses" />
+                <Radio value="add" label="Add Witness" />
+              </Group>
+            </Radio.Group>
+
+            {witnessView === "view" && (
+              <ViewWitnesses
+                witnesses={witnesses}
+                onRemove={deleteWitness}
+                onUpdate={(data) => updateWitness(data)}
+                editWitnessId={editWitnessId}
+                setEditWitnessId={setEditWitnessId}
+                caseType={caseVal?.type}
+              />
+            )}
+
+            {witnessView === "add" && (
+              <AddWitness
+                onSubmit={addWitness}
+                isLoading={witnessesLoading}
+                caseType={caseVal?.type}
+                setType={setWitnessView}
+              />
+            )}
+          </Stack>
+        )}
       </form>
     </Modal>
   );

@@ -2,9 +2,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
 import { notifications } from "@mantine/notifications";
 
-export default function useCasesData() {
-  const queryClient = useQueryClient();
-
+export default function useCaseWitnesses(caseId) {
   const showNotification = ({
     title,
     message,
@@ -14,41 +12,50 @@ export default function useCasesData() {
     notifications.show({ title, message, color, position });
   };
 
-  const { data: cases, isLoading } = useQuery({
-    queryKey: ["admin-cases"],
+  const queryClient = useQueryClient();
+
+  const {
+    data: witnesses,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["admin-case-witnesses", caseId],
     queryFn: async () => {
+      if (!caseId) return [];
+
       const { data, error } = await supabase
-        .from("cases")
+        .from("witnesses")
         .select("*")
-        .order("is_active", { ascending: false });
+        .eq("case_id", caseId)
+        .order("name");
       if (error) throw error;
       return data;
     },
   });
 
   const addMutation = useMutation({
-    mutationFn: async ({ name, year, type, area = null, is_active }) => {
-      let safeArea;
-      if (area.trim() === "" || area.trim() === null) safeArea = null;
-      if (area.trim() !== "" && area.trim() !== null) safeArea = area;
-
-      const { error } = await supabase
-        .from("cases")
-        .insert({ name, year, type, area: safeArea, is_active });
+    mutationFn: async ({ name, side, type }) => {
+      const { error } = await supabase.from("witnesses").insert({
+        name,
+        side,
+        type,
+        case_id: caseId,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-cases"]);
+      refetch();
+      queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
       showNotification({
         title: "Success",
-        message: "Case added successfully",
+        message: "Witness added successfully",
         color: "green",
       });
     },
     onError: (error) => {
       showNotification({
         title: "Add failed",
-        message: error.message || "Failed to add case",
+        message: error.message || "Failed to add witness",
         color: "red",
       });
     },
@@ -56,62 +63,58 @@ export default function useCasesData() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }) => {
-      if (updates.area === "" || updates.area.length === 0) {
-        updates.area = null;
-      }
-
       const { error } = await supabase
-        .from("cases")
+        .from("witnesses")
         .update(updates)
         .eq("id", id);
-      if (error) console.error("Update error:", error);
-      if (error) console.error(updates);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-cases"]);
+      refetch();
+      queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
       showNotification({
         title: "Success",
-        message: "Case updated successfully",
+        message: "Witness updated successfully",
         color: "green",
       });
     },
     onError: (error) => {
       showNotification({
         title: "Update failed",
-        message: error.message || "Failed to update case",
+        message: error.message || "Failed to update witness",
         color: "red",
       });
     },
   });
 
-  const deleteMutaiton = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from("cases").delete().eq("id", id);
+      const { error } = await supabase.from("witnesses").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["admin-cases"]);
+      refetch();
+      queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
       showNotification({
         title: "Success",
-        message: "Case deleted successfully",
+        message: "Witness deleted successfully",
         color: "green",
       });
     },
     onError: (error) => {
       showNotification({
         title: "Delete failed",
-        message: error.message || "Failed to delete case",
+        message: error.message || "Failed to delete witness",
         color: "red",
       });
     },
   });
 
   return {
-    cases,
+    witnesses,
     isLoading,
-    addCase: addMutation.mutateAsync,
-    updateCase: updateMutation.mutateAsync,
-    deleteCase: deleteMutaiton.mutateAsync,
+    addWitness: addMutation.mutate,
+    updateWitness: updateMutation.mutate,
+    deleteWitness: deleteMutation.mutate,
   };
 }
