@@ -1,6 +1,5 @@
 import {
   Input,
-  Modal,
   Radio,
   Group,
   Space,
@@ -8,13 +7,12 @@ import {
   TextInput,
   Checkbox,
   Button,
-  Text,
   Stack,
-  Select,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useSchoolAssignments } from "../hooks/useSchoolAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
   const [editType, setEditType] = useState(null);
@@ -79,14 +77,10 @@ export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
       title={`Edit School (${school?.name})`}
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
     >
       <form onSubmit={handleSubmit}>
         <Radio.Group
@@ -180,6 +174,6 @@ export default function EditSchoolModal({ opened, onClose, school, onSubmit }) {
           </>
         )}
       </form>
-    </Modal>
+    </BaseModal>
   );
 }

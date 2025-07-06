@@ -1,20 +1,16 @@
 import {
-  Input,
-  Modal,
   Radio,
   Group,
   Space,
   Divider,
   TextInput,
-  Checkbox,
   Button,
-  Text,
   Stack,
-  Select,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useUserAssignments } from "../hooks/useUserAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function EditUserModal({ opened, onClose, user, onSubmit }) {
   const [editType, setEditType] = useState(null);
@@ -69,14 +65,10 @@ export default function EditUserModal({ opened, onClose, user, onSubmit }) {
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
       title={`Edit User (${user?.name})`}
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
     >
       <form onSubmit={handleSubmit}>
         <Radio.Group
@@ -153,6 +145,6 @@ export default function EditUserModal({ opened, onClose, user, onSubmit }) {
           </>
         )}
       </form>
-    </Modal>
+    </BaseModal>
   );
 }

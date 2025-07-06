@@ -1,5 +1,4 @@
 import {
-  Modal,
   TextInput,
   Select,
   Checkbox,
@@ -9,6 +8,7 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { useState } from "react";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function AddCaseModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,14 +43,7 @@ export default function AddCaseModal({ opened, onClose, onSubmit }) {
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title="Add Case"
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-    >
+    <BaseModal opened={opened} onClose={onClose} title="Add Case">
       <form onSubmit={handleSubmit}>
         <TextInput
           value={formValues.name}
@@ -112,6 +105,6 @@ export default function AddCaseModal({ opened, onClose, onSubmit }) {
           Submit
         </Button>
       </form>
-    </Modal>
+    </BaseModal>
   );
 }

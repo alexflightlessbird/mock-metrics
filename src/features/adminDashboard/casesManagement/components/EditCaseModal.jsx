@@ -1,6 +1,5 @@
 import {
   Input,
-  Modal,
   Radio,
   Group,
   Space,
@@ -8,15 +7,14 @@ import {
   TextInput,
   Checkbox,
   Button,
-  Text,
   Select,
   NumberInput,
-  Loader,
   Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import useCaseWitnesses from "../hooks/useCaseWitnesses";
 import { ViewWitnesses, AddWitness } from "./WitnessViews";
+import BaseModal from "../../../../common/components/BaseModal";
 
 export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
   const [editType, setEditType] = useState(null);
@@ -77,14 +75,10 @@ export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
   };
 
   return (
-    <Modal
+    <BaseModal
       opened={opened}
       onClose={onClose}
       title={`Edit Case (${caseVal?.name})`}
-      centered
-      withCloseButton
-      overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}
-      size="100%"
     >
       <form onSubmit={handleSubmit}>
         <Radio.Group
@@ -208,6 +202,6 @@ export default function EditCaseModal({ opened, onClose, caseVal, onSubmit }) {
           </Stack>
         )}
       </form>
-    </Modal>
+    </BaseModal>
   );
 }
