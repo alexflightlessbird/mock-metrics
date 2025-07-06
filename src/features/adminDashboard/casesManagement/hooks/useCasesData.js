@@ -68,7 +68,7 @@ export default function useCasesData() {
     },
   });
 
-  const deleteMutaiton = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase.from("cases").delete().eq("id", id);
       if (error) throw error;
@@ -87,6 +87,6 @@ export default function useCasesData() {
     isLoading,
     addCase: addMutation.mutateAsync,
     updateCase: updateMutation.mutateAsync,
-    deleteCase: deleteMutaiton.mutateAsync,
+    deleteCase: deleteMutation.mutateAsync,
   };
 }
