@@ -1,5 +1,6 @@
-import { Table, Flex, ActionIcon, Checkbox } from "@mantine/core";
+import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import DataTable from "../../../../common/components/DataTable";
 
 const splitArea = (area) => {
   if (!area) return "-";
@@ -22,64 +23,48 @@ const splitArea = (area) => {
   );
 };
 
-export default function SchoolsTable({ cases, onSelectCase }) {
+const columns = [
+  { key: "name", label: "Name" },
+  { key: "year", label: "Year" },
+  { key: "type", label: "Type" },
+  { key: "area", label: "Area" },
+  { key: "is_active", label: "Active" },
+  { key: "actions", label: "Actions" },
+];
+
+export default function CasesTable({ cases, onSelectCase }) {
+  const renderRow = (caseVal) => (
+    <Table.Tr key={caseVal.id}>
+      <Table.Td>{caseVal.name || "-"}</Table.Td>
+      <Table.Td>{caseVal.year || "-"}</Table.Td>
+      <Table.Td>
+        {caseVal.type
+          ? caseVal.type.charAt(0).toUpperCase() + caseVal.type.slice(1)
+          : "-"}
+      </Table.Td>
+      <Table.Td>{splitArea(caseVal.area)}</Table.Td>
+      <Table.Td>
+        <Checkbox checked={caseVal.is_active} readOnly />
+      </Table.Td>
+      <Table.Td>
+        <Flex wrap="wrap" rowGap="xs" columnGap="xs">
+          <ActionIcon size="md" onClick={() => onSelectCase(caseVal, "edit")}>
+            <AiOutlineEdit />
+          </ActionIcon>
+          <ActionIcon size="md" onClick={() => onSelectCase(caseVal, "delete")}>
+            <AiOutlineDelete />
+          </ActionIcon>
+        </Flex>
+      </Table.Td>
+    </Table.Tr>
+  );
+
   return (
-    <Table
-      striped
-      highlightOnHover
-      withTableBorder
-      withColumnBorders
-      stickyHeader
-      style={{ cursor: "default" }}
-      fz="xs"
-    >
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Year</Table.Th>
-          <Table.Th>Type</Table.Th>
-          <Table.Th>Area</Table.Th>
-          <Table.Th>Active</Table.Th>
-          <Table.Th>Actions</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {cases.map((caseVal) => (
-          <Table.Tr key={caseVal.id}>
-            <Table.Td>{caseVal.name || "-"}</Table.Td>
-            <Table.Td>{caseVal.year || "-"}</Table.Td>
-            <Table.Td>
-              {caseVal.type
-                ? caseVal.type.charAt(0).toUpperCase() + caseVal.type.slice(1)
-                : "-"}
-            </Table.Td>
-            <Table.Td>{splitArea(caseVal.area)}</Table.Td>
-            <Table.Td>
-              {caseVal.is_active ? (
-                <Checkbox checked readOnly />
-              ) : (
-                <Checkbox checked={false} readOnly />
-              )}
-            </Table.Td>
-            <Table.Td>
-              <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-                <ActionIcon
-                  size="md"
-                  onClick={() => onSelectCase(caseVal, "edit")}
-                >
-                  <AiOutlineEdit />
-                </ActionIcon>
-                <ActionIcon
-                  size="md"
-                  onClick={() => onSelectCase(caseVal, "delete")}
-                >
-                  <AiOutlineDelete />
-                </ActionIcon>
-              </Flex>
-            </Table.Td>
-          </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+    <DataTable
+      columns={columns}
+      data={cases}
+      emptyMessage="No cases available"
+      renderRow={renderRow}
+    />
   );
 }
