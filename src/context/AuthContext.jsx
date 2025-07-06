@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isDbManager, setIsDbManager] = useState(false);
   const [loading, setLoading] = useState(true);
   const [superAdminLoading, setSuperAdminLoading] = useState(true);
 
@@ -18,6 +19,7 @@ export function AuthProvider({ children }) {
         } else {
           setUser(null);
           setIsSuperAdmin(false);
+          setIsDbManager(false);
           setSuperAdminLoading(false);
         }
         setLoading(false);
@@ -35,12 +37,18 @@ export function AuthProvider({ children }) {
       .single();
 
     setIsSuperAdmin(!!data);
+
+    if (data.db_manager) {
+      setIsDbManager(true);
+    }
+
     setSuperAdminLoading(false);
   };
 
   const value = {
     user,
     isSuperAdmin,
+    isDbManager,
     loading,
     superAdminLoading,
     signIn: async (email, password) => {

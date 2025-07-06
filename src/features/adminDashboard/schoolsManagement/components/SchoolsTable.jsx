@@ -1,6 +1,7 @@
 import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import DataTable from "../../../../common/components/DataTable";
+import { useAuth } from "../../../../context/AuthContext";
 
 const columns = [
   { key: "id", label: "ID" },
@@ -10,7 +11,9 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-export default function SchoolsTable({ schools, onSelectSchool }) {
+export default function SchoolsTable({ data, onSelect }) {
+  const { isDbManager } = useAuth();
+  
   const renderRow = (school) => (
     <Table.Tr key={school.id}>
       <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>
@@ -21,15 +24,14 @@ export default function SchoolsTable({ schools, onSelectSchool }) {
       </Table.Td>
       <Table.Td>
         <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelectSchool(school, "edit")}>
+          <ActionIcon size="md" onClick={() => onSelect(school, "edit")}>
             <AiOutlineEdit />
           </ActionIcon>
-          <ActionIcon
-            size="md"
-            onClick={() => onSelectSchool(school, "delete")}
-          >
-            <AiOutlineDelete />
-          </ActionIcon>
+          {isDbManager && (
+            <ActionIcon size="md" onClick={() => onSelect(school, "delete")}>
+              <AiOutlineDelete />
+            </ActionIcon>
+          )}
         </Flex>
       </Table.Td>
     </Table.Tr>
@@ -38,7 +40,7 @@ export default function SchoolsTable({ schools, onSelectSchool }) {
   return (
     <DataTable
       columns={columns}
-      data={schools}
+      data={data}
       emptyMessage="No schools available"
       renderRow={renderRow}
     />

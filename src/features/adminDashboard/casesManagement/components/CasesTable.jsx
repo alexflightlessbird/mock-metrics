@@ -1,6 +1,7 @@
 import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import DataTable from "../../../../common/components/DataTable";
+import { useAuth } from "../../../../context/AuthContext";
 
 const splitArea = (area) => {
   if (!area) return "-";
@@ -32,7 +33,9 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-export default function CasesTable({ cases, onSelectCase }) {
+export default function CasesTable({ data, onSelect }) {
+  const { isDbManager } = useAuth();
+
   const renderRow = (caseVal) => (
     <Table.Tr key={caseVal.id}>
       <Table.Td>{caseVal.name || "-"}</Table.Td>
@@ -48,12 +51,14 @@ export default function CasesTable({ cases, onSelectCase }) {
       </Table.Td>
       <Table.Td>
         <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelectCase(caseVal, "edit")}>
+          <ActionIcon size="md" onClick={() => onSelect(caseVal, "edit")}>
             <AiOutlineEdit />
           </ActionIcon>
-          <ActionIcon size="md" onClick={() => onSelectCase(caseVal, "delete")}>
-            <AiOutlineDelete />
-          </ActionIcon>
+          {isDbManager && (
+            <ActionIcon size="md" onClick={() => onSelect(caseVal, "delete")}>
+              <AiOutlineDelete />
+            </ActionIcon>
+          )}
         </Flex>
       </Table.Td>
     </Table.Tr>
@@ -62,7 +67,7 @@ export default function CasesTable({ cases, onSelectCase }) {
   return (
     <DataTable
       columns={columns}
-      data={cases}
+      data={data}
       emptyMessage="No cases available"
       renderRow={renderRow}
     />
