@@ -1,28 +1,24 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
-import { notifications } from "@mantine/notifications";
+import useNotifications from "../../../../common/hooks/useNotifications";
 
 export default function useSchoolsData() {
   const queryClient = useQueryClient();
-
-  const showNotification = ({
-    title,
-    message,
-    color,
-    position = "bottom-right",
-  }) => {
-    notifications.show({ title, message, color, position });
-  };
+  const { showSuccess, showError } = useNotifications();
 
   const { data: schools, isLoading } = useQuery({
     queryKey: ["admin-schools"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("schools")
-        .select("*")
-        .order("name");
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("schools")
+          .select("*")
+          .order("name");
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        showError({ title: "Failed to load schools", message: error.message });
+      }
     },
   });
 
@@ -35,18 +31,10 @@ export default function useSchoolsData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-schools"]);
-      showNotification({
-        title: "Success",
-        message: "School added successfully",
-        color: "green",
-      });
+      showSuccess({ message: "School added successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Add failed",
-        message: error.message || "Failed to add school",
-        color: "red",
-      });
+      showError({ title: "Failed to add school", message: error.message });
     },
   });
 
@@ -60,18 +48,10 @@ export default function useSchoolsData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-schools"]);
-      showNotification({
-        title: "Success",
-        message: "School updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "School updated successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Update failed",
-        message: error.message || "Failed to update school",
-        color: "red",
-      });
+      showError({ title: "Failed to update school", message: error.message });
     },
   });
 
@@ -82,18 +62,10 @@ export default function useSchoolsData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-schools"]);
-      showNotification({
-        title: "Success",
-        message: "School deleted successfully",
-        color: "green",
-      });
+      showSuccess({ message: "School deleted successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Delete failed",
-        message: error.message || "Failed to delete school",
-        color: "red",
-      });
+      showError({ title: "Failed to delete school", message: error.message });
     },
   });
 

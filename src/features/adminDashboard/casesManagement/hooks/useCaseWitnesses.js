@@ -1,35 +1,30 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
-import { notifications } from "@mantine/notifications";
+import useNotifications from "../../../../common/hooks/useNotifications";
 
 export default function useCaseWitnesses(caseId) {
-  const showNotification = ({
-    title,
-    message,
-    color,
-    position = "bottom-right",
-  }) => {
-    notifications.show({ title, message, color, position });
-  };
-
   const queryClient = useQueryClient();
+  const { showSuccess, showError } = useNotifications();
 
-  const {
-    data: witnesses,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: witnesses, isLoading } = useQuery({
     queryKey: ["admin-case-witnesses", caseId],
     queryFn: async () => {
       if (!caseId) return [];
 
-      const { data, error } = await supabase
-        .from("witnesses")
-        .select("*")
-        .eq("case_id", caseId)
-        .order("name");
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("witnesses")
+          .select("*")
+          .eq("case_id", caseId)
+          .order("name");
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        showError({
+          title: "Failed to load witnesses",
+          message: error.message,
+        });
+      }
     },
   });
 
@@ -44,20 +39,11 @@ export default function useCaseWitnesses(caseId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
-      showNotification({
-        title: "Success",
-        message: "Witness added successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Witness added successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Add failed",
-        message: error.message || "Failed to add witness",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to add witness" });
     },
   });
 
@@ -70,20 +56,11 @@ export default function useCaseWitnesses(caseId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
-      showNotification({
-        title: "Success",
-        message: "Witness updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Witness updated successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Update failed",
-        message: error.message || "Failed to update witness",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to update witness" });
     },
   });
 
@@ -93,19 +70,13 @@ export default function useCaseWitnesses(caseId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-case-witnesses", caseId]);
-      showNotification({
-        title: "Success",
-        message: "Witness deleted successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Witness deleted successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Delete failed",
-        message: error.message || "Failed to delete witness",
-        color: "red",
+      showError({
+        message: error.message,
+        title: "Failed to delete witness",
       });
     },
   });
