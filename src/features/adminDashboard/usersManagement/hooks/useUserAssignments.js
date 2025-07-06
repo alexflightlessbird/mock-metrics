@@ -1,34 +1,29 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
-import { notifications } from "@mantine/notifications";
+import useNotifications from "../../../../common/hooks/useNotifications";
 
 export function useUserAssignments(userId) {
-  const showNotification = ({
-    title,
-    message,
-    color,
-    position = "bottom-right",
-  }) => {
-    notifications.show({ title, message, color, position });
-  };
-
   const queryClient = useQueryClient();
+  const { showSuccess, showError } = useNotifications();
 
-  const {
-    data: assignments,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: assignments, isLoading } = useQuery({
     queryKey: ["admin-user-assignments", userId],
     queryFn: async () => {
       if (!userId) return [];
 
-      const { data, error } = await supabase
-        .from("users_schools")
-        .select("school_id, role, schools:school_id (id, name)")
-        .eq("user_id", userId);
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("users_schools")
+          .select("school_id, role, schools:school_id (id, name)")
+          .eq("user_id", userId);
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        showError({
+          title: "Failed to load assignments",
+          message: error.message,
+        });
+      }
     },
   });
 
@@ -37,26 +32,33 @@ export function useUserAssignments(userId) {
     queryFn: async () => {
       if (!userId) return [];
 
-      const { data: assignedSchools, error: assignedError } = await supabase
-        .from("users_schools")
-        .select("school_id")
-        .eq("user_id", userId);
-      if (assignedError) throw assignedError;
+      try {
+        const { data: assignedSchools, error: assignedError } = await supabase
+          .from("users_schools")
+          .select("school_id")
+          .eq("user_id", userId);
+        if (assignedError) throw assignedError;
 
-      if (!assignedSchools?.length) {
-        const { data, error } = await supabase.from("schools").select("id");
+        if (!assignedSchools?.length) {
+          const { data, error } = await supabase.from("schools").select("id");
+          if (error) throw error;
+          return data;
+        }
+
+        const assignedSchoolIds = assignedSchools.map((s) => s.school_id);
+
+        const { data, error } = await supabase
+          .from("schools")
+          .select("id")
+          .not("id", "in", `(${assignedSchoolIds.join(",")})`);
         if (error) throw error;
         return data;
+      } catch (error) {
+        showError({
+          title: "Failed to load available schools",
+          message: error.message,
+        });
       }
-
-      const assignedSchoolIds = assignedSchools.map((s) => s.school_id);
-
-      const { data, error } = await supabase
-        .from("schools")
-        .select("id")
-        .not("id", "in", `(${assignedSchoolIds.join(",")})`);
-      if (error) throw error;
-      return data;
     },
   });
 
@@ -68,21 +70,12 @@ export function useUserAssignments(userId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-available-schools", userId]);
       queryClient.invalidateQueries(["admin-user-assignments", userId]);
-      showNotification({
-        title: "Success",
-        message: "School assigned successfully",
-        color: "green",
-      });
+      showSuccess({ message: "School assigned successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Error",
-        message: error.message || "Failed to assign school",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to assign school" });
     },
   });
 
@@ -96,20 +89,14 @@ export function useUserAssignments(userId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-available-schools", userId]);
       queryClient.invalidateQueries(["admin-user-assignments", userId]);
-      showNotification({
-        title: "Success",
-        message: "Assignment updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Assignment updated successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Error",
-        message: error.message || "Failed to update assignment",
-        color: "red",
+      showError({
+        message: error.message,
+        title: "Failed to update assignment",
       });
     },
   });
@@ -124,20 +111,14 @@ export function useUserAssignments(userId) {
       if (error) throw error;
     },
     onSuccess: () => {
-      refetch();
       queryClient.invalidateQueries(["admin-available-schools", userId]);
       queryClient.invalidateQueries(["admin-user-assignments", userId]);
-      showNotification({
-        title: "Success",
-        message: "Assignment deleted successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Assignment deleted successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Error",
-        message: error.message || "Failed to delete assignment",
-        color: "red",
+      showError({
+        message: error.message,
+        title: "Failed to delete assignment",
       });
     },
   });

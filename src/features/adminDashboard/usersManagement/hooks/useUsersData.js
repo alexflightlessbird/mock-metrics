@@ -1,28 +1,24 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
-import { notifications } from "@mantine/notifications";
+import useNotifications from "../../../../common/hooks/useNotifications";
 
 export default function useUsersData() {
   const queryClient = useQueryClient();
-
-  const showNotification = ({
-    title,
-    message,
-    color,
-    position = "bottom-right",
-  }) => {
-    notifications.show({ title, message, color, position });
-  };
+  const { showSuccess, showError } = useNotifications();
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin-users"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .order("email");
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .order("email");
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        showError({ title: "Failed to load users", message: error.message });
+      }
     },
   });
 
@@ -36,18 +32,10 @@ export default function useUsersData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-users"]);
-      showNotification({
-        title: "Success",
-        message: "User updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "User updated successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Update failed",
-        message: error.message || "Failed to update user",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to update user" });
     },
   });
 
@@ -58,18 +46,10 @@ export default function useUsersData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-users"]);
-      showNotification({
-        title: "Success",
-        message: "User updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "User deleted successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Delete failed",
-        message: error.message || "Failed to delete user",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to delete user" });
     },
   });
 

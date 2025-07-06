@@ -1,36 +1,30 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../../lib/supabase";
-import { notifications } from "@mantine/notifications";
+import useNotifications from "../../../../common/hooks/useNotifications";
 
 export default function useCasesData() {
   const queryClient = useQueryClient();
-
-  const showNotification = ({
-    title,
-    message,
-    color,
-    position = "bottom-right",
-  }) => {
-    notifications.show({ title, message, color, position });
-  };
+  const { showSuccess, showError } = useNotifications();
 
   const { data: cases, isLoading } = useQuery({
     queryKey: ["admin-cases"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("cases")
-        .select("*")
-        .order("is_active", { ascending: false });
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("cases")
+          .select("*")
+          .order("is_active", { ascending: false });
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        showError({ title: "Failed to load cases", message: error.message });
+      }
     },
   });
 
   const addMutation = useMutation({
     mutationFn: async ({ name, year, type, area = null, is_active }) => {
-      let safeArea;
-      if (area.trim() === "" || area.trim() === null) safeArea = null;
-      if (area.trim() !== "" && area.trim() !== null) safeArea = area;
+      const safeArea = area?.trim() ? area : null;
 
       const { error } = await supabase
         .from("cases")
@@ -39,18 +33,10 @@ export default function useCasesData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-cases"]);
-      showNotification({
-        title: "Success",
-        message: "Case added successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Case added successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Add failed",
-        message: error.message || "Failed to add case",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to add case" });
     },
   });
 
@@ -70,18 +56,10 @@ export default function useCasesData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-cases"]);
-      showNotification({
-        title: "Success",
-        message: "Case updated successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Case updated successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Update failed",
-        message: error.message || "Failed to update case",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to update case" });
     },
   });
 
@@ -92,18 +70,10 @@ export default function useCasesData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-cases"]);
-      showNotification({
-        title: "Success",
-        message: "Case deleted successfully",
-        color: "green",
-      });
+      showSuccess({ message: "Case deleted successfully" });
     },
     onError: (error) => {
-      showNotification({
-        title: "Delete failed",
-        message: error.message || "Failed to delete case",
-        color: "red",
-      });
+      showError({ message: error.message, title: "Failed to delete case" });
     },
   });
 
