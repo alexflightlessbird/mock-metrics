@@ -1,5 +1,5 @@
-import { CASE_COLUMNS } from "../columns";
-import EntityManagement from "../EntityManagement";
+import { CASE_COLUMNS } from "../common/columns";
+import EntityManagement from "../common/EntityManagement";
 import useCasesData from "./hooks/useCasesData";
 import useCasesFilter from "./hooks/useCasesFilter";
 import CasesTable from "./components/CasesTable";

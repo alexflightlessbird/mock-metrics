@@ -1,5 +1,5 @@
-import { SCHOOL_COLUMNS } from "../columns";
-import EntityManagement from "../EntityManagement";
+import { SCHOOL_COLUMNS } from "../common/columns";
+import EntityManagement from "../common/EntityManagement";
 import useSchoolsData from "./hooks/useSchoolsData";
 import useSchoolsFilter from "./hooks/useSchoolsFilter";
 import SchoolsTable from "./components/SchoolsTable";
