@@ -1,17 +1,12 @@
 import { useState } from "react";
 import { Container, Loader } from "@mantine/core";
-import SearchControls from "./components/SearchControls";
 import UsersTable from "./components/UsersTable";
 import EditUserModal from "./components/EditUserModal";
 import DeleteUserModal from "./components/DeleteUserModal";
 import useUsersData from "./hooks/useUsersData";
 import useUsersFilter from "./hooks/useUsersFilter";
-
-const USER_COLUMNS = [
-  { value: "id", label: "ID" },
-  { value: "email", label: "Email" },
-  { value: "name", label: "Name" },
-];
+import SearchBar from "../../../common/components/SearchBar";
+import { USER_COLUMNS } from "../columns";
 
 export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +43,7 @@ export default function UsersManagement() {
 
   return (
     <Container fluid px={0}>
-      <SearchControls
+      <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
         placeholder="Search users..."

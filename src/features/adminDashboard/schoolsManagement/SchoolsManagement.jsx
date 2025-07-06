@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { Container, Loader } from "@mantine/core";
-import SearchControls from "./components/SearchControls";
 import SchoolsTable from "./components/SchoolsTable";
 import AddSchoolModal from "./components/AddSchoolModal";
 import EditSchoolModal from "./components/EditSchoolModal";
 import DeleteSchoolModal from "./components/DeleteSchoolModal";
 import useSchoolsData from "./hooks/useSchoolsData";
 import useSchoolsFilter from "./hooks/useSchoolsFilter";
-
-const SCHOOL_COLUMNS = [
-  { value: "id", label: "ID" },
-  { value: "name", label: "Name" },
-  { value: "short_name", label: "Short Name" },
-];
+import SearchBar from "../../../common/components/SearchBar";
+import { SCHOOL_COLUMNS } from "../columns";
 
 export default function SchoolsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +50,7 @@ export default function SchoolsManagement() {
 
   return (
     <Container fluid px={0}>
-      <SearchControls
+      <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
         placeholder="Search schools..."
@@ -63,6 +58,7 @@ export default function SchoolsManagement() {
         selectedColumn={searchColumn}
         onColumnChange={setSearchColumn}
         onReset={handleResetSearch}
+        addEnabled={true}
         onAdd={() => setAddModalOpen(true)}
       />
 
