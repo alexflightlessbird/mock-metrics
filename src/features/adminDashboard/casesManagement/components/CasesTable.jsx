@@ -1,37 +1,9 @@
-import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import DataTable from "../../../../common/components/DataTable";
+import { Checkbox, Table } from "@mantine/core";
+import DataTable from "../../../../common/components/tables/DataTable";
+import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
-
-const splitArea = (area) => {
-  if (!area) return "-";
-  const parts = area.split("/");
-
-  return (
-    <span>
-      {parts.map((part, index) => (
-        <span key={index}>
-          {part}
-          {index < parts.length - 1 && (
-            <>
-              /
-              <wbr />
-            </>
-          )}
-        </span>
-      ))}
-    </span>
-  );
-};
-
-const columns = [
-  { key: "name", label: "Name" },
-  { key: "year", label: "Year" },
-  { key: "type", label: "Type" },
-  { key: "area", label: "Area" },
-  { key: "is_active", label: "Active" },
-  { key: "actions", label: "Actions" },
-];
+import { CASE_COLUMNS } from "../../common/columns";
+import { splitSlash as splitArea } from "../../../../common/utils/helpers";
 
 export default function CasesTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
@@ -50,23 +22,18 @@ export default function CasesTable({ data, onSelect }) {
         <Checkbox checked={caseVal.is_active} readOnly />
       </Table.Td>
       <Table.Td>
-        <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelect(caseVal, "edit")}>
-            <AiOutlineEdit />
-          </ActionIcon>
-          {isDbManager && (
-            <ActionIcon size="md" onClick={() => onSelect(caseVal, "delete")}>
-              <AiOutlineDelete />
-            </ActionIcon>
-          )}
-        </Flex>
+        <EditDeleteTableActions
+          onDelete={() => onSelect(caseVal, "delete")}
+          onEdit={() => onSelect(caseVal, "edit")}
+          canDelete={isDbManager}
+        />
       </Table.Td>
     </Table.Tr>
   );
 
   return (
     <DataTable
-      columns={columns}
+      columns={CASE_COLUMNS}
       data={data}
       emptyMessage="No cases available"
       renderRow={renderRow}

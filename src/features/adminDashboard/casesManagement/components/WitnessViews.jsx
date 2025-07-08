@@ -1,41 +1,13 @@
-import {
-  Table,
-  Button,
-  Text,
-  Select,
-  Stack,
-  Flex,
-  ActionIcon,
-  TextInput,
-} from "@mantine/core";
-import {
-  AiOutlineEdit,
-  AiOutlineDelete,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from "react-icons/ai";
+import { Table, Button, Text, Select, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
-
-const splitType = (type) => {
-  if (!type) return "-";
-  const parts = type.split("/");
-
-  return (
-    <span>
-      {parts.map((part, index) => (
-        <span key={index}>
-          {part}
-          {index < parts.length - 1 && (
-            <>
-              /
-              <wbr />
-            </>
-          )}
-        </span>
-      ))}
-    </span>
-  );
-};
+import {
+  EditDeleteTableActions,
+  ConfirmCancelTableActions,
+} from "../../../../common/components/tables/TableActions";
+import { splitSlash as splitType } from "../../../../common/utils/helpers";
+import { WITNESS_COLUMNS } from "../../common/columns";
+import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
+import DataTable from "../../../../common/components/tables/DataTable";
 
 const typeOptions = [
   { value: "character", label: "Character" },
@@ -54,6 +26,9 @@ export function ViewWitnesses({
   caseType,
 }) {
   const [editValues, setEditValues] = useState({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteWitnessId, setDeleteWitnessId] = useState(null);
+  const [deleteWitnessName, setDeleteWitnessName] = useState(null);
 
   if (!witnesses?.length)
     return <Text>No witnesses assigned to this case</Text>;
@@ -92,126 +67,119 @@ export function ViewWitnesses({
     setEditValues({});
   };
 
+  const handleDeleteStart = (witness) => {
+    setDeleteWitnessId(witness.id);
+    setDeleteWitnessName(witness.name);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setDeleteWitnessId(null);
+    setDeleteWitnessName(null);
+  };
+
+  const handleDeleteSubmit = (id) => {
+    onRemove(id);
+    setDeleteModalOpen(false);
+    setDeleteWitnessId(null);
+    setDeleteWitnessName(null);
+  };
+
+  const renderRow = (witness) => (
+    <Table.Tr key={witness.id}>
+      <Table.Td style={{ wordBreak: "break-all" }}>{witness.id}</Table.Td>
+      <Table.Td>
+        {editWitnessId === witness.id ? (
+          <TextInput
+            value={editValues.name}
+            onChange={(e) =>
+              setEditValues((v) => ({ ...v, name: e.target.value }))
+            }
+          />
+        ) : (
+          witness.name || "-"
+        )}
+      </Table.Td>
+      <Table.Td>
+        {editWitnessId === witness.id ? (
+          <Select
+            data={sideOptions}
+            value={editValues.side}
+            onChange={(value) => setEditValues((v) => ({ ...v, side: value }))}
+          />
+        ) : witness.side === "p" ? (
+          caseType === "criminal" ? (
+            "Prosecution"
+          ) : caseType === "civil" ? (
+            "Plaintiff"
+          ) : (
+            "Plaintiff/Prosecution"
+          )
+        ) : witness.side === "d" ? (
+          "Defense"
+        ) : witness.side === "s" ? (
+          "Swing"
+        ) : (
+          "-"
+        )}
+      </Table.Td>
+      <Table.Td>
+        {editWitnessId === witness.id ? (
+          <Select
+            data={typeOptions}
+            value={editValues.type}
+            onChange={(value) => setEditValues((v) => ({ ...v, type: value }))}
+          />
+        ) : witness.type === "expert" ? (
+          "Expert"
+        ) : witness.type === "character" ? (
+          "Character"
+        ) : witness.type === "party rep" ? (
+          "Party Rep"
+        ) : witness.type === "police/investigator" ? (
+          splitType("Police/Investigator")
+        ) : witness.type === "other" ? (
+          "Other"
+        ) : (
+          "-"
+        )}
+      </Table.Td>
+      <Table.Td>
+        {editWitnessId === witness.id ? (
+          <ConfirmCancelTableActions
+            onConfirm={() => handleEditSubmit(witness.id)}
+            onCancel={handleEditCancel}
+            size="lg"
+          />
+        ) : (
+          <EditDeleteTableActions
+            onDelete={() => handleDeleteStart(witness)}
+            onEdit={() => handleEditStart(witness)}
+            size="lg"
+            canDelete={true}
+          />
+        )}
+      </Table.Td>
+    </Table.Tr>
+  );
+
   return (
-    <Table
-      striped
-      highlightOnHover
-      withTableBorder
-      withColumnBorders
-      stickyHeader
-      style={{ cursor: "default" }}
-      fz="xs"
-    >
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>ID</Table.Th>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Side</Table.Th>
-          <Table.Th>Type</Table.Th>
-          <Table.Th>Actions</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {witnesses.map((witness) => (
-          <Table.Tr key={witness.id}>
-            <Table.Td style={{ wordBreak: "break-all" }}>{witness.id}</Table.Td>
-            <Table.Td>
-              {editWitnessId === witness.id ? (
-                <TextInput
-                  value={editValues.name}
-                  onChange={(e) =>
-                    setEditValues((v) => ({ ...v, name: e.target.value }))
-                  }
-                />
-              ) : (
-                witness.name || "-"
-              )}
-            </Table.Td>
-            <Table.Td>
-              {editWitnessId === witness.id ? (
-                <Select
-                  data={sideOptions}
-                  value={editValues.side}
-                  onChange={(value) =>
-                    setEditValues((v) => ({ ...v, side: value }))
-                  }
-                />
-              ) : witness.side === "p" ? (
-                caseType === "criminal" ? (
-                  "Prosecution"
-                ) : caseType === "civil" ? (
-                  "Plaintiff"
-                ) : (
-                  "Plaintiff/Prosecution"
-                )
-              ) : witness.side === "d" ? (
-                "Defense"
-              ) : witness.side === "s" ? (
-                "Swing"
-              ) : (
-                "-"
-              )}
-            </Table.Td>
-            <Table.Td>
-              {editWitnessId === witness.id ? (
-                <Select
-                  data={typeOptions}
-                  value={editValues.type}
-                  onChange={(value) =>
-                    setEditValues((v) => ({ ...v, type: value }))
-                  }
-                />
-              ) : witness.type === "expert" ? (
-                "Expert"
-              ) : witness.type === "character" ? (
-                "Character"
-              ) : witness.type === "party rep" ? (
-                "Party Rep"
-              ) : witness.type === "police/investigator" ? (
-                splitType("Police/Investigator")
-              ) : witness.type === "other" ? (
-                "Other"
-              ) : (
-                "-"
-              )}
-            </Table.Td>
-            <Table.Td>
-              <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-                {editWitnessId === witness.id ? (
-                  <>
-                    <ActionIcon
-                      size="lg"
-                      onClick={() => handleEditSubmit(witness.id)}
-                    >
-                      <AiOutlineCheck />
-                    </ActionIcon>
-                    <ActionIcon
-                      color="gray"
-                      size="lg"
-                      onClick={handleEditCancel}
-                    >
-                      <AiOutlineClose />
-                    </ActionIcon>
-                  </>
-                ) : (
-                  <>
-                    <ActionIcon
-                      size="lg"
-                      onClick={() => handleEditStart(witness)}
-                    >
-                      <AiOutlineEdit />
-                    </ActionIcon>
-                    <ActionIcon size="lg" onClick={() => onRemove(witness.id)}>
-                      <AiOutlineDelete />
-                    </ActionIcon>
-                  </>
-                )}
-              </Flex>
-            </Table.Td>
-          </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+    <>
+      <DataTable
+        columns={WITNESS_COLUMNS}
+        data={witnesses}
+        emptyMessage="No witnesses assigned to this case"
+        renderRow={renderRow}
+      />
+      <DeleteConfirmationModal
+        opened={deleteModalOpen}
+        entityName="witness"
+        entity={{ id: deleteWitnessId, name: deleteWitnessName }}
+        onClose={handleDeleteCancel}
+        onSubmit={() => handleDeleteSubmit(deleteWitnessId)}
+      />
+    </>
   );
 }
 

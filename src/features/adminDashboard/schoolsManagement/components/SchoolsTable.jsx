@@ -1,19 +1,12 @@
-import { Flex, ActionIcon, Checkbox, Table } from "@mantine/core";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import DataTable from "../../../../common/components/DataTable";
+import { Checkbox, Table } from "@mantine/core";
+import DataTable from "../../../../common/components/tables/DataTable";
+import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
-
-const columns = [
-  { key: "id", label: "ID" },
-  { key: "name", label: "Name" },
-  { key: "short_name", label: "Short Name" },
-  { key: "is_premium", label: "Premium" },
-  { key: "actions", label: "Actions" },
-];
+import { SCHOOL_COLUMNS } from "../../common/columns";
 
 export default function SchoolsTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
-  
+
   const renderRow = (school) => (
     <Table.Tr key={school.id}>
       <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>
@@ -23,23 +16,18 @@ export default function SchoolsTable({ data, onSelect }) {
         <Checkbox checked={school.is_premium} readOnly />
       </Table.Td>
       <Table.Td>
-        <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelect(school, "edit")}>
-            <AiOutlineEdit />
-          </ActionIcon>
-          {isDbManager && (
-            <ActionIcon size="md" onClick={() => onSelect(school, "delete")}>
-              <AiOutlineDelete />
-            </ActionIcon>
-          )}
-        </Flex>
+        <EditDeleteTableActions
+          onDelete={() => onSelect(school, "delete")}
+          onEdit={() => onSelect(school, "edit")}
+          canDelete={isDbManager}
+        />
       </Table.Td>
     </Table.Tr>
   );
 
   return (
     <DataTable
-      columns={columns}
+      columns={SCHOOL_COLUMNS}
       data={data}
       emptyMessage="No schools available"
       renderRow={renderRow}

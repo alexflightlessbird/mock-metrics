@@ -1,4 +1,4 @@
-import { SCHOOL_COLUMNS } from "../common/columns";
+import { SEARCH_SCHOOL_COLUMNS } from "../common/columns";
 import EntityManagement from "../common/EntityManagement";
 import useSchoolsData from "./hooks/useSchoolsData";
 import useSchoolsFilter from "./hooks/useSchoolsFilter";
@@ -11,7 +11,7 @@ export default function SchoolsManagement() {
   return (
     <EntityManagement
       entityName="school"
-      columns={SCHOOL_COLUMNS}
+      columns={SEARCH_SCHOOL_COLUMNS}
       searchPlaceholder="Search schools..."
       useEntityData={useSchoolsData}
       useEntityFilter={useSchoolsFilter}

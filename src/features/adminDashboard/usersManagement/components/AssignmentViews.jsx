@@ -1,20 +1,12 @@
-import {
-  Table,
-  Button,
-  Text,
-  Select,
-  Stack,
-  Flex,
-  ActionIcon,
-  Space,
-} from "@mantine/core";
+import { Table, Button, Text, Select, Stack, Space } from "@mantine/core";
 import { useState } from "react";
 import {
-  AiOutlineDelete,
-  AiOutlineEdit,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from "react-icons/ai";
+  EditDeleteTableActions,
+  ConfirmCancelTableActions,
+} from "../../../../common/components/tables/TableActions";
+import DataTable from "../../../../common/components/tables/DataTable";
+import { ASSIGNMENT_COLUMNS } from "../../common/columns";
+import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
 
 const roleOptions = [
   { value: "primary", label: "Primary Admin" },
@@ -30,6 +22,9 @@ export function ViewAssignments({
   setEditSchoolId,
 }) {
   const [editValues, setEditValues] = useState({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteSchoolId, setDeleteSchoolId] = useState(null);
+  const [deleteSchoolName, setDeleteSchoolName] = useState(null);
 
   if (!assignments?.length)
     return <Text>No schools assigned to this user</Text>;
@@ -52,92 +47,82 @@ export function ViewAssignments({
     setEditValues({});
   };
 
+  const handleDeleteStart = (assignment) => {
+    setDeleteSchoolId(assignment.school_id);
+    setDeleteSchoolName(assignment.schools.name);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setDeleteSchoolId(null);
+    setDeleteSchoolName(null);
+  };
+
+  const handleDeleteSubmit = (id) => {
+    onRemove({ schoolId: id });
+    setDeleteModalOpen(false);
+    setDeleteSchoolId(null);
+    setDeleteSchoolName(null);
+  };
+
+  const renderRow = (assignment) => (
+    <Table.Tr key={assignment.school_id}>
+      <Table.Td style={{ wordBreak: "break-all" }}>
+        {assignment.school_id}
+      </Table.Td>
+      <Table.Td>
+        {editSchoolId === assignment.school_id ? (
+          <Select
+            data={roleOptions}
+            value={editValues.role}
+            onChange={(value) => setEditValues((v) => ({ ...v, role: value }))}
+          />
+        ) : assignment.role === "admin" ? (
+          "Admin"
+        ) : assignment.role === "primary" ? (
+          "Primary Admin"
+        ) : assignment.role === "viewer" ? (
+          "Viewer"
+        ) : (
+          "-"
+        )}
+      </Table.Td>
+      <Table.Td>
+        {editSchoolId === assignment.school_id ? (
+          <ConfirmCancelTableActions
+            onCancel={handleEditCancel}
+            onConfirm={() => handleEditSubmit(assignment.school_id)}
+            size="lg"
+          />
+        ) : (
+          <EditDeleteTableActions
+            onDelete={() => handleDeleteStart(assignment)}
+            onEdit={() => handleEditStart(assignment)}
+            size="lg"
+            canDelete={true}
+          />
+        )}
+      </Table.Td>
+    </Table.Tr>
+  );
+
   return (
-    <Table
-      striped
-      highlightOnHover
-      withTableBorder
-      withColumnBorders
-      stickyHeader
-      style={{ cursor: "default" }}
-      fz="xs"
-    >
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>ID</Table.Th>
-          <Table.Th>Role</Table.Th>
-          <Table.Th>Actions</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {assignments.map((assignment) => {
-          return (
-            <Table.Tr key={assignment.school_id}>
-              <Table.Td style={{ wordBreak: "break-all" }}>
-                {assignment.school_id}
-              </Table.Td>
-              <Table.Td>
-                {editSchoolId === assignment.school_id ? (
-                  <Select
-                    data={roleOptions}
-                    value={editValues.role}
-                    onChange={(value) =>
-                      setEditValues((v) => ({ ...v, role: value }))
-                    }
-                  />
-                ) : assignment.role === "admin" ? (
-                  "Admin"
-                ) : assignment.role === "primary" ? (
-                  "Primary Admin"
-                ) : assignment.role === "viewer" ? (
-                  "Viewer"
-                ) : (
-                  "-"
-                )}
-              </Table.Td>
-              <Table.Td>
-                <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-                  {editSchoolId === assignment.school_id ? (
-                    <>
-                      <ActionIcon
-                        size="lg"
-                        onClick={() => handleEditSubmit(assignment.school_id)}
-                      >
-                        <AiOutlineCheck />
-                      </ActionIcon>
-                      <ActionIcon
-                        color="gray"
-                        size="lg"
-                        onClick={handleEditCancel}
-                      >
-                        <AiOutlineClose />
-                      </ActionIcon>
-                    </>
-                  ) : (
-                    <>
-                      <ActionIcon
-                        size="lg"
-                        onClick={() => handleEditStart(assignment)}
-                      >
-                        <AiOutlineEdit />
-                      </ActionIcon>
-                      <ActionIcon
-                        size="lg"
-                        onClick={() =>
-                          onRemove({ schoolId: assignment.school_id })
-                        }
-                      >
-                        <AiOutlineDelete />
-                      </ActionIcon>
-                    </>
-                  )}
-                </Flex>
-              </Table.Td>
-            </Table.Tr>
-          );
-        })}
-      </Table.Tbody>
-    </Table>
+    <>
+      <DataTable
+        columns={ASSIGNMENT_COLUMNS}
+        data={assignments}
+        emptyMessage="No schools assigned to this user"
+        renderRow={renderRow}
+      />
+      <DeleteConfirmationModal
+        opened={deleteModalOpen}
+        entityName="assignment"
+        entity={{ id: deleteSchoolId, name: deleteSchoolName }}
+        onClose={handleDeleteCancel}
+        onSubmit={() => handleDeleteSubmit(deleteSchoolId)}
+      />
+    </>
   );
 }
 

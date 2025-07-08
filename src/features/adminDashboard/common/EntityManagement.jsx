@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Loader } from "@mantine/core";
 import SearchBar from "../../../common/components/SearchBar";
-import { capitalize } from "../../../utils/helpers";
+import { capitalize } from "../../../common/utils/helpers";
 
 export default function EntityManagement({
   entityName,

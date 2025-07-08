@@ -8,7 +8,7 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { useState } from "react";
-import BaseModal from "../../../../common/components/BaseModal";
+import BaseModal from "../../../../common/components/modals/BaseModal";
 
 export default function AddCaseModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);

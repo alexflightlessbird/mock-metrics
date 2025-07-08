@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useUserAssignments } from "../hooks/useUserAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
-import BaseModal from "../../../../common/components/BaseModal";
+import BaseModal from "../../../../common/components/modals/BaseModal";
 
 export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
   const user = selected;
