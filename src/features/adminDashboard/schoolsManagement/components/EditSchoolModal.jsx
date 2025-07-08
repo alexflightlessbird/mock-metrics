@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSchoolAssignments } from "../hooks/useSchoolAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
-import BaseModal from "../../../../common/components/BaseModal";
+import BaseModal from "../../../../common/components/modals/BaseModal";
 
 export default function EditSchoolModal({
   opened,

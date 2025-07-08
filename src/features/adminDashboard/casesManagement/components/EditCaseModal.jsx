@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import useCaseWitnesses from "../hooks/useCaseWitnesses";
 import { ViewWitnesses, AddWitness } from "./WitnessViews";
-import BaseModal from "../../../../common/components/BaseModal";
+import BaseModal from "../../../../common/components/modals/BaseModal";
 
 export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
   const caseVal = selected;

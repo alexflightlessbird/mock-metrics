@@ -1,26 +1,9 @@
-import { Flex, ActionIcon, Table } from "@mantine/core";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
-import DataTable from "../../../../common/components/DataTable";
+import { Table } from "@mantine/core";
+import DataTable from "../../../../common/components/tables/DataTable";
+import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
-
-const splitEmail = (email) => {
-  if (!email) return "-";
-  const [localPart, domain] = email.split("@");
-
-  return (
-    <span>
-      {localPart}
-      <wbr />@{domain}
-    </span>
-  );
-};
-
-const columns = [
-  { key: "id", label: "ID" },
-  { key: "email", label: "Email" },
-  { key: "name", label: "Name" },
-  { key: "actions", label: "Actions" },
-];
+import { USER_COLUMNS } from "../../common/columns";
+import { splitEmail } from "../../../../common/utils/helpers";
 
 export default function UsersTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
@@ -31,23 +14,18 @@ export default function UsersTable({ data, onSelect }) {
       <Table.Td>{splitEmail(user.email)}</Table.Td>
       <Table.Td>{user.name || "-"}</Table.Td>
       <Table.Td>
-        <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-          <ActionIcon size="md" onClick={() => onSelect(user, "edit")}>
-            <AiOutlineEdit />
-          </ActionIcon>
-          {isDbManager && (
-            <ActionIcon size="md" onClick={() => onSelect(user, "delete")}>
-              <AiOutlineDelete />
-            </ActionIcon>
-          )}
-        </Flex>
+        <EditDeleteTableActions
+          onDelete={() => onSelect(user, "delete")}
+          onEdit={() => onSelect(user, "edit")}
+          canDelete={isDbManager}
+        />
       </Table.Td>
     </Table.Tr>
   );
 
   return (
     <DataTable
-      columns={columns}
+      columns={USER_COLUMNS}
       data={data}
       emptyMessage="No users available"
       renderRow={renderRow}

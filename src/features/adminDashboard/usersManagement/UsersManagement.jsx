@@ -1,4 +1,4 @@
-import { USER_COLUMNS } from "../common/columns";
+import { SEARCH_USER_COLUMNS } from "../common/columns";
 import EntityManagement from "../common/EntityManagement";
 import useUsersData from "./hooks/useUsersData";
 import useUsersFilter from "./hooks/useUsersFilter";
@@ -10,7 +10,7 @@ export default function UsersManagement() {
   return (
     <EntityManagement
       entityName="user"
-      columns={USER_COLUMNS}
+      columns={SEARCH_USER_COLUMNS}
       searchPlaceholder="Search users..."
       useEntityData={useUsersData}
       useEntityFilter={useUsersFilter}
