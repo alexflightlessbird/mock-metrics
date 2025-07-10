@@ -1,4 +1,4 @@
-import { Table, Button, Text, Select, Stack, Space } from "@mantine/core";
+import { Table, Button, Text, Select, Stack, Space, List } from "@mantine/core";
 import { useState } from "react";
 import {
   EditDeleteTableActions,
@@ -20,6 +20,7 @@ export function ViewAssignments({
   onRemove,
   editUserId,
   setEditUserId,
+  school,
 }) {
   const [editValues, setEditValues] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -28,6 +29,10 @@ export function ViewAssignments({
 
   if (!assignments?.length)
     return <Text>No users assigned to this school</Text>;
+
+  const primaryAdminCount = assignments.reduce((acc, cur) => cur.role === "primary" ? ++acc : acc, 0);
+  const adminCount = assignments.reduce((acc, cur) => cur.role === "admin" ? ++acc : acc, 0);
+  const viewerCount = assignments.reduce((acc, cur) => cur.role === "viewer" ? ++acc : acc, 0);
 
   const handleEditStart = (assignment) => {
     setEditUserId(assignment.user_id);
@@ -109,11 +114,23 @@ export function ViewAssignments({
 
   return (
     <>
+      {!school.is_premium && (
+        <Stack gap="xs">
+          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>School does not have premium status. Current assignments:</Text>
+          <List withPadding>
+            <List.Item>Primary Admins: {primaryAdminCount}</List.Item>
+            <List.Item>Admins: {adminCount}</List.Item>
+            <List.Item>Viewers: {viewerCount}</List.Item>
+          </List>
+        </Stack>
+      )}
       <DataTable
         columns={ASSIGNMENT_COLUMNS}
         data={assignments}
         emptyMessage="No users assigned to this school"
         renderRow={renderRow}
+        scrollContainer={true}
+        scrollContainerHeight="30vh"
       />
       <DeleteConfirmationModal
         opened={deleteModalOpen}
@@ -126,52 +143,71 @@ export function ViewAssignments({
   );
 }
 
-export function AddAssignment({ availableUsers, onAdd, isLoading, setType }) {
+export function AddAssignment({ availableUsers, onAdd, isLoading, setType, school, assignments }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState("viewer");
+  
+  if (!availableUsers?.length)
+    return <Text>No users available that aren't already assigned to this school</Text>;
+
+  const primaryAdminCount = assignments.reduce((acc, cur) => cur.role === "primary" ? ++acc : acc, 0);
+  const adminCount = assignments.reduce((acc, cur) => cur.role === "admin" ? ++acc : acc, 0);
+  const viewerCount = assignments.reduce((acc, cur) => cur.role === "viewer" ? ++acc : acc, 0);
 
   return (
-    <Stack>
-      <Select
-        label="Select user to assign"
-        placeholder="Search users..."
-        data={
-          availableUsers?.map((user) => ({
-            value: user.id,
-            label: user.id,
-          })) || []
-        }
-        value={selectedUser}
-        onChange={setSelectedUser}
-        searchable
-        nothingFoundMessage="No users found"
-      />
-      <Select
-        data={[
-          { value: "primary", label: "Primary Admin" },
-          { value: "admin", label: "Admin" },
-          { value: "viewer", label: "Viewer" },
-        ]}
-        allowDeselect={false}
-        value={selectedRole}
-        onChange={setSelectedRole}
-        label="Role"
-      />
-      <Space h="xs" />
-      <Button
-        onClick={() => {
-          if (selectedUser && selectedRole) {
-            onAdd({ userId: selectedUser, role: selectedRole });
-            setSelectedUser(null);
-            setSelectedRole("viewer");
-            setType("view");
+    <>
+      {!school.is_premium && (
+        <Stack gap="xs">
+          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>School does not have premium status. Current assignments:</Text>
+          <List withPadding>
+            <List.Item>Primary Admins: {primaryAdminCount}</List.Item>
+            <List.Item>Admins: {adminCount}</List.Item>
+            <List.Item>Viewers: {viewerCount}</List.Item>
+          </List>
+        </Stack>
+      )}
+      <Stack>
+        <Select
+          label="Select user to assign"
+          placeholder="Search users..."
+          data={
+            availableUsers?.map((user) => ({
+              value: user.id,
+              label: user.id,
+            })) || []
           }
-        }}
-        disabled={!selectedUser}
-        loading={isLoading}
-      >
-        Assign User
-      </Button>
-    </Stack>
+          value={selectedUser}
+          onChange={setSelectedUser}
+          searchable
+          nothingFoundMessage="No users found"
+          />
+        <Select
+          data={[
+            { value: "primary", label: "Primary Admin" },
+            { value: "admin", label: "Admin" },
+            { value: "viewer", label: "Viewer" },
+          ]}
+          allowDeselect={false}
+          value={selectedRole}
+          onChange={setSelectedRole}
+          label="Role"
+        />
+        <Space h="xs" />
+        <Button
+          onClick={() => {
+            if (selectedUser && selectedRole) {
+              onAdd({ userId: selectedUser, role: selectedRole });
+              setSelectedUser(null);
+              setSelectedRole("viewer");
+              setType("view");
+            }
+          }}
+          disabled={!selectedUser}
+          loading={isLoading}
+          >
+          Assign User
+        </Button>
+      </Stack>
+    </>
   );
 }

@@ -114,6 +114,8 @@ export function ViewAssignments({
         data={assignments}
         emptyMessage="No schools assigned to this user"
         renderRow={renderRow}
+        scrollContainer={true}
+        scrollContainerHeight="30vh"
       />
       <DeleteConfirmationModal
         opened={deleteModalOpen}
@@ -129,6 +131,9 @@ export function ViewAssignments({
 export function AddAssignment({ availableSchools, onAdd, isLoading, setType }) {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedRole, setSelectedRole] = useState("viewer");
+  
+  if (!availableSchools?.length)
+    return <Text>No schools available that aren't already assigned to this user</Text>;
 
   return (
     <Stack>

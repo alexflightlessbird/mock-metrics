@@ -88,7 +88,6 @@ export function ViewWitnesses({
 
   const renderRow = (witness) => (
     <Table.Tr key={witness.id}>
-      <Table.Td style={{ wordBreak: "break-all" }}>{witness.id}</Table.Td>
       <Table.Td>
         {editWitnessId === witness.id ? (
           <TextInput
@@ -171,6 +170,8 @@ export function ViewWitnesses({
         data={witnesses}
         emptyMessage="No witnesses assigned to this case"
         renderRow={renderRow}
+        scrollContainer={true}
+        scrollContainerHeight="30vh"
       />
       <DeleteConfirmationModal
         opened={deleteModalOpen}

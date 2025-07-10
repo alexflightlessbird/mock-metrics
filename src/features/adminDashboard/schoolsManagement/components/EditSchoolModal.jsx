@@ -165,6 +165,7 @@ export default function EditSchoolModal({
                     }}
                     editUserId={editAssignmentUserId}
                     setEditUserId={setEditAssignmentUserId}
+                    school={school}
                   />
                 </>
               )}
@@ -175,6 +176,8 @@ export default function EditSchoolModal({
                   availableUsers={availableUsers}
                   isLoading={assignmentsLoading}
                   setType={setAssignmentView}
+                  school={school}
+                  assignments={assignments}
                 />
               )}
             </Stack>

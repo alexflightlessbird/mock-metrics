@@ -75,6 +75,7 @@ export default function EntityManagement({
         onReset={handleResetSearch}
         addEnabled={addEnabled}
         onAdd={() => setAddModalOpen(true)}
+        addName={capitalize(entityName)}
       />
 
       {TableComponent && (
