@@ -10,16 +10,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./context/AuthContext";
 
-setTimeout(() => {
-  const splashScreen = document.getElementById("splash-screen");
-  if (splashScreen) {
-    splashScreen.style.opacity = "0";
-    setTimeout(() => {
-      splashScreen.remove();
-    }, 500);
-  }
-}, 3000);
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -29,13 +19,25 @@ const queryClient = new QueryClient({
   },
 });
 
-createRoot(document.getElementById("root")).render(
+const removeLoadingScreen = () => {
+  const loadingElement = document.getElementById("app-loading");
+  if (loadingElement) {
+    loadingElement.style.opacity = "0";
+    loadingElement.style.transition = "opacity 300ms ease-out";
+    setTimeout(() => loadingElement.remove(), 300);
+  }
+}
+
+const root = createRoot(document.getElementById("root"));
+
+root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
         <ModalsProvider>
           <AuthProvider>
             <Notifications />
+            {/* <App onReady={removeLoadingScreen} /> */}
             <App />
           </AuthProvider>
           <ReactQueryDevtools />
