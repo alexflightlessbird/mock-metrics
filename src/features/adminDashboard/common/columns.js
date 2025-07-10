@@ -41,7 +41,6 @@ export const ASSIGNMENT_COLUMNS = [
 ];
 
 export const WITNESS_COLUMNS = [
-  { value: "id", label: "ID" },
   { value: "name", label: "Name" },
   { value: "side", label: "Side" },
   { value: "type", label: "Type" },

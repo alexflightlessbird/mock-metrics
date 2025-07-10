@@ -30,6 +30,7 @@ export default function AddSchoolModal({ opened, onClose, onSubmit }) {
     <BaseModal opened={opened} onClose={onClose} title="Add School">
       <form onSubmit={handleSubmit}>
         <TextInput
+          data-autofocus
           value={formValues.name}
           onChange={(e) =>
             setFormValues((v) => ({ ...v, name: e.target.value }))

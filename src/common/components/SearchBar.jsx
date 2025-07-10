@@ -24,6 +24,7 @@ export default function SearchBar({
   onReset,
   addEnabled = false,
   onAdd,
+  addName,
 }) {
   const { width } = useViewportSize();
 
@@ -60,7 +61,7 @@ export default function SearchBar({
       </Flex>
       {addEnabled && width <= 450 && resetEnabled && (
         <Button onClick={onAdd} fullWidth mt="xs">
-          Add School
+          Add{addName ? " " + addName : ""}
         </Button>
       )}
       <Space h="md" />
