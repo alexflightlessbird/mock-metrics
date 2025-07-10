@@ -4,9 +4,14 @@ import { Loader } from "@mantine/core";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import { useEffect } from "react";
 
-export default function App() {
+export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
+
+  useEffect(() => {
+    onReady?.();
+  }, [onReady]);
 
   if (loading || superAdminLoading) return <Loader />;
 
