@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Container, Loader } from "@mantine/core";
+import { Container, Flex } from "@mantine/core";
 import SearchBar from "../../../common/components/SearchBar";
 import { capitalize } from "../../../common/utils/helpers";
+import Loader from "../../../common/components/loader/GavelLoader.jsx";
 
 export default function EntityManagement({
   entityName,
@@ -61,7 +62,13 @@ export default function EntityManagement({
     setSearchColumn("all");
   };
 
-  if (isLoading) return <Loader mt="md" />;
+  if (isLoading) return (
+    <Container fluid px={0}>
+      <Flex justify="center" mt="lg">
+        <Loader key={entityName} />
+      </Flex>
+    </Container>
+  );
 
   return (
     <Container fluid px={0}>
