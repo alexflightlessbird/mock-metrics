@@ -20,7 +20,7 @@
     top: 30%;
     left: 10%;
     width: 100%;
-    animation: gavelAnimation 1.5s infinite ease-in-out;
+    animation: gavelAnimation 1.5s infinite cubic-bezier(0.7, 1.25, 0.7, .9);
     transform-origin: center left;
 }
 
@@ -44,25 +44,31 @@
 }
 
 @keyframes gavelAnimation {
-    0%, 100% {
+    0% {
         transform: rotate(-45deg);
     }
+    40% {
+        transform: rotate(-5deg);
+    }
+    45% {
+        transform: rotate(0deg);
+    }
     50% {
-        transform: rotate(0);
+        transform: rotate(-5deg);
+    }
+    100% {
+        transform: rotate(-45deg);
     }
 }
 
 @keyframes panelAnimation {
-    0%, 100% {
-        transform: scaleY(1);
+    0%, 40%, 55%, 100% {
+        transform: translateY(0) scaleY(1);
     }
-    25% {
-        transform: scaleY(1);
+    45% {
+        transform: translateY(1%) scaleY(0.85);
     }
     50% {
-        transform: scaleY(0.9);
-    }
-    75% {
-        transform: scaleY(1);
+        transform: translateY(0) scaleY(1.1);
     }
 }
