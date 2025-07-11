@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Container, Flex } from "@mantine/core";
 import SearchBar from "../../../common/components/SearchBar";
 import { capitalize } from "../../../common/utils/helpers";
-import Loader from "../../../common/components/loader/GavelLoader.jsx";
+import Loader from "../../../common/components/loader/GavelLoader";
 
 export default function EntityManagement({
   entityName,
