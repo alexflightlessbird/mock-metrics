@@ -1,0 +1,78 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.animationContainer {
+    position: relative;
+    width: 220px;
+    height: 200px;
+    will-change: transform;
+}
+
+.gavelContainer {
+    position: absolute;
+    top: 95px;
+    left: 8%;
+    transform: translateY(-50%) rotate(0deg);
+    transform-origin: 0 100%;
+    animation: gavelAnimation 1.5s infinite ease-in-out;
+}
+
+.gavel {
+    width: 100px;
+    height: auto;
+}
+
+.panelContainer {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: panelAnimation 3s infinite ease-in-out;
+}
+
+.panel {
+    width: 100px;
+    height: auto;
+}
+
+.bottomPanelContainer {
+    position: absolute;
+    bottom: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: panelAnimation 3s infinite ease-in-out;
+}
+
+.bottomPanel {
+    width: 125px;
+    height: auto;
+}
+
+@keyframes gavelAnimation {
+    0%, 100% {
+        transform: translateY(-70%) rotate(-30deg);
+    }
+    50% {
+      transform: translateY(-70%) rotate(45deg);
+    }
+}
+
+@keyframes panelAnimation {
+    0%, 100% {
+        transform: translateX(-50%) scaleY(1);
+    }
+    25% {
+        transform: translateX(-50%) scaleY(0.9);
+    }
+    50% {
+        transform: translateX(-50%) scaleY(1);
+    }
+    75% {
+        transform: translateX(-50%) scaleY(0.9);
+    }
+}
