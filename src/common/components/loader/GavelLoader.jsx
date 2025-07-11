@@ -54,7 +54,7 @@ function NewGavelIcon ({ fillColor = "#0a1f3c" }) {
   )
 }
 
-function NewPanelIcon ({ fillColor = "#0a1f3c" }) {
+function NewPanelIcon ({ topFillColor = "#0a1f3c", bottomFillColor = "#0a1f3c" }) {
   const ids = useIds(5);
 
   return (
@@ -79,12 +79,12 @@ function NewPanelIcon ({ fillColor = "#0a1f3c" }) {
       <g id={ids[4]}>
         <g clip-rule="nonzero" clip-path={`url(#clip1-${ids[0]})`}>
           <g clip-rule="nonzero" clip-path={`url(#clip2-${ids[1]})`}>
-            <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 285.1875 157.285156 L 285.1875 184.742188 L 89.769531 184.742188 L 89.769531 157.285156 Z M 285.1875 157.285156 "/>
+            <path style={{ stroke: "none", fillRule: "nonzero", fill: topFillColor, fillOpacity: 1 }} d="M 285.1875 157.285156 L 285.1875 184.742188 L 89.769531 184.742188 L 89.769531 157.285156 Z M 285.1875 157.285156 "/>
           </g>
         </g>
         <g clip-rule="nonzero" clip-path={`url(#clip3-${ids[2]})`}>
           <g clip-rule="nonzero" clip-path={`url(#clip4-${ids[3]})`}>
-            <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 308.011719 183.242188 L 308.011719 217.714844 L 66.964844 217.714844 L 66.964844 183.242188 Z M 308.011719 183.242188 "/>
+            <path style={{ stroke: "none", fillRule: "nonzero", fill: bottomFillColor, fillOpacity: 1 }} d="M 308.011719 183.242188 L 308.011719 217.714844 L 66.964844 217.714844 L 66.964844 183.242188 Z M 308.011719 183.242188 "/>
           </g>
         </g>
       </g>
@@ -92,26 +92,25 @@ function NewPanelIcon ({ fillColor = "#0a1f3c" }) {
   )
 }
 
-export default function LoadingAnimation ({ gavelColor, panelColor, bottomPanelColor, scale = 10 }) {
+export default function LoadingAnimation ({ gavelColor, topPanelColor, bottomPanelColor, scale = 1 }) {
   const theme = useMantineTheme();
   if (!isNumberLike(scale)) scale = 1;
+  scale = Math.abs(Number(scale));
 
   if (!gavelColor) gavelColor = theme.colors.blue[6];
-  if (!panelColor) panelColor = theme.colors.blue[6];
+  if (!topPanelColor) topPanelColor = theme.colors.blue[6];
   if (!bottomPanelColor) bottomPanelColor = theme.colors.blue[6];
 
   return (
-    <>
-    <div className={styles.container}>
-      <div className={styles.animationContainer} style={{ "--scale-size": scale }}>
+    <div className={`${styles.container}`} aria-label="Loading...">
+      <div className={styles.animationContainer} style={{ "--scale-size": scale }} aria-hidden="true">
         <div className={styles.gavelContainer}>
           <NewGavelIcon fillColor={gavelColor} />
         </div>
         <div className={styles.panelContainer}>
-          <NewPanelIcon fillColor={panelColor} />
+          <NewPanelIcon bottomFillColor={bottomPanelColor} topFillColor={topPanelColor} />
         </div>
       </div>
     </div>
-    </>
   );
 };

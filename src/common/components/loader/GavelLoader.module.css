@@ -12,7 +12,6 @@
     height: min(calc(150px * var(--scale-size, 1)), 100%);
     aspect-ratio: 4/3;
     will-change: transform;
-    background-color: black;
 }
 
 .gavelContainer {
@@ -20,7 +19,7 @@
     top: 30%;
     left: 10%;
     width: 100%;
-    animation: gavelAnimation 1.5s infinite cubic-bezier(0.7, 1.25, 0.7, .9);
+    animation: gavelAnimation 2s infinite cubic-bezier(0.7, 1.25, 0.7, 0.9);
     transform-origin: center left;
 }
 
@@ -34,7 +33,7 @@
     width: 100%;
     top: 60%;
     left: 25%;
-    animation: panelAnimation 1.5s infinite ease-in-out;
+    animation: panelAnimation 2s infinite ease-in-out;
     transform-origin: center;
 }
 
@@ -47,14 +46,17 @@
     0% {
         transform: rotate(-45deg);
     }
-    40% {
-        transform: rotate(-5deg);
+    35% {
+        transform: rotate(-10deg);
     }
-    45% {
+    40% {
         transform: rotate(0deg);
     }
     50% {
-        transform: rotate(-5deg);
+        transform: rotate(-10deg);
+    }
+    55% {
+        transform: rotate(0deg);
     }
     100% {
         transform: rotate(-45deg);
@@ -62,13 +64,11 @@
 }
 
 @keyframes panelAnimation {
-    0%, 40%, 55%, 100% {
+    0%, 35%, 45%, 50%, 60%, 100% {
         transform: translateY(0) scaleY(1);
     }
-    45% {
+    40%, 55% {
         transform: translateY(1%) scaleY(0.85);
     }
-    50% {
-        transform: translateY(0) scaleY(1.1);
-    }
+
 }

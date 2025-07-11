@@ -64,8 +64,8 @@ export default function EntityManagement({
 
   if (isLoading) return (
     <Container fluid px={0}>
-      <Flex justify="center" mt="lg">
-        <Loader key={entityName} />
+      <Flex justify="center" mt="xs">
+        <Loader key={`${entityName}-loader-animation`} scale={1.5} />
       </Flex>
     </Container>
   );
