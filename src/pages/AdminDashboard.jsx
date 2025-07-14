@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       <Space h="md" />
 
       <Container fluid px={0}>
-        <Tabs defaultValue="schools">
+        <Tabs defaultValue="schools" keepMounted={false}>
           <Tabs.List>
             <Tabs.Tab value="schools">Schools</Tabs.Tab>
             <Tabs.Tab value="users">Users</Tabs.Tab>
