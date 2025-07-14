@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-import { Loader } from "@mantine/core";
+import Loader from "./common/components/loader/GavelLoader";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -20,15 +20,15 @@ export default function App({ onReady }) {
       <Routes>
         <Route
           path="/auth"
-          element={!user ? <AuthPage /> : <Navigate to="/" />}
+          element={!user ? <AuthPage /> : <Navigate to="/" replace />}
         />
         <Route
           path="/admin"
-          element={isSuperAdmin ? <AdminDashboard /> : <Navigate to="/" />}
+          element={isSuperAdmin ? <AdminDashboard /> : <Navigate to="/" replace />}
         />
         <Route
           path="/"
-          element={user ? <DashboardPage /> : <Navigate to="/auth" />}
+          element={user ? <DashboardPage /> : <Navigate to="/auth" replace />}
         />
       </Routes>
     </BrowserRouter>

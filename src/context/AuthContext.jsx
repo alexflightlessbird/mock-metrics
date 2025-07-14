@@ -60,6 +60,7 @@ export function AuthProvider({ children }) {
       return data;
     },
     signOut: async () => {
+      localStorage.removeItem("school");
       await supabase.auth.signOut();
     },
   };
