@@ -3,7 +3,6 @@ import {
   Group,
   Space,
   Divider,
-  TextInput,
   Button,
   Stack,
 } from "@mantine/core";
@@ -11,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useUserAssignments } from "../hooks/useUserAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
 import BaseModal from "../../../../common/components/modals/BaseModal";
+import { NameField } from "../../common/FormFields";
 
 export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
   const user = selected;
@@ -96,14 +96,10 @@ export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
 
         {editType === "detail" && (
           <>
-            <TextInput
+            <NameField
               value={formValues.name}
-              onChange={(e) =>
-                setFormValues((v) => ({ ...v, name: e.target.value }))
-              }
-              label="User Name"
+              onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
             />
-            <Space h="xs" />
             <Button loading={formLoading} type="submit">
               Submit
             </Button>

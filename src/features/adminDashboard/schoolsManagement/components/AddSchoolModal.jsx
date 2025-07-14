@@ -1,6 +1,7 @@
-import { TextInput, Checkbox, Button, Space, Input } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { useState } from "react";
 import BaseModal from "../../../../common/components/modals/BaseModal";
+import { NameField, StatusField } from "../../common/FormFields";
 
 export default function AddSchoolModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,34 +30,21 @@ export default function AddSchoolModal({ opened, onClose, onSubmit }) {
   return (
     <BaseModal opened={opened} onClose={onClose} title="Add School">
       <form onSubmit={handleSubmit}>
-        <TextInput
-          data-autofocus
+        <NameField
           value={formValues.name}
-          onChange={(e) =>
-            setFormValues((v) => ({ ...v, name: e.target.value }))
-          }
-          label="School Name"
-          required
+          onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+          autofocus={true}
         />
-        <Space h="xs" />
-        <TextInput
+        <NameField
           value={formValues.short_name}
-          onChange={(e) =>
-            setFormValues((v) => ({ ...v, short_name: e.target.value }))
-          }
-          label="School Short Name"
-          required
+          onChange={(e) => setFormValues((v) => ({ ...v, short_name: e.target.value }))}
+          label="Short Name"
         />
-        <Space h="xs" />
-        <Input.Wrapper label="Premium Status" />
-        <Checkbox
-          checked={formValues.is_premium}
-          onChange={(e) =>
-            setFormValues((v) => ({ ...v, is_premium: e.target.checked }))
-          }
-          label={`${formValues.is_premium ? "Active" : "Inactive"}`}
+        <StatusField
+          value={formValues.is_premium}
+          onChange={(e) => setFormValues((v) => ({ ...v, is_premium: e.target.checked }))}
+          questionLabel="Premium Status"
         />
-        <Space h="xs" />
         <Button type="submit" loading={isLoading}>
           Submit
         </Button>

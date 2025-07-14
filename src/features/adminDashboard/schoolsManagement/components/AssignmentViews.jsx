@@ -1,4 +1,4 @@
-import { Table, Button, Text, Select, Stack, Space, List } from "@mantine/core";
+import { Table, Button, Text, Stack, List } from "@mantine/core";
 import { useState } from "react";
 import {
   EditDeleteTableActions,
@@ -7,12 +7,7 @@ import {
 import DataTable from "../../../../common/components/tables/DataTable";
 import { ASSIGNMENT_COLUMNS } from "../../common/columns";
 import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
-
-const roleOptions = [
-  { value: "primary", label: "Primary Admin" },
-  { value: "admin", label: "Admin" },
-  { value: "viewer", label: "Viewer" },
-];
+import { RoleField, SearchSelectField } from "../../common/FormFields";
 
 export function ViewAssignments({
   assignments,
@@ -78,10 +73,10 @@ export function ViewAssignments({
       </Table.Td>
       <Table.Td>
         {editUserId === assignment.user_id ? (
-          <Select
-            data={roleOptions}
+          <RoleField
             value={editValues.role}
-            onChange={(value) => setEditValues((v) => ({ ...v, role: value }))}
+            onChange={(e) => setEditValues((v) => ({ ...v, role: e }))}
+            label=""
           />
         ) : assignment.role === "admin" ? (
           "Admin"
@@ -167,32 +162,21 @@ export function AddAssignment({ availableUsers, onAdd, isLoading, setType, schoo
         </Stack>
       )}
       <Stack>
-        <Select
-          label="Select user to assign"
-          placeholder="Search users..."
+        <SearchSelectField
+          type="user"
           data={
-            availableUsers?.map((user) => ({
-              value: user.id,
-              label: user.id,
+            availableUsers?.map((u) => ({
+              value: u.id,
+              label: u.id
             })) || []
           }
           value={selectedUser}
           onChange={setSelectedUser}
-          searchable
-          nothingFoundMessage="No users found"
-          />
-        <Select
-          data={[
-            { value: "primary", label: "Primary Admin" },
-            { value: "admin", label: "Admin" },
-            { value: "viewer", label: "Viewer" },
-          ]}
-          allowDeselect={false}
+        />
+        <RoleField
           value={selectedRole}
           onChange={setSelectedRole}
-          label="Role"
         />
-        <Space h="xs" />
         <Button
           onClick={() => {
             if (selectedUser && selectedRole) {

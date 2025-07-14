@@ -1,14 +1,7 @@
-import {
-  TextInput,
-  Select,
-  Checkbox,
-  Button,
-  Space,
-  Input,
-  NumberInput,
-} from "@mantine/core";
+import { Button } from "@mantine/core";
 import { useState } from "react";
 import BaseModal from "../../../../common/components/modals/BaseModal";
+import { StatusField, CaseAreaField, CaseTypeField, NameField, YearField } from "../../common/FormFields";
 
 export default function AddCaseModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,62 +38,27 @@ export default function AddCaseModal({ opened, onClose, onSubmit }) {
   return (
     <BaseModal opened={opened} onClose={onClose} title="Add Case">
       <form onSubmit={handleSubmit}>
-        <TextInput
-          value={formValues.name}
-          onChange={(e) =>
-            setFormValues((v) => ({ ...v, name: e.target.value }))
-          }
-          label="Case Name"
-          required
+        <NameField 
+          value={formValues.name} 
+          onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+          autofocus={true}
         />
-        <Space h="xs" />
-        <NumberInput
+        <YearField 
           value={formValues.year}
           onChange={(e) => setFormValues((v) => ({ ...v, year: e }))}
-          label="Year"
-          required
-          min={1980}
-          max={new Date().getFullYear()}
         />
-        <Space h="xs" />
-        <Select
-          data={[
-            { value: "civil", label: "Civil" },
-            { value: "criminal", label: "Criminal" },
-          ]}
-          allowDeselect={false}
+        <CaseTypeField 
           value={formValues.type}
           onChange={(e) => setFormValues((v) => ({ ...v, type: e }))}
-          label="Type"
         />
-        <Space h="xs" />
-        <Select
-          data={[
-            { value: "", label: "None" },
-            {
-              value: "invitationals/regionals/orcs",
-              label: "Invitationals/Regionals/ORCS",
-            },
-            { value: "nationals", label: "Nationals" },
-            { value: "rookie rumble", label: "Rookie Rumble" },
-            { value: "olt", label: "OLT" },
-            { value: "other", label: "Other" },
-          ]}
-          allowDeselect={false}
+        <CaseAreaField
           value={formValues.area}
           onChange={(e) => setFormValues((v) => ({ ...v, area: e }))}
-          label="Area"
         />
-        <Space h="xs" />
-        <Input.Wrapper label="Active Status" />
-        <Checkbox
-          checked={formValues.is_active}
-          onChange={(e) =>
-            setFormValues((v) => ({ ...v, is_active: e.target.checked }))
-          }
-          label={`${formValues.is_active ? "Active" : "Inactive"}`}
+        <StatusField
+          value={formValues.is_active}
+          onChange={(e) => setFormValues((v) => ({ ...v, is_active: e.target.checked }))}
         />
-        <Space h="xs" />
         <Button type="submit" loading={isLoading}>
           Submit
         </Button>
