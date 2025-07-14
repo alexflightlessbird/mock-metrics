@@ -6,7 +6,7 @@ export default function Logo ({ backgroundColor = "#0a1f3c", borderColor = "#f7f
     return (
         <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            xmlnsXlink="http://www.w3.org/1999/xlink" 
             width="500" 
             zoomAndPan="magnify" 
             viewBox="0 0 375 374.999991" 

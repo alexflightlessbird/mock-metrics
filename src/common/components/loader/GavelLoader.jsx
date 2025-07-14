@@ -8,7 +8,7 @@ function NewGavelIcon ({ fillColor = "#0a1f3c" }) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      xmlns:xlink="http://www.w3.org/1999/xlink" 
+      xmlnsXlink="http://www.w3.org/1999/xlink" 
       width="100%" 
       zoomAndPan="magnify" 
       viewBox="0 0 375 374.999991" 
@@ -29,23 +29,23 @@ function NewGavelIcon ({ fillColor = "#0a1f3c" }) {
       </defs>
       
       <g id={ids[8]}>
-        <g clip-rule="nonzero" clip-path={`url(#clip1-${ids[0]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip2-${ids[1]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip1-${ids[0]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip2-${ids[1]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 293.722656 168.027344 L 293.722656 206.929688 L -0.03125 206.929688 L -0.03125 168.027344 Z M 293.722656 168.027344 "/>
           </g>
         </g>
-        <g clip-rule="nonzero" clip-path={`url(#clip3-${ids[2]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip4-${ids[3]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip3-${ids[2]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip4-${ids[3]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 362.195312 125.398438 L 362.195312 249.558594 L 238.03125 249.558594 L 238.03125 125.398438 Z M 362.195312 125.398438 "/>
           </g>
         </g>
-        <g clip-rule="nonzero" clip-path={`url(#clip5-${ids[4]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip6-${ids[5]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip5-${ids[4]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip6-${ids[5]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 374.992188 266.984375 L 374.992188 305.890625 L 225.304688 305.890625 L 225.304688 266.984375 Z M 374.992188 266.984375 "/>
           </g>
         </g>
-        <g clip-rule="nonzero" clip-path={`url(#clip7-${ids[6]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip8-${ids[7]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip7-${ids[6]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip8-${ids[7]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: fillColor, fillOpacity: 1 }} d="M 374.992188 69.109375 L 374.992188 108.015625 L 225.304688 108.015625 L 225.304688 69.109375 Z M 374.992188 69.109375 "/>
           </g>
         </g>
@@ -60,7 +60,7 @@ function NewPanelIcon ({ topFillColor = "#0a1f3c", bottomFillColor = "#0a1f3c" }
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      xmlns:xlink="http://www.w3.org/1999/xlink" 
+      xmlnsXlink="http://www.w3.org/1999/xlink" 
       width="100%"
       zoomAndPan="magnify" 
       viewBox="0 0 375 374.999991" 
@@ -77,13 +77,13 @@ function NewPanelIcon ({ topFillColor = "#0a1f3c", bottomFillColor = "#0a1f3c" }
       </defs>
       
       <g id={ids[4]}>
-        <g clip-rule="nonzero" clip-path={`url(#clip1-${ids[0]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip2-${ids[1]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip1-${ids[0]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip2-${ids[1]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: topFillColor, fillOpacity: 1 }} d="M 285.1875 157.285156 L 285.1875 184.742188 L 89.769531 184.742188 L 89.769531 157.285156 Z M 285.1875 157.285156 "/>
           </g>
         </g>
-        <g clip-rule="nonzero" clip-path={`url(#clip3-${ids[2]})`}>
-          <g clip-rule="nonzero" clip-path={`url(#clip4-${ids[3]})`}>
+        <g clipRule="nonzero" clipPath={`url(#clip3-${ids[2]})`}>
+          <g clipRule="nonzero" clipPath={`url(#clip4-${ids[3]})`}>
             <path style={{ stroke: "none", fillRule: "nonzero", fill: bottomFillColor, fillOpacity: 1 }} d="M 308.011719 183.242188 L 308.011719 217.714844 L 66.964844 217.714844 L 66.964844 183.242188 Z M 308.011719 183.242188 "/>
           </g>
         </g>
