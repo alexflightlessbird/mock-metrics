@@ -1,4 +1,4 @@
-import { Table, Button, Text, Select, Stack, TextInput } from "@mantine/core";
+import { Table, Button, Text, Stack } from "@mantine/core";
 import { useState } from "react";
 import {
   EditDeleteTableActions,
@@ -8,14 +8,7 @@ import { splitSlash as splitType } from "../../../../common/utils/helpers";
 import { WITNESS_COLUMNS } from "../../common/columns";
 import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
 import DataTable from "../../../../common/components/tables/DataTable";
-
-const typeOptions = [
-  { value: "character", label: "Character" },
-  { value: "expert", label: "Expert" },
-  { value: "party rep", label: "Party Rep" },
-  { value: "police/investigator", label: "Police/Investigator" },
-  { value: "other", label: "Other" },
-];
+import { NameField, WitnessSideField, WitnessTypeField } from "../../common/FormFields";
 
 export function ViewWitnesses({
   witnesses,
@@ -32,20 +25,6 @@ export function ViewWitnesses({
 
   if (!witnesses?.length)
     return <Text>No witnesses assigned to this case</Text>;
-
-  const sideOptions = [
-    {
-      value: "p",
-      label:
-        caseType === "criminal"
-          ? "Prosecution"
-          : caseType === "civil"
-          ? "Plaintiff"
-          : "Plaintiff/Prosecution",
-    },
-    { value: "d", label: "Defense" },
-    { value: "s", label: "Swing" },
-  ];
 
   const handleEditStart = (witness) => {
     setEditWitnessId(witness.id);
@@ -90,11 +69,11 @@ export function ViewWitnesses({
     <Table.Tr key={witness.id}>
       <Table.Td>
         {editWitnessId === witness.id ? (
-          <TextInput
+          <NameField
             value={editValues.name}
-            onChange={(e) =>
-              setEditValues((v) => ({ ...v, name: e.target.value }))
-            }
+            onChange={(e) => setEditValues((v) => ({ ...v, name: e.target.value }))}
+            label=""
+            space={false}
           />
         ) : (
           witness.name || "-"
@@ -102,10 +81,11 @@ export function ViewWitnesses({
       </Table.Td>
       <Table.Td>
         {editWitnessId === witness.id ? (
-          <Select
-            data={sideOptions}
+          <WitnessSideField
             value={editValues.side}
-            onChange={(value) => setEditValues((v) => ({ ...v, side: value }))}
+            onChange={(e) => setEditValues((v) => ({ ...v, side: e }))}
+            pSide={caseType === "criminal" ? "prosecution" : caseType === "civil" ? "plaintiff" : ""}
+            label=""
           />
         ) : witness.side === "p" ? (
           caseType === "criminal" ? (
@@ -125,10 +105,10 @@ export function ViewWitnesses({
       </Table.Td>
       <Table.Td>
         {editWitnessId === witness.id ? (
-          <Select
-            data={typeOptions}
+          <WitnessTypeField
             value={editValues.type}
-            onChange={(value) => setEditValues((v) => ({ ...v, type: value }))}
+            onChange={(e) => setEditValues((v) => ({ ...v, type: e }))}
+            label=""
           />
         ) : witness.type === "expert" ? (
           "Expert"
@@ -149,7 +129,7 @@ export function ViewWitnesses({
           <ConfirmCancelTableActions
             onConfirm={() => handleEditSubmit(witness.id)}
             onCancel={handleEditCancel}
-            size="lg"
+            size="md"
           />
         ) : (
           <EditDeleteTableActions
@@ -191,41 +171,21 @@ export function AddWitness({ onSubmit, isLoading, caseType, setType }) {
     type: "character",
   });
 
-  const sideOptions = [
-    {
-      value: "p",
-      label:
-        caseType === "criminal"
-          ? "Prosecution"
-          : caseType === "civil"
-          ? "Plaintiff"
-          : "Plaintiff/Prosecution",
-    },
-    { value: "d", label: "Defense" },
-    { value: "s", label: "Swing" },
-  ];
-
   return (
     <Stack>
-      <TextInput
+      <NameField
         value={formValues.name}
         onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
-        label="Name"
-        required
+        space={false}
       />
-      <Select
-        label="Side"
-        data={sideOptions}
+      <WitnessSideField
         value={formValues.side}
-        onChange={(value) => setFormValues((v) => ({ ...v, side: value }))}
-        allowDeselect={false}
+        onChange={(e) => setFormValues((v) => ({ ...v, side: e }))}
+        pSide={caseType === "criminal" ? "prosecution" : caseType === "civil" ? "plaintiff" : ""}
       />
-      <Select
-        label="Type"
-        data={typeOptions}
+      <WitnessTypeField
         value={formValues.type}
-        onChange={(value) => setFormValues((v) => ({ ...v, type: value }))}
-        allowDeselect={false}
+        onChange={(e) => setFormValues((v) => ({ ...v, type: e }))}
       />
       <Button
         type="submit"

@@ -1,4 +1,4 @@
-import { Table, Button, Text, Select, Stack, Space } from "@mantine/core";
+import { Table, Button, Text, Stack } from "@mantine/core";
 import { useState } from "react";
 import {
   EditDeleteTableActions,
@@ -7,12 +7,7 @@ import {
 import DataTable from "../../../../common/components/tables/DataTable";
 import { ASSIGNMENT_COLUMNS } from "../../common/columns";
 import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
-
-const roleOptions = [
-  { value: "primary", label: "Primary Admin" },
-  { value: "admin", label: "Admin" },
-  { value: "viewer", label: "Viewer" },
-];
+import { RoleField, SearchSelectField } from "../../common/FormFields";
 
 export function ViewAssignments({
   assignments,
@@ -73,10 +68,10 @@ export function ViewAssignments({
       </Table.Td>
       <Table.Td>
         {editSchoolId === assignment.school_id ? (
-          <Select
-            data={roleOptions}
+          <RoleField
             value={editValues.role}
-            onChange={(value) => setEditValues((v) => ({ ...v, role: value }))}
+            onChange={(e) => setEditValues((v) => ({ ...v, role: e }))}
+            label=""
           />
         ) : assignment.role === "admin" ? (
           "Admin"
@@ -137,28 +132,21 @@ export function AddAssignment({ availableSchools, onAdd, isLoading, setType }) {
 
   return (
     <Stack>
-      <Select
-        label="Select school to assign"
-        placeholder="Search schools..."
+      <SearchSelectField
+        type="school"
         data={
-          availableSchools?.map((school) => ({
-            value: school.id,
-            label: school.id,
+          availableSchools?.map((s) => ({
+            value: s.id,
+            label: s.id
           })) || []
         }
         value={selectedSchool}
         onChange={setSelectedSchool}
-        searchable
-        nothingFoundMessage="No schools found"
       />
-      <Select
-        data={roleOptions}
-        allowDeselect={false}
+      <RoleField
         value={selectedRole}
         onChange={setSelectedRole}
-        label="Role"
       />
-      <Space h="xs" />
       <Button
         onClick={() => {
           if (selectedSchool && selectedRole) {

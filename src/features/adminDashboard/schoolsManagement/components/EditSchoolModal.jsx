@@ -1,11 +1,8 @@
 import {
-  Input,
   Radio,
   Group,
   Space,
   Divider,
-  TextInput,
-  Checkbox,
   Button,
   Stack,
 } from "@mantine/core";
@@ -13,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useSchoolAssignments } from "../hooks/useSchoolAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
 import BaseModal from "../../../../common/components/modals/BaseModal";
+import { NameField, StatusField } from "../../common/FormFields";
 
 export default function EditSchoolModal({
   opened,
@@ -113,31 +111,20 @@ export default function EditSchoolModal({
 
         {editType === "detail" && (
           <>
-            <TextInput
+            <NameField
               value={formValues.name}
-              onChange={(e) =>
-                setFormValues((v) => ({ ...v, name: e.target.value }))
-              }
-              label="School Name"
+              onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
             />
-            <Space h="xs" />
-            <TextInput
+            <NameField
               value={formValues.short_name}
-              onChange={(e) =>
-                setFormValues((v) => ({ ...v, short_name: e.target.value }))
-              }
-              label="School Short Name"
+              onChange={(e) => setFormValues((v) => ({ ...v, short_name: e.target.value }))}
+              label="Short Name"
             />
-            <Space h="xs" />
-            <Input.Wrapper label="Premium Status" />
-            <Checkbox
-              checked={formValues.is_premium}
-              onChange={(e) =>
-                setFormValues((v) => ({ ...v, is_premium: e.target.checked }))
-              }
-              label={`${formValues.is_premium ? "Active" : "Inactive"}`}
+            <StatusField
+              value={formValues.is_premium}
+              onChange={(e) => setFormValues((v) => ({ ...v, is_premium: e.target.checked }))}
+              questionLabel="Premium Status"
             />
-            <Space h="xs" />
             <Button loading={formLoading} type="submit">
               Submit
             </Button>
