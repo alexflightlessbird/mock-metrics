@@ -22,9 +22,11 @@ const queryClient = new QueryClient({
 const removeLoadingScreen = () => {
   const loadingElement = document.getElementById("app-loading");
   if (loadingElement) {
-    loadingElement.style.opacity = "0";
-    loadingElement.style.transition = "opacity 300ms ease-out";
-    setTimeout(() => loadingElement.remove(), 300);
+    setTimeout(() => {
+      loadingElement.style.opacity = "0";
+      loadingElement.style.transition = "opacity 500ms ease-out";
+      setTimeout(() => loadingElement.remove(), 500);
+    }, 1000);
   }
 }
 
@@ -37,8 +39,8 @@ root.render(
         <ModalsProvider>
           <AuthProvider>
             <Notifications />
-            {/* <App onReady={removeLoadingScreen} /> */}
-            <App />
+            <App onReady={removeLoadingScreen} />
+            {/* <App /> */}
           </AuthProvider>
           <ReactQueryDevtools />
         </ModalsProvider>
