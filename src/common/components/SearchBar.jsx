@@ -7,10 +7,11 @@ import {
   Space,
 } from "@mantine/core";
 import {
-  AiOutlineSearch,
-  AiOutlineReload,
-  AiOutlinePlus,
-} from "react-icons/ai";
+  LuSearch as SearchIcon,
+  LuPlus as PlusIcon,
+  LuRefreshCw as RefreshIcon,
+  LuX as XIcon
+} from "react-icons/lu";
 import { useViewportSize } from "@mantine/hooks";
 
 export default function SearchBar({
@@ -28,6 +29,10 @@ export default function SearchBar({
 }) {
   const { width } = useViewportSize();
 
+  const handleClear = () => {
+    onChange("");
+  }
+
   return (
     <>
       <Flex gap="xs" mt="md" align="center">
@@ -35,8 +40,9 @@ export default function SearchBar({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          leftSection={<AiOutlineSearch />}
+          leftSection={<SearchIcon />}
           flex={1}
+          rightSection={value ? (<ActionIcon c="gray" variant="transparent" onClick={handleClear}><XIcon /></ActionIcon>) : null}
         />
         {columns.length > 0 && (
           <Select
@@ -50,12 +56,12 @@ export default function SearchBar({
         )}
         {resetEnabled && (
           <ActionIcon onClick={onReset} size="lg">
-            <AiOutlineReload />
+            <RefreshIcon />
           </ActionIcon>
         )}
         {addEnabled && (width > 450 || (width <= 450 && !resetEnabled)) && (
           <ActionIcon onClick={onAdd} size="lg">
-            <AiOutlinePlus />
+            <PlusIcon />
           </ActionIcon>
         )}
       </Flex>
