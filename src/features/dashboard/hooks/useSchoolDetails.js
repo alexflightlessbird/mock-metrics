@@ -8,13 +8,14 @@ export function useSchoolDetails(schoolId) {
     const { data, isLoading } = useQuery({
         queryKey: ["school-details", schoolId],
         queryFn: async () => {
-            if (!schoolId) return [];
+            if (!schoolId) return {};
 
             try {
                 const { data, error } = await supabase
                     .from("schools")
                     .select("*")
-                    .eq("id", schoolId);
+                    .eq("id", schoolId)
+                    .maybeSingle();
                 if (error) throw error;
                 return data;
             } catch (error) {
@@ -22,7 +23,38 @@ export function useSchoolDetails(schoolId) {
                     title: "Failed to load school details",
                     message: error.message
                 })
-                return [];
+                return {};
+            }
+        }
+    })
+
+    return {
+        data,
+        isLoading
+    }
+}
+
+export function useSchoolUsers(schoolId) {
+    const { showError } = useNotifications();
+
+    const { data, isLoading } = useQuery({
+        queryKey: ["school-users", schoolId],
+        queryFn: async () => {
+            if (!schoolId) return [];
+
+            try {
+                const { data, error } = await supabase
+                    .from("users_schools")
+                    .select("*, users(*)")
+                    .eq("school_id", schoolId);
+                if (error) throw error;
+                return data;
+            } catch (error) {
+                showError({
+                    title: "Failed to load school users",
+                    message: error.message
+                })
+                return [] 
             }
         }
     })
@@ -53,7 +85,7 @@ export function useSchoolTeams(schoolId) {
                     title: "Failed to load school teams",
                     message: error.message
                 })
-                return [];
+                return []
             }
         }
     })
@@ -84,7 +116,7 @@ export function useSchoolStudents(schoolId) {
                     title: "Failed to load school students",
                     message: error.message
                 })
-                return [];
+                return []
             }
         }
     })
@@ -115,7 +147,7 @@ export function useSchoolTournaments(schoolId) {
                     title: "Failed to load school tournaments",
                     message: error.message
                 })
-                return [];
+                return []
             }
         }
     })

@@ -13,7 +13,7 @@ export function useUserAssignments(userId) {
             try {
                 const { data, error } = await supabase
                     .from("users_schools")
-                    .select("school_id, role, schools:school_id (id, name, short_name)")
+                    .select("school_id, role, schools:school_id (*)")
                     .eq("user_id", userId);
                 if (error) throw error;
                 if (data?.length === 0) return [];

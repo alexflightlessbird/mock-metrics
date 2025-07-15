@@ -1,10 +1,10 @@
 import { Flex, ActionIcon } from "@mantine/core";
-import {
-  AiOutlineEdit,
-  AiOutlineDelete,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from "react-icons/ai";
+import { 
+  LuPencilLine as EditIcon,
+  LuTrash as DeleteIcon,
+  LuCheck as CheckIcon,
+  LuX as CloseIcon
+} from "react-icons/lu";
 
 export function EditDeleteTableActions({
   onEdit,
@@ -15,11 +15,11 @@ export function EditDeleteTableActions({
   return (
     <Flex wrap="wrap" rowGap="xs" columnGap="xs">
       <ActionIcon size={size} onClick={onEdit}>
-        <AiOutlineEdit />
+        <EditIcon />
       </ActionIcon>
       {canDelete && (
         <ActionIcon size={size} onClick={onDelete}>
-          <AiOutlineDelete />
+          <DeleteIcon />
         </ActionIcon>
       )}
     </Flex>
@@ -34,10 +34,10 @@ export function ConfirmCancelTableActions({
   return (
     <Flex wrap="wrap" rowGap="xs" columnGap="xs">
       <ActionIcon size={size} onClick={onConfirm}>
-        <AiOutlineCheck />
+        <CheckIcon />
       </ActionIcon>
       <ActionIcon color="gray" size={size} onClick={onCancel}>
-        <AiOutlineClose />
+        <CloseIcon />
       </ActionIcon>
     </Flex>
   );
