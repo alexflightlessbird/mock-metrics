@@ -20,29 +20,29 @@ export const SEARCH_USER_COLUMNS = [
 export const CASE_COLUMNS = [
   ...SEARCH_CASE_COLUMNS,
   { value: "is_active", label: "Active" },
-  { value: "actions", label: "Actions" },
+  { value: "actions", label: "Actions", type: "actions-md" },
 ];
 
 export const SCHOOL_COLUMNS = [
   ...SEARCH_SCHOOL_COLUMNS,
   { value: "is_premium", label: "Premium" },
-  { value: "actions", label: "Actions" },
+  { value: "actions", label: "Actions", type: "actions-md" },
 ];
 
 export const USER_COLUMNS = [
   ...SEARCH_USER_COLUMNS,
-  { value: "actions", label: "Actions" },
+  { value: "actions", label: "Actions", type: "actions-md" },
 ];
 
 export const ASSIGNMENT_COLUMNS = [
   { value: "id", label: "ID" },
   { value: "role", label: "Role" },
-  { value: "actions", label: "Actions" },
+  { value: "actions", label: "Actions", type: "actions-lg" },
 ];
 
 export const WITNESS_COLUMNS = [
   { value: "name", label: "Name" },
   { value: "side", label: "Side" },
   { value: "type", label: "Type" },
-  { value: "actions", label: "Actions" },
+  { value: "actions", label: "Actions", type: "actions-lg" },
 ];

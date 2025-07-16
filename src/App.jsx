@@ -9,6 +9,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import Error404 from "./pages/Error404";
 import Error from "./pages/Error";
 import CasesPage from "./pages/CasesPage";
+import NavLayout from "./layouts/NavLayout";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -29,15 +30,15 @@ export default function App({ onReady }) {
           />
           <Route
             path="/admin"
-            element={isSuperAdmin ? <AdminDashboard /> : <Navigate to="/" replace />}
+            element={isSuperAdmin ? <NavLayout><AdminDashboard /></NavLayout> : <Navigate to="/" replace />}
           />
           <Route
             path="/cases"
-            element={<CasesPage />}
+            element={<NavLayout><CasesPage /></NavLayout>}
           />
           <Route
             path="/"
-            element={user ? <DashboardPage /> : <Navigate to="/auth" replace />}
+            element={user ? <NavLayout><DashboardPage /></NavLayout> : <Navigate to="/auth" replace />}
           />
           <Route path="*" element={<Error404 />} />
         </Routes>

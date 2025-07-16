@@ -129,7 +129,7 @@ export function ViewWitnesses({
           <ConfirmCancelTableActions
             onConfirm={() => handleEditSubmit(witness.id)}
             onCancel={handleEditCancel}
-            size="md"
+            size="lg"
           />
         ) : (
           <EditDeleteTableActions

@@ -61,6 +61,8 @@ export function AuthProvider({ children }) {
     },
     signOut: async () => {
       localStorage.removeItem("school");
+      localStorage.removeItem("nav-collapsed");
+      localStorage.removeItem("nav-width");
       await supabase.auth.signOut();
     },
   };

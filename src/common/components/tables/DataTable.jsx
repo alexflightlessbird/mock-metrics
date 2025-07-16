@@ -50,7 +50,10 @@ export default function DataTable({
           <Table.Thead>
             <Table.Tr>
               {columns.map((column) => (
-                <Table.Th key={column.value}>{column.label}</Table.Th>
+                <Table.Th 
+                  key={column.value}
+                  style={column?.type?.toLowerCase() === "actions-md" ? { minWidth: "90px" } : column?.type?.toLowerCase() === "actions-lg" ? { minWidth: "100px" } : {}}
+                >{column.label}</Table.Th>
               ))}
             </Table.Tr>
           </Table.Thead>
