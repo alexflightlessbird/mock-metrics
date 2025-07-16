@@ -40,7 +40,7 @@ export default function App({ onReady }) {
             path="/"
             element={user ? <NavLayout><DashboardPage /></NavLayout> : <Navigate to="/auth" replace />}
           />
-          <Route path="*" element={<Error404 />} />
+          <Route path="*" element={<NavLayout><Error404 /></NavLayout>} />
         </Routes>
       </ErrorBoundary>
     </BrowserRouter>

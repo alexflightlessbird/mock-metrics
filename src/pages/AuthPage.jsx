@@ -31,7 +31,7 @@ export default function AuthPage() {
   };
 
   return (
-    <Container className="auth-container">
+    <Container className="auth-container" fluid>
       <form onSubmit={handleSubmit}>
         <TextInput
           label="Email"

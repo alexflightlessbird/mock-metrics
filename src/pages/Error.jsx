@@ -5,7 +5,7 @@ export default function Error({ error, resetErrorBoundary }) {
     const navigate = useNavigate();
 
     return (
-        <Container>
+        <Container fluid>
             <Title order={1}>Something went wrong</Title>
             <Text c="red">{error?.message}</Text>
             <Group mt="md">

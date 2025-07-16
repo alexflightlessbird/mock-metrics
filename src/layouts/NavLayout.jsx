@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { AppShell, NavLink, Burger, Group, rem, useMantineTheme } from '@mantine/core';
-import { useDisclosure, useViewportSize, useLocalStorage } from '@mantine/hooks';
+import { AppShell, NavLink, Burger, Group, rem, useMantineTheme, Text } from '@mantine/core';
+import { useDisclosure, useViewportSize, useLocalStorage, useHeadroom } from '@mantine/hooks';
 import { LuBriefcase, LuSchool, LuLogOut, LuDatabase } from 'react-icons/lu';
 import { PiGavelFill } from "react-icons/pi";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -18,6 +18,7 @@ export default function NavLayout({ children }) {
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const pinned = useHeadroom({ fixedAt: 10 });
 
   const { signOut, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
@@ -105,7 +106,7 @@ export default function NavLayout({ children }) {
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 70, collapsed: !pinned }}
       navbar={{
         width: isMobile ? (mobileOpened ? sidebarWidth : 0) : desktopCollapsed ? 80 : sidebarWidth,
         breakpoint: 'sm',
@@ -113,10 +114,13 @@ export default function NavLayout({ children }) {
       }}
       padding="md"
     >
-      <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
-          <div><Logo /></div>
+      <AppShell.Header withBorder={false}>
+        <Group h="100%" px="xs" justify={isMobile ? "center" : "flex-start"}>
+          <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" style={{ position: "absolute", left: "var(--mantine-spacing-md)" }}/>
+          <Group h="100%" gap="0">
+            <Logo />
+            <Text ff="Trirong" fz="xl">MockMetrics</Text>
+          </Group>
         </Group>
       </AppShell.Header>
       
@@ -154,16 +158,15 @@ export default function NavLayout({ children }) {
           </AppShell.Section>
 
           <AppShell.Section mb="xs">
-            {BOTTOM_LINKS.map((link) => (
-              <NavLink
+            {BOTTOM_LINKS.map((link) => 
+              {return link.enabled && (<NavLink
                 key={link.label}
-                display={!link.enabled ? "none" : "" }
                 active={location.pathname === link?.path}
                 label={isMobile ? link.label : desktopCollapsed ? null : link.label}
                 leftSection={<link.icon size="1rem" />}
                 onClick={() => link.onClick()}
-              />
-            ))}
+              />)}
+            )}
           </AppShell.Section>
           
           {!isMobile && (

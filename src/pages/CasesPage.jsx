@@ -10,7 +10,7 @@ export default function CasesPage() {
     console.log(cases);
 
     return (
-        <Container>
+        <Container fluid>
             <Title order={1}>Cases</Title>
             <List>
                 {cases.map((c) => {

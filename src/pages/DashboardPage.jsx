@@ -1,6 +1,5 @@
-import { Container, Title, Button, Group, Space, Text, Select, Flex, List, Skeleton, ActionIcon } from "@mantine/core";
+import { Container, Title, Group, Space, Text, Select, Flex, List, Skeleton, ActionIcon } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
 import { useSchoolDetails, useSchoolUsers, useSchoolTeams, useSchoolStudents, useSchoolTournaments } from "../features/dashboard/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
@@ -10,8 +9,7 @@ import { capitalize } from "../common/utils/helpers";
 import { LuCopy as CopyIcon, LuCopyCheck as CopiedIcon } from "react-icons/lu";
 
 export default function DashboardPage() {
-  const { signOut, isSuperAdmin, user } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const { assignments, isLoading } = useUserAssignments(user.id);
   const [role, setRole] = useState("viewer");
   const [showSchoolId, setShowSchoolId] = useState(false);
@@ -51,15 +49,8 @@ export default function DashboardPage() {
   }));
 
   return (
-    <Container>
+    <Container fluid>
       <Title order={1}>User Dashboard</Title>
-      <Space h="md" />
-      <Group>
-        <Button onClick={signOut}>Sign Out</Button>
-        {isSuperAdmin && (
-          <Button onClick={() => navigate("/admin")}>Admin Dashboard</Button>
-        )}
-      </Group>
       {assignments.length === 0 && (
         <>
           <Space h="xs" />
@@ -68,7 +59,7 @@ export default function DashboardPage() {
       )}
       {assignments.length > 1 && (
         <>
-          <Space h="xl" />
+          <Space h="md" />
           <Select
             data={schoolOptions}
             value={selectedSchoolId}
