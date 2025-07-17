@@ -111,7 +111,7 @@ export default function EntityManagement({
           opened={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           selected={selectedEntity}
-          onSubmit={deleteEntity}
+          onSubmit={(id) => deleteEntity(id).finally(() => setDeleteModalOpen(false))}
         />
       )}
     </Container>

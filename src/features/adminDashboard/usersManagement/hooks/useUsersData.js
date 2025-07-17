@@ -47,8 +47,10 @@ export default function useUsersData() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from("users").delete().eq("id", id);
-      if (error) throw error;
+      const { error } = await supabase.rpc("delete_auth_user", { target_user_id: id });
+      if (error) {
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["admin-users"]);

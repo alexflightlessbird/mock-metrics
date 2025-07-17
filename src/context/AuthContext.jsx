@@ -57,6 +57,17 @@ export function AuthProvider({ children }) {
         password,
       });
       if (error) throw error;
+
+      if (data.user) {
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({ last_sign_in: new Date().toISOString() })
+          .eq("id", data.user.id);
+
+        if (updateError) {
+          console.error("Failed to update last_sign_in:", updateError);
+        }
+      }
       return data;
     },
     signOut: async () => {
