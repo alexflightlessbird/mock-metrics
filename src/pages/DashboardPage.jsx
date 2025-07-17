@@ -4,7 +4,7 @@ import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignmen
 import { useSchoolDetails, useSchoolUsers, useSchoolTeams, useSchoolStudents, useSchoolTournaments } from "../features/dashboard/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage, useClipboard } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { capitalize } from "../common/utils/helpers";
 import { LuCopy as CopyIcon, LuCopyCheck as CopiedIcon } from "react-icons/lu";
 
@@ -14,6 +14,11 @@ export default function DashboardPage() {
   const [role, setRole] = useState("viewer");
   const [showSchoolId, setShowSchoolId] = useState(false);
   const clipboard = useClipboard({ timeout: 1000 });
+  const [userList, setUserList] = {
+    primaryAdmins: [],
+    admins: [],
+    viewers: []
+  }
 
   const [selectedSchoolId, setSelectedSchoolId] = useLocalStorage({
     key: "school",
@@ -34,6 +39,18 @@ export default function DashboardPage() {
     const currentRole = users.find(u => u.user_id === user.id)?.role;
     if (currentRole && currentRole !== role) setRole(currentRole); 
   }, [users, role, setRole, user]);
+
+  useMemo(() => {
+    const primaryAdmins = users.filter((u) => u.role === "primary");
+    const admins = users.filter((u) => u.role === "admin");
+    const viewers = users.filter((u) => u.role === "viewer");
+
+    setUserList({
+      primaryAdmins,
+      admins,
+      viewers
+    })
+  }, [users, setUserList]);
 
   if (isLoading) return (
     <Container>
@@ -124,9 +141,32 @@ export default function DashboardPage() {
               ))}
             </List>
           ) : users.length > 0 ? (
-            <List>
-              {users.map((u) => <List.Item key={u.user_id}>{u.users.name} ({u.users.email})</List.Item>)}
-            </List>
+            <>
+              {userList.primaryAdmins.length > 0 ? (
+                <>
+                  <Title order={5}>Primary Admins</Title>
+                  <List>
+                    {userList.primaryAdmins.map((u) => <List.Item key={u.user_id}>{u.users.name} ({u.users.email})</List.Item>)}
+                  </List>
+                </>
+              ) : (<></>)}
+              {userList.admins.length > 0 ? (
+                <>
+                  <Title order={5}>Admins</Title>
+                  <List>
+                    {userList.admins.map((u) => <List.Item key={u.user_id}>{u.users.name} ({u.users.email})</List.Item>)}
+                  </List>
+                </>
+              ) : (<></>)}
+              {userList.viewers.length > 0 ? (
+                <>
+                  <Title order={5}>Viewers</Title>
+                  <List>
+                    {userList.viewers.map((u) => <List.Item key={u.user_id}>{u.users.name} ({u.users.email})</List.Item>)}
+                  </List>
+                </>
+              ) : (<></>)}
+            </>
           ) : (
             <Text c="dimmed">No users found</Text>
           )}
