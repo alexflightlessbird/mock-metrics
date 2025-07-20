@@ -1,11 +1,4 @@
-import {
-  Radio,
-  Group,
-  Space,
-  Divider,
-  Button,
-  Stack,
-} from "@mantine/core";
+import { Radio, Group, Space, Divider, Button, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useSchoolAssignments } from "../hooks/useSchoolAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
@@ -113,16 +106,22 @@ export default function EditSchoolModal({
           <>
             <NameField
               value={formValues.name}
-              onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, name: e.target.value }))
+              }
             />
             <NameField
               value={formValues.short_name}
-              onChange={(e) => setFormValues((v) => ({ ...v, short_name: e.target.value }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, short_name: e.target.value }))
+              }
               label="Short Name"
             />
             <StatusField
               value={formValues.is_premium}
-              onChange={(e) => setFormValues((v) => ({ ...v, is_premium: e.target.checked }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, is_premium: e.target.checked }))
+              }
               questionLabel="Premium Status"
             />
             <Button loading={formLoading} type="submit">

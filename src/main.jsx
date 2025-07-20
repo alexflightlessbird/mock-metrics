@@ -28,7 +28,7 @@ const removeLoadingScreen = () => {
       setTimeout(() => loadingElement.remove(), 500);
     }, 1000);
   }
-}
+};
 
 const root = createRoot(document.getElementById("root"));
 

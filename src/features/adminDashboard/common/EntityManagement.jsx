@@ -62,13 +62,14 @@ export default function EntityManagement({
     setSearchColumn("all");
   };
 
-  if (isLoading) return (
-    <Container fluid px={0}>
-      <Flex justify="center" mt="xs">
-        <Loader key={`${entityName}-loader-animation`} scale={1.5} />
-      </Flex>
-    </Container>
-  );
+  if (isLoading)
+    return (
+      <Container fluid px={0}>
+        <Flex justify="center" mt="xs">
+          <Loader key={`${entityName}-loader-animation`} scale={1.5} />
+        </Flex>
+      </Container>
+    );
 
   return (
     <Container fluid px={0}>
@@ -111,7 +112,9 @@ export default function EntityManagement({
           opened={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           selected={selectedEntity}
-          onSubmit={(id) => deleteEntity(id).finally(() => setDeleteModalOpen(false))}
+          onSubmit={(id) =>
+            deleteEntity(id).finally(() => setDeleteModalOpen(false))
+          }
         />
       )}
     </Container>

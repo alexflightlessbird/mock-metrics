@@ -30,17 +30,44 @@ export default function App({ onReady }) {
           />
           <Route
             path="/admin"
-            element={isSuperAdmin ? <NavLayout><AdminDashboard /></NavLayout> : <Navigate to="/" replace />}
+            element={
+              isSuperAdmin ? (
+                <NavLayout>
+                  <AdminDashboard />
+                </NavLayout>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
           />
           <Route
             path="/cases"
-            element={<NavLayout><CasesPage /></NavLayout>}
+            element={
+              <NavLayout>
+                <CasesPage />
+              </NavLayout>
+            }
           />
           <Route
             path="/"
-            element={user ? <NavLayout><DashboardPage /></NavLayout> : <Navigate to="/auth" replace />}
+            element={
+              user ? (
+                <NavLayout>
+                  <DashboardPage />
+                </NavLayout>
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
           />
-          <Route path="*" element={<NavLayout><Error404 /></NavLayout>} />
+          <Route
+            path="*"
+            element={
+              <NavLayout>
+                <Error404 />
+              </NavLayout>
+            }
+          />
         </Routes>
       </ErrorBoundary>
     </BrowserRouter>

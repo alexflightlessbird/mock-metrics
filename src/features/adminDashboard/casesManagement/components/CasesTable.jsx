@@ -3,7 +3,10 @@ import DataTable from "../../../../common/components/tables/DataTable";
 import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
 import { CASE_COLUMNS } from "../../common/columns";
-import { capitalize, splitSlash as splitArea } from "../../../../common/utils/helpers";
+import {
+  capitalize,
+  splitSlash as splitArea,
+} from "../../../../common/utils/helpers";
 
 export default function CasesTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
@@ -17,7 +20,17 @@ export default function CasesTable({ data, onSelect }) {
           ? caseVal.type.charAt(0).toUpperCase() + caseVal.type.slice(1)
           : "-"}
       </Table.Td>
-      <Table.Td>{splitArea(caseVal.area === "invitationals/regionals/orcs" ? "Invitationals/Regionals/ORCS" : caseVal.area === "rookie rumble" ? "Rookie Rumble" : caseVal.area === "olt" ? "OLT" : capitalize(caseVal.area))}</Table.Td>
+      <Table.Td>
+        {splitArea(
+          caseVal.area === "invitationals/regionals/orcs"
+            ? "Invitationals/Regionals/ORCS"
+            : caseVal.area === "rookie rumble"
+            ? "Rookie Rumble"
+            : caseVal.area === "olt"
+            ? "OLT"
+            : capitalize(caseVal.area)
+        )}
+      </Table.Td>
       <Table.Td>
         <Checkbox checked={caseVal.is_active} readOnly />
       </Table.Td>

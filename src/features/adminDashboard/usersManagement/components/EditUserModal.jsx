@@ -1,11 +1,4 @@
-import {
-  Radio,
-  Group,
-  Space,
-  Divider,
-  Button,
-  Stack,
-} from "@mantine/core";
+import { Radio, Group, Space, Divider, Button, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useUserAssignments } from "../hooks/useUserAssignments";
 import { ViewAssignments, AddAssignment } from "./AssignmentViews";
@@ -98,7 +91,9 @@ export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
           <>
             <NameField
               value={formValues.name}
-              onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, name: e.target.value }))
+              }
             />
             <Button loading={formLoading} type="submit">
               Submit

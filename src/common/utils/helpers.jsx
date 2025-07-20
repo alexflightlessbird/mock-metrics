@@ -35,7 +35,9 @@ export function splitEmail(email) {
   );
 }
 
-export function emToPx (emValue) {
-  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+export function emToPx(emValue) {
+  const rootFontSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize
+  );
   return emValue * rootFontSize;
 }

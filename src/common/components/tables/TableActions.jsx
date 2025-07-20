@@ -1,9 +1,9 @@
 import { Flex, ActionIcon } from "@mantine/core";
-import { 
+import {
   LuPencilLine as EditIcon,
   LuTrash as DeleteIcon,
   LuCheck as CheckIcon,
-  LuX as CloseIcon
+  LuX as CloseIcon,
 } from "react-icons/lu";
 
 export function EditDeleteTableActions({

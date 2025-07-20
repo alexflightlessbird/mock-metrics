@@ -126,9 +126,13 @@ export function ViewAssignments({
 export function AddAssignment({ availableSchools, onAdd, isLoading, setType }) {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedRole, setSelectedRole] = useState("viewer");
-  
+
   if (!availableSchools?.length)
-    return <Text>No schools available that aren't already assigned to this user</Text>;
+    return (
+      <Text>
+        No schools available that aren't already assigned to this user
+      </Text>
+    );
 
   return (
     <Stack>
@@ -137,16 +141,13 @@ export function AddAssignment({ availableSchools, onAdd, isLoading, setType }) {
         data={
           availableSchools?.map((s) => ({
             value: s.id,
-            label: s.id
+            label: s.id,
           })) || []
         }
         value={selectedSchool}
         onChange={setSelectedSchool}
       />
-      <RoleField
-        value={selectedRole}
-        onChange={setSelectedRole}
-      />
+      <RoleField value={selectedRole} onChange={setSelectedRole} />
       <Button
         onClick={() => {
           if (selectedSchool && selectedRole) {

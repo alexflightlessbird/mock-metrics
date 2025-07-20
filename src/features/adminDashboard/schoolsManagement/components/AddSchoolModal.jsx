@@ -32,17 +32,23 @@ export default function AddSchoolModal({ opened, onClose, onSubmit }) {
       <form onSubmit={handleSubmit}>
         <NameField
           value={formValues.name}
-          onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+          onChange={(e) =>
+            setFormValues((v) => ({ ...v, name: e.target.value }))
+          }
           autofocus={true}
         />
         <NameField
           value={formValues.short_name}
-          onChange={(e) => setFormValues((v) => ({ ...v, short_name: e.target.value }))}
+          onChange={(e) =>
+            setFormValues((v) => ({ ...v, short_name: e.target.value }))
+          }
           label="Short Name"
         />
         <StatusField
           value={formValues.is_premium}
-          onChange={(e) => setFormValues((v) => ({ ...v, is_premium: e.target.checked }))}
+          onChange={(e) =>
+            setFormValues((v) => ({ ...v, is_premium: e.target.checked }))
+          }
           questionLabel="Premium Status"
         />
         <Button type="submit" loading={isLoading}>

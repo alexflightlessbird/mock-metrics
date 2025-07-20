@@ -1,7 +1,13 @@
 import { Button } from "@mantine/core";
 import { useState } from "react";
 import BaseModal from "../../../../common/components/modals/BaseModal";
-import { StatusField, CaseAreaField, CaseTypeField, NameField, YearField } from "../../common/FormFields";
+import {
+  StatusField,
+  CaseAreaField,
+  CaseTypeField,
+  NameField,
+  YearField,
+} from "../../common/FormFields";
 
 export default function AddCaseModal({ opened, onClose, onSubmit }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,16 +44,18 @@ export default function AddCaseModal({ opened, onClose, onSubmit }) {
   return (
     <BaseModal opened={opened} onClose={onClose} title="Add Case">
       <form onSubmit={handleSubmit}>
-        <NameField 
-          value={formValues.name} 
-          onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+        <NameField
+          value={formValues.name}
+          onChange={(e) =>
+            setFormValues((v) => ({ ...v, name: e.target.value }))
+          }
           autofocus={true}
         />
-        <YearField 
+        <YearField
           value={formValues.year}
           onChange={(e) => setFormValues((v) => ({ ...v, year: e }))}
         />
-        <CaseTypeField 
+        <CaseTypeField
           value={formValues.type}
           onChange={(e) => setFormValues((v) => ({ ...v, type: e }))}
         />
@@ -57,7 +65,9 @@ export default function AddCaseModal({ opened, onClose, onSubmit }) {
         />
         <StatusField
           value={formValues.is_active}
-          onChange={(e) => setFormValues((v) => ({ ...v, is_active: e.target.checked }))}
+          onChange={(e) =>
+            setFormValues((v) => ({ ...v, is_active: e.target.checked }))
+          }
         />
         <Button type="submit" loading={isLoading}>
           Submit

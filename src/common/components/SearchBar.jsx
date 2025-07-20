@@ -10,7 +10,7 @@ import {
   LuSearch as SearchIcon,
   LuPlus as PlusIcon,
   LuRefreshCw as RefreshIcon,
-  LuX as XIcon
+  LuX as XIcon,
 } from "react-icons/lu";
 import { useViewportSize } from "@mantine/hooks";
 
@@ -31,7 +31,7 @@ export default function SearchBar({
 
   const handleClear = () => {
     onChange("");
-  }
+  };
 
   return (
     <>
@@ -42,7 +42,13 @@ export default function SearchBar({
           onChange={(e) => onChange(e.target.value)}
           leftSection={<SearchIcon />}
           flex={1}
-          rightSection={value ? (<ActionIcon c="gray" variant="transparent" onClick={handleClear}><XIcon /></ActionIcon>) : null}
+          rightSection={
+            value ? (
+              <ActionIcon c="gray" variant="transparent" onClick={handleClear}>
+                <XIcon />
+              </ActionIcon>
+            ) : null
+          }
         />
         {columns.length > 0 && (
           <Select

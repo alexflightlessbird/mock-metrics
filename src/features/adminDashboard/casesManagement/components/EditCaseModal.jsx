@@ -1,16 +1,15 @@
-import {
-  Radio,
-  Group,
-  Space,
-  Divider,
-  Button,
-  Stack,
-} from "@mantine/core";
+import { Radio, Group, Space, Divider, Button, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
 import useCaseWitnesses from "../hooks/useCaseWitnesses";
 import { ViewWitnesses, AddWitness } from "./WitnessViews";
 import BaseModal from "../../../../common/components/modals/BaseModal";
-import { StatusField, CaseAreaField, CaseTypeField, NameField, YearField } from "../../common/FormFields";
+import {
+  StatusField,
+  CaseAreaField,
+  CaseTypeField,
+  NameField,
+  YearField,
+} from "../../common/FormFields";
 
 export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
   const caseVal = selected;
@@ -104,7 +103,9 @@ export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
           <>
             <NameField
               value={formValues.name}
-              onChange={(e) => setFormValues((v) => ({ ...v, name: e.target.value }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, name: e.target.value }))
+              }
             />
             <YearField
               value={formValues.year}
@@ -120,7 +121,9 @@ export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
             />
             <StatusField
               value={formValues.is_active}
-              onChange={(e) => setFormValues((v) => ({ ...v, is_active: e.target.checked }))}
+              onChange={(e) =>
+                setFormValues((v) => ({ ...v, is_active: e.target.checked }))
+              }
             />
             <Button loading={formLoading} type="submit">
               Submit

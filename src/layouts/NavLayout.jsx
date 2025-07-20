@@ -1,17 +1,30 @@
-import { useState, useEffect, useMemo } from 'react';
-import { AppShell, NavLink, Burger, Group, rem, useMantineTheme, Text } from '@mantine/core';
-import { useDisclosure, useViewportSize, useLocalStorage, useHeadroom } from '@mantine/hooks';
-import { LuBriefcase, LuSchool, LuLogOut, LuDatabase } from 'react-icons/lu';
+import { useState, useEffect, useMemo } from "react";
+import {
+  AppShell,
+  NavLink,
+  Burger,
+  Group,
+  rem,
+  useMantineTheme,
+  Text,
+} from "@mantine/core";
+import {
+  useDisclosure,
+  useViewportSize,
+  useLocalStorage,
+  useHeadroom,
+} from "@mantine/hooks";
+import { LuBriefcase, LuSchool, LuLogOut, LuDatabase } from "react-icons/lu";
 import { PiGavelFill } from "react-icons/pi";
-import { useNavigate, useLocation } from 'react-router-dom';
-import { emToPx } from '../common/utils/helpers';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate, useLocation } from "react-router-dom";
+import { emToPx } from "../common/utils/helpers";
+import { useAuth } from "../context/AuthContext";
 import Logo from "../assets/svgs/Logo";
 
 const NAV_LINKS = [
-  { icon: PiGavelFill, label: 'Dashboard', path: '/' },
-  { icon: LuBriefcase, label: 'Cases', path: '/cases' },
-  { icon: LuSchool, label: 'School', path: '/school' },
+  { icon: PiGavelFill, label: "Dashboard", path: "/" },
+  { icon: LuBriefcase, label: "Cases", path: "/cases" },
+  { icon: LuSchool, label: "School", path: "/school" },
 ];
 
 export default function NavLayout({ children }) {
@@ -22,41 +35,55 @@ export default function NavLayout({ children }) {
 
   const { signOut, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
-  
   const { width } = useViewportSize();
-  const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure();
-  
+  const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
+    useDisclosure();
+
   const [desktopCollapsed, setDesktopCollapsed] = useLocalStorage({
     key: "nav-collapsed",
-    defaultValue: false
+    defaultValue: false,
   });
-  
+
   const [sidebarWidth, setSidebarWidth] = useLocalStorage({
     key: "nav-width",
-    defaultValue: 175
-  })
-  
+    defaultValue: 175,
+  });
+
   const BOTTOM_LINKS = [
-    { enabled: isSuperAdmin && !superAdminLoading, icon: LuDatabase, label: "Admin", path: "/admin", onClick: () => {
-      navigate("/admin");
-      setTimeout(() => {
-        closeMobile();
-      }, 100)
-    }},
-    { enabled: !loading, icon: LuLogOut, label: "Log Out", onClick: () => {
-      signOut();
-      navigate("/auth");
-      setTimeout(() => {
-        closeMobile();
-      }, 100)
-    }},
-  ]
+    {
+      enabled: isSuperAdmin && !superAdminLoading,
+      icon: LuDatabase,
+      label: "Admin",
+      path: "/admin",
+      onClick: () => {
+        navigate("/admin");
+        setTimeout(() => {
+          closeMobile();
+        }, 100);
+      },
+    },
+    {
+      enabled: !loading,
+      icon: LuLogOut,
+      label: "Log Out",
+      onClick: () => {
+        signOut();
+        navigate("/auth");
+        setTimeout(() => {
+          closeMobile();
+        }, 100);
+      },
+    },
+  ];
 
   const [isResizing, setIsResizing] = useState(false);
 
-  const smBreakpointPx = useMemo(() => emToPx(parseFloat(theme.breakpoints.sm)), [theme.breakpoints.sm]);
+  const smBreakpointPx = useMemo(
+    () => emToPx(parseFloat(theme.breakpoints.sm)),
+    [theme.breakpoints.sm]
+  );
   const isMobile = width < smBreakpointPx;
-     
+
   // Reset mobile state when switching to desktop
   useEffect(() => {
     if (!isMobile) {
@@ -68,14 +95,14 @@ export default function NavLayout({ children }) {
     setIsResizing(true);
     document.body.style.userSelect = "none";
     document.body.style.webkitUserSelect = "none";
-  }
+  };
 
   const stopResizing = () => {
     setIsResizing(false);
     document.body.style.userSelect = "";
     document.body.style.webkitUserSelect = "";
-  }
-  
+  };
+
   const resize = (e) => {
     if (isResizing && !isMobile) {
       const newWidth = e.clientX;
@@ -83,7 +110,7 @@ export default function NavLayout({ children }) {
       if (desktopCollapsed && newWidth > 100) {
         setDesktopCollapsed(false);
         setSidebarWidth(Math.max(newWidth, 175));
-      } 
+      }
       // Normal resize when not collapsed
       else if (!desktopCollapsed) {
         if (newWidth < 100) {
@@ -94,13 +121,13 @@ export default function NavLayout({ children }) {
       }
     }
   };
-  
+
   useEffect(() => {
-    window.addEventListener('mousemove', resize);
-    window.addEventListener('mouseup', stopResizing);
+    window.addEventListener("mousemove", resize);
+    window.addEventListener("mouseup", stopResizing);
     return () => {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
     };
   }, [isResizing, desktopCollapsed]);
 
@@ -108,35 +135,49 @@ export default function NavLayout({ children }) {
     <AppShell
       header={{ height: 70, collapsed: !pinned }}
       navbar={{
-        width: isMobile ? (mobileOpened ? sidebarWidth : 0) : desktopCollapsed ? 80 : sidebarWidth,
-        breakpoint: 'sm',
+        width: isMobile
+          ? mobileOpened
+            ? sidebarWidth
+            : 0
+          : desktopCollapsed
+          ? 80
+          : sidebarWidth,
+        breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
       padding="md"
     >
       <AppShell.Header withBorder={false}>
         <Group h="100%" px="xs" justify={isMobile ? "center" : "flex-start"}>
-          <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" style={{ position: "absolute", left: "var(--mantine-spacing-md)" }}/>
+          <Burger
+            opened={mobileOpened}
+            onClick={toggleMobile}
+            hiddenFrom="sm"
+            size="sm"
+            style={{ position: "absolute", left: "var(--mantine-spacing-md)" }}
+          />
           <Group h="100%" gap="0">
             <Logo />
-            <Text ff="Trirong" fz="xl">MockMetrics</Text>
+            <Text ff="Trirong" fz="xl">
+              MockMetrics
+            </Text>
           </Group>
         </Group>
       </AppShell.Header>
-      
-      <AppShell.Navbar 
-        p="md" 
-        style={{ 
-          overflow: 'hidden',
-          transition: 'width 200ms ease',
+
+      <AppShell.Navbar
+        p="md"
+        style={{
+          overflow: "hidden",
+          transition: "width 200ms ease",
         }}
       >
-        <div 
-          style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            height: '100%',
-            width: '100%',
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "100%",
           }}
         >
           <AppShell.Section style={{ flex: 1 }}>
@@ -144,13 +185,15 @@ export default function NavLayout({ children }) {
               <NavLink
                 key={link.path}
                 active={location.pathname === link.path}
-                label={isMobile ? link.label : desktopCollapsed ? null : link.label}
+                label={
+                  isMobile ? link.label : desktopCollapsed ? null : link.label
+                }
                 leftSection={<link.icon size="1rem" />}
                 onClick={() => {
                   navigate(link.path);
                   setTimeout(() => {
                     closeMobile();
-                  }, 100)
+                  }, 100);
                 }}
                 mb="xs"
               />
@@ -158,26 +201,36 @@ export default function NavLayout({ children }) {
           </AppShell.Section>
 
           <AppShell.Section mb="xs">
-            {BOTTOM_LINKS.map((link) => 
-              {return link.enabled && (<NavLink
-                key={link.label}
-                active={location.pathname === link?.path}
-                label={isMobile ? link.label : desktopCollapsed ? null : link.label}
-                leftSection={<link.icon size="1rem" />}
-                onClick={() => link.onClick()}
-              />)}
-            )}
+            {BOTTOM_LINKS.map((link) => {
+              return (
+                link.enabled && (
+                  <NavLink
+                    key={link.label}
+                    active={location.pathname === link?.path}
+                    label={
+                      isMobile
+                        ? link.label
+                        : desktopCollapsed
+                        ? null
+                        : link.label
+                    }
+                    leftSection={<link.icon size="1rem" />}
+                    onClick={() => link.onClick()}
+                  />
+                )
+              );
+            })}
           </AppShell.Section>
-          
+
           {!isMobile && (
-            <div 
+            <div
               style={{
-                position: 'absolute',
+                position: "absolute",
                 right: 0,
                 top: 0,
                 bottom: 0,
                 width: rem(4),
-                cursor: 'col-resize',
+                cursor: "col-resize",
                 zIndex: 1000,
               }}
               onMouseDown={startResizing}
@@ -185,10 +238,8 @@ export default function NavLayout({ children }) {
           )}
         </div>
       </AppShell.Navbar>
-      
-      <AppShell.Main>
-        {children}
-      </AppShell.Main>
+
+      <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
   );
 }

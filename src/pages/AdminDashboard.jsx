@@ -4,7 +4,6 @@ import CasesManagement from "../features/adminDashboard/casesManagement/CasesMan
 import UsersManagement from "../features/adminDashboard/usersManagement/UsersManagement";
 
 export default function AdminDashboard() {
-
   return (
     <Container fluid>
       <Title order={1}>Admin Dashboard</Title>

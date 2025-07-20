@@ -25,9 +25,18 @@ export function ViewAssignments({
   if (!assignments?.length)
     return <Text>No users assigned to this school</Text>;
 
-  const primaryAdminCount = assignments.reduce((acc, cur) => cur.role === "primary" ? ++acc : acc, 0);
-  const adminCount = assignments.reduce((acc, cur) => cur.role === "admin" ? ++acc : acc, 0);
-  const viewerCount = assignments.reduce((acc, cur) => cur.role === "viewer" ? ++acc : acc, 0);
+  const primaryAdminCount = assignments.reduce(
+    (acc, cur) => (cur.role === "primary" ? ++acc : acc),
+    0
+  );
+  const adminCount = assignments.reduce(
+    (acc, cur) => (cur.role === "admin" ? ++acc : acc),
+    0
+  );
+  const viewerCount = assignments.reduce(
+    (acc, cur) => (cur.role === "viewer" ? ++acc : acc),
+    0
+  );
 
   const handleEditStart = (assignment) => {
     setEditUserId(assignment.user_id);
@@ -111,7 +120,9 @@ export function ViewAssignments({
     <>
       {!school.is_premium && (
         <Stack gap="xs">
-          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>School does not have premium status. Current assignments:</Text>
+          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>
+            School does not have premium status. Current assignments:
+          </Text>
           <List withPadding>
             <List.Item>Primary Admins: {primaryAdminCount}</List.Item>
             <List.Item>Admins: {adminCount}</List.Item>
@@ -138,22 +149,44 @@ export function ViewAssignments({
   );
 }
 
-export function AddAssignment({ availableUsers, onAdd, isLoading, setType, school, assignments }) {
+export function AddAssignment({
+  availableUsers,
+  onAdd,
+  isLoading,
+  setType,
+  school,
+  assignments,
+}) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState("viewer");
-  
-  if (!availableUsers?.length)
-    return <Text>No users available that aren't already assigned to this school</Text>;
 
-  const primaryAdminCount = assignments.reduce((acc, cur) => cur.role === "primary" ? ++acc : acc, 0);
-  const adminCount = assignments.reduce((acc, cur) => cur.role === "admin" ? ++acc : acc, 0);
-  const viewerCount = assignments.reduce((acc, cur) => cur.role === "viewer" ? ++acc : acc, 0);
+  if (!availableUsers?.length)
+    return (
+      <Text>
+        No users available that aren't already assigned to this school
+      </Text>
+    );
+
+  const primaryAdminCount = assignments.reduce(
+    (acc, cur) => (cur.role === "primary" ? ++acc : acc),
+    0
+  );
+  const adminCount = assignments.reduce(
+    (acc, cur) => (cur.role === "admin" ? ++acc : acc),
+    0
+  );
+  const viewerCount = assignments.reduce(
+    (acc, cur) => (cur.role === "viewer" ? ++acc : acc),
+    0
+  );
 
   return (
     <>
       {!school.is_premium && (
         <Stack gap="xs">
-          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>School does not have premium status. Current assignments:</Text>
+          <Text styles={{ paddingBottom: "0px", marginBottom: "0px" }}>
+            School does not have premium status. Current assignments:
+          </Text>
           <List withPadding>
             <List.Item>Primary Admins: {primaryAdminCount}</List.Item>
             <List.Item>Admins: {adminCount}</List.Item>
@@ -167,16 +200,13 @@ export function AddAssignment({ availableUsers, onAdd, isLoading, setType, schoo
           data={
             availableUsers?.map((u) => ({
               value: u.id,
-              label: u.id
+              label: u.id,
             })) || []
           }
           value={selectedUser}
           onChange={setSelectedUser}
         />
-        <RoleField
-          value={selectedRole}
-          onChange={setSelectedRole}
-        />
+        <RoleField value={selectedRole} onChange={setSelectedRole} />
         <Button
           onClick={() => {
             if (selectedUser && selectedRole) {
@@ -188,7 +218,7 @@ export function AddAssignment({ availableUsers, onAdd, isLoading, setType, schoo
           }}
           disabled={!selectedUser}
           loading={isLoading}
-          >
+        >
           Assign User
         </Button>
       </Stack>

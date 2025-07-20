@@ -8,7 +8,11 @@ import { splitSlash as splitType } from "../../../../common/utils/helpers";
 import { WITNESS_COLUMNS } from "../../common/columns";
 import DeleteConfirmationModal from "../../../../common/components/modals/DeleteConfirmationModal";
 import DataTable from "../../../../common/components/tables/DataTable";
-import { NameField, WitnessSideField, WitnessTypeField } from "../../common/FormFields";
+import {
+  NameField,
+  WitnessSideField,
+  WitnessTypeField,
+} from "../../common/FormFields";
 
 export function ViewWitnesses({
   witnesses,
@@ -71,7 +75,9 @@ export function ViewWitnesses({
         {editWitnessId === witness.id ? (
           <NameField
             value={editValues.name}
-            onChange={(e) => setEditValues((v) => ({ ...v, name: e.target.value }))}
+            onChange={(e) =>
+              setEditValues((v) => ({ ...v, name: e.target.value }))
+            }
             label=""
             space={false}
           />
@@ -84,7 +90,13 @@ export function ViewWitnesses({
           <WitnessSideField
             value={editValues.side}
             onChange={(e) => setEditValues((v) => ({ ...v, side: e }))}
-            pSide={caseType === "criminal" ? "prosecution" : caseType === "civil" ? "plaintiff" : ""}
+            pSide={
+              caseType === "criminal"
+                ? "prosecution"
+                : caseType === "civil"
+                ? "plaintiff"
+                : ""
+            }
             label=""
           />
         ) : witness.side === "p" ? (
@@ -181,7 +193,13 @@ export function AddWitness({ onSubmit, isLoading, caseType, setType }) {
       <WitnessSideField
         value={formValues.side}
         onChange={(e) => setFormValues((v) => ({ ...v, side: e }))}
-        pSide={caseType === "criminal" ? "prosecution" : caseType === "civil" ? "plaintiff" : ""}
+        pSide={
+          caseType === "criminal"
+            ? "prosecution"
+            : caseType === "civil"
+            ? "plaintiff"
+            : ""
+        }
       />
       <WitnessTypeField
         value={formValues.type}
