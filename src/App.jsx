@@ -10,6 +10,7 @@ import Error404 from "./pages/Error404";
 import Error from "./pages/Error";
 import CasesPage from "./pages/CasesPage";
 import NavLayout from "./layouts/NavLayout";
+import TestPage from "./pages/Test";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -46,6 +47,18 @@ export default function App({ onReady }) {
               <NavLayout>
                 <CasesPage />
               </NavLayout>
+            }
+          />
+          <Route
+            path="/admin-test"
+            element={
+              isSuperAdmin ? (
+                <NavLayout>
+                  <TestPage />
+                </NavLayout>
+              ) : (
+                <Navigate to="/" replace />
+              )
             }
           />
           <Route

@@ -239,7 +239,7 @@ export default function NavLayout({ children }) {
         </div>
       </AppShell.Navbar>
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main mb="md">{children}</AppShell.Main>
     </AppShell>
   );
 }
