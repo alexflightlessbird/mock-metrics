@@ -31,7 +31,7 @@ export default function NavLayout({ children }) {
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const pinned = useHeadroom({ fixedAt: 10 });
+  const pinned = useHeadroom({ fixedAt: 0, behavior: "transform" });
 
   const { signOut, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
@@ -239,7 +239,9 @@ export default function NavLayout({ children }) {
         </div>
       </AppShell.Navbar>
 
-      <AppShell.Main mb="md">{children}</AppShell.Main>
+      <AppShell.Main mih="calc(100vh - var(--app-shell-header-height))">
+        {children}
+      </AppShell.Main>
     </AppShell>
   );
 }
