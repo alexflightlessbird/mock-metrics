@@ -158,7 +158,7 @@ export default function DashboardPage() {
                   </Text>
                   {showSchoolId && (
                     <Group gap="xs">
-                      <Text>{selectedSchoolId}</Text>
+                      <Text fz="xs">{selectedSchoolId}</Text>
                       <ActionIcon
                         variant="subtle"
                         color={clipboard.copied ? "cyan" : "blue"}
