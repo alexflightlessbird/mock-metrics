@@ -14,6 +14,7 @@ function TableContainer({ scrollContainer, scrollContainerHeight, children }) {
 
 export default function DataTable({
   columns,
+  removeId = false,
   data,
   emptyMessage = "No data available",
   renderRow,
@@ -27,6 +28,10 @@ export default function DataTable({
   scrollContainerHeight = "40vh",
 }) {
   if (!data?.length) return <Text>{emptyMessage}</Text>;
+
+  const filteredColumns = removeId 
+    ? columns.filter(column => column.value.toLowerCase() !== "id")
+    : columns;
 
   return (
     <TableContainer
@@ -44,7 +49,7 @@ export default function DataTable({
       >
         <Table.Thead>
           <Table.Tr>
-            {columns.map((column) => (
+            {filteredColumns.map((column) => (
               <Table.Th
                 key={column.value}
                 style={

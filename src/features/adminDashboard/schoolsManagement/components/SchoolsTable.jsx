@@ -1,15 +1,26 @@
-import { Checkbox, Table } from "@mantine/core";
+import { useMemo } from "react";
+import { Checkbox, Table, useMantineTheme } from "@mantine/core";
 import DataTable from "../../../../common/components/tables/DataTable";
 import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
 import { SCHOOL_COLUMNS } from "../../common/columns";
+import { emToPx } from "../../../../common/utils/helpers";
+import { useViewportSize } from "@mantine/hooks";
 
 export default function SchoolsTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
+  const theme = useMantineTheme();
+  const { width } = useViewportSize();
+
+  const smBreakpointPx = useMemo(
+    () => emToPx(parseFloat(theme.breakpoints.sm)),
+    [theme.breakpoints.sm]
+  );
+  const isMobile = width < smBreakpointPx;
 
   const renderRow = (school) => (
     <Table.Tr key={school.id}>
-      <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>
+      {!isMobile && <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>}
       <Table.Td>{school.name || "-"}</Table.Td>
       <Table.Td>{school.short_name || "-"}</Table.Td>
       <Table.Td>
@@ -28,6 +39,7 @@ export default function SchoolsTable({ data, onSelect }) {
   return (
     <DataTable
       columns={SCHOOL_COLUMNS}
+      removeId={isMobile}
       data={data}
       emptyMessage="No schools available"
       renderRow={renderRow}
