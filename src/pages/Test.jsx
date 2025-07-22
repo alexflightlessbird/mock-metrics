@@ -1,37 +1,25 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import GavelLoader from "../common/components/loader/GavelLoader";
 import {
   FileInput,
   Title,
   Text,
   Box,
   Image,
-  LoadingOverlay,
   Table,
   TextInput,
-  List,
   Button,
   Divider,
   NumberInput,
   Group,
+  Container,
+  Space,
+  Overlay,
 } from "@mantine/core";
 import {
   DocumentAnalysisClient,
   AzureKeyCredential,
 } from "@azure/ai-form-recognizer";
-import heic2any from "heic2any";
-
-function ScoreInput({ value, onChange }) {
-  return (
-    <NumberInput
-      value={value}
-      onChange={onChange}
-      variant="unstyled"
-      max={10}
-      min={0}
-      step={1}
-    />
-  );
-}
 
 function DetailInput({ value, onChange, label }) {
   return (
@@ -39,21 +27,26 @@ function DetailInput({ value, onChange, label }) {
       value={value}
       onChange={onChange}
       label={label}
-      variant="unstyled"
+      mb="xs"
+      variant="filled"
       size="md"
       styles={{
         label: {
-          marginRight: "0.3rem", // Adds space between label and input
+          marginRight: "0.3rem",
           display: "inline-block",
           fontWeight: "normal",
+          width: "30%",
         },
         root: {
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%"
         },
-        input: {
-          flex: 1,
-        },
+        wrapper: {
+            flex: 1,
+            display: "flex",
+        }
       }}
     />
   );
@@ -120,26 +113,7 @@ export default function Test() {
     setError(null);
 
     try {
-      let imageToProcess = file;
-      if (
-        file.type === "image/heic" ||
-        file.name.toLowerCase().endsWith(".heic")
-      ) {
-        const conversionResult = await heic2any({
-          blob: file,
-          toType: "image/jpeg",
-          quality: 0.8,
-        });
-        imageToProcess = new File(
-          [conversionResult],
-          file.name.replace(/\.heic$/i, ".jpg"),
-          {
-            type: "image/jpeg",
-          }
-        );
-      }
-
-      setSelectedImage(imageToProcess);
+      setSelectedImage(file);
 
       const client = new DocumentAnalysisClient(
         endpoint,
@@ -154,6 +128,9 @@ export default function Test() {
       console.log(forms);
 
       if (forms.documents.length > 0) {
+        if (forms.documents[0].confidence < 0.7) {
+            throw new Error("Image unable to be processed due to low confidence in results. Please upload a clearer picture and try again. This result may also occur if the image is not of a ballot.");
+        }
         processFormResults(forms.documents[0]);
       } else {
         throw new Error("No forms were recognized");
@@ -279,469 +256,362 @@ export default function Test() {
     });
   }, [extractedData]);
 
-  return (
-    <Box style={{ userSelect: "none", webKitUserSelect: "none" }}>
-      <Title order={1}>MockMetrics Ballot Processor</Title>
-      <Text>Upload a completed ballot to extract scores</Text>
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+        if (loading) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
 
-      <Box pos="relative">
-        <LoadingOverlay visible={loading} overlayBlur={2} />
-        <FileInput
-          accept="image/png, image/jpg, image/jpeg, image/heic"
-          label="Upload image"
-          placeholder="Select image"
-          onChange={handleImageUpload}
-          disabled={loading}
-          mb="md"
+    if (loading) {
+        window.addEventListener("keydown", handleKeyDown, true);
+        window.addEventListener("keyup", handleKeyDown, true);
+        window.addEventListener("keypress", handleKeyDown, true);
+    }
+
+    return () => {
+        window.removeEventListener("keydown", handleKeyDown, true);
+        window.removeEventListener("keyup", handleKeyDown, true);
+        window.removeEventListener("keypress", handleKeyDown, true);
+    }
+  }, [loading]);
+
+  const ScoreInput = ({ val }) => {
+    return (
+        <NumberInput
+        value={formValues[val]}
+        onChange={(v) => setFormValues({ ...formValues, [val]: formatScore(v) })}
+        variant="unstyled"
+        max={10}
+        min={0}
+        step={1}
         />
-      </Box>
+    )}
 
-      {error && <Text c="red">{error}</Text>}
+  return (
+    <Container fluid style={{ userSelect: "none", webKitUserSelect: "none" }}>
+        <Title order={1}>MockMetrics Ballot Processor</Title>
+        <Text>Upload a completed ballot to extract scores</Text>
+        <Text fz="xs">This process is AI-assisted, but no data is stored after being processed.</Text>
+        <Space h="xs" />
 
-      {selectedImage && (
-        <Box mb="lg">
-          <Image
-            src={URL.createObjectURL(selectedImage)}
-            alt="Uploaded ballot"
-            mah={600}
-            w="auto"
-            mx="auto"
-          />
+        {loading && (
+            <Overlay fixed={true} blur={2} color="#fff" backgroundOpacity={0.25} aria-label="Processing ballot, please wait">
+                <GavelLoader />
+            </Overlay>
+        )}
+
+        <Box pos="relative" mb="lg">
+            <FileInput
+            accept="image/png, image/jpg, image/jpeg"
+            label="Upload image"
+            placeholder="Select image"
+            onChange={handleImageUpload}
+            disabled={loading}
+            mb="md"
+            />
+            {error && <Text c="red" mb="lg">{error}</Text>}
+            {selectedImage && !error && (
+                <Image
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Uploaded ballot"
+                    mah="50vh"
+                    maw="100%"
+                    w="auto"
+                    mx="auto"
+                />
+            )}
+            {formValues && (
+                <Box mb="xl">
+                <Title order={2} mb="md">
+                    Extracted Data
+                </Title>
+                <Title order={3} mb="sm">
+                    Basic Information
+                </Title>
+                <Box mb="sm" w="100%">
+                    <DetailInput 
+                        label="Judge Name:" 
+                        value={formValues.judgeName} 
+                        onChange={(v) => setFormValues({ ...formValues, judgeName: v.target.value })}
+                    />
+                    <DetailInput
+                        label="P Team:"
+                        value={formValues.pTeam}
+                        onChange={(v) => setFormValues({ ...formValues, pTeam: v.target.value })}
+                    />
+                    <DetailInput
+                        label="D Team:"
+                        value={formValues.dTeam}
+                        onChange={(v) => setFormValues({ ...formValues, dTeam: v.target.value })}
+                    />
+                </Box>
+
+                <Title order={3} mb="sm">
+                    Scores
+                </Title>
+                <Table
+                    striped
+                    mb="lg"
+                    withTableBorder
+                    size="xs"
+                    fz="xs"
+                    verticalSpacing={5}
+                >
+                    <Table.Thead>
+                    <Table.Tr>
+                        <Table.Td>
+                        <b>Score Type</b>
+                        </Table.Td>
+                        <Table.Td>
+                        <b>P Team Score</b>
+                        </Table.Td>
+                        <Table.Td>
+                        <b>D Team Score</b>
+                        </Table.Td>
+                    </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                    <Table.Tr>
+                        <Table.Td>Opening</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pOpen" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dOpen" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <Divider />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>P Witness #1</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pDirect1" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWDirect1" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWCross1" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dCross1" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>P Witness #2</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pDirect2" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWDirect2" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWCross2" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dCross2" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>P Witness #3</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pDirect3" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWDirect3" />
+                        </Table.Td>
+                        <Table.Td>-</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pWCross3" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dCross3" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <Divider />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>D Witness #1</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dDirect1" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWDirect1" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pCross1" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWCross1" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>D Witness #2</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dDirect2" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWDirect2" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pCross2" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWCross2" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <em>D Witness #3</em>
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Attorney</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dDirect3" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Direct - Witness</Table.Td>
+                        <Table.Td>-</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWDirect3" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Cross</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pCross3" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dWCross3" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <Divider />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td>Closing</Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="pClose" />
+                        </Table.Td>
+                        <Table.Td>
+                        <ScoreInput val="dClose" />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td colSpan={3}>
+                        <Divider />
+                        </Table.Td>
+                    </Table.Tr>
+                    </Table.Tbody>
+                    <Table.Tfoot>
+                    <Table.Tr>
+                        <Table.Td>
+                        <b>Total</b>
+                        </Table.Td>
+                        <Table.Td>
+                        {pTotal} (-{140 - pTotal})
+                        </Table.Td>
+                        <Table.Td>
+                        {dTotal} (-{140 - dTotal})
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Td><b>Result</b></Table.Td>
+                        <Table.Td>{pTotal == dTotal ? "Tie" : pTotal > dTotal ? `Win (+${pTotal - dTotal})` : `Loss (-${dTotal - pTotal})`}</Table.Td>
+                        <Table.Td>{dTotal == pTotal ? "Tie" : dTotal > pTotal ? `Win (+${dTotal - pTotal})` : `Loss (-${pTotal - dTotal})`}</Table.Td>
+                    </Table.Tr>
+                    </Table.Tfoot>
+                </Table>
+                {extractedData && (
+                    <Group>
+                    <Button onClick={() => console.log(extractedData)}>
+                        View Raw Data in Console
+                    </Button>
+                    <Button onClick={() => setFormValues(extractedData)}>
+                        Reset to Extracted Data
+                    </Button>
+                    </Group>
+                )}
+                </Box>
+            )}
         </Box>
-      )}
-
-      {formValues && (
-        <Box mb="xl">
-          <Title order={2} mb="md">
-            Extracted Data
-          </Title>
-          <Title order={3} mb="sm">
-            Basic Information
-          </Title>
-          <List mb="sm">
-            <List.Item m={0} p={0}>
-              <DetailInput
-                label="Judge Name:"
-                value={formValues.judgeName}
-                onChange={(v) =>
-                  setFormValues({ ...formValues, judgeName: v.target.value })
-                }
-              />
-            </List.Item>
-            <List.Item>
-              <DetailInput
-                label="Plaintiff/Prosecution Team:"
-                value={formValues.pTeam}
-                onChange={(v) =>
-                  setFormValues({ ...formValues, pTeam: v.target.value })
-                }
-              />
-            </List.Item>
-            <List.Item>
-              <DetailInput
-                label="Defense Team:"
-                value={formValues.dTeam}
-                onChange={(v) =>
-                  setFormValues({ ...formValues, dTeam: v.target.value })
-                }
-              />
-            </List.Item>
-          </List>
-
-          <Title order={3} mb="sm">
-            Scores
-          </Title>
-          <Table
-            striped
-            mb="lg"
-            withTableBorder
-            size="xs"
-            fz="xs"
-            verticalSpacing={5}
-          >
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Td>
-                  <b>Score Type</b>
-                </Table.Td>
-                <Table.Td>
-                  <b>P Team Score</b>
-                </Table.Td>
-                <Table.Td>
-                  <b>D Team Score</b>
-                </Table.Td>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              <Table.Tr>
-                <Table.Td>Opening</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pOpen}
-                    onChange={(v) => setFormValues({ ...formValues, pOpen: v })}
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dOpen}
-                    onChange={(v) => setFormValues({ ...formValues, dOpen: v })}
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <Divider />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>P Witness #1</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pDirect1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pDirect1: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWDirect1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWDirect1: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWCross1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWCross1: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dCross1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dCross1: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>P Witness #2</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pDirect2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pDirect2: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWDirect2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWDirect2: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWCross2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWCross2: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dCross2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dCross2: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>P Witness #3</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pDirect3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pDirect3: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWDirect3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWDirect3: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>-</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pWCross3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pWCross3: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dCross3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dCross3: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <Divider />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>D Witness #1</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dDirect1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dDirect1: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWDirect1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWDirect1: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pCross1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pCross1: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWCross1}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWCross1: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>D Witness #2</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dDirect2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dDirect2: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWDirect2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWDirect2: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pCross2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pCross2: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWCross2}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWCross2: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <em>D Witness #3</em>
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Attorney</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dDirect3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dDirect3: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Direct - Witness</Table.Td>
-                <Table.Td>-</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWDirect3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWDirect3: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Cross</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pCross3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pCross3: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dWCross3}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dWCross3: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <Divider />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Closing</Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.pClose}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, pClose: v })
-                    }
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <ScoreInput
-                    value={formValues.dClose}
-                    onChange={(v) =>
-                      setFormValues({ ...formValues, dClose: v })
-                    }
-                  />
-                </Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td colSpan={3}>
-                  <Divider />
-                </Table.Td>
-              </Table.Tr>
-            </Table.Tbody>
-            <Table.Tfoot>
-              <Table.Tr>
-                <Table.Td>
-                  <b>Total</b>
-                </Table.Td>
-                <Table.Td>
-                  {pTotal} (-{140 - pTotal})
-                </Table.Td>
-                <Table.Td>
-                  {dTotal} (-{140 - dTotal})
-                </Table.Td>
-              </Table.Tr>
-            </Table.Tfoot>
-          </Table>
-          {extractedData && (
-            <Group>
-              <Button onClick={() => console.log(extractedData)}>
-                View Raw Data in Console
-              </Button>
-              <Button onClick={() => setFormValues(extractedData)}>
-                Reset to Extracted Data
-              </Button>
-            </Group>
-          )}
-        </Box>
-      )}
-    </Box>
+    </Container>
   );
 }
