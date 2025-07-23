@@ -57,6 +57,11 @@ const BetaOverlay = () => {
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
+  const [selectedSchoolId] = useLocalStorage({
+    key: "school",
+    defaultValue: null
+  });
+
   useEffect(() => {
     onReady?.();
   }, [onReady]);
@@ -92,12 +97,26 @@ export default function App({ onReady }) {
             }
           />
           <Route
+            path="/school"
+            element={
+              !user 
+                ? <Navigate to="/auth" replace />
+                : !selectedSchoolId
+                  ? <Navigate to="/" replace />
+                  : (
+                    <NavLayout>
+                      <SchoolInfoPage />
+                    </NavLayout>
+                  ) 
+            }
+          />
+          <Route
             path="/admin-test"
             element={
               isSuperAdmin ? (
                 <NavLayout>
                   <>
-                  <TestPage />
+                    <TestPage />
                     <BetaOverlay />
                   </>
                 </NavLayout>
