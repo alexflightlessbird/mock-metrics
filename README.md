@@ -36,8 +36,29 @@ A specialized analytics platform that helps **college mock trial teams**:
 *All core functionality remains free forever. Premium features help sustain development.*
 
 ## 🛠️ Tech Stack
-- **Frontend**: React + Mantine UI
-- **Authentication**: Supabase
+### Core
+- **Frontend**: React + Vite
+- **UI Components**: Mantine UI
+- **State Management**: TanStack Query
+- **Routing**: React Router v7
+- **Forms**: Mantine Forms
+- **Charts**: Recharts + Mantine Charts
+- **Dates**: Day.js + Mantine Dates
+
+### Services
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
+- **Storage**: Supabase Storage
+- **AI Services**: Azure Form Recognizer
+
+### Utilities
+- **Error Handling**: React Error Boundary
+- **Image Processing**: heic2any
+- **Icons**: React Icons
+
+### Tooling
+- **Build Tool**: Vite
+- **Linting**: ESLint
 - **Hosting**: Render
 
 ## ⚖️ Legal Disclaimer
