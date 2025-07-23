@@ -3,8 +3,9 @@
 **Ballot Analysis for Competitive Mock Trial Teams**  
 *Data-driven insights to elevate your AMTA performance*
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributing](https://img.shields.io/badge/Contributions-Welcome-%23FF8300)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Security](https://img.shields.io/badge/Security-Policy-%2344CC11)](SECURITY.md)
 
 ![MockMetrics Screenshot](https://via.placeholder.com/800x400?text=MockMetrics+UI+Screenshot)  
 *(Replace with actual screenshot)*
@@ -46,6 +47,11 @@ MockMetrics:
 3. Processes only **user-uploaded ballot data**
 4. Complies with FERPA for student data protection
 5. Complies with GDPR for individual data privacy
+
+## 🤝 Contributing
+We welcome contributions! Please read our [Contribution Guidelines](CONTRIBUTING.md) before submitting changes.
+
+[![Contributing Guide](https://img.shields.io/badge/Guide-CONTRIBUTING.md-blue)](CONTRIBUTING.md)
 
 ## 🏗️ Development Setup
 ```bash
