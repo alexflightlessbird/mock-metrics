@@ -74,6 +74,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("school");
       localStorage.removeItem("nav-collapsed");
       localStorage.removeItem("nav-width");
+      localStorage.removeItem("cookieConsent");
       await supabase.auth.signOut();
     },
   };

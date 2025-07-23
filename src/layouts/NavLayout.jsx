@@ -23,6 +23,7 @@ import { emToPx } from "../common/utils/helpers";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../assets/svgs/Logo";
 import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
+import CookieBanner from "../common/components/CookieBanner";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/" },
@@ -353,6 +354,7 @@ export default function NavLayout({ children }) {
 
       <AppShell.Main mih="calc(100vh - var(--app-shell-header-height))">
         {children}
+        <CookieBanner />
       </AppShell.Main>
     </AppShell>
   );

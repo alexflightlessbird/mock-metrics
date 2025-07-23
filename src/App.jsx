@@ -13,6 +13,7 @@ import NavLayout from "./layouts/NavLayout";
 import TestPage from "./pages/Test";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
 import { useLocalStorage } from "@mantine/hooks";
+import PrivacyAndSecurityPage from "./pages/PrivacyAndSecurityPage";
 
 const BetaOverlay = () => {
   return (
@@ -122,6 +123,18 @@ export default function App({ onReady }) {
                 </NavLayout>
               ) : (
                 <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/privacy-and-security"
+            element={
+              user ? (
+                <NavLayout>
+                  <PrivacyAndSecurityPage />
+                </NavLayout>
+              ) : (
+                <PrivacyAndSecurityPage />
               )
             }
           />
