@@ -27,11 +27,12 @@ export default function CookieBanner() {
         try {
             await signOut();
             localStorage.removeItem("supabase.auth.token");
+            navigate("/");
         } catch (error) {
             console.error("Error during sign out:", error);
         }
-
-        window.location.reload();
+        
+        navigate("/");
     }
 
     if (!visible) return null;
