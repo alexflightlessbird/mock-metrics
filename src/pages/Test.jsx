@@ -20,6 +20,7 @@ import {
   DocumentAnalysisClient,
   AzureKeyCredential,
 } from "@azure/ai-form-recognizer";
+import { useLocalStorage } from "@mantine/hooks";
 
 function DetailInput({ value, onChange, label }) {
   return (
@@ -62,39 +63,42 @@ const formatScore = (scoreStr) => {
 
 export default function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [extractedData, setExtractedData] = useState(null);
-  const [formValues, setFormValues] = useState({
-    judgeName: "",
-    pTeam: "",
-    dTeam: "",
-    pOpen: 0,
-    dOpen: 0,
-    pDirect1: 0,
-    pDirect2: 0,
-    pDirect3: 0,
-    dDirect1: 0,
-    dDirect2: 0,
-    dDirect3: 0,
-    pWDirect1: 0,
-    pWDirect2: 0,
-    pWDirect3: 0,
-    dWDirect1: 0,
-    dWDirect2: 0,
-    dWDirect3: 0,
-    pCross1: 0,
-    pCross2: 0,
-    pCross3: 0,
-    dCross1: 0,
-    dCross2: 0,
-    dCross3: 0,
-    pWCross1: 0,
-    pWCross2: 0,
-    pWCross3: 0,
-    dWCross1: 0,
-    dWCross2: 0,
-    dWCross3: 0,
-    pClose: 0,
-    dClose: 0,
+  const [extractedData, setExtractedData] = useLocalStorage({ key: "ballotExtractedData", defaultValue: null });
+  const [formValues, setFormValues] = useLocalStorage({
+    key: "ballotForm",
+    defaultValue: {
+        judgeName: "",
+        pTeam: "",
+        dTeam: "",
+        pOpen: 0,
+        dOpen: 0,
+        pDirect1: 0,
+        pDirect2: 0,
+        pDirect3: 0,
+        dDirect1: 0,
+        dDirect2: 0,
+        dDirect3: 0,
+        pWDirect1: 0,
+        pWDirect2: 0,
+        pWDirect3: 0,
+        dWDirect1: 0,
+        dWDirect2: 0,
+        dWDirect3: 0,
+        pCross1: 0,
+        pCross2: 0,
+        pCross3: 0,
+        dCross1: 0,
+        dCross2: 0,
+        dCross3: 0,
+        pWCross1: 0,
+        pWCross2: 0,
+        pWCross3: 0,
+        dWCross1: 0,
+        dWCross2: 0,
+        dWCross3: 0,
+        pClose: 0,
+        dClose: 0,
+    }
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -294,6 +298,7 @@ export default function Test() {
         <Title order={1}>MockMetrics Ballot Processor</Title>
         <Text>Upload a completed ballot to extract scores</Text>
         <Text fz="xs">This process is AI-assisted, but no data is stored after being processed.</Text>
+        <Text fz="xs">Extracted numbers may be incorrect. Please verify against your copy of the ballot and adjust where necessary.</Text>
         <Space h="xs" />
 
         {loading && (
@@ -325,7 +330,7 @@ export default function Test() {
             {formValues && (
                 <Box mb="xl">
                 <Title order={2} mb="md">
-                    Extracted Data
+                    {extractedData && "Extracted Data"}
                 </Title>
                 <Title order={3} mb="sm">
                     Basic Information
@@ -600,15 +605,19 @@ export default function Test() {
                     </Table.Tfoot>
                 </Table>
                 {extractedData && (
-                    <Group>
-                    <Button onClick={() => console.log(extractedData)}>
-                        View Raw Data in Console
-                    </Button>
-                    <Button onClick={() => setFormValues(extractedData)}>
-                        Reset to Extracted Data
-                    </Button>
-                    </Group>
+                    <>
+                        <Group>
+                            <Button onClick={() => console.log(extractedData)}>
+                                View Raw Data in Console
+                            </Button>
+                            <Button onClick={() => setFormValues(extractedData)}>
+                                Reset to Extracted Data
+                            </Button>
+                        </Group>
+                        <Space h="xs" />
+                    </>
                 )}
+                <Button onClick={() => { setExtractedData(null); setSelectedImage(null); }}>Reset to Default</Button>
                 </Box>
             )}
         </Box>
