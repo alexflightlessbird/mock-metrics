@@ -30,6 +30,7 @@ A specialized analytics platform that helps **college mock trial teams**:
 - **AI-Assisted Ballot Image Inputs** - Use pictures to upload ballots, rather than typing everything out
 - **Advanced Analytics** *Coming Soon* - Deeper trend analysis across seasons
 - **Priority Support** - Faster response times
+
 *AI features use Azure Cognitive Services and may incur API costs for local development. No AMTA data is used to train models created by MockMetrics.*
 *All core functionality remains free forever. Premium features help sustain development.*
 
