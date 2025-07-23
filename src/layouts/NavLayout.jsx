@@ -35,7 +35,7 @@ export default function NavLayout({ children }) {
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const pinned = useHeadroom({ fixedAt: 0, behavior: "transform" });
+  const pinned = useHeadroom({ fixedAt: 120, behavior: "transform" });
 
   const { user, signOut, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
@@ -125,13 +125,13 @@ export default function NavLayout({ children }) {
   const startResizing = () => {
     setIsResizing(true);
     document.body.style.userSelect = "none";
-    document.body.style.webkitUserSelect = "none";
+    document.body.style.WebkitUserSelect = "none";
   };
 
   const stopResizing = () => {
     setIsResizing(false);
     document.body.style.userSelect = "";
-    document.body.style.webkitUserSelect = "";
+    document.body.style.WebkitUserSelect = "";
   };
 
   const resize = (e) => {
@@ -166,7 +166,7 @@ export default function NavLayout({ children }) {
 
   return (
     <AppShell
-      header={{ height: 70, collapsed: !pinned }}
+      header={{ height: 70, collapsed: !pinned, offset: false }}
       navbar={{
         width: isMobile
           ? mobileOpened
@@ -180,7 +180,7 @@ export default function NavLayout({ children }) {
       }}
       padding="md"
     >
-      <AppShell.Header withBorder={false}>
+      <AppShell.Header withBorder={false} zIndex={1000}>
         <Group h="100%" px="xs" justify={isMobile ? "center" : "flex-start"}>
           <Burger
             opened={mobileOpened}
@@ -189,7 +189,7 @@ export default function NavLayout({ children }) {
             size="sm"
             style={{ position: "absolute", left: "var(--mantine-spacing-md)" }}
           />
-          <Group h="100%" gap="0" tabIndex="0" onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.currentTarget.click(); } }} style={{ userSelect: "none", webkitUserSelect: "none", cursor: "pointer" }} onClick={() => navigate("/")}>
+          <Group h="100%" gap="0" tabIndex="0" onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.currentTarget.click(); } }} style={{ userSelect: "none", WebkitUserSelect: "none", cursor: "pointer" }} onClick={() => navigate("/")}>
             <Logo />
             <Text ff="Trirong" fz="xl">
               MockMetrics
@@ -199,6 +199,7 @@ export default function NavLayout({ children }) {
       </AppShell.Header>
 
       <AppShell.Navbar
+        pt={pinned ? `calc(${rem(70)} + var(--mantine-spacing-md))` : "md"}
         p="md"
         style={{
           overflow: "hidden",
@@ -352,7 +353,7 @@ export default function NavLayout({ children }) {
         </div>
       </AppShell.Navbar>
 
-      <AppShell.Main mih="calc(100vh - var(--app-shell-header-height))">
+      <AppShell.Main mih="calc(100vh - var(--app-shell-header-height))" pb="xl" pt={`calc(${rem(70)} + var(--mantine-spacing-md))`}>
         {children}
         <CookieBanner />
       </AppShell.Main>
