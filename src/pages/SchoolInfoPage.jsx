@@ -63,7 +63,7 @@ export default function SchoolInfoPage() {
                     <Text>Premium Status: {schoolInformation.is_premium ? "Active" : "Inactive"}</Text>
                     <Text>Your Role: {role === "primary" ? "Primary Admin" : capitalize(role)}</Text>
                     <Stack gap="0">
-                        <Text span style={{ cursor: "pointer", userSelect: "none", webkitUserSelect: "none" }} c="blue" onClick={() => setShowSchoolId(!showSchoolId)} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowSchoolId(!showSchoolId); }}>
+                        <Text span style={{ cursor: "pointer", userSelect: "none", WebkitUserSelect: "none" }} c="blue" onClick={() => setShowSchoolId(!showSchoolId)} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowSchoolId(!showSchoolId); }}>
                             {showSchoolId ? "Hide School ID" : "Show School ID (Support Purposes)"}
                         </Text>
                         {showSchoolId && (
