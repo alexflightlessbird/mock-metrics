@@ -243,6 +243,12 @@ export const StatusField = ({
         checked={value}
         onChange={onChange}
         label={`${value ? labels[0] : labels[1]}`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.currentTarget.click();
+          }
+        }}
       />
       {space && <Space h="xs" />}
     </>

@@ -151,6 +151,12 @@ export default function DashboardPage() {
                     style={{ cursor: "pointer" }}
                     c="blue"
                     onClick={() => setShowSchoolId(!showSchoolId)}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        setShowSchoolId(!showSchoolId);
+                      }
+                    }}
                   >
                     {showSchoolId
                       ? "Hide School ID"

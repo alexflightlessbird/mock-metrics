@@ -24,7 +24,7 @@ export default function SchoolsTable({ data, onSelect }) {
       <Table.Td>{school.name || "-"}</Table.Td>
       <Table.Td>{school.short_name || "-"}</Table.Td>
       <Table.Td>
-        <Checkbox checked={school.is_premium} readOnly />
+        <Checkbox checked={school.is_premium} readOnly tabIndex="-1" />
       </Table.Td>
       <Table.Td>
         <EditDeleteTableActions

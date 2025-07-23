@@ -32,7 +32,7 @@ export default function CasesTable({ data, onSelect }) {
         )}
       </Table.Td>
       <Table.Td>
-        <Checkbox checked={caseVal.is_active} readOnly />
+        <Checkbox checked={caseVal.is_active} readOnly tabIndex="-1" />
       </Table.Td>
       <Table.Td>
         <EditDeleteTableActions
