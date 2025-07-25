@@ -1,34 +1,28 @@
 import {
   Container,
   Title,
-  Group,
   Space,
   Text,
-  Select,
   Flex,
   List,
   Skeleton,
-  ActionIcon,
 } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
 import {
-  useSchoolDetails,
   useSchoolUsers,
   useSchoolTeams,
   useSchoolStudents,
   useSchoolTournaments,
 } from "../features/dashboard/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
-import { useLocalStorage, useClipboard } from "@mantine/hooks";
+import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import BasePage from "../common/components/BasePage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { assignments, isLoading } = useUserAssignments(user.id);
-  const [showSchoolId, setShowSchoolId] = useState(false);
-  const clipboard = useClipboard({ timeout: 1000 });
   const [primaryAdmins, setPrimaryAdmins] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [viewers, setViewers] = useState([]);
@@ -46,8 +40,6 @@ export default function DashboardPage() {
     useSchoolTournaments(selectedSchoolId);
   const { data: users = [], isLoading: usersLoading = true } =
     useSchoolUsers(selectedSchoolId);
-  const { data: schoolInformation = {}, isLoading: schoolLoading = true } =
-    useSchoolDetails(selectedSchoolId);
 
   useEffect(() => {
     if (
@@ -56,8 +48,6 @@ export default function DashboardPage() {
     )
       setSelectedSchoolId(assignments[0]?.school_id);
   }, [assignments]);
-
-  const role = users.find((u) => u.user_id === user.id)?.role || "viewer";
 
   useEffect(() => {
     if (usersLoading) return;
@@ -79,106 +69,19 @@ export default function DashboardPage() {
       </Container>
     );
 
-  const schoolOptions = assignments.map((a) => ({
-    value: a.school_id,
-    label: `${a.schools.name} (${a.schools?.short_name || ""})`,
-  }));
-
   return (
     <BasePage titleText="User Dashboard">
       {assignments.length === 0 && (
-        <>
-          <Space h="xs" />
           <Text>
             You are not assigned to any schools. Please have your school's
             Primary Admin reach out to support to be added.
           </Text>
-        </>
-      )}
-      {assignments.length > 1 && (
-        <>
-          <Space h="md" />
-          <Select
-            data={schoolOptions}
-            value={selectedSchoolId}
-            onChange={setSelectedSchoolId}
-            allowDeselect={false}
-          />
-        </>
       )}
       {selectedSchoolId && (
         <>
+          <Title order={2}>School Info</Title>
           <Space h="md" />
-          <Title order={2}>School Information</Title>
-          <List>
-            {schoolLoading ? (
-              <>
-                <List.Item>
-                  <Skeleton height={20} width={200} />
-                </List.Item>
-                <List.Item>
-                  <Skeleton height={20} width={200} />
-                </List.Item>
-                <List.Item>
-                  <Skeleton height={20} width={200} />
-                </List.Item>
-                <List.Item>
-                  <Skeleton height={20} width={200} />
-                </List.Item>
-                <List.Item>
-                  <Skeleton height={20} width={200} />
-                </List.Item>
-              </>
-            ) : (
-              <>
-                <List.Item>Name: {schoolInformation.name}</List.Item>
-                <List.Item>
-                  Short Name: {schoolInformation.short_name}
-                </List.Item>
-                <List.Item>
-                  Premium Status:{" "}
-                  {schoolInformation.is_premium ? "Active" : "Inactive"}
-                </List.Item>
-                <List.Item>
-                  Your Role:{" "}
-                  {role === "primary" ? "Primary Admin" : capitalize(role)}
-                </List.Item>
-                <List.Item>
-                  <Text
-                    span
-                    style={{ cursor: "pointer" }}
-                    c="blue"
-                    onClick={() => setShowSchoolId(!showSchoolId)}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        setShowSchoolId(!showSchoolId);
-                      }
-                    }}
-                  >
-                    {showSchoolId
-                      ? "Hide School ID"
-                      : "Show School ID (Support Purposes)"}
-                  </Text>
-                  {showSchoolId && (
-                    <Group gap="xs">
-                      <Text fz="xs">{selectedSchoolId}</Text>
-                      <ActionIcon
-                        variant="subtle"
-                        color={clipboard.copied ? "cyan" : "blue"}
-                        onClick={() => clipboard.copy(selectedSchoolId)}
-                      >
-                        {clipboard.copied ? <CopiedIcon /> : <CopyIcon />}
-                      </ActionIcon>
-                    </Group>
-                  )}
-                </List.Item>
-              </>
-            )}
-          </List>
-
-          <Space h="md" />
-          <Title order={4}>Users</Title>
+          <Title order={3}>Users</Title>
           {usersLoading ? (
             <List>
               {[1, 2, 3].map((i) => (
@@ -189,7 +92,7 @@ export default function DashboardPage() {
             </List>
           ) : users.length > 0 ? (
             <>
-              <Title order={5}>Primary Admins</Title>
+              <Title order={4}>Primary Admins</Title>
               {primaryAdmins.length > 0 ? (
                 <>
                   <List>
@@ -203,7 +106,7 @@ export default function DashboardPage() {
               ) : (
                 <Text c="dimmed">No users found</Text>
               )}
-              <Title order={5}>Admins</Title>
+              <Title order={4}>Admins</Title>
               {admins.length > 0 ? (
                 <>
                   <List>
@@ -217,7 +120,7 @@ export default function DashboardPage() {
               ) : (
                 <Text c="dimmed">No users found</Text>
               )}
-              <Title order={5}>Viewers</Title>
+              <Title order={4}>Viewers</Title>
               {viewers.length > 0 ? (
                 <>
                   <List>
@@ -237,7 +140,7 @@ export default function DashboardPage() {
           )}
 
           <Space h="md" />
-          <Title order={4}>Teams</Title>
+          <Title order={3}>Teams</Title>
           {teamsLoading ? (
             <List>
               {[1, 2, 3].map((i) => (
@@ -257,7 +160,7 @@ export default function DashboardPage() {
           )}
 
           <Space h="md" />
-          <Title order={4}>Students</Title>
+          <Title order={3}>Students</Title>
           {studentsLoading ? (
             <List>
               {[1, 2, 3].map((i) => (
@@ -277,7 +180,7 @@ export default function DashboardPage() {
           )}
 
           <Space h="md" />
-          <Title order={4}>Tournaments</Title>
+          <Title order={3}>Tournaments</Title>
           {tournamentsLoading ? (
             <List>
               {[1, 2, 3].map((i) => (
