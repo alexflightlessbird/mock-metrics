@@ -75,6 +75,9 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("nav-collapsed");
       localStorage.removeItem("nav-width");
       localStorage.removeItem("cookieConsent");
+      localStorage.removeItem("ballotExtractedData");
+      localStorage.removeItem("ballotForm");
+      localStorage.removeItem("mantine-color-scheme-value");
       await supabase.auth.signOut();
     },
   };
