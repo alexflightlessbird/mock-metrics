@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
 
     setIsSuperAdmin(!!data);
 
-    if (data.db_manager) {
+    if (data?.db_manager) {
       setIsDbManager(true);
     }
 

@@ -56,6 +56,13 @@ export default function NavLayout({ children }) {
       setSelectedSchoolId(assignments[0]?.school_id);
   }, [assignments]);
 
+  useEffect(() => {
+    if (isLoading) return;
+    if (selectedSchoolId && !assignments.find(a => a.school_id === selectedSchoolId)) {
+      setSelectedSchoolId(null);
+    }
+  }, [assignments, selectedSchoolId, setSelectedSchoolId]);
+
   const { width } = useViewportSize();
   const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
     useDisclosure();

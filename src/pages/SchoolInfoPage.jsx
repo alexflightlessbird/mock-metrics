@@ -7,25 +7,31 @@ import { capitalize } from "../common/utils/helpers";
 import BasePage from "../common/components/BasePage";
 import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
+import { useQueryClient } from "@tanstack/react-query";
+import { Navigate } from "react-router-dom";
 
 export default function SchoolInfoPage() {
     const { user } = useAuth();
     const { assignments, isLoading } = useUserAssignments(user.id);
+    const queryClient = useQueryClient();
     
     const [selectedSchoolId, setSelectedSchoolId] = useLocalStorage({
         key: "school",
         defaultValue: null,
     });
 
-    const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
-    
     const { data: schoolInformation = {}, isLoading: schoolLoading = true } = useSchoolDetails(selectedSchoolId);
 
+    if (!isLoading && !schoolInformation) {
+        queryClient.invalidateQueries(["user-assignments", user.id]);
+        return (<Navigate to="/school" replace />);
+    }
+    
     const schoolOptions = assignments.map((a) => ({
         value: a.school_id,
         label: `${a.schools.name} (${a.schools?.short_name || ""})`
     }));
-
+    
     if (!selectedSchoolId) return (
         <BasePage titleText="Well this is awkward...">
             <Text>We're not sure how you got to this page, but you haven't selected a school yet.</Text>
@@ -36,9 +42,11 @@ export default function SchoolInfoPage() {
                 value={selectedSchoolId}
                 onChange={setSelectedSchoolId}
                 allowDeselect={false}
-            />
+                />
         </BasePage>
     )
+    
+    const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
 
     return (
         <BasePage titleText="School">
