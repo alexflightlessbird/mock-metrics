@@ -1,14 +1,12 @@
-import { Tabs, Title, Container, Space } from "@mantine/core";
+import { Tabs, Container } from "@mantine/core";
 import SchoolsManagement from "../features/adminDashboard/schoolsManagement/SchoolsManagement";
 import CasesManagement from "../features/adminDashboard/casesManagement/CasesManagement";
 import UsersManagement from "../features/adminDashboard/usersManagement/UsersManagement";
+import BasePage from "../common/components/BasePage";
 
 export default function AdminDashboard() {
   return (
-    <Container fluid>
-      <Title order={1}>Admin Dashboard</Title>
-      <Space h="md" />
-
+    <BasePage titleText="Admin Dashboard">
       <Container fluid px={0}>
         <Tabs defaultValue="schools" keepMounted={false}>
           <Tabs.List>
@@ -30,6 +28,6 @@ export default function AdminDashboard() {
           </Tabs.Panel>
         </Tabs>
       </Container>
-    </Container>
+    </BasePage>
   );
 }

@@ -1,12 +1,12 @@
-import { Container, Title, Text, Space, Select, Skeleton, Stack, Group, ActionIcon } from "@mantine/core";
+import { Text, Space, Select, Skeleton, Stack, Group, ActionIcon } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
 import { useSchoolDetails } from "../features/dashboard/hooks/useSchoolDetails";
-import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage, useClipboard } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { capitalize } from "../common/utils/helpers";
 import { LuCopy as CopyIcon, LuCopyCheck as CopiedIcon } from "react-icons/lu";
+import BasePage from "../common/components/BasePage";
 
 export default function SchoolInfoPage() {
     const { user } = useAuth();
@@ -29,7 +29,7 @@ export default function SchoolInfoPage() {
     }));
 
     if (!selectedSchoolId) return (
-        <Container fluid>
+        <BasePage titleText="Well this is awkward...">
             <Text>We're not sure how you got to this page, but you haven't selected a school yet.</Text>
             <Text>Select a school to continue.</Text>
             <Space h="md" />
@@ -39,15 +39,12 @@ export default function SchoolInfoPage() {
                 onChange={setSelectedSchoolId}
                 allowDeselect={false}
             />
-        </Container>
+        </BasePage>
     )
 
     return (
-        <Container fluid>
-            <Title order={1}>School Information</Title>
-            <Space h="md" />
-
-            {schoolLoading && (
+        <BasePage titleText="School Information">
+            {schoolLoading || isLoading && (
                 <Stack>
                     <Skeleton height={20} width={200} />
                     <Skeleton height={20} width={200} />
@@ -56,7 +53,7 @@ export default function SchoolInfoPage() {
                 </Stack>
             )}
 
-            {!schoolLoading && (
+            {!schoolLoading && !isLoading && (
                 <Stack>
                     <Text>Name: {schoolInformation.name}</Text>
                     <Text>Short Name: {schoolInformation.short_name}</Text>
@@ -83,6 +80,6 @@ export default function SchoolInfoPage() {
                     </Stack>
                 </Stack>
             )}
-        </Container>
+        </BasePage>
     )
 }

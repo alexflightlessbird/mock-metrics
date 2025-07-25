@@ -22,8 +22,7 @@ import {
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage, useClipboard } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { capitalize } from "../common/utils/helpers";
-import { LuCopy as CopyIcon, LuCopyCheck as CopiedIcon } from "react-icons/lu";
+import BasePage from "../common/components/BasePage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -86,8 +85,7 @@ export default function DashboardPage() {
   }));
 
   return (
-    <Container fluid>
-      <Title order={1}>User Dashboard</Title>
+    <BasePage titleText="User Dashboard">
       {assignments.length === 0 && (
         <>
           <Space h="xs" />
@@ -299,6 +297,6 @@ export default function DashboardPage() {
           )}
         </>
       )}
-    </Container>
+    </BasePage>
   );
 }

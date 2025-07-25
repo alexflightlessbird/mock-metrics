@@ -12,7 +12,6 @@ import {
   Divider,
   NumberInput,
   Group,
-  Container,
   Space,
   Overlay,
 } from "@mantine/core";
@@ -21,6 +20,7 @@ import {
   AzureKeyCredential,
 } from "@azure/ai-form-recognizer";
 import { useLocalStorage } from "@mantine/hooks";
+import BasePage from "../common/components/BasePage";
 
 function DetailInput({ value, onChange, label }) {
   return (
@@ -294,8 +294,7 @@ export default function Test() {
     )}
 
   return (
-    <Container fluid style={{ userSelect: "none", webKitUserSelect: "none" }}>
-        <Title order={1}>MockMetrics Ballot Processor</Title>
+    <BasePage titleText="MockMetrics Ballot Processor" styleProps={{ userSelect: "none", WebkitUserSelect: "none" }}>
         <Text>Upload a completed ballot to extract scores</Text>
         <Text fz="xs">This process is AI-assisted, but no data is stored after being processed.</Text>
         <Text fz="xs">Extracted numbers may be incorrect. Please verify against your copy of the ballot and adjust where necessary.</Text>
@@ -621,6 +620,6 @@ export default function Test() {
                 </Box>
             )}
         </Box>
-    </Container>
+    </BasePage>
   );
 }

@@ -1,32 +1,26 @@
 import {
-  Container,
-  Title,
   Text,
   Button,
-  Flex,
-  Anchor
+  Anchor,
+  Center
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import GavelLoader from "../common/components/loader/GavelLoader";
+import BasePage from "../common/components/BasePage";
 
 export default function Error404() {
   const navigate = useNavigate();
 
   return (
-    <Container fluid>
-      <Flex
-        direction="column"
-        justify="center"
-        align="center"
-      >
-        <Title order={1}>404 - Page Not Found</Title>
-        <Text>Hmmm... It seems like the page you're looking for doesn't exist.</Text>
-        <Text>Want us to build it or think it should be here? Submit a <Anchor href="https://github.com/alexflightlessbird/mock-metrics/issues" target="_blank" underline="hover">feature request or bug report on GitHub!</Anchor></Text>
-        <GavelLoader scale={2} />
+    <BasePage titleText="404 - Page Not Found" centerTitle={true}>
+        <Text ta="center">Hmmm... It seems like the page you're looking for doesn't exist.</Text>
+        <Text ta="center">Want us to build it or think it should be here? Submit a <Anchor href="https://github.com/alexflightlessbird/mock-metrics/issues" target="_blank" underline="hover">feature request or bug report on GitHub!</Anchor></Text>
+      <GavelLoader scale={2} />
+      <Center>
         <Button onClick={() => navigate("/")} mt="md">
           Return to Home
         </Button>
-      </Flex>
-    </Container>
+      </Center>
+    </BasePage>
   );
 }

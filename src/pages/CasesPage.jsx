@@ -1,6 +1,7 @@
-import { Container, Title, List } from "@mantine/core";
+import { List } from "@mantine/core";
 import { useCasesData } from "../features/cases/hooks/useCasesData";
 import Loader from "../common/components/loader/GavelLoader";
+import BasePage from "../common/components/BasePage";
 
 export default function CasesPage() {
   const { data: cases, isLoading: casesLoading } = useCasesData();
@@ -8,8 +9,7 @@ export default function CasesPage() {
   if (casesLoading) return <Loader />;
 
   return (
-    <Container fluid>
-      <Title order={1}>Cases</Title>
+    <BasePage titleText="Cases">
       <List>
         {cases.map((c) => {
           return (
@@ -19,6 +19,6 @@ export default function CasesPage() {
           );
         })}
       </List>
-    </Container>
+    </BasePage>
   );
 }
