@@ -22,7 +22,7 @@ import { PiGavelFill } from "react-icons/pi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { emToPx } from "../common/utils/helpers";
 import { useAuth } from "../context/AuthContext";
-import Logo from "../assets/svgs/Logo";
+import Logo from "../assets/svgs/Logo/Logo";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import CookieBanner from "../common/components/CookieBanner";
 

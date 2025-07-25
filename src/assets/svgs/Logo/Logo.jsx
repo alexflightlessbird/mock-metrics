@@ -1,5 +1,5 @@
 import { isNumberLike } from "@mantine/core";
-import { useIds } from "../../common/hooks/useIds";
+import { useIds } from "../../../common/hooks/useIds";
 import styles from "./Logo.module.css";
 
 export default function Logo({

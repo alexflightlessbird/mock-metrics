@@ -78,10 +78,8 @@ export default function App({ onReady }) {
             element={
               isSuperAdmin ? (
                 <NavLayout>
-                  <>
-                    <TestPage />
-                    <BetaOverlay />
-                  </>
+                  <TestPage />
+                  <BetaOverlay />
                 </NavLayout>
               ) : (
                 <Navigate to="/" replace />
