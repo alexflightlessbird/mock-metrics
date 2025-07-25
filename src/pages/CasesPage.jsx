@@ -7,8 +7,6 @@ export default function CasesPage() {
 
   if (casesLoading) return <Loader />;
 
-  console.log(cases);
-
   return (
     <Container fluid>
       <Title order={1}>Cases</Title>
