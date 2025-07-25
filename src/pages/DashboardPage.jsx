@@ -8,13 +8,13 @@ import {
   Skeleton,
 } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
-import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
+import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import {
   useSchoolUsers,
   useSchoolTeams,
   useSchoolStudents,
   useSchoolTournaments,
-} from "../features/dashboard/hooks/useSchoolDetails";
+} from "../features/schoolInfo/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";

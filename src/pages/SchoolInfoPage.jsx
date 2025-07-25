@@ -1,7 +1,7 @@
 import { Text, Space, Select, Skeleton, Stack } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
-import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
-import { useSchoolDetails } from "../features/dashboard/hooks/useSchoolDetails";
+import { useUserAssignments } from "../common/hooks/useUserAssignments";
+import { useSchoolDetails } from "../features/schoolInfo/hooks/useSchoolDetails";
 import { useLocalStorage } from "@mantine/hooks";
 import { capitalize } from "../common/utils/helpers";
 import BasePage from "../common/components/BasePage";

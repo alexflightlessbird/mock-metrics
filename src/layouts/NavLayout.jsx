@@ -23,7 +23,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { emToPx } from "../common/utils/helpers";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../assets/svgs/Logo";
-import { useUserAssignments } from "../features/dashboard/hooks/useUserAssignments";
+import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import CookieBanner from "../common/components/CookieBanner";
 
 const NAV_LINKS = [
