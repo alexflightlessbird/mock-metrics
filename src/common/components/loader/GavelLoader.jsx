@@ -171,15 +171,23 @@ export default function LoadingAnimation({
   gavelColor,
   topPanelColor,
   bottomPanelColor,
+  allColors,
   scale = 1,
 }) {
   const theme = useMantineTheme();
   if (!isNumberLike(scale)) scale = 1;
   scale = Math.abs(Number(scale));
 
-  if (!gavelColor) gavelColor = theme.colors.blue[6];
-  if (!topPanelColor) topPanelColor = theme.colors.blue[6];
-  if (!bottomPanelColor) bottomPanelColor = theme.colors.blue[6];
+  if (!allColors) {
+    if (!gavelColor) gavelColor = theme.colors.blue[6];
+    if (!topPanelColor) topPanelColor = theme.colors.blue[6];
+    if (!bottomPanelColor) bottomPanelColor = theme.colors.blue[6];
+  } else {
+    gavelColor = allColors;
+    topPanelColor = allColors;
+    bottomPanelColor = allColors;
+  }
+
 
   return (
     <div className={`${styles.container}`} aria-label="Loading...">
