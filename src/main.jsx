@@ -11,6 +11,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ErrorBoundary } from "react-error-boundary";
+import Error from "./pages/Error";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,19 +42,21 @@ const root = createRoot(document.getElementById("root"));
 
 root.render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme} defaultColorScheme="light">
-        <ModalsProvider>
-          <ThemeProvider>
-            <AuthProvider>
-              <Notifications />
-              <App onReady={removeLoadingScreen} />
-              {/* <App /> */}
-            </AuthProvider>
-          </ThemeProvider>
-          <ReactQueryDevtools />
-        </ModalsProvider>
-      </MantineProvider>
-    </QueryClientProvider>
+    <ErrorBoundary FallbackComponent={Error}>
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme} defaultColorScheme="light">
+          <ModalsProvider>
+            <ThemeProvider>
+              <AuthProvider>
+                <Notifications />
+                <App onReady={removeLoadingScreen} />
+                {/* <App /> */}
+              </AuthProvider>
+            </ThemeProvider>
+            <ReactQueryDevtools />
+          </ModalsProvider>
+        </MantineProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </StrictMode>
 );
