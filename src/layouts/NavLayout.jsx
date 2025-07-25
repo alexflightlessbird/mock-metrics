@@ -9,6 +9,7 @@ import {
   Text,
   Flex,
   Menu,
+  useMantineColorScheme
 } from "@mantine/core";
 import {
   useDisclosure,
@@ -16,7 +17,7 @@ import {
   useLocalStorage,
   useHeadroom,
 } from "@mantine/hooks";
-import { LuBriefcase, LuSchool, LuLogOut, LuDatabase, LuChevronsUpDown as ChevronIcon, LuLayoutDashboard } from "react-icons/lu";
+import { LuBriefcase, LuSchool, LuLogOut, LuDatabase, LuChevronsUpDown as ChevronIcon, LuLayoutDashboard, LuSettings } from "react-icons/lu";
 import { PiGavelFill } from "react-icons/pi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { emToPx } from "../common/utils/helpers";
@@ -36,6 +37,7 @@ export default function NavLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const pinned = useHeadroom({ fixedAt: 120, behavior: "transform" });
+  const { colorScheme } = useMantineColorScheme();
 
   const { user, signOut, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
@@ -70,7 +72,19 @@ export default function NavLayout({ children }) {
 
   const BOTTOM_LINKS = [
     {
-      enabled: isSuperAdmin && !superAdminLoading,
+      enabled: !loading,
+      icon: LuSettings,
+      label: "Settings",
+      path: "/settings",
+      onClick: () => {
+        navigate("/settings");
+        setTimeout(() => {
+          closeMobile();
+        }, 100);
+      }
+    },
+    {
+      enabled: !loading && isSuperAdmin && !superAdminLoading,
       icon: LuLayoutDashboard,
       label: "Admin Test",
       path: "/admin-test",
@@ -82,7 +96,7 @@ export default function NavLayout({ children }) {
       }
     },
     {
-      enabled: isSuperAdmin && !superAdminLoading,
+      enabled: !loading && isSuperAdmin && !superAdminLoading,
       icon: LuDatabase,
       label: "Admin",
       path: "/admin",
@@ -189,7 +203,7 @@ export default function NavLayout({ children }) {
             size="sm"
             style={{ position: "absolute", left: "var(--mantine-spacing-md)" }}
           />
-          <Group h="100%" gap="0" tabIndex="0" onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.currentTarget.click(); } }} style={{ userSelect: "none", WebkitUserSelect: "none", cursor: "pointer" }} onClick={() => navigate("/")}>
+          <Group h="100%" gap="0" tabIndex="0" onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.currentTarget.click(); } }} style={{ userSelect: "none", WebkitUserSelect: "none", cursor: "pointer" }} onClick={() => { navigate("/"); closeMobile(); }}>
             <Logo />
             <Text ff="Trirong" fz="xl">
               MockMetrics
@@ -226,7 +240,7 @@ export default function NavLayout({ children }) {
                 >
                   <Menu.Target>
                     <Flex
-                      bg={theme.colors.gray[1]}
+                      bg={colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[1]}
                       pl="xs"
                       pr="xs"
                       pt="xs"
