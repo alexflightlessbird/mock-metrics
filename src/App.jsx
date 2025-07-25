@@ -14,11 +14,12 @@ import TestPage from "./pages/Test";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
 import { useLocalStorage } from "@mantine/hooks";
 import PrivacyAndSecurityPage from "./pages/PrivacyAndSecurityPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const BetaOverlay = () => {
   return (
     <div style={{
-      position: 'fixed',  // Changed to absolute to contain within parent
+      position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
@@ -31,7 +32,7 @@ const BetaOverlay = () => {
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '200%',  // Increased coverage area
+        width: '200%',
         height: '200%',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
@@ -135,6 +136,18 @@ export default function App({ onReady }) {
                 </NavLayout>
               ) : (
                 <PrivacyAndSecurityPage />
+              )
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              user ? (
+                <NavLayout>
+                  <SettingsPage />
+                </NavLayout>
+              ) : (
+                <Navigate to="/" replace />
               )
             }
           />
