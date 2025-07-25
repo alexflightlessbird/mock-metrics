@@ -15,46 +15,7 @@ import SchoolInfoPage from "./pages/SchoolInfoPage";
 import { useLocalStorage } from "@mantine/hooks";
 import PrivacyAndSecurityPage from "./pages/PrivacyAndSecurityPage";
 import SettingsPage from "./pages/SettingsPage";
-
-const BetaOverlay = () => {
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      pointerEvents: 'none',
-      zIndex: 1,
-      overflow: 'hidden',
-    }}>
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '200%',
-        height: '200%',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-        gridAutoRows: 'minmax(100px, auto)',
-        transform: 'rotate(-30deg)',
-      }}>
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div key={i} style={{
-            color: 'rgba(0,0,0,0.1)',
-            fontSize: '2rem',
-            fontWeight: 900,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            BETA
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+import BetaOverlay from "./layouts/BetaOverlay";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
