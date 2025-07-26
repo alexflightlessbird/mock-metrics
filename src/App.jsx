@@ -6,7 +6,15 @@ import DashboardPage from "./pages/DashboardPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import Error404 from "./pages/Error404";
+import {
+  Error404,
+  Error401,
+  Error403,
+  Error418,
+  Error503,
+  Error402,
+  Error500,
+} from "./pages/ErrorCodePages";
 import Error from "./pages/Error";
 import CasesPage from "./pages/CasesPage";
 import NavLayout from "./layouts/NavLayout";
@@ -16,13 +24,15 @@ import { useLocalStorage } from "@mantine/hooks";
 import PrivacyAndSecurityPage from "./pages/PrivacyAndSecurityPage";
 import SettingsPage from "./pages/SettingsPage";
 import BetaOverlay from "./layouts/BetaOverlay";
+import ErrorExplanationPage from "./pages/ErrorExplanationPage";
+import StatusPage from "./pages/StatusPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
 
   const [selectedSchoolId] = useLocalStorage({
     key: "school",
-    defaultValue: null
+    defaultValue: null,
   });
 
   useEffect(() => {
@@ -42,12 +52,16 @@ export default function App({ onReady }) {
           <Route
             path="/admin"
             element={
-              isSuperAdmin ? (
+              !user ? (
+                <Error401 />
+              ) : isSuperAdmin ? (
                 <NavLayout>
                   <AdminDashboard />
                 </NavLayout>
               ) : (
-                <Navigate to="/" replace />
+                <NavLayout>
+                  <Error403 />
+                </NavLayout>
               )
             }
           />
@@ -62,51 +76,167 @@ export default function App({ onReady }) {
           <Route
             path="/school"
             element={
-              !user 
-                ? <Navigate to="/auth" replace />
-                : !selectedSchoolId
-                  ? <Navigate to="/" replace />
-                  : (
-                    <NavLayout>
-                      <SchoolInfoPage />
-                    </NavLayout>
-                  ) 
+              !user ? (
+                <Error401 />
+              ) : !selectedSchoolId ? (
+                <Navigate to="/" replace />
+              ) : (
+                <NavLayout>
+                  <SchoolInfoPage />
+                </NavLayout>
+              )
             }
           />
           <Route
             path="/admin-test"
             element={
-              isSuperAdmin ? (
+              !user ? (
+                <Error401 />
+              ) : isSuperAdmin ? (
                 <NavLayout>
                   <TestPage />
                   <BetaOverlay />
                 </NavLayout>
               ) : (
-                <Navigate to="/" replace />
+                <NavLayout>
+                  <Error403 />
+                </NavLayout>
               )
             }
           />
           <Route
             path="/privacy-and-security"
             element={
-              user ? (
+              !user ? (
+                <PrivacyAndSecurityPage />
+              ) : (
                 <NavLayout>
                   <PrivacyAndSecurityPage />
                 </NavLayout>
-              ) : (
-                <PrivacyAndSecurityPage />
               )
             }
           />
           <Route
             path="/settings"
             element={
-              user ? (
+              !user ? (
+                <Error401 />
+              ) : (
                 <NavLayout>
                   <SettingsPage />
                 </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/404"
+            element={
+              !user ? (
+                <Error404 />
               ) : (
-                <Navigate to="/" replace />
+                <NavLayout>
+                  <Error404 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/403"
+            element={
+              !user ? (
+                <Error403 />
+              ) : (
+                <NavLayout>
+                  <Error403 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/401"
+            element={
+              !user ? (
+                <Error401 />
+              ) : (
+                <NavLayout>
+                  <Error401 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/418"
+            element={
+              !user ? (
+                <Error418 />
+              ) : (
+                <NavLayout>
+                  <Error418 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/503"
+            element={
+              !user ? (
+                <Error503 />
+              ) : (
+                <NavLayout>
+                  <Error503 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/402"
+            element={
+              !user ? (
+                <Error402 />
+              ) : (
+                <NavLayout>
+                  <Error402 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/500"
+            element={
+              !user ? (
+                <Error500 />
+              ) : (
+                <NavLayout>
+                  <Error500 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/error-explanation"
+            element={
+              !user ? (
+                <ErrorExplanationPage />
+              ) : (
+                <NavLayout>
+                  <ErrorExplanationPage />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/status"
+            element={
+              !user ? (
+                <>
+                  <StatusPage />
+                  <BetaOverlay />
+                </>
+              ) : (
+                <NavLayout>
+                  <StatusPage />
+                  <BetaOverlay />
+                </NavLayout>
               )
             }
           />
@@ -125,9 +255,13 @@ export default function App({ onReady }) {
           <Route
             path="*"
             element={
-              <NavLayout>
+              !user ? (
                 <Error404 />
-              </NavLayout>
+              ) : (
+                <NavLayout>
+                  <Error404 />
+                </NavLayout>
+              )
             }
           />
         </Routes>

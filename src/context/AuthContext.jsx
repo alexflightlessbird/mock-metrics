@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
       .from("super_admins")
       .select("*")
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
 
     setIsSuperAdmin(!!data);
 
