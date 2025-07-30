@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabase";
-import useNotifications from "../../../common/hooks/useNotifications";
+import { supabase } from "../../lib/supabase";
+import useNotifications from "./useNotifications";
 
 export function useSchoolDetails(schoolId) {
   const { showError } = useNotifications();

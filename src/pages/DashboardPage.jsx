@@ -14,7 +14,7 @@ import {
   useSchoolTeams,
   useSchoolStudents,
   useSchoolTournaments,
-} from "../features/schoolInfo/hooks/useSchoolDetails";
+} from "../common/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -64,7 +64,7 @@ export default function DashboardPage() {
     return (
       <Container>
         <Flex justify="center" mt="xs" align="center">
-          <Loader key={"dashboard-loader-animation"} scale={1.5} />
+          <Loader scale={1.5} />
         </Flex>
       </Container>
     );

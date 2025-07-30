@@ -1,4 +1,8 @@
 export function capitalize(str) {
+  if (!str) return;
+  if (str.toLowerCase() === "orcs") {
+    return "ORCS";
+  }
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -40,4 +44,22 @@ export function emToPx(emValue) {
     getComputedStyle(document.documentElement).fontSize
   );
   return emValue * rootFontSize;
+}
+
+export function selectedItem({ items, itemIdName = "id", id = null }) {
+  if (!id) return null;
+  return items.find((item) => item[itemIdName] === id) || null;
+}
+
+export function formatSide (side, caseType) {
+  switch (side) {
+    case "d":
+      return "Defense";
+    case "p":
+      if (caseType.toLowerCase() === "criminal") return "Prosecution";
+      if (caseType.toLowerCase() === "civil") return "Plaintiff";
+      return "-";
+    default:
+      return "-";
+  }
 }

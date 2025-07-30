@@ -19,6 +19,7 @@ import {
 } from "@mantine/hooks";
 import { LuBriefcase, LuSchool, LuLogOut, LuDatabase, LuChevronsUpDown as ChevronIcon, LuLayoutDashboard, LuSettings } from "react-icons/lu";
 import { PiGavelFill } from "react-icons/pi";
+import { TbTournament } from "react-icons/tb";
 import { useNavigate, useLocation } from "react-router-dom";
 import { emToPx } from "../common/utils/helpers";
 import { useAuth } from "../context/AuthContext";
@@ -27,9 +28,10 @@ import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import CookieBanner from "../common/components/CookieBanner";
 
 const NAV_LINKS = [
-  { icon: PiGavelFill, label: "Dashboard", path: "/" },
-  { icon: LuBriefcase, label: "Cases", path: "/cases" },
-  { icon: LuSchool, label: "School", path: "/school" },
+  { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
+  { icon: LuBriefcase, label: "Cases", path: "/cases", showOnNoSchool: true },
+  { icon: LuSchool, label: "School", path: "/school", showOnNoSchool: false },
+  { icon: TbTournament, label: "Tournaments", path: "/tournaments", showOnNoSchool: false } 
 ];
 
 export default function NavLayout({ children }) {
@@ -295,24 +297,27 @@ export default function NavLayout({ children }) {
               </>
             )}
           </AppShell.Section>
+
           <AppShell.Section style={{ flex: 1 }}>
             {NAV_LINKS.map((link) => (
               <NavLink
-                disabled={link.label.toLowerCase() === "school" && !selectedSchoolId}
+                disabled={!link.showOnNoSchool && !selectedSchoolId}
                 key={link.path}
                 active={location.pathname === link.path}
                 label={
                   isMobile ? link.label : desktopCollapsed ? null : link.label
                 }
                 leftSection={<link.icon size="1rem" />}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!link.showOnNoSchool && !selectedSchoolId) return;
                   navigate(link.path);
                   setTimeout(() => {
                     closeMobile();
                   }, 100);
                 }}
                 mb="xs"
-                tabIndex={link.label.toLowerCase() === "school" && !selectedSchoolId ? "" : 0}
+                tabIndex={!link.showOnNoSchool && !selectedSchoolId ? -1 : 0}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -320,8 +325,10 @@ export default function NavLayout({ children }) {
                     closeMobile();
                   }
                 }}
-                style={{
-                  cursor: link.label.toLowerCase() === "school" && !selectedSchoolId ? "not-allowed" : undefined
+                styles={{
+                  root: {
+                    cursor: "pointer"
+                  }
                 }}
               />
             ))}
