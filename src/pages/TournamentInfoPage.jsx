@@ -31,9 +31,6 @@ export default function TournamentDashboard() {
         </BasePage>
     )
 
-    console.log(selectedTournament);
-    console.log(teams);
-
     return (
         <BasePage titleText={selectedTournament.name}>
             <PageSection title="information">

@@ -1,4 +1,4 @@
-import { Container, Text, Flex, Card } from "@mantine/core";
+import { Grid, Container, Text, Flex, Card } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useSchoolTournaments } from "../common/hooks/useSchoolDetails";
 import { useLocalStorage } from "@mantine/hooks";
@@ -20,11 +20,18 @@ export default function TournamentDashboard() {
         </Container>
     )
 
-    console.log(allTournaments);
-
     return (
         <BasePage titleText="Tournament Dashboard">
-            <Text>{selectedSchoolId}</Text>
+            <Grid>
+                {allTournaments.map((t) => (
+                    <Grid.Col key={t.id} span={{ base: 12, sm: 6, md: 4 }}>
+                        <Card withBorder shadow="md" radius="md">
+                            <Text>{t.name}</Text>
+                            <Text>{t.year}</Text>
+                        </Card>
+                    </Grid.Col>
+                ))}
+            </Grid>
         </BasePage>
     )
 }
