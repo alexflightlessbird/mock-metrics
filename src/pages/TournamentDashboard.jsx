@@ -1,11 +1,12 @@
-import { Grid, Container, Text, Flex, Card } from "@mantine/core";
+import { Grid, Container, Text, Flex } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useSchoolTournaments } from "../common/hooks/useSchoolDetails";
 import { useLocalStorage } from "@mantine/hooks";
 import Loader from "../common/components/loader/GavelLoader";
+import Card from "../common/components/card/Card";
 
 export default function TournamentDashboard() {
-        const [selectedSchoolId] = useLocalStorage({
+    const [selectedSchoolId] = useLocalStorage({
         key: "school",
         defaultValue: null
     });
@@ -25,7 +26,7 @@ export default function TournamentDashboard() {
             <Grid>
                 {allTournaments.map((t) => (
                     <Grid.Col key={t.id} span={{ base: 12, sm: 6, md: 4 }}>
-                        <Card withBorder shadow="md" radius="md">
+                        <Card href={`/tournaments/${t.id}`}>
                             <Text>{t.name}</Text>
                             <Text>{t.year}</Text>
                         </Card>

@@ -1,4 +1,4 @@
-import { Grid, Text, Space, Anchor } from "@mantine/core";
+import { Grid, Text, Space, Anchor, Button } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useLocalStorage } from "@mantine/hooks";
 import Loader from "../common/components/loader/GavelLoader";
@@ -7,6 +7,7 @@ import { useTournamentDetails, useTournamentTeams } from "../common/hooks/useTou
 import PageSection from "../common/components/PageSection";
 import { capitalize } from "../common/utils/helpers";
 import TeamCard from "../features/tournamentInfo/components/TeamCard";
+import { LuArrowLeft } from "react-icons/lu";
 
 export default function TournamentDashboard() {
         const [selectedSchoolId] = useLocalStorage({
@@ -33,6 +34,10 @@ export default function TournamentDashboard() {
 
     return (
         <BasePage titleText={selectedTournament.name}>
+            <Button mb="lg" leftSection={<LuArrowLeft />} onClick={() => navigate("/tournaments")}>
+                All Tournaments
+            </Button>
+
             <PageSection title="information">
                 <Text>Year: {selectedTournament.year}</Text>
                 <Text>Type: {selectedTournament.type === "pre-stack" ? "Pre-Stack" : selectedTournament.type === "post-stack" ? "Post-Stack" : ""}</Text>
@@ -54,8 +59,8 @@ export default function TournamentDashboard() {
             <PageSection title="teams">
                 <Grid>
                     {teams.map((t) =>
-                        <Grid.Col key={t.team_id} span={{ base: 12, sm: 6, md: 4 }}>
-                            <TeamCard team={t} caseType={selectedTournament.cases.type} key={t.team_id} />
+                        <Grid.Col key={t.team_id} span={{ base: 12, md: 6, lg: 4 }}>
+                            <TeamCard team={t} caseType={selectedTournament.cases.type} key={t.team_id} nationalsTournament={selectedTournament.area.toLowerCase() === "nationals"} />
                         </Grid.Col>
                     )}
                 </Grid>

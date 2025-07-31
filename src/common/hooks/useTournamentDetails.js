@@ -46,7 +46,7 @@ export function useTournamentTeams(tournamentId) {
             try {
                 const { data, error } = await supabase
                     .from("teams_tournaments")
-                    .select("*, teams(*)")
+                    .select("*, teams(*), tournaments(case_id)")
                     .eq("tournament_id", tournamentId);
                 if (error) throw error;
                 return data;

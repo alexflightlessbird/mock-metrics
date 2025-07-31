@@ -29,9 +29,9 @@ import CookieBanner from "../common/components/CookieBanner";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
-  { icon: LuBriefcase, label: "Cases", path: "/cases", showOnNoSchool: true },
+  { icon: LuBriefcase, label: "Cases", path: "/cases", showOnNoSchool: true, matchPattern: /^\/cases(\/[^/]+)?$/ },
   { icon: LuSchool, label: "School", path: "/school", showOnNoSchool: false },
-  { icon: TbTournament, label: "Tournaments", path: "/tournaments", showOnNoSchool: false } 
+  { icon: TbTournament, label: "Tournaments", path: "/tournaments", showOnNoSchool: false, matchPattern: /^\/tournaments(\/[^/]+)?$/ } 
 ];
 
 export default function NavLayout({ children }) {
@@ -226,7 +226,7 @@ export default function NavLayout({ children }) {
         p="md"
         style={{
           overflow: "hidden",
-          transition: "width 200ms ease",
+          transition: isResizing ? "width 200ms ease" : "none",
         }}
       >
         <div
@@ -303,7 +303,11 @@ export default function NavLayout({ children }) {
               <NavLink
                 disabled={!link.showOnNoSchool && !selectedSchoolId}
                 key={link.path}
-                active={location.pathname === link.path}
+                active={
+                  link.matchPattern
+                    ? link.matchPattern.test(location.pathname)
+                    : location.pathname === link.path
+                }
                 label={
                   isMobile ? link.label : desktopCollapsed ? null : link.label
                 }

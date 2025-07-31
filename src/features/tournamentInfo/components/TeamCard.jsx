@@ -1,18 +1,22 @@
-import { Badge, Card, Flex, Skeleton, Stack, Text } from "@mantine/core";
+import { Badge, Card as MantineCard, Flex, Skeleton, Stack, Text, Button } from "@mantine/core";
 import { useTournamentTeamRounds } from "../../../common/hooks/useTournamentDetails";
 import { useState } from "react";
 import RoundTable from "./RoundTable";
 import { useRoundBallots } from "../hooks/useRoundBallots";
+import Card from "../../../common/components/card/Card";
+import { LuPlus } from "react-icons/lu";
+import AddRoundModal from "./AddRoundModal";
 
-export default function TeamCard({ team, caseType }) {
+export default function TeamCard({ team, caseType, nationalsTournament = false }) {
     const [showRounds, setShowRounds] = useState(false);
+    const [addRoundModalOpened, setAddRoundModalOpened] = useState(false);
     const { data: rounds, isLoading: roundsLoading } = useTournamentTeamRounds(team.tournament_id, team.team_id);
     const { data: roundResults, isLoading: resultsLoading } = useRoundBallots(rounds || []);
     
     if (roundsLoading || resultsLoading) return (
-        <Card withBorder shadow="md" radius="md">
+        <MantineCard withBorder shadow="md" radius="md">
             <Skeleton h={30} />
-        </Card>
+        </MantineCard>
     )
     
     const sortedResults = [...(roundResults || [])].sort((a, b) => a.round_number - b.round_number);
@@ -38,31 +42,51 @@ export default function TeamCard({ team, caseType }) {
     const recordVal = record.wins + (record.ties * 0.5);
     const totalRecordVal = record.wins + record.losses + record.ties;
 
-    return (
-        <Card withBorder shadow="md" radius="md">
-            <Card.Section withBorder inheritPadding py="sm">
-                <Flex justify="space-between" align="center">
-                    <Text fw={500}>{team.teams.name}</Text>
-                    <Badge fz="sm" color={recordVal > totalRecordVal - recordVal ? "blue" : recordVal == totalRecordVal - recordVal ? "gray" : "pink"}>{record.wins}-{record.losses}-{record.ties}</Badge>
-                </Flex>
-            </Card.Section>
+    const existingRoundNumbers = rounds.map(round => round.round_number);
 
-            <Card.Section inheritPadding py="sm">
-                <Stack gap="xs">
-                    <Text span style={{ cursor: "pointer", userSelect: "none", WebkitUserSelect: "none" }} c="blue" onClick={() => { setShowRounds(!showRounds); }} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.onClick(); }}}>
-                        {showRounds ? "Hide Rounds" : "Show Rounds"}
-                    </Text>
-                    {showRounds && sortedResults.length > 0 && (
-                        <>
-                            <Text fw={500} size="sm">Rounds:</Text>
-                            <RoundTable data={sortedResults} caseType={caseType} />
-                        </>
-                    )}
-                    {showRounds && sortedResults.length == 0 && (
-                        <Text c="dimmed">No rounds associated with this team.</Text>
-                    )}
-                </Stack>
-            </Card.Section>
-        </Card>
+    return (
+        <>
+            <Card>
+                <MantineCard.Section withBorder inheritPadding py="sm">
+                    <Flex justify="space-between" align="center">
+                        <Text fw={500}>{team.teams.name}</Text>
+                        <Badge fz="sm" color={recordVal > totalRecordVal - recordVal ? "blue" : recordVal == totalRecordVal - recordVal ? "gray" : "pink"}>{record.wins}-{record.losses}-{record.ties}</Badge>
+                    </Flex>
+                </MantineCard.Section>
+
+                <MantineCard.Section inheritPadding py="sm">
+                    <Stack gap="xs">
+                        <Text span style={{ cursor: "pointer", userSelect: "none", WebkitUserSelect: "none" }} c="blue" onClick={() => { setShowRounds(!showRounds); }} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.onClick(); }}}>
+                            {showRounds ? "Hide Rounds" : "Show Rounds"}
+                        </Text>
+                        {showRounds && rounds.length < (nationalsTournament ? 5 : 4) && (
+                            <Button leftSection={<LuPlus />} onClick={() => setAddRoundModalOpened(true)}>
+                                Add Round
+                            </Button>
+                        )}
+                        {showRounds && sortedResults.length > 0 && (
+                            <>
+                                <Text fw={500} size="sm">Rounds:</Text>
+                                <RoundTable data={sortedResults} caseType={caseType} />
+                            </>
+                        )}
+                        {showRounds && sortedResults.length == 0 && (
+                            <Text c="dimmed">No rounds associated with this team.</Text>
+                        )}
+                    </Stack>
+                </MantineCard.Section>
+            </Card>
+
+            <AddRoundModal
+                opened={addRoundModalOpened}
+                onClose={() => setAddRoundModalOpened(false)}
+                existingRounds={existingRoundNumbers}
+                nationalsTournament={nationalsTournament}
+                caseType={caseType}
+                tournamentId={team.tournament_id}
+                teamId={team.team_id}
+                caseId={team.tournaments.case_id}
+            />
+        </>
     )
 }
