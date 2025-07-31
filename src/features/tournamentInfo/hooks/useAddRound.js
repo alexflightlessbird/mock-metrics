@@ -7,19 +7,15 @@ export function useAddRound() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ tournamentId, teamId, roundNumber, side }) => {
-            const { data, error } = await supabase
-                .from("rounds")
-                .insert([
-                    {
-                        tournament_id: tournamentId,
-                        team_id: teamId,
-                        round_number: roundNumber,
-                        side: side
-                    }
-                ])
-                .select();
-
+        mutationFn: async ({ tournamentId, teamId, roundNumber, side, witnessRoundData, roleRoundData }) => {
+            const { data, error } = await supabase.rpc("create_round_with_witnesses", {
+                tournament_id: tournamentId,
+                team_id: teamId,
+                round_number: roundNumber,
+                side: side,
+                witness_data: witnessRoundData,
+                role_data: roleRoundData
+            });
             if (error) throw error;
             return data;
         },

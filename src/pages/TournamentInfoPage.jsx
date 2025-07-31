@@ -59,7 +59,7 @@ export default function TournamentDashboard() {
             <PageSection title="teams">
                 <Grid>
                     {teams.map((t) =>
-                        <Grid.Col key={t.team_id} span={{ base: 12, md: 6, lg: 4 }}>
+                        <Grid.Col key={t.team_id} span={{ base: 12, md: 6, xl: 4 }}>
                             <TeamCard team={t} caseType={selectedTournament.cases.type} key={t.team_id} nationalsTournament={selectedTournament.area.toLowerCase() === "nationals"} />
                         </Grid.Col>
                     )}

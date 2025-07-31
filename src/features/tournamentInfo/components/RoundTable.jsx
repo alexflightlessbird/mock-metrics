@@ -12,7 +12,7 @@ export default function RoundTable({ caseType, data }) {
     ];
 
     const renderRow = (r) => (
-        <Table.Tr key={r.round_number}>
+        <Table.Tr key={r.id} style={{ cursor: "pointer" }}>
             <Table.Td>{r.round_number}</Table.Td>
             <Table.Td>{formatSide(r.side, caseType)}</Table.Td>
             <Table.Td>{r.ballots}</Table.Td>

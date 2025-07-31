@@ -19,14 +19,8 @@ export function useRoundBallots(rounds) {
 
                 if (error) throw error;
 
-                console.log(ballotsData);
-                console.log(rounds);
-
                 return rounds.map(round => {
                     const roundBallots = ballotsData?.filter(b => b.round_id === round.id);
-
-                    console.log(round.round_number);
-                    console.log(roundBallots)
 
                     if (roundBallots.length === 0) {
                         return {
