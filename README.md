@@ -24,7 +24,6 @@ A specialized analytics platform that helps **college mock trial teams**:
 - **Trend Analysis** - Performance evolution across tournaments
 - **Role Comparisons** - Witness/attorney effectiveness metrics
 - **Custom Reports** - Exportable data visualizations
-- **Privacy-First** - All data processed client-side (optional server sync)
 
 ## 💎 Premium Features (Optional)
 - **AI-Assisted Strategy Suggestions** *Coming Soon* - Get customized recommendations
