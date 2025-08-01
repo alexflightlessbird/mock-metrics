@@ -1,4 +1,4 @@
-import { Grid, Text, Space, Anchor, Button } from "@mantine/core";
+import { Grid, Text, Space, Anchor, Button, Group, Flex } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useLocalStorage } from "@mantine/hooks";
 import Loader from "../common/components/loader/GavelLoader";
@@ -10,22 +10,33 @@ import {
 import PageSection from "../common/components/PageSection";
 import { capitalize } from "../common/utils/helpers";
 import TeamCard from "../features/tournamentInfo/components/TeamCard";
-import { LuArrowLeft } from "react-icons/lu";
+import { LuArrowLeft, LuTrash } from "react-icons/lu";
+import { useAuth } from "../context/AuthContext";
+import { useGetRole } from "../common/hooks/useGetRole";
+import DeleteConfirmationModal from "../common/components/modals/DeleteConfirmationModal";
+import { useState } from "react";
 
 export default function TournamentDashboard() {
 	const [selectedSchoolId] = useLocalStorage({
 		key: "school",
 		defaultValue: null,
 	});
+	const [deleteTournamentModalOpened, setDeleteTournamentModalOpened] = useState(false);
 	const { id: tournamentId } = useParams();
 	const navigate = useNavigate();
+	const { user } = useAuth();
 
-	const { data: selectedTournament, isLoading: tournamentLoading = true } =
+	const { role, isLoading: roleLoading } = useGetRole(
+		user.id,
+		selectedSchoolId
+	);
+
+	const { data: selectedTournament, isLoading: tournamentLoading = true, deleteTournament } =
 		useTournamentDetails(tournamentId, selectedSchoolId);
 	const { data: teams, isLoading: teamsLoading = true } =
 		useTournamentTeams(tournamentId);
 
-	if (tournamentLoading || teamsLoading)
+	if (tournamentLoading || teamsLoading || roleLoading)
 		return (
 			<BasePage titleText="Loading...">
 				<Loader scale={1.5} />
@@ -48,6 +59,38 @@ export default function TournamentDashboard() {
 			>
 				All Tournaments
 			</Button>
+
+			{role === "primary" && (
+				<>
+					<PageSection title="danger zone">
+						<Flex gap="xl" align="center">
+							<Text flex={1} c="red" fw={700} size="sm" >THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.</Text>
+							<Button 
+								w="fit-content"
+								leftSection={<LuTrash />}
+								color="red"
+								onClick={() => setDeleteTournamentModalOpened(true)}
+								variant="outline"
+							>
+								Delete Tournament
+							</Button>
+						</Flex>
+					</PageSection>
+					<Space h="md" />
+					<DeleteConfirmationModal
+						opened={deleteTournamentModalOpened}
+						onClose={() => setDeleteTournamentModalOpened(false)}
+						entityName="tournament"
+						entity={{
+							name: selectedTournament.name
+						}}
+						onSubmit={() => {
+							deleteTournament();
+							navigate("/tournaments");
+						}}
+					/>
+				</>
+			)}
 
 			<PageSection title="information">
 				<Text>Year: {selectedTournament.year}</Text>
@@ -92,6 +135,7 @@ export default function TournamentDashboard() {
 									nationalsTournament={
 										selectedTournament.area.toLowerCase() === "nationals"
 									}
+									tournamentStatus={selectedTournament.is_active}
 								/>
 							</Grid.Col>
 						))}

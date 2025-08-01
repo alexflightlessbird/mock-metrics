@@ -1164,6 +1164,7 @@ export default function AddRoundModal({
 				body: { overflowY: "auto" },
 			}}
 		>
+			<Text c="dimmed" size="sm" mb="md">Ensure you are entering everything correctly. This information cannot be changed after being submitted, and to make adjustments the entire round will need to be deleted.</Text>
 			{pages[activePage]}
 
 			<Group justify="space-between" mt="xl">

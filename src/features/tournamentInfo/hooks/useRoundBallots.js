@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../lib/supabase";
 import useNotifications from "../../../common/hooks/useNotifications";
 
 export function useRoundBallots(rounds) {
     const { showError } = useNotifications();
+    const queryClient = useQueryClient();
     const roundIds = rounds?.map(r => r.id) || [];
 
     const { data, isLoading } = useQuery({
@@ -79,8 +80,13 @@ export function useRoundBallots(rounds) {
         },
     });
 
+    const refreshBallots = () => {
+        queryClient.invalidateQueries(["round-ballots", roundIds]);
+    }
+
     return {
         data,
-        isLoading
+        isLoading,
+        refreshBallots
     };
 }

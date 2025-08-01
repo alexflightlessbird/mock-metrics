@@ -77,7 +77,13 @@ export default function EditSchoolModal({
   return (
     <BaseModal
       opened={opened}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setEditType(null);
+        setAssignmentView("view");
+        setEditAssignmentUserId(null);
+        setFormLoading(false);
+      }}
       title={`Edit School (${school?.name})`}
     >
       <form onSubmit={handleSubmit}>
@@ -141,19 +147,17 @@ export default function EditSchoolModal({
               </Radio.Group>
 
               {assignmentView === "view" && (
-                <>
-                  <ViewAssignments
-                    assignments={assignments}
-                    onRemove={(data) => deleteAssignment(data)}
-                    onUpdate={(data) => {
-                      setEditAssignmentUserId(data.userId);
-                      updateAssignment(data);
-                    }}
-                    editUserId={editAssignmentUserId}
-                    setEditUserId={setEditAssignmentUserId}
-                    school={school}
-                  />
-                </>
+                <ViewAssignments
+                  assignments={assignments}
+                  onRemove={(data) => deleteAssignment(data)}
+                  onUpdate={(data) => {
+                    setEditAssignmentUserId(data.userId);
+                    updateAssignment(data);
+                  }}
+                  editUserId={editAssignmentUserId}
+                  setEditUserId={setEditAssignmentUserId}
+                  school={school}
+                />
               )}
 
               {assignmentView === "add" && (

@@ -62,7 +62,13 @@ export default function EditUserModal({ opened, onClose, selected, onSubmit }) {
   return (
     <BaseModal
       opened={opened}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setEditType(null);
+        setAssignmentView("view");
+        setEditAssignmentSchoolId(null);
+        setFormLoading(false);
+      }}
       title={`Edit User (${user?.name})`}
     >
       <form onSubmit={handleSubmit}>

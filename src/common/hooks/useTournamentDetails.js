@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
 import useNotifications from "./useNotifications";
 
 export function useTournamentDetails(tournamentId, schoolId) {
-    const { showError } = useNotifications();
+    const { showSuccess, showError } = useNotifications();
+    const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
         queryKey: ["tournament-details", tournamentId, schoolId],
@@ -29,9 +30,24 @@ export function useTournamentDetails(tournamentId, schoolId) {
         },
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: async () => {
+            const { error } = await supabase.from("tournaments").delete().eq("id", tournamentId);
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(["school-tournaments", schoolId], ["tournament-details", tournamentId, schoolId]);
+            showSuccess({ message: "Tournament deleted successfully" });
+        },
+        onError: (error) => {
+            showError({ message: error.message, title: "Failed to delete tournament" });
+        }
+    })
+
     return {
         data,
-        isLoading
+        isLoading,
+        deleteTournament: deleteMutation.mutateAsync,
     };
 }
 

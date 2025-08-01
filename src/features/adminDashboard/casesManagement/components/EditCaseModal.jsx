@@ -74,7 +74,13 @@ export default function EditCaseModal({ opened, onClose, selected, onSubmit }) {
   return (
     <BaseModal
       opened={opened}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setEditType(null);
+        setFormLoading(false);
+        setWitnessView("view");
+        setEditWitnessId(null);
+      }}
       title={`Edit Case (${caseVal?.name})`}
     >
       <form onSubmit={handleSubmit}>

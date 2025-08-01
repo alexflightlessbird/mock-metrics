@@ -20,6 +20,7 @@ export default function TeamCard({
 	team,
 	caseType,
 	nationalsTournament = false,
+	tournamentStatus = true,
 }) {
 	const [showRounds, setShowRounds] = useState(false);
 	const [addRoundModalOpened, setAddRoundModalOpened] = useState(false);
@@ -27,7 +28,7 @@ export default function TeamCard({
 		team.tournament_id,
 		team.team_id
 	);
-	const { data: roundResults, isLoading: resultsLoading } = useRoundBallots(
+	const { data: roundResults, isLoading: resultsLoading, refreshBallots } = useRoundBallots(
 		rounds || []
 	);
 	const { user } = useAuth();
@@ -116,7 +117,8 @@ export default function TeamCard({
 						</Text>
 						{showRounds &&
 							rounds.length < (nationalsTournament ? 5 : 4) &&
-							(role === "admin" || role === "primary") && (
+							(role === "admin" || role === "primary") && 
+							tournamentStatus && (
 								<AddButton onClick={() => setAddRoundModalOpened(true)}>
 									Add Round
 								</AddButton>
@@ -126,7 +128,7 @@ export default function TeamCard({
 								<Text fw={500} size="sm">
 									Rounds:
 								</Text>
-								<RoundTable data={sortedResults} caseType={caseType} />
+								<RoundTable data={sortedResults} caseType={caseType} role={role} refreshBallots={refreshBallots} />
 							</>
 						)}
 						{showRounds && sortedResults.length == 0 && (

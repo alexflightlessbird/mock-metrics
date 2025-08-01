@@ -47,7 +47,7 @@ export default function useCasesData() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }) => {
-      if (updates.area === "" || updates.area.length === 0) {
+      if (updates.area === "" || updates.area?.length === 0) {
         updates.area = null;
       }
 
