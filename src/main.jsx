@@ -15,48 +15,60 @@ import { ErrorBoundary } from "react-error-boundary";
 import Error from "./pages/Error";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    },
-  },
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000,
+			refetchOnWindowFocus: false,
+		},
+	},
 });
 
 const theme = createTheme({
-  cursorType: "pointer"
+	cursorType: "pointer",
+	components: {
+		Button: {
+			defaultProps: {
+				tabIndex: 0,
+			},
+		},
+		ActionIcon: {
+			defaultProps: {
+				tabIndex: 0,
+			},
+		},
+	},
 });
 
 const removeLoadingScreen = () => {
-  const loadingElement = document.getElementById("app-loading");
-  if (loadingElement) {
-    setTimeout(() => {
-      loadingElement.style.opacity = "0";
-      loadingElement.style.transition = "opacity 500ms ease-out";
-      setTimeout(() => loadingElement.remove(), 500);
-    }, 1000);
-  }
+	const loadingElement = document.getElementById("app-loading");
+	if (loadingElement) {
+		setTimeout(() => {
+			loadingElement.style.opacity = "0";
+			loadingElement.style.transition = "opacity 500ms ease-out";
+			setTimeout(() => loadingElement.remove(), 500);
+		}, 1000);
+	}
 };
 
 const root = createRoot(document.getElementById("root"));
 
 root.render(
-  <StrictMode>
-    <ErrorBoundary FallbackComponent={Error}>
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          <ModalsProvider>
-            <ThemeProvider>
-              <AuthProvider>
-                <Notifications />
-                <App onReady={removeLoadingScreen} />
-                {/* <App /> */}
-              </AuthProvider>
-            </ThemeProvider>
-            <ReactQueryDevtools />
-          </ModalsProvider>
-        </MantineProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
-  </StrictMode>
+	<StrictMode>
+		<ErrorBoundary FallbackComponent={Error}>
+			<QueryClientProvider client={queryClient}>
+				<MantineProvider theme={theme} defaultColorScheme="light">
+					<ModalsProvider>
+						<ThemeProvider>
+							<AuthProvider>
+								<Notifications />
+								<App onReady={removeLoadingScreen} />
+								{/* <App /> */}
+							</AuthProvider>
+						</ThemeProvider>
+						<ReactQueryDevtools />
+					</ModalsProvider>
+				</MantineProvider>
+			</QueryClientProvider>
+		</ErrorBoundary>
+	</StrictMode>
 );

@@ -111,7 +111,8 @@ export default function TeamCard({
 							tabIndex={0}
 							onKeyDown={(e) => {
 								if (e.key === "Enter" || e.key === " ") {
-									e.onClick();
+									e.preventDefault();
+									setShowRounds(!showRounds);
 								}
 							}}
 						>
