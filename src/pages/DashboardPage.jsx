@@ -69,10 +69,10 @@ export default function DashboardPage() {
   return (
     <BasePage titleText="User Dashboard">
       {assignments.length === 0 && (
-          <Text>
-            You are not assigned to any schools. Please have your school's
-            Primary Admin reach out to support to be added.
-          </Text>
+        <Text>
+          You are not assigned to any schools. Please have your school's Primary
+          Admin reach out to support to be added.
+        </Text>
       )}
       {selectedSchoolId && (
         <>

@@ -89,11 +89,10 @@ export default function App({ onReady }) {
               )
             }
           />
-          <Route
-            path="/tournaments">
+          <Route path="/tournaments">
             <Route
               index
-              element = {
+              element={
                 !user ? (
                   <Error401 />
                 ) : !selectedSchoolId ? (

@@ -1,8 +1,8 @@
 .mantine-Switch-root {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .mantine-NavLink-root:where([data-disabled]) {
-    cursor: not-allowed !important;
-    pointer-events: all;
+  cursor: not-allowed !important;
+  pointer-events: all;
 }

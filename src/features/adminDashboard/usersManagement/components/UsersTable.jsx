@@ -16,11 +16,13 @@ export default function UsersTable({ data, onSelect }) {
     () => emToPx(parseFloat(theme.breakpoints.sm)),
     [theme.breakpoints.sm]
   );
-  const isMobile = width < smBreakpointPx;  
+  const isMobile = width < smBreakpointPx;
 
   const renderRow = (user) => (
     <Table.Tr key={user.id}>
-      {!isMobile && <Table.Td style={{ wordBreak: "break-all" }}>{user.id}</Table.Td>}
+      {!isMobile && (
+        <Table.Td style={{ wordBreak: "break-all" }}>{user.id}</Table.Td>
+      )}
       <Table.Td>{splitEmail(user.email)}</Table.Td>
       <Table.Td>{user.name || "-"}</Table.Td>
       <Table.Td>

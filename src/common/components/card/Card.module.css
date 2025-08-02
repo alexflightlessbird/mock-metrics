@@ -1,7 +1,7 @@
 .card {
-    transition: transform 150ms ease;
+  transition: transform 150ms ease;
 }
 
 .card:hover {
-    transform: scale(1.03);
+  transform: scale(1.03);
 }

@@ -51,7 +51,7 @@ export function selectedItem({ items, itemIdName = "id", id = null }) {
   return items.find((item) => item[itemIdName] === id) || null;
 }
 
-export function formatSide (side, caseType) {
+export function formatSide(side, caseType) {
   switch (side) {
     case "d":
       return "Defense";

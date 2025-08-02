@@ -188,7 +188,6 @@ export default function LoadingAnimation({
     bottomPanelColor = allColors;
   }
 
-
   return (
     <div className={`${styles.container}`} aria-label="Loading...">
       <div

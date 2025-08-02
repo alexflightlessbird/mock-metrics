@@ -3,32 +3,32 @@ import { supabase } from "../../lib/supabase";
 import useNotifications from "./useNotifications";
 
 export function useUserAssignments(userId) {
-	const { showError } = useNotifications();
+  const { showError } = useNotifications();
 
-	const { data: assignments, isLoading } = useQuery({
-		queryKey: ["user-assignments", userId],
-		queryFn: async () => {
-			if (!userId) return [];
+  const { data: assignments, isLoading } = useQuery({
+    queryKey: ["user-assignments", userId],
+    queryFn: async () => {
+      if (!userId) return [];
 
-			try {
-				const { data, error } = await supabase
-					.from("users_schools")
-					.select("school_id, role, schools:school_id (*)")
-					.eq("user_id", userId);
-				if (error) throw error;
-				if (data?.length === 0) return [];
-				return data;
-			} catch (error) {
-				showError({
-					title: "Failed to load assignments",
-					message: error.message,
-				});
-			}
-		},
-	});
+      try {
+        const { data, error } = await supabase
+          .from("users_schools")
+          .select("school_id, role, schools:school_id (*)")
+          .eq("user_id", userId);
+        if (error) throw error;
+        if (data?.length === 0) return [];
+        return data;
+      } catch (error) {
+        showError({
+          title: "Failed to load assignments",
+          message: error.message,
+        });
+      }
+    },
+  });
 
-	return {
-		assignments,
-		isLoading,
-	};
+  return {
+    assignments,
+    isLoading,
+  };
 }

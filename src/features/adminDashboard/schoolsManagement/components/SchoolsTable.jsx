@@ -20,7 +20,9 @@ export default function SchoolsTable({ data, onSelect }) {
 
   const renderRow = (school) => (
     <Table.Tr key={school.id}>
-      {!isMobile && <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>}
+      {!isMobile && (
+        <Table.Td style={{ wordBreak: "break-all" }}>{school.id}</Table.Td>
+      )}
       <Table.Td>{school.name || "-"}</Table.Td>
       <Table.Td>{school.short_name || "-"}</Table.Td>
       <Table.Td>

@@ -29,8 +29,8 @@ export default function DataTable({
 }) {
   if (!data?.length) return <Text>{emptyMessage}</Text>;
 
-  const filteredColumns = removeId 
-    ? columns.filter(column => column.value.toLowerCase() !== "id")
+  const filteredColumns = removeId
+    ? columns.filter((column) => column.value.toLowerCase() !== "id")
     : columns;
 
   return (
