@@ -8,23 +8,23 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { theme } from "../theme";
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 5 * 60 * 1000,
-            refetchOnWindowFocus: false,
-        },
-    },
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000,
+			refetchOnWindowFocus: false,
+		},
+	},
 });
 
 export default function AppProviders({ children }) {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <MantineProvider theme={theme}>
-                <ModalsProvider>
-                    {children}
-                    <ReactQueryDevtools />
-                </ModalsProvider>
-            </MantineProvider>
-        </QueryClientProvider>
-    )
+	return (
+		<QueryClientProvider client={queryClient}>
+			<MantineProvider theme={theme}>
+				<ModalsProvider>
+					{children}
+					<ReactQueryDevtools />
+				</ModalsProvider>
+			</MantineProvider>
+		</QueryClientProvider>
+	);
 }

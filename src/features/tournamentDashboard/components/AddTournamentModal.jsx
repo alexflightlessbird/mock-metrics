@@ -197,7 +197,7 @@ export default function AddTournamentModal({ opened, onClose, schoolId }) {
 		<Modal
 			opened={opened}
 			onClose={onClose}
-			title="Add Touurnament"
+			title="Add Tournament"
 			size="xl"
 			centered
 			styles={{

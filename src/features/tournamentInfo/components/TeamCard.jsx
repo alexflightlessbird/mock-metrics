@@ -28,9 +28,11 @@ export default function TeamCard({
 		team.tournament_id,
 		team.team_id
 	);
-	const { data: roundResults, isLoading: resultsLoading, refreshBallots } = useRoundBallots(
-		rounds || []
-	);
+	const {
+		data: roundResults,
+		isLoading: resultsLoading,
+		refreshBallots,
+	} = useRoundBallots(rounds || []);
 	const { user } = useAuth();
 
 	const { role, isLoading: roleLoading } = useGetRole(
@@ -117,7 +119,7 @@ export default function TeamCard({
 						</Text>
 						{showRounds &&
 							rounds.length < (nationalsTournament ? 5 : 4) &&
-							(role === "admin" || role === "primary") && 
+							(role === "admin" || role === "primary") &&
 							tournamentStatus && (
 								<AddButton onClick={() => setAddRoundModalOpened(true)}>
 									Add Round
@@ -128,7 +130,13 @@ export default function TeamCard({
 								<Text fw={500} size="sm">
 									Rounds:
 								</Text>
-								<RoundTable data={sortedResults} caseType={caseType} role={role} refreshBallots={refreshBallots} />
+								<RoundTable
+									data={sortedResults}
+									caseType={caseType}
+									role={role}
+									refreshBallots={refreshBallots}
+									tournamentStatus={tournamentStatus}
+								/>
 							</>
 						)}
 						{showRounds && sortedResults.length == 0 && (
@@ -138,16 +146,18 @@ export default function TeamCard({
 				</MantineCard.Section>
 			</Card>
 
-			<AddRoundModal
-				opened={addRoundModalOpened}
-				onClose={() => setAddRoundModalOpened(false)}
-				existingRounds={existingRoundNumbers}
-				nationalsTournament={nationalsTournament}
-				caseType={caseType}
-				tournamentId={team.tournament_id}
-				teamId={team.team_id}
-				caseId={team.tournaments.case_id}
-			/>
+			{addRoundModalOpened && (
+				<AddRoundModal
+					opened={addRoundModalOpened}
+					onClose={() => setAddRoundModalOpened(false)}
+					existingRounds={existingRoundNumbers}
+					nationalsTournament={nationalsTournament}
+					caseType={caseType}
+					tournamentId={team.tournament_id}
+					teamId={team.team_id}
+					caseId={team.tournaments.case_id}
+				/>
+			)}
 		</>
 	);
 }

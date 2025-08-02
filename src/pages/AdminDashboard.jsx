@@ -5,29 +5,29 @@ import UsersManagement from "../features/adminDashboard/usersManagement/UsersMan
 import BasePage from "../common/components/BasePage";
 
 export default function AdminDashboard() {
-  return (
-    <BasePage titleText="Admin Dashboard">
-      <Container fluid px={0}>
-        <Tabs defaultValue="schools" keepMounted={false}>
-          <Tabs.List>
-            <Tabs.Tab value="schools">Schools</Tabs.Tab>
-            <Tabs.Tab value="users">Users</Tabs.Tab>
-            <Tabs.Tab value="cases">Cases</Tabs.Tab>
-          </Tabs.List>
+	return (
+		<BasePage titleText="Admin Dashboard">
+			<Container fluid px={0}>
+				<Tabs defaultValue="schools" keepMounted={false}>
+					<Tabs.List>
+						<Tabs.Tab value="schools">Schools</Tabs.Tab>
+						<Tabs.Tab value="users">Users</Tabs.Tab>
+						<Tabs.Tab value="cases">Cases</Tabs.Tab>
+					</Tabs.List>
 
-          <Tabs.Panel value="users">
-            <UsersManagement />
-          </Tabs.Panel>
+					<Tabs.Panel value="users">
+						<UsersManagement />
+					</Tabs.Panel>
 
-          <Tabs.Panel value="schools">
-            <SchoolsManagement />
-          </Tabs.Panel>
+					<Tabs.Panel value="schools">
+						<SchoolsManagement />
+					</Tabs.Panel>
 
-          <Tabs.Panel value="cases">
-            <CasesManagement />
-          </Tabs.Panel>
-        </Tabs>
-      </Container>
-    </BasePage>
-  );
+					<Tabs.Panel value="cases">
+						<CasesManagement />
+					</Tabs.Panel>
+				</Tabs>
+			</Container>
+		</BasePage>
+	);
 }

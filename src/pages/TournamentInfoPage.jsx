@@ -21,7 +21,8 @@ export default function TournamentDashboard() {
 		key: "school",
 		defaultValue: null,
 	});
-	const [deleteTournamentModalOpened, setDeleteTournamentModalOpened] = useState(false);
+	const [deleteTournamentModalOpened, setDeleteTournamentModalOpened] =
+		useState(false);
 	const { id: tournamentId } = useParams();
 	const navigate = useNavigate();
 	const { user } = useAuth();
@@ -31,8 +32,11 @@ export default function TournamentDashboard() {
 		selectedSchoolId
 	);
 
-	const { data: selectedTournament, isLoading: tournamentLoading = true, deleteTournament } =
-		useTournamentDetails(tournamentId, selectedSchoolId);
+	const {
+		data: selectedTournament,
+		isLoading: tournamentLoading = true,
+		deleteTournament,
+	} = useTournamentDetails(tournamentId, selectedSchoolId);
 	const { data: teams, isLoading: teamsLoading = true } =
 		useTournamentTeams(tournamentId);
 
@@ -64,8 +68,10 @@ export default function TournamentDashboard() {
 				<>
 					<PageSection title="danger zone">
 						<Flex gap="xl" align="center">
-							<Text flex={1} c="red" fw={700} size="sm" >THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.</Text>
-							<Button 
+							<Text flex={1} c="red" fw={700} size="sm">
+								THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
+							</Text>
+							<Button
 								w="fit-content"
 								leftSection={<LuTrash />}
 								color="red"
@@ -77,18 +83,20 @@ export default function TournamentDashboard() {
 						</Flex>
 					</PageSection>
 					<Space h="md" />
-					<DeleteConfirmationModal
-						opened={deleteTournamentModalOpened}
-						onClose={() => setDeleteTournamentModalOpened(false)}
-						entityName="tournament"
-						entity={{
-							name: selectedTournament.name
-						}}
-						onSubmit={() => {
-							deleteTournament();
-							navigate("/tournaments");
-						}}
-					/>
+					{deleteTournamentModalOpened && (
+						<DeleteConfirmationModal
+							opened={deleteTournamentModalOpened}
+							onClose={() => setDeleteTournamentModalOpened(false)}
+							entityName="tournament"
+							entity={{
+								name: selectedTournament.name,
+							}}
+							onSubmit={() => {
+								deleteTournament();
+								navigate("/tournaments");
+							}}
+						/>
+					)}
 				</>
 			)}
 
