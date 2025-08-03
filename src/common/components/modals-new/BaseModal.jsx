@@ -23,6 +23,7 @@ export default function MantineStyledDialog({
   layer = 0,
   maxWidth: widthVal,
   closeButtonClosesAll = false,
+  footer,
   ...props
 }) {
   const theme = useMantineTheme();
@@ -164,6 +165,16 @@ export default function MantineStyledDialog({
           >
             {children}
           </ScrollArea.Autosize>
+
+          {footer && (
+            <div
+              style={{
+                marginTop: theme.spacing.xs,
+              }}
+            >
+              {footer}
+            </div>
+          )}
 
           <Dialog.Close asChild>
             <ActionIcon
