@@ -13,7 +13,7 @@ import { emToPx } from "../../utils/helpers";
 import { useTheme } from "../../../context/ThemeContext";
 import { useModal } from "../../../context/ModalContext";
 
-export default function MantineStyledDialog({
+export default function BaseModal({
   modalId,
   trigger,
   title,
@@ -24,6 +24,7 @@ export default function MantineStyledDialog({
   maxWidth: widthVal,
   closeButtonClosesAll = false,
   footer,
+  disableCloseButton = false,
   ...props
 }) {
   const theme = useMantineTheme();
@@ -61,7 +62,7 @@ export default function MantineStyledDialog({
 
   // Enhanced focus management
   useEffect(() => {
-    if (!isOpen(modalId) || !contentRef.current) return;
+    if (!isOpen(modalId)) return;
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") {
@@ -82,6 +83,7 @@ export default function MantineStyledDialog({
     };
 
     const getFocusableElements = () => {
+      if (!contentRef.current) return [];
       return Array.from(
         contentRef.current.querySelectorAll(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -91,17 +93,24 @@ export default function MantineStyledDialog({
       );
     };
 
-    // Set initial focus
-    const focusableElements = getFocusableElements();
-    if (initialFocusRef?.current) {
-      initialFocusRef.current.focus();
-    } else if (focusableElements.length > 0) {
-      focusableElements[0].focus();
-    }
+    // Use requestAnimationFrame to ensure modal is fully rendered
+    const focusTimeout = requestAnimationFrame(() => {
+      if (initialFocusRef?.current) {
+        initialFocusRef.current.focus();
+      } else {
+        const focusableElements = getFocusableElements();
+        if (focusableElements.length > 0) {
+          focusableElements[0].focus();
+        }
+      }
+    });
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [props.open, initialFocusRef]);
+    return () => {
+      cancelAnimationFrame(focusTimeout);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen(modalId), initialFocusRef]);
 
   return (
     <Dialog.Root
@@ -187,6 +196,7 @@ export default function MantineStyledDialog({
               aria-label="Close"
               color={isDark ? theme.white : "dark"}
               onClick={() => handleClose(closeButtonClosesAll)}
+              disabled={disableCloseButton}
             >
               <LuX />
             </ActionIcon>
