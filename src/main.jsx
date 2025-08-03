@@ -25,6 +25,7 @@ const queryClient = new QueryClient({
 
 const theme = createTheme({
   cursorType: "pointer",
+  autoContrast: true,
   components: {
     Button: {
       defaultProps: {

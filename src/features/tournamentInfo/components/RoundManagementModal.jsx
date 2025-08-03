@@ -52,10 +52,6 @@ export default function RoundManagementModal({
   const { data: roundBallots, isLoading: ballotsLoading } =
     useRoundBallots(round);
 
-  useEffect(() => {
-    console.log(document.activeElement);
-  }, [document.activeElement]);
-
   if (roundLoading || ballotsLoading)
     return (
       <Modal centered opened={opened} onClose={onClose} title="Loading...">

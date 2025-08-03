@@ -1,14 +1,16 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   useMantineTheme,
-  Button,
   Title,
-  Text,
   ActionIcon,
-  Divider,
+  Overlay,
+  ScrollArea,
 } from "@mantine/core";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { LuX } from "react-icons/lu";
+import { useViewportSize } from "@mantine/hooks";
+import { emToPx } from "../../utils/helpers";
+import { useTheme } from "../../../context/ThemeContext";
 
 export default function MantineStyledDialog({
   trigger,
@@ -17,10 +19,25 @@ export default function MantineStyledDialog({
   onClose,
   initialFocusRef,
   layer = 0,
+  maxWidth: widthVal,
   ...props
 }) {
   const theme = useMantineTheme();
   const contentRef = useRef(null);
+
+  const { isDark } = useTheme();
+
+  const { width } = useViewportSize();
+
+  const smBreakpointPx = useMemo(
+    () => emToPx(parseFloat(theme.breakpoints.sm)),
+    [theme.breakpoints.sm]
+  );
+  const isMobile = width < smBreakpointPx;
+
+  if (!widthVal) {
+    widthVal = isMobile ? "100vw" : "90vw";
+  }
 
   // Enhanced focus management
   useEffect(() => {
@@ -71,48 +88,59 @@ export default function MantineStyledDialog({
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
       <Dialog.Portal>
+        <Overlay blur={1} zIndex={1000 + layer} pos="fixed" />
         <Dialog.Overlay
           style={{
             backgroundColor: theme.colors.dark[9],
-            opacity: 0.8,
+            opacity: 0.4,
             position: "fixed",
             inset: 0,
             zIndex: 1000 + layer,
           }}
         />
-
         <Dialog.Content
           ref={contentRef}
           style={{
-            backgroundColor:
-              theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+            backgroundColor: "var(--mantine-color-body)",
             borderRadius: theme.radius.md,
             boxShadow: theme.shadows.xl,
             position: "fixed",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "90vw",
-            maxWidth: "450px",
-            maxHeight: "85vh",
+            width: widthVal,
+            maxHeight: isMobile ? "100vh" : "90vh",
             padding: theme.spacing.md,
             zIndex: 1001 + layer,
+            display: "flex",
+            flexDirection: "column",
             "&:focus": { outline: "none" },
           }}
           aria-describedby={undefined}
         >
           {title && (
-            <Dialog.Title asChild>
-              <>
-                <Title order={3} mb="xs">
-                  {title}
-                </Title>
-                <Divider mb="sm" aria-hidden />
-              </>
+            <Dialog.Title
+              asChild
+              style={{
+                borderBottom: `1px solid ${theme.colors.gray[3]}`,
+                paddingBottom: theme.spacing.xs,
+                marginBottom: theme.spacing.xs,
+              }}
+            >
+              <Title order={3}>{title}</Title>
             </Dialog.Title>
           )}
 
-          {children}
+          <ScrollArea.Autosize
+            style={{
+              flex: 1,
+              minHeight: 0,
+            }}
+            type="scroll"
+            offsetScrollbars
+          >
+            {children}
+          </ScrollArea.Autosize>
 
           <Dialog.Close asChild>
             <ActionIcon
@@ -123,7 +151,7 @@ export default function MantineStyledDialog({
                 right: theme.spacing.sm,
               }}
               aria-label="Close"
-              color="dark"
+              color={isDark ? theme.white : "dark"}
             >
               <LuX />
             </ActionIcon>
