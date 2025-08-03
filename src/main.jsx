@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { ErrorBoundary } from "react-error-boundary";
 import Error from "./pages/Error";
+import { ModalProvider as ModalContext } from "./context/ModalContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,14 +60,16 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <MantineProvider theme={theme} defaultColorScheme="light">
           <ModalsProvider>
-            <ThemeProvider>
-              <AuthProvider>
-                <Notifications />
-                <App onReady={removeLoadingScreen} />
-                {/* <App /> */}
-              </AuthProvider>
-            </ThemeProvider>
-            <ReactQueryDevtools />
+            <ModalContext>
+              <ThemeProvider>
+                <AuthProvider>
+                  <Notifications />
+                  <App onReady={removeLoadingScreen} />
+                  {/* <App /> */}
+                </AuthProvider>
+              </ThemeProvider>
+              <ReactQueryDevtools />
+            </ModalContext>
           </ModalsProvider>
         </MantineProvider>
       </QueryClientProvider>

@@ -11,8 +11,10 @@ import { LuX } from "react-icons/lu";
 import { useViewportSize } from "@mantine/hooks";
 import { emToPx } from "../../utils/helpers";
 import { useTheme } from "../../../context/ThemeContext";
+import { useModal } from "../../../context/ModalContext";
 
 export default function MantineStyledDialog({
+  modalId,
   trigger,
   title,
   children,
@@ -20,14 +22,14 @@ export default function MantineStyledDialog({
   initialFocusRef,
   layer = 0,
   maxWidth: widthVal,
+  closeButtonClosesAll = false,
   ...props
 }) {
   const theme = useMantineTheme();
   const contentRef = useRef(null);
-
   const { isDark } = useTheme();
-
   const { width } = useViewportSize();
+  const { isOpen, openModal, closeModal, closeAllModals } = useModal();
 
   const smBreakpointPx = useMemo(
     () => emToPx(parseFloat(theme.breakpoints.sm)),
@@ -39,9 +41,26 @@ export default function MantineStyledDialog({
     widthVal = isMobile ? "100vw" : "90vw";
   }
 
+  const handleClose = (shouldCloseAll = false) => {
+    if (shouldCloseAll) {
+      closeAllModals();
+    } else {
+      closeModal(modalId);
+    }
+    if (onClose) onClose();
+  };
+
+  const handleOpenChange = (open) => {
+    if (open) {
+      openModal(modalId);
+    } else {
+      handleClose();
+    }
+  };
+
   // Enhanced focus management
   useEffect(() => {
-    if (!props.open || !contentRef.current) return;
+    if (!isOpen(modalId) || !contentRef.current) return;
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") {
@@ -84,7 +103,11 @@ export default function MantineStyledDialog({
   }, [props.open, initialFocusRef]);
 
   return (
-    <Dialog.Root {...props}>
+    <Dialog.Root
+      open={isOpen(modalId)}
+      onOpenChange={handleOpenChange}
+      {...props}
+    >
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
       <Dialog.Portal>
@@ -152,6 +175,7 @@ export default function MantineStyledDialog({
               }}
               aria-label="Close"
               color={isDark ? theme.white : "dark"}
+              onClick={() => handleClose(closeButtonClosesAll)}
             >
               <LuX />
             </ActionIcon>
