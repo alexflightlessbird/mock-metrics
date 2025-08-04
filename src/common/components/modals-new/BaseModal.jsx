@@ -66,18 +66,28 @@ export default function BaseModal({
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") {
-        const focusableElements = getFocusableElements();
+        e.preventDefault();
+        e.stopPropagation();
+
+        const focusableElements = getFocusableElements().filter(
+          (el) => !el.className.includes("mantine-NumberInput-control")
+        );
         if (focusableElements.length === 0) return;
 
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
+        const currentIndex = focusableElements.indexOf(document.activeElement);
 
-        if (e.shiftKey && document.activeElement === firstElement) {
-          lastElement.focus();
-          e.preventDefault();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          firstElement.focus();
-          e.preventDefault();
+        if (e.shiftKey) {
+          // Shift+Tab - move backward
+          const prevIndex =
+            currentIndex <= 0 ? focusableElements.length - 1 : currentIndex - 1;
+          focusableElements[prevIndex].focus();
+        } else {
+          // Tab - move forward
+          const nextIndex =
+            currentIndex === focusableElements.length - 1
+              ? 0
+              : currentIndex + 1;
+          focusableElements[nextIndex].focus();
         }
       }
     };
@@ -93,22 +103,9 @@ export default function BaseModal({
       );
     };
 
-    // Use requestAnimationFrame to ensure modal is fully rendered
-    const focusTimeout = requestAnimationFrame(() => {
-      if (initialFocusRef?.current) {
-        initialFocusRef.current.focus();
-      } else {
-        const focusableElements = getFocusableElements();
-        if (focusableElements.length > 0) {
-          focusableElements[0].focus();
-        }
-      }
-    });
-
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
     return () => {
-      cancelAnimationFrame(focusTimeout);
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown, { capture: true });
     };
   }, [isOpen(modalId), initialFocusRef]);
 
@@ -185,22 +182,20 @@ export default function BaseModal({
             </div>
           )}
 
-          <Dialog.Close asChild>
-            <ActionIcon
-              variant="subtle"
-              style={{
-                position: "absolute",
-                top: theme.spacing.sm,
-                right: theme.spacing.sm,
-              }}
-              aria-label="Close"
-              color={isDark ? theme.white : "dark"}
-              onClick={() => handleClose(closeButtonClosesAll)}
-              disabled={disableCloseButton}
-            >
-              <LuX />
-            </ActionIcon>
-          </Dialog.Close>
+          <ActionIcon
+            variant="subtle"
+            style={{
+              position: "absolute",
+              top: theme.spacing.sm,
+              right: theme.spacing.sm,
+            }}
+            aria-label="Close"
+            color={isDark ? theme.white : "dark"}
+            onClick={() => handleClose(closeButtonClosesAll)}
+            disabled={disableCloseButton}
+          >
+            <LuX />
+          </ActionIcon>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

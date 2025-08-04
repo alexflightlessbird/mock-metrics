@@ -33,11 +33,6 @@ const theme = createTheme({
         tabIndex: 0,
       },
     },
-    ActionIcon: {
-      defaultProps: {
-        tabIndex: 0,
-      },
-    },
   },
 });
 
