@@ -1,26 +1,48 @@
-import {
-  Modal,
-  Radio,
-  Button,
-  Group,
-  Stack,
-  Text,
-  Box,
-  Select,
-  MultiSelect,
-  Table,
-  TextInput,
-  NumberInput,
-} from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { useEffect, useState } from "react";
 import { useAddTournament } from "../hooks/useAddTournament";
 import useNotifications from "../../../common/hooks/useNotifications";
 import { useCasesData } from "../../../common/hooks/useCasesData";
+import { useRef, useMemo } from "react";
+import BaseModal from "../../../common/components/modals-new/BaseModal";
+import {
+  Group,
+  NumberInput,
+  TextInput,
+  Stack,
+  Button,
+  Text,
+} from "@mantine/core";
+import { useModal } from "../../../context/ModalContext";
+import { ModalSelect } from "../../../common/components/modals-new/ModalDropdownComponents";
 import Loader from "../../../common/components/loader/GavelLoader";
+import RadioCardGroup from "../../../common/components/RadioCards";
 
-export default function AddTournamentModal({ opened, onClose, schoolId }) {
-  const [activePage, setActivePage] = useState(0);
+const typeOptions = [
+  { label: "Pre-Stack", value: "pre-stack" },
+  { label: "Post-Stack", value: "post-stack" },
+];
+const areaOptions = [
+  { label: "Invitational", value: "invitational" },
+  { label: "Regionals", value: "regionals" },
+  { label: "ORCS", value: "orcs" },
+  { label: "Nationals", value: "nationals" },
+  { label: "Rookie Rumble", value: "rookie rumble" },
+  { label: "OLT", value: "olt" },
+  { label: "Other", value: "other" },
+];
+
+/**
+ * @typedef {Object} AddTournamentModalProps
+ * @property {Function} [onClose] - Callback when modal closes
+ * @property {React.ReactNode} [trigger] - Trigger element
+ * @property {string} schoolId - ID of the school to which the tournament belongs
+ */
+
+/**
+ * @param {AddTournamentModalProps} props
+ */
+
+export default function AddTournamentModal({ onClose, trigger, schoolId }) {
   const [formData, setFormData] = useLocalStorage({
     key: "add-tournament-form",
     defaultValue: {
@@ -33,57 +55,33 @@ export default function AddTournamentModal({ opened, onClose, schoolId }) {
   });
   const { mutate: addTournament } = useAddTournament();
   const { showError } = useNotifications();
+  const firstInputRef = useRef(null);
+  const { closeModal } = useModal();
 
   const { data: cases, isLoading: casesLoading } = useCasesData();
 
-  useEffect(() => {
-    if (opened) {
-      setActivePage(0);
-    }
-  }, [opened]);
+  const caseOptions = useMemo(
+    () =>
+      cases
+        ?.filter((c) => c.is_active)
+        .map((c) => ({
+          label: `${c.name} (${c.year})`,
+          value: c.id,
+        })),
+    [cases]
+  );
 
-  if (casesLoading)
+  const validateForm = () => {
     return (
-      <Modal
-        opened={opened}
-        onClose={onClose}
-        title="Loading..."
-        size="md"
-        centered
-      >
-        <Box py="xl">
-          <Loader />
-        </Box>
-      </Modal>
+      formData.name.trim() !== "" &&
+      formData.year !== null &&
+      formData.type !== null &&
+      formData.area !== null &&
+      formData.caseId !== null
     );
-
-  const validateCurrentPage = () => {
-    switch (activePage) {
-      case 0:
-        return (
-          formData.name.trim() !== "" &&
-          formData.year !== null &&
-          formData.type !== null &&
-          formData.area !== null &&
-          formData.caseId !== null
-        );
-      default:
-        return true;
-    }
-  };
-
-  const handleNext = () => {
-    if (validateCurrentPage()) {
-      setActivePage(activePage + 1);
-    }
-  };
-
-  const handleBack = () => {
-    setActivePage(activePage - 1);
   };
 
   const handleReset = () => {
-    setActivePage(0);
     setFormData({
       name: "",
       year: new Date().getFullYear(),
@@ -94,7 +92,7 @@ export default function AddTournamentModal({ opened, onClose, schoolId }) {
   };
 
   const handleSubmit = () => {
-    if (!validateCurrentPage()) {
+    if (!validateForm()) {
       showError({
         title: "Validation Error",
         message: "Please complete all required fields",
@@ -113,7 +111,15 @@ export default function AddTournamentModal({ opened, onClose, schoolId }) {
       },
       {
         onSuccess: () => {
-          onClose();
+          if (onClose) onClose();
+          closeModal("add-tournament-form");
+          setFormData({
+            name: "",
+            year: new Date().getFullYear(),
+            type: null,
+            area: null,
+            caseId: null,
+          });
           localStorage.removeItem("add-tournament-form");
         },
       }
@@ -127,107 +133,81 @@ export default function AddTournamentModal({ opened, onClose, schoolId }) {
     }));
   };
 
-  const caseOptions = cases.map((c) => {
-    return {
-      label: c.name,
-      value: c.id,
-    };
-  });
-  const typeOptions = [
-    { label: "Pre-Stack", value: "pre-stack" },
-    { label: "Post-Stack", value: "post-stack" },
-  ];
-  const areaOptions = [
-    { label: "Invitational", value: "invitational" },
-    { label: "Regionals", value: "regionals" },
-    { label: "ORCS", value: "orcs" },
-    { label: "Nationals", value: "nationals" },
-    { label: "Rookie Rumble", value: "rookie rumble" },
-    { label: "OLT", value: "olt" },
-    { label: "Other", value: "other" },
-  ];
-
   const pages = [
     // Page 0: Tournament Details
     <Stack key={0}>
       <Text size="sm" c="dimmed">
         Enter the tournament details
       </Text>
+
       <TextInput
+        ref={firstInputRef}
         value={formData.name}
         onChange={(e) => handleInputChange("name", e.target.value)}
         label="Tournament Name"
+        required
       />
 
       <NumberInput
         value={formData.year}
         onChange={(value) => handleInputChange("year", value)}
-        label="Year"
+        label="Tournament Year"
         min={1980}
         max={new Date().getFullYear() + 1}
+        required
       />
 
-      <Select
-        data={typeOptions}
-        value={formData.type}
-        onChange={(value) => handleInputChange("type", value)}
-        clearable
+      <RadioCardGroup
+        name="tournamentType"
         label="Tournament Type"
+        value={formData.type}
+        options={typeOptions}
+        onChange={(_, value) => handleInputChange("type", value)}
+        required={true}
       />
 
-      <Select
-        data={areaOptions}
-        value={formData.area}
-        onChange={(value) => handleInputChange("area", value)}
-        clearable
+      <RadioCardGroup
+        name="tournamentArea"
         label="Tournament Area"
+        value={formData.area}
+        options={areaOptions}
+        onChange={(_, value) => handleInputChange("area", value)}
+        required={true}
       />
 
-      <Select
+      <ModalSelect
         data={caseOptions}
         value={formData.caseId}
         onChange={(value) => handleInputChange("caseId", value)}
-        clearable
         label="Associated Case"
+        required
+        searchable
+        nothingFoundMessage="No matching cases found"
       />
     </Stack>,
   ];
 
   return (
-    <Modal
-      opened={opened}
+    <BaseModal
+      modalId="add-tournament-form"
+      initialFocusRef={firstInputRef}
+      trigger={trigger}
+      title={casesLoading ? "Loading..." : "Add Tournament"}
       onClose={onClose}
-      title="Add Tournament"
-      size="xl"
-      centered
-      styles={{
-        content: { maxHeight: "80%", overflowY: "auto" },
-        body: { overflowY: "auto" },
-      }}
+      layer={0}
+      footer={
+        !casesLoading && (
+          <Group justify="space-between">
+            <Button onClick={handleReset}>Reset</Button>
+            <Button onClick={handleSubmit} disabled={!validateForm()}>
+              Submit
+            </Button>
+          </Group>
+        )
+      }
     >
-      {pages[activePage]}
-
-      <Group justify="space-between" mt="xl">
-        {activePage !== 0 ? (
-          <Button variant="default" onClick={handleBack}>
-            Back
-          </Button>
-        ) : (
-          <Button variant="default" onClick={handleReset}>
-            Reset
-          </Button>
-        )}
-
-        {activePage < pages.length - 1 ? (
-          <Button onClick={handleNext} disabled={!validateCurrentPage()}>
-            Next
-          </Button>
-        ) : (
-          <Button onClick={handleSubmit} disabled={!validateCurrentPage()}>
-            Submit
-          </Button>
-        )}
-      </Group>
-    </Modal>
+      {casesLoading && <Loader />}
+      {!casesLoading && pages[0]}
+    </BaseModal>
   );
 }

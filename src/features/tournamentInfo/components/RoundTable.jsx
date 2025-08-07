@@ -32,6 +32,12 @@ export default function RoundTable({
       key={r.id}
       style={{ cursor: "pointer" }}
       onClick={() => handleSelectRound(r.id)}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          handleSelectRound(r.id);
+        }
+      }}
     >
       <Table.Td>{r.round_number}</Table.Td>
       <Table.Td>{formatSide(r.side, caseType)}</Table.Td>

@@ -16,6 +16,7 @@ export default function DataTable({
   columns,
   removeId = false,
   data,
+  cursor = "default",
   emptyMessage = "No data available",
   renderRow,
   striped = true,
@@ -44,7 +45,7 @@ export default function DataTable({
         withTableBorder={withTableBorder}
         withColumnBorders={withColumnBorders}
         stickyHeader={stickyHeader}
-        style={{ cursor: "default" }}
+        style={{ cursor }}
         fz={fontSize}
       >
         <Table.Thead>

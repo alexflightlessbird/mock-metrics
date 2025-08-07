@@ -122,9 +122,19 @@ export default function TeamCard({
               rounds.length < (nationalsTournament ? 5 : 4) &&
               (role === "admin" || role === "primary") &&
               tournamentStatus && (
-                <AddButton onClick={() => setAddRoundModalOpened(true)}>
-                  Add Round
-                </AddButton>
+                <AddRoundModal
+                  existingRounds={existingRoundNumbers}
+                  nationalsTournament={nationalsTournament}
+                  caseType={caseType}
+                  tournamentId={team.tournament_id}
+                  teamId={team.team_id}
+                  caseId={team.tournaments.case_id}
+                  trigger={
+                    <AddButton onClick={() => setAddRoundModalOpened(true)}>
+                      Add Round
+                    </AddButton>
+                  }
+                />
               )}
             {showRounds && sortedResults.length > 0 && (
               <>
@@ -146,19 +156,6 @@ export default function TeamCard({
           </Stack>
         </MantineCard.Section>
       </Card>
-
-      {addRoundModalOpened && (
-        <AddRoundModal
-          opened={addRoundModalOpened}
-          onClose={() => setAddRoundModalOpened(false)}
-          existingRounds={existingRoundNumbers}
-          nationalsTournament={nationalsTournament}
-          caseType={caseType}
-          tournamentId={team.tournament_id}
-          teamId={team.team_id}
-          caseId={team.tournaments.case_id}
-        />
-      )}
     </>
   );
 }

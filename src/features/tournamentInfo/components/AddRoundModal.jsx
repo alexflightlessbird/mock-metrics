@@ -1,26 +1,34 @@
+import { useLocalStorage } from "@mantine/hooks";
+import { useAddRound } from "../hooks/useAddRound";
+import { useTeamStudents } from "../../../common/hooks/useTeamDetails";
+import { useCaseDetails } from "../../../common/hooks/useCaseDetails";
+import useNotifications from "../../../common/hooks/useNotifications";
+import { useRef, useMemo, useEffect, useState } from "react";
+import BaseModal from "../../../common/components/modals-new/BaseModal";
+import Loader from "../../../common/components/loader/GavelLoader";
+import { useModal } from "../../../context/ModalContext";
 import {
-  Modal,
+  Group,
   Radio,
   Button,
-  Group,
   Stack,
   Text,
   Box,
-  Select,
-  MultiSelect,
   Table,
+  Flex,
+  useMantineTheme,
+  Card,
+  MultiSelect,
 } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
-import { useEffect, useState } from "react";
-import { useAddRound } from "../hooks/useAddRound";
-import useNotifications from "../../../common/hooks/useNotifications";
-import { useCaseDetails } from "../../../common/hooks/useCaseDetails";
-import Loader from "../../../common/components/loader/GavelLoader";
-import { useTeamStudents } from "../../../common/hooks/useTeamDetails";
+import {
+  ModalMultiSelect,
+  ModalSelect,
+} from "../../../common/components/modals-new/ModalDropdownComponents";
+import RadioCardGroup from "../../../common/components/RadioCards";
 
 export default function AddRoundModal({
-  opened,
   onClose,
+  trigger,
   existingRounds,
   caseType,
   nationalsTournament = false,
@@ -28,20 +36,23 @@ export default function AddRoundModal({
   teamId,
   caseId,
 }) {
+  const theme = useMantineTheme();
   const [activePage, setActivePage] = useState(0);
   const [formData, setFormData] = useLocalStorage({
     key: `add-round-form-${teamId}`,
     defaultValue: {
       roundNumber: null,
       side: null,
-      attorneys: [],
-      witnesses: [],
-      pw1: null,
-      pw2: null,
-      pw3: null,
-      dw1: null,
-      dw2: null,
-      dw3: null,
+      studentsAttorneys: [],
+      studentsWitnesses: [],
+      witnesses: {
+        pw1: null,
+        pw2: null,
+        pw3: null,
+        dw1: null,
+        dw2: null,
+        dw3: null,
+      },
       pRoles: {
         p1: null,
         p2: null,
@@ -76,33 +87,178 @@ export default function AddRoundModal({
       },
     },
   });
+
   const { mutate: addRound } = useAddRound();
   const { showError } = useNotifications();
+  const firstInputRef = useRef(null);
+  const { closeModal } = useModal();
 
   const { data: caseDetail, isLoading: caseLoading } = useCaseDetails(caseId);
   const { data: students, isLoading: studentsLoading } =
     useTeamStudents(teamId);
 
-  useEffect(() => {
-    if (opened) {
-      setActivePage(0);
-    }
-  }, [opened]);
+  const roundOptions = useMemo(
+    () => (nationalsTournament ? [1, 2, 3, 4, 5] : [1, 2, 3, 4]),
+    [nationalsTournament]
+  );
+  const sideOptions = useMemo(
+    () => [
+      {
+        value: "p",
+        label:
+          caseType === "civil"
+            ? "Plaintiff"
+            : caseType === "criminal"
+            ? "Prosecution"
+            : "Plaintiff/Prosecution",
+      },
+      {
+        value: "d",
+        label: "Defense",
+      },
+    ],
+    [caseType]
+  );
 
-  if (caseLoading || studentsLoading)
-    return (
-      <Modal
-        opened={opened}
-        onClose={onClose}
-        title="Loading..."
-        size="md"
-        centered
-      >
-        <Box py="xl">
-          <Loader />
-        </Box>
-      </Modal>
-    );
+  const studentOptions = useMemo(() => {
+    if (!students) return [];
+    return students.map((s) => ({
+      label: s.students.name,
+      value: s.student_id,
+    }));
+  }, [students]);
+
+  const studentAttorneySelectionOptions = useMemo(
+    () =>
+      studentOptions.map((s) => ({
+        ...s,
+        disabled: formData.studentsWitnesses?.includes(s.value),
+      })),
+    [studentOptions, formData.studentsWitnesses]
+  );
+
+  const studentWitnessSelectionOptions = useMemo(
+    () =>
+      studentOptions.map((s) => ({
+        ...s,
+        disabled: formData.studentsAttorneys?.includes(s.value),
+      })),
+    [studentOptions, formData.studentsAttorneys]
+  );
+
+  const caseWitnessOptions = useMemo(() => {
+    if (!caseDetail || !caseDetail?.witnesses) return [];
+    return caseDetail.witnesses.map((w) => ({
+      label: w.name,
+      value: w.id,
+      side: w.side,
+    }));
+  }, [caseDetail, caseDetail?.witnesses]);
+
+  function getWitnessName(witId) {
+    const witness = caseWitnessOptions.find((w) => w.value === witId);
+    return witness ? witness.label : `Unknown (ID: ${witId})`;
+  }
+
+  const pWitnesses = useMemo(
+    () => caseWitnessOptions.filter((w) => w.side === "p"),
+    [caseWitnessOptions]
+  );
+  const dWitnesses = useMemo(
+    () => caseWitnessOptions.filter((w) => w.side === "d"),
+    [caseWitnessOptions]
+  );
+  const sWitnesses = useMemo(
+    () => caseWitnessOptions.filter((w) => w.side === "s"),
+    [caseWitnessOptions]
+  );
+
+  const pWitnessOptions = useMemo(
+    () => [
+      {
+        group: "P Only",
+        items: pWitnesses.map((w) => ({
+          ...w,
+          disabled:
+            formData.witnesses.pw1 === w.value ||
+            formData.witnesses.pw2 === w.value ||
+            formData.witnesses.pw3 === w.value ||
+            formData.witnesses.dw1 === w.value ||
+            formData.witnesses.dw2 === w.value ||
+            formData.witnesses.dw3 === w.value,
+        })),
+      },
+      {
+        group: "Swing",
+        items: sWitnesses.map((w) => ({
+          ...w,
+          disabled:
+            formData.witnesses.pw1 === w.value ||
+            formData.witnesses.pw2 === w.value ||
+            formData.witnesses.pw3 === w.value ||
+            formData.witnesses.dw1 === w.value ||
+            formData.witnesses.dw2 === w.value ||
+            formData.witnesses.dw3 === w.value,
+        })),
+      },
+    ],
+    [pWitnesses, sWitnesses, formData.witnesses]
+  );
+  const dWitnessOptions = useMemo(
+    () => [
+      {
+        group: "D Only",
+        items: dWitnesses.map((w) => ({
+          ...w,
+          disabled:
+            formData.witnesses.pw1 === w.value ||
+            formData.witnesses.pw2 === w.value ||
+            formData.witnesses.pw3 === w.value ||
+            formData.witnesses.dw1 === w.value ||
+            formData.witnesses.dw2 === w.value ||
+            formData.witnesses.dw3 === w.value,
+        })),
+      },
+      {
+        group: "Swing",
+        items: sWitnesses.map((w) => ({
+          ...w,
+          disabled:
+            formData.witnesses.pw1 === w.value ||
+            formData.witnesses.pw2 === w.value ||
+            formData.witnesses.pw3 === w.value ||
+            formData.witnesses.dw1 === w.value ||
+            formData.witnesses.dw2 === w.value ||
+            formData.witnesses.dw3 === w.value,
+        })),
+      },
+    ],
+    [dWitnesses, sWitnesses, formData.witnesses]
+  );
+
+  const studentAttorneyRoleSelectionOptions = useMemo(() => {
+    if (!formData.studentsAttorneys) return [];
+    return formData.studentsAttorneys.map((id) => {
+      const studentName = students?.find((s) => s.student_id === id)?.students
+        .name;
+      return {
+        value: id,
+        label: studentName ? studentName : `Unknown (ID: ${id})`,
+      };
+    });
+  }, [students, formData.studentsAttorneys]);
+
+  const studentWitnessRoleSelectionOptions = useMemo(() => {
+    if (!formData.studentsWitnesses) return [];
+    return formData.studentsWitnesses.map((id) => {
+      const studentName = students?.find((s) => s.student_id === id)?.students
+        .name;
+      return {
+        value: id,
+        label: studentName ? studentName : `Unknown (ID: ${id})`,
+      };
+    });
+  }, [students, formData.studentsWitnesses]);
 
   const validateCurrentPage = () => {
     switch (activePage) {
@@ -110,16 +266,17 @@ export default function AddRoundModal({
         return formData.roundNumber !== null && formData.side !== null;
       case 1:
         return (
-          formData.attorneys.length === 3 && formData.witnesses.length === 3
+          formData.studentsAttorneys.length === 3 &&
+          formData.studentsWitnesses.length === 3
         );
       case 2:
         return (
-          formData.pw1 !== null &&
-          formData.pw2 !== null &&
-          formData.pw3 !== null &&
-          formData.dw1 !== null &&
-          formData.dw2 !== null &&
-          formData.dw3 !== null
+          formData.witnesses.pw1 !== null &&
+          formData.witnesses.pw2 !== null &&
+          formData.witnesses.pw3 !== null &&
+          formData.witnesses.dw1 !== null &&
+          formData.witnesses.dw2 !== null &&
+          formData.witnesses.dw3 !== null
         );
       case 3:
         if (formData.side === "p") {
@@ -179,14 +336,16 @@ export default function AddRoundModal({
     setFormData({
       roundNumber: null,
       side: null,
-      attorneys: [],
-      witnesses: [],
-      pw1: null,
-      pw2: null,
-      pw3: null,
-      dw1: null,
-      dw2: null,
-      dw3: null,
+      studentsAttorneys: [],
+      studentsWitnesses: [],
+      witnesses: {
+        pw1: null,
+        pw2: null,
+        pw3: null,
+        dw1: null,
+        dw2: null,
+        dw3: null,
+      },
       pRoles: {
         p1: null,
         p2: null,
@@ -238,12 +397,12 @@ export default function AddRoundModal({
         roundNumber: parseInt(formData.roundNumber),
         side: formData.side,
         witnessRoundData: [
-          { id: formData.pw1, role_type: "p1" },
-          { id: formData.pw2, role_type: "p2" },
-          { id: formData.pw3, role_type: "p3" },
-          { id: formData.dw1, role_type: "d1" },
-          { id: formData.dw2, role_type: "d2" },
-          { id: formData.dw3, role_type: "d3" },
+          { id: formData.witnesses.pw1, role_type: "p1" },
+          { id: formData.witnesses.pw2, role_type: "p2" },
+          { id: formData.witnesses.pw3, role_type: "p3" },
+          { id: formData.witnesses.dw1, role_type: "d1" },
+          { id: formData.witnesses.dw2, role_type: "d2" },
+          { id: formData.witnesses.dw3, role_type: "d3" },
         ],
         roleRoundData:
           formData.side === "p"
@@ -284,6 +443,7 @@ export default function AddRoundModal({
         onSuccess: () => {
           onClose();
           localStorage.removeItem(`add-round-form-${teamId}`);
+          closeModal(`add-round-form-${teamId}`);
         },
       }
     );
@@ -296,6 +456,16 @@ export default function AddRoundModal({
     }));
   };
 
+  const handleWitnessChange = (roleKey, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      witnesses: {
+        ...prev.witnesses,
+        [roleKey]: value,
+      },
+    }));
+  };
+
   const handleRoleChange = (roleType, roleKey, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -304,33 +474,25 @@ export default function AddRoundModal({
         [roleKey]: value,
       },
     }));
+
     if (roleType.startsWith("p")) {
       switch (roleKey) {
         case "p3":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              p4: value,
-            },
+            [roleType]: { ...prev[roleType], p4: value },
           }));
           break;
         case "p6":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              p7: value,
-            },
+            [roleType]: { ...prev[roleType], p7: value },
           }));
           break;
         case "p9":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              p10: value,
-            },
+            [roleType]: { ...prev[roleType], p10: value },
           }));
           break;
         default:
@@ -341,28 +503,19 @@ export default function AddRoundModal({
         case "d6":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              d7: value,
-            },
+            [roleType]: { ...prev[roleType], d7: value },
           }));
           break;
         case "d9":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              d10: value,
-            },
+            [roleType]: { ...prev[roleType], d10: value },
           }));
           break;
         case "d12":
           setFormData((prev) => ({
             ...prev,
-            [roleType]: {
-              ...prev[roleType],
-              d13: value,
-            },
+            [roleType]: { ...prev[roleType], d13: value },
           }));
           break;
         default:
@@ -371,194 +524,52 @@ export default function AddRoundModal({
     }
   };
 
-  const roundOptions = nationalsTournament ? [1, 2, 3, 4, 5] : [1, 2, 3, 4];
-  const sideOptions =
-    caseType === "civil"
-      ? ["Plaintiff", "Defense"]
-      : caseType === "criminal"
-      ? ["Prosecution", "Defense"]
-      : ["Plaintiff/Prosecution", "Defense"];
-
-  const studentOptions = students.map((s) => {
-    return {
-      label: s.students.name,
-      value: s.student_id,
-    };
-  });
-  const attorneyOptions = studentOptions.map((s) => {
-    return {
-      ...s,
-      disabled: formData.witnesses.includes(s.value),
-    };
-  });
-  const witnessOptions = studentOptions.map((s) => {
-    return {
-      ...s,
-      disabled: formData.attorneys.includes(s.value),
-    };
-  });
-
-  const caseWitnessOptions = caseDetail.witnesses.map((w) => {
-    return {
-      label: w.name,
-      value: w.id,
-      side: w.side,
-    };
-  });
-
-  const pWitnesses = caseWitnessOptions.filter((w) => w.side === "p");
-  const dWitnesses = caseWitnessOptions.filter((w) => w.side === "d");
-  const sWitnesses = caseWitnessOptions.filter((w) => w.side === "s");
-
-  const pWitnessOptions = [
-    {
-      group: "P Only",
-      items: pWitnesses.map((w) => {
-        return {
-          ...w,
-          disabled:
-            formData.pw1 === w.value ||
-            formData.pw2 === w.value ||
-            formData.pw3 === w.value ||
-            formData.dw1 === w.value ||
-            formData.dw2 === w.value ||
-            formData.dw3 === w.value,
-        };
-      }),
-    },
-    {
-      group: "Swing",
-      items: sWitnesses.map((w) => {
-        return {
-          ...w,
-          disabled:
-            formData.pw1 === w.value ||
-            formData.pw2 === w.value ||
-            formData.pw3 === w.value ||
-            formData.dw1 === w.value ||
-            formData.dw2 === w.value ||
-            formData.dw3 === w.value,
-        };
-      }),
-    },
-  ];
-
-  const dWitnessOptions = [
-    {
-      group: "D Only",
-      items: dWitnesses.map((w) => {
-        return {
-          ...w,
-          disabled:
-            formData.pw1 === w.value ||
-            formData.pw2 === w.value ||
-            formData.pw3 === w.value ||
-            formData.dw1 === w.value ||
-            formData.dw2 === w.value ||
-            formData.dw3 === w.value,
-        };
-      }),
-    },
-    {
-      group: "Swing",
-      items: sWitnesses.map((w) => {
-        return {
-          ...w,
-          disabled:
-            formData.pw1 === w.value ||
-            formData.pw2 === w.value ||
-            formData.pw3 === w.value ||
-            formData.dw1 === w.value ||
-            formData.dw2 === w.value ||
-            formData.dw3 === w.value,
-        };
-      }),
-    },
-  ];
-
-  const attorneyStudentOptions = formData.attorneys.map((id) => {
-    const student = students.find((s) => s.student_id === id);
-    return {
-      value: id,
-      label: student ? student.students.name : `Unknown (ID: ${id})`,
-    };
-  });
-
-  const witnessStudentOptions = formData.witnesses.map((id) => {
-    const student = students.find((s) => s.student_id === id);
-    return {
-      value: id,
-      label: student ? student.students.name : `Unknown (ID: ${id})`,
-    };
-  });
-
-  const getWitnessName = (witId) => {
-    const witness = caseDetail.witnesses.find((w) => w.id === witId);
-    return witness ? witness.name : `Unknown (ID: ${witId})`;
-  };
-
   const pages = [
     // Page 0: Round and side selection
-    <Stack key={0}>
+    <Stack key={0} style={{ userSelect: "none", WebkitUserSelect: "none" }}>
       <Text size="sm" c="dimmed">
-        Select the round number
+        Step 1 of 4: Enter the round details.
       </Text>
-      <Radio.Group
-        value={formData.roundNumber}
-        onChange={(value) => handleInputChange("roundNumber", value)}
-        name="roundNumber"
-      >
-        <Stack mt="xs">
-          {roundOptions.map((num) => (
-            <Radio
-              key={num}
-              value={num.toString()}
-              label={`Round ${num}`}
-              disabled={existingRounds.includes(num)}
-            />
-          ))}
-        </Stack>
-      </Radio.Group>
 
-      <Text size="sm" c="dimmed">
-        Select the side
-      </Text>
-      <Radio.Group
-        value={formData.side}
-        onChange={(value) => handleInputChange("side", value)}
+      <RadioCardGroup
+        label="Select the round number"
+        name="roundNumber"
+        value={formData.roundNumber}
+        options={roundOptions}
+        disabledOptions={existingRounds}
+        onChange={(name, value) => handleInputChange(name, value)}
+      />
+
+      <RadioCardGroup
+        label="Select the side"
         name="side"
-      >
-        <Stack mt="xs">
-          {sideOptions.map((side) => (
-            <Radio
-              key={side}
-              value={side.toLowerCase().slice(0, 1)}
-              label={side}
-            />
-          ))}
-        </Stack>
-      </Radio.Group>
+        value={formData.side}
+        options={sideOptions}
+        onChange={(name, value) => handleInputChange(name, value)}
+      />
     </Stack>,
 
     // Page 1: Student selection (attorneys and witnesses)
     <Stack key={1}>
       <Text size="sm" c="dimmed">
-        Select the students participating in this round. The order doesn't
-        matter.
+        Step 2 of 4: Select the students participating in this round. The order
+        doesn't matter.
       </Text>
-      <MultiSelect
-        data={attorneyOptions}
-        value={formData.attorneys}
-        onChange={(value) => handleInputChange("attorneys", value)}
+
+      <ModalMultiSelect
+        data={studentAttorneySelectionOptions}
+        value={formData.studentsAttorneys}
+        onChange={(value) => handleInputChange("studentsAttorneys", value)}
         label="Attorneys"
         maxValues={3}
         clearable
         hidePickedOptions
       />
-      <MultiSelect
-        data={witnessOptions}
-        value={formData.witnesses}
-        onChange={(value) => handleInputChange("witnesses", value)}
+
+      <ModalMultiSelect
+        data={studentWitnessSelectionOptions}
+        value={formData.studentsWitnesses}
+        onChange={(value) => handleInputChange("studentsWitnesses", value)}
         label="Witnesses"
         maxValues={3}
         clearable
@@ -569,6 +580,10 @@ export default function AddRoundModal({
     // Page 2: Witness selection
     <Stack key={2}>
       <Text size="sm" c="dimmed">
+        Step 3 of 4: Select the witnesses for this round.
+      </Text>
+
+      <Text size="sm" c="dimmed">
         Assign{" "}
         {caseType === "civil"
           ? "Plaintiff"
@@ -577,11 +592,11 @@ export default function AddRoundModal({
           : "Plaintiff/Prosecution"}{" "}
         Witnesses
       </Text>
-      <Select
+
+      <ModalSelect
         data={pWitnessOptions}
-        value={formData.pw1}
-        onChange={(value) => handleInputChange("pw1", value)}
-        clearable
+        value={formData.witnesses.pw1}
+        onChange={(value) => handleWitnessChange("pw1", value)}
         label={`${
           caseType === "civil"
             ? "Plaintiff"
@@ -590,11 +605,10 @@ export default function AddRoundModal({
             : "Plaintiff/Prosecution"
         } Witness 1`}
       />
-      <Select
+      <ModalSelect
         data={pWitnessOptions}
-        value={formData.pw2}
-        onChange={(value) => handleInputChange("pw2", value)}
-        clearable
+        value={formData.witnesses.pw2}
+        onChange={(value) => handleWitnessChange("pw2", value)}
         label={`${
           caseType === "civil"
             ? "Plaintiff"
@@ -603,11 +617,10 @@ export default function AddRoundModal({
             : "Plaintiff/Prosecution"
         } Witness 2`}
       />
-      <Select
+      <ModalSelect
         data={pWitnessOptions}
-        value={formData.pw3}
-        onChange={(value) => handleInputChange("pw3", value)}
-        clearable
+        value={formData.witnesses.pw3}
+        onChange={(value) => handleWitnessChange("pw3", value)}
         label={`${
           caseType === "civil"
             ? "Plaintiff"
@@ -616,582 +629,471 @@ export default function AddRoundModal({
             : "Plaintiff/Prosecution"
         } Witness 3`}
       />
+
       <Text size="sm" c="dimmed">
         Assign Defense Witnesses
       </Text>
-      <Select
+
+      <ModalSelect
         data={dWitnessOptions}
-        value={formData.dw1}
-        onChange={(value) => handleInputChange("dw1", value)}
-        clearable
+        value={formData.witnesses.dw1}
+        onChange={(value) => handleWitnessChange("dw1", value)}
         label="Defense Witness 1"
       />
-      <Select
+      <ModalSelect
         data={dWitnessOptions}
-        value={formData.dw2}
-        onChange={(value) => handleInputChange("dw2", value)}
-        clearable
+        value={formData.witnesses.dw2}
+        onChange={(value) => handleWitnessChange("dw2", value)}
         label="Defense Witness 2"
       />
-      <Select
+      <ModalSelect
         data={dWitnessOptions}
-        value={formData.dw3}
-        onChange={(value) => handleInputChange("dw3", value)}
-        clearable
+        value={formData.witnesses.dw3}
+        onChange={(value) => handleWitnessChange("dw3", value)}
         label="Defense Witness 3"
       />
     </Stack>,
 
-    // Page 3: Role selection (who did what)
+    // Page 3: Role assignment
     <Stack key={3}>
-      {formData.side === "p" && (
-        <Table striped highlightOnHover withTableBorder fz="xs">
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Td>Role</Table.Td>
-              <Table.Td>Attorney</Table.Td>
-              <Table.Td>Witness</Table.Td>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            <Table.Tr>
-              <Table.Td>Opening</Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p1 === a.value ||
-                        formData.pRoles.p14 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p1}
-                  onChange={(value) => handleRoleChange("pRoles", "p1", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td colSpan={3} align="center">
-                -
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P1
-                <br />
-                {getWitnessName(formData.pw1)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p2 === a.value ||
-                        formData.pRoles.p5 === a.value ||
-                        formData.pRoles.p8 === a.value,
-                    };
-                  })}
+      <Text size="sm" c="dimmed">
+        Step 4 of 4: Assign roles to the selected students.
+      </Text>
+
+      <Table striped highlightOnHover withTableBorder fz="xs">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Td>Role</Table.Td>
+            <Table.Td>Attorney</Table.Td>
+            <Table.Td>Witness</Table.Td>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Td>Opening</Table.Td>
+            <Table.Td>
+              <ModalSelect
+                data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                  ...a,
+                  disabled: formData.side
+                    ? formData[`${formData.side}Roles`][`${formData.side}1`] ===
+                        a.value ||
+                      formData[`${formData.side}Roles`][
+                        `${formData.side}14`
+                      ] === a.value
+                    : null,
+                }))}
+                value={
+                  formData.side
+                    ? formData[`${formData.side}Roles`][`${formData.side}1`]
+                    : null
+                }
+                onChange={(value) => {
+                  if (formData.side) {
+                    handleRoleChange(
+                      `${formData.side}Roles`,
+                      `${formData.side}1`,
+                      value
+                    );
+                  }
+                }}
+              />
+            </Table.Td>
+            <Table.Td align="center">-</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td colSpan={3} align="center">
+              -
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              P1
+              <br />
+              {getWitnessName(formData.witnesses.pw1)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p2 === a.value ||
+                      formData.pRoles.p5 === a.value ||
+                      formData.pRoles.p8 === a.value,
+                  }))}
                   value={formData.pRoles.p2}
                   onChange={(value) => handleRoleChange("pRoles", "p2", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.pRoles.p3 === w.value ||
-                        formData.pRoles.p6 === w.value ||
-                        formData.pRoles.p9 === w.value,
-                    };
-                  })}
-                  value={formData.pRoles.p3}
-                  onChange={(value) => handleRoleChange("pRoles", "p3", value)}
-                  clearable
-                />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P2
-                <br />
-                {getWitnessName(formData.pw2)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p2 === a.value ||
-                        formData.pRoles.p5 === a.value ||
-                        formData.pRoles.p8 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p5}
-                  onChange={(value) => handleRoleChange("pRoles", "p5", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.pRoles.p3 === w.value ||
-                        formData.pRoles.p6 === w.value ||
-                        formData.pRoles.p9 === w.value,
-                    };
-                  })}
-                  value={formData.pRoles.p6}
-                  onChange={(value) => handleRoleChange("pRoles", "p6", value)}
-                  clearable
-                />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P3
-                <br />
-                {getWitnessName(formData.pw3)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p2 === a.value ||
-                        formData.pRoles.p5 === a.value ||
-                        formData.pRoles.p8 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p8}
-                  onChange={(value) => handleRoleChange("pRoles", "p8", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.pRoles.p3 === w.value ||
-                        formData.pRoles.p6 === w.value ||
-                        formData.pRoles.p9 === w.value,
-                    };
-                  })}
-                  value={formData.pRoles.p9}
-                  onChange={(value) => handleRoleChange("pRoles", "p9", value)}
-                  clearable
-                />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td colSpan={3} align="center">
-                -
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D1
-                <br />
-                {getWitnessName(formData.dw1)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p11 === a.value ||
-                        formData.pRoles.p12 === a.value ||
-                        formData.pRoles.p13 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p11}
-                  onChange={(value) => handleRoleChange("pRoles", "p11", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D2
-                <br />
-                {getWitnessName(formData.dw2)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p11 === a.value ||
-                        formData.pRoles.p12 === a.value ||
-                        formData.pRoles.p13 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p12}
-                  onChange={(value) => handleRoleChange("pRoles", "p12", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D3
-                <br />
-                {getWitnessName(formData.dw3)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p11 === a.value ||
-                        formData.pRoles.p12 === a.value ||
-                        formData.pRoles.p13 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p13}
-                  onChange={(value) => handleRoleChange("pRoles", "p13", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td colSpan={3} align="center">
-                -
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>Closing</Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.pRoles.p1 === a.value ||
-                        formData.pRoles.p14 === a.value,
-                    };
-                  })}
-                  value={formData.pRoles.p14}
-                  onChange={(value) => handleRoleChange("pRoles", "p14", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-          </Table.Tbody>
-        </Table>
-      )}
-      {formData.side === "d" && (
-        <Table striped highlightOnHover withTableBorder fz="xs">
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Td>Role</Table.Td>
-              <Table.Td>Attorney</Table.Td>
-              <Table.Td>Witness</Table.Td>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            <Table.Tr>
-              <Table.Td>Opening</Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d1 === a.value ||
-                        formData.dRoles.d14 === a.value,
-                    };
-                  })}
-                  value={formData.dRoles.d1}
-                  onChange={(value) => handleRoleChange("dRoles", "d1", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td colSpan={3} align="center">
-                -
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P1
-                <br />
-                {getWitnessName(formData.pw1)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d2 === a.value ||
-                        formData.dRoles.d3 === a.value ||
-                        formData.dRoles.d4 === a.value,
-                    };
-                  })}
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d2 === a.value ||
+                      formData.dRoles.d3 === a.value ||
+                      formData.dRoles.d4 === a.value,
+                  }))}
                   value={formData.dRoles.d2}
                   onChange={(value) => handleRoleChange("dRoles", "d2", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P2
-                <br />
-                {getWitnessName(formData.pw2)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d2 === a.value ||
-                        formData.dRoles.d3 === a.value ||
-                        formData.dRoles.d4 === a.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.pRoles.p3 === w.value ||
+                      formData.pRoles.p6 === w.value ||
+                      formData.pRoles.p9 === w.value,
+                  }))}
+                  value={formData.pRoles.p3}
+                  onChange={(value) => handleRoleChange("pRoles", "p3", value)}
+                />
+              )}
+              {formData.side === "d" && "-"}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              P2
+              <br />
+              {getWitnessName(formData.witnesses.pw2)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p2 === a.value ||
+                      formData.pRoles.p5 === a.value ||
+                      formData.pRoles.p8 === a.value,
+                  }))}
+                  value={formData.pRoles.p5}
+                  onChange={(value) => handleRoleChange("pRoles", "p5", value)}
+                />
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d2 === a.value ||
+                      formData.dRoles.d3 === a.value ||
+                      formData.dRoles.d4 === a.value,
+                  }))}
                   value={formData.dRoles.d3}
                   onChange={(value) => handleRoleChange("dRoles", "d3", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                P3
-                <br />
-                {getWitnessName(formData.pw3)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d2 === a.value ||
-                        formData.dRoles.d3 === a.value ||
-                        formData.dRoles.d4 === a.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.pRoles.p3 === w.value ||
+                      formData.pRoles.p6 === w.value ||
+                      formData.pRoles.p9 === w.value,
+                  }))}
+                  value={formData.pRoles.p6}
+                  onChange={(value) => handleRoleChange("pRoles", "p6", value)}
+                />
+              )}
+              {formData.side === "d" && "-"}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              P3
+              <br />
+              {getWitnessName(formData.witnesses.pw3)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p2 === a.value ||
+                      formData.pRoles.p5 === a.value ||
+                      formData.pRoles.p8 === a.value,
+                  }))}
+                  value={formData.pRoles.p8}
+                  onChange={(value) => handleRoleChange("pRoles", "p8", value)}
+                />
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d2 === a.value ||
+                      formData.dRoles.d3 === a.value ||
+                      formData.dRoles.d4 === a.value,
+                  }))}
                   value={formData.dRoles.d4}
                   onChange={(value) => handleRoleChange("dRoles", "d4", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td colSpan={3} align="center">
-                -
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D1
-                <br />
-                {getWitnessName(formData.dw1)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d5 === a.value ||
-                        formData.dRoles.d8 === a.value ||
-                        formData.dRoles.d11 === a.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.pRoles.p3 === w.value ||
+                      formData.pRoles.p6 === w.value ||
+                      formData.pRoles.p9 === w.value,
+                  }))}
+                  value={formData.pRoles.p9}
+                  onChange={(value) => handleRoleChange("pRoles", "p9", value)}
+                />
+              )}
+              {formData.side === "d" && "-"}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td colSpan={3} align="center">
+              -
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              D1
+              <br />
+              {getWitnessName(formData.witnesses.dw1)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p11 === a.value ||
+                      formData.pRoles.p12 === a.value ||
+                      formData.pRoles.p13 === a.value,
+                  }))}
+                  value={formData.pRoles.p11}
+                  onChange={(value) => handleRoleChange("pRoles", "p11", value)}
+                />
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d5 === a.value ||
+                      formData.dRoles.d8 === a.value ||
+                      formData.dRoles.d11 === a.value,
+                  }))}
                   value={formData.dRoles.d5}
                   onChange={(value) => handleRoleChange("dRoles", "d5", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.dRoles.d6 === w.value ||
-                        formData.dRoles.d9 === w.value ||
-                        formData.dRoles.d12 === w.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "p" ? "center" : undefined}>
+              {formData.side === "p" && "-"}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.dRoles.d6 === w.value ||
+                      formData.dRoles.d9 === w.value ||
+                      formData.dRoles.d12 === w.value,
+                  }))}
                   value={formData.dRoles.d6}
                   onChange={(value) => handleRoleChange("dRoles", "d6", value)}
-                  clearable
                 />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D2
-                <br />
-                {getWitnessName(formData.dw2)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d5 === a.value ||
-                        formData.dRoles.d8 === a.value ||
-                        formData.dRoles.d11 === a.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              D2
+              <br />
+              {getWitnessName(formData.witnesses.dw2)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p11 === a.value ||
+                      formData.pRoles.p12 === a.value ||
+                      formData.pRoles.p13 === a.value,
+                  }))}
+                  value={formData.pRoles.p12}
+                  onChange={(value) => handleRoleChange("pRoles", "p12", value)}
+                />
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d5 === a.value ||
+                      formData.dRoles.d8 === a.value ||
+                      formData.dRoles.d11 === a.value,
+                  }))}
                   value={formData.dRoles.d8}
                   onChange={(value) => handleRoleChange("dRoles", "d8", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.dRoles.d6 === w.value ||
-                        formData.dRoles.d9 === w.value ||
-                        formData.dRoles.d12 === w.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "p" ? "center" : undefined}>
+              {formData.side === "p" && "-"}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.dRoles.d6 === w.value ||
+                      formData.dRoles.d9 === w.value ||
+                      formData.dRoles.d12 === w.value,
+                  }))}
                   value={formData.dRoles.d9}
                   onChange={(value) => handleRoleChange("dRoles", "d9", value)}
-                  clearable
                 />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>
-                D3
-                <br />
-                {getWitnessName(formData.dw3)}
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d5 === a.value ||
-                        formData.dRoles.d8 === a.value ||
-                        formData.dRoles.d11 === a.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>
+              D3
+              <br />
+              {getWitnessName(formData.witnesses.dw3)}
+            </Table.Td>
+            <Table.Td>
+              {formData.side === "p" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.pRoles.p11 === a.value ||
+                      formData.pRoles.p12 === a.value ||
+                      formData.pRoles.p13 === a.value,
+                  }))}
+                  value={formData.pRoles.p13}
+                  onChange={(value) => handleRoleChange("pRoles", "p13", value)}
+                />
+              )}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                    ...a,
+                    disabled:
+                      formData.dRoles.d5 === a.value ||
+                      formData.dRoles.d8 === a.value ||
+                      formData.dRoles.d11 === a.value,
+                  }))}
                   value={formData.dRoles.d11}
                   onChange={(value) => handleRoleChange("dRoles", "d11", value)}
-                  clearable
                 />
-              </Table.Td>
-              <Table.Td>
-                <Select
-                  data={witnessStudentOptions.map((w) => {
-                    return {
-                      ...w,
-                      disabled:
-                        formData.dRoles.d6 === w.value ||
-                        formData.dRoles.d9 === w.value ||
-                        formData.dRoles.d12 === w.value,
-                    };
-                  })}
+              )}
+            </Table.Td>
+            <Table.Td align={formData.side === "p" ? "center" : undefined}>
+              {formData.side === "p" && "-"}
+              {formData.side === "d" && (
+                <ModalSelect
+                  data={studentWitnessRoleSelectionOptions.map((w) => ({
+                    ...w,
+                    disabled:
+                      formData.dRoles.d6 === w.value ||
+                      formData.dRoles.d9 === w.value ||
+                      formData.dRoles.d12 === w.value,
+                  }))}
                   value={formData.dRoles.d12}
                   onChange={(value) => handleRoleChange("dRoles", "d12", value)}
-                  clearable
                 />
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Td>Closing</Table.Td>
-              <Table.Td>
-                <Select
-                  data={attorneyStudentOptions.map((a) => {
-                    return {
-                      ...a,
-                      disabled:
-                        formData.dRoles.d1 === a.value ||
-                        formData.dRoles.d14 === a.value,
-                    };
-                  })}
-                  value={formData.dRoles.d14}
-                  onChange={(value) => handleRoleChange("dRoles", "d14", value)}
-                  clearable
-                />
-              </Table.Td>
-              <Table.Td align="center">-</Table.Td>
-            </Table.Tr>
-          </Table.Tbody>
-        </Table>
-      )}
+              )}
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td colSpan={3} align="center">
+              -
+            </Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Td>Closing</Table.Td>
+            <Table.Td>
+              <ModalSelect
+                data={studentAttorneyRoleSelectionOptions.map((a) => ({
+                  ...a,
+                  disabled: formData.side
+                    ? formData[`${formData.side}Roles`][`${formData.side}1`] ===
+                        a.value ||
+                      formData[`${formData.side}Roles`][
+                        `${formData.side}14`
+                      ] === a.value
+                    : null,
+                }))}
+                value={
+                  formData.side
+                    ? formData[`${formData.side}Roles`][`${formData.side}14`]
+                    : null
+                }
+                onChange={(value) => {
+                  if (formData.side) {
+                    handleRoleChange(
+                      `${formData.side}Roles`,
+                      `${formData.side}14`,
+                      value
+                    );
+                  }
+                }}
+              />
+            </Table.Td>
+            <Table.Td align="center">-</Table.Td>
+          </Table.Tr>
+        </Table.Tbody>
+      </Table>
     </Stack>,
   ];
 
   return (
-    <Modal
-      opened={opened}
+    <BaseModal
+      modalId={`add-round-form-${teamId}`}
+      title={caseLoading || studentsLoading ? "Loading..." : "Add Round"}
+      trigger={trigger}
       onClose={onClose}
-      title={`Add Round (Step ${activePage + 1} of 4)`}
-      size="xl"
-      centered
-      styles={{
-        content: { maxHeight: "80%", overflowY: "auto" },
-        body: { overflowY: "auto" },
-      }}
+      layer={0}
+      footer={
+        <>
+          <Group justify="space-between">
+            <Button onClick={handleReset}>Reset</Button>
+            <Group gap="sm">
+              <Button onClick={handleBack} disabled={activePage === 0}>
+                Back
+              </Button>
+              <Button
+                onClick={
+                  activePage === pages.length - 1 ? handleSubmit : handleNext
+                }
+                disabled={!validateCurrentPage()}
+              >
+                {activePage === pages.length - 1 ? "Submit" : "Next"}
+              </Button>
+            </Group>
+          </Group>
+        </>
+      }
     >
-      <Text c="dimmed" size="sm" mb="md">
+      <Text size="sm" weight={500} mb="md">
         Ensure you are entering everything correctly. This information cannot be
-        changed after being submitted, and to make adjustments the entire round
-        will need to be deleted.
+        changed after being submitted, and to make adjustments to the details
+        you will need to delete the round entirely.
       </Text>
-      {pages[activePage]}
-
-      <Group justify="space-between" mt="xl">
-        {activePage !== 0 ? (
-          <Button variant="default" onClick={handleBack}>
-            Back
-          </Button>
-        ) : (
-          <Button variant="default" onClick={handleReset}>
-            Reset
-          </Button>
-        )}
-
-        {activePage < pages.length - 1 ? (
-          <Button onClick={handleNext} disabled={!validateCurrentPage()}>
-            Next
-          </Button>
-        ) : (
-          <Button onClick={handleSubmit} disabled={!validateCurrentPage()}>
-            Submit
-          </Button>
-        )}
-      </Group>
-    </Modal>
+      {(caseLoading || studentsLoading) && <p>Loading...</p>}
+      {!caseLoading && !studentsLoading && pages[activePage]}
+    </BaseModal>
   );
 }
