@@ -10,6 +10,7 @@ import {
   Flex,
   Menu,
   useMantineColorScheme,
+  Tooltip,
 } from "@mantine/core";
 import {
   useDisclosure,
@@ -53,6 +54,18 @@ const NAV_LINKS = [
     matchPattern: /^\/tournaments(\/[^/]+)?$/,
   },
 ];
+
+const NavLinkWithTooltip = ({ isMobile, desktopCollapsed, ...props }) => {
+  if (isMobile || !desktopCollapsed) {
+    return <NavLink {...props} />
+  }
+
+  return (
+    <Tooltip label={props.label} position="right" withArrow>
+      <NavLink {...props} label={null} />
+    </Tooltip>
+  )
+}
 
 export default function NavLayout({ children }) {
   const theme = useMantineTheme();
@@ -281,93 +294,86 @@ export default function NavLayout({ children }) {
         >
           <AppShell.Section mb="lg">
             {assignments.length > 0 && (
-              <>
-                {!(desktopCollapsed && !isMobile) && (
-                  <Text size={isMobile ? "md" : "sm"} mb="2">
-                    Current School:
-                  </Text>
-                )}
-                <Menu
-                  withinPortal
-                  position="bottom-start"
-                  width={
-                    isMobile ? `calc(100vw - (${theme.spacing.xs} * 3))` : 200
-                  }
-                  disabled={assignments.length === 1}
-                >
-                  <Menu.Target>
-                    <Flex
-                      bg={
-                        colorScheme === "dark"
-                          ? theme.colors.dark[5]
-                          : theme.colors.gray[1]
+              <Menu
+                withinPortal
+                position="bottom-start"
+                width={
+                  isMobile ? `calc(100vw - (${theme.spacing.xs} * 3))` : 200
+                }
+                disabled={assignments.length === 1}
+              >
+                <Menu.Target>
+                  <Flex
+                    bg={
+                      colorScheme === "dark"
+                        ? theme.colors.dark[5]
+                        : theme.colors.gray[1]
+                    }
+                    pl="xs"
+                    pr="xs"
+                    pt="xs"
+                    pb="xs"
+                    bdrs={`calc(${theme.spacing.xs} - 2px)`}
+                    style={{
+                      overflow: "hidden",
+                      cursor: assignments.length > 1 ? "pointer" : "default",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                    tabIndex={isMobile && !mobileOpened ? -1 : assignments.length > 1 ? 0 : ""}
+                    onKeyDown={(e) => {
+                      if (
+                        assignments.length > 1 &&
+                        (e.key === "Enter" || e.key === " ")
+                      ) {
+                        e.preventDefault();
+                        e.currentTarget.click();
                       }
-                      pl="xs"
-                      pr="xs"
-                      pt="xs"
-                      pb="xs"
-                      bdrs={`calc(${theme.spacing.xs} - 2px)`}
-                      style={{
-                        overflow: "hidden",
-                        cursor: assignments.length > 1 ? "pointer" : "default",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                      tabIndex={assignments.length > 1 ? 0 : ""}
-                      onKeyDown={(e) => {
-                        if (
-                          assignments.length > 1 &&
-                          (e.key === "Enter" || e.key === " ")
-                        ) {
-                          e.preventDefault();
-                          e.currentTarget.click();
-                        }
-                      }}
-                    >
-                      <Text truncate size={isMobile ? "md" : "xs"}>
-                        {desktopCollapsed && !isMobile
-                          ? assignments.find(
-                              (a) => a.school_id === selectedSchoolId
-                            )?.schools.short_name
-                          : assignments.find(
-                              (a) => a.school_id === selectedSchoolId
-                            )?.schools.name}
-                      </Text>
-                      {assignments.length > 1 &&
-                        !(desktopCollapsed && !isMobile) && <ChevronIcon />}
-                    </Flex>
-                  </Menu.Target>
+                    }}
+                  >
+                    <Text truncate size={isMobile ? "md" : "xs"}>
+                      {desktopCollapsed && !isMobile
+                        ? assignments.find(
+                            (a) => a.school_id === selectedSchoolId
+                          )?.schools.short_name
+                        : assignments.find(
+                            (a) => a.school_id === selectedSchoolId
+                          )?.schools.name}
+                    </Text>
+                    {assignments.length > 1 &&
+                      !(desktopCollapsed && !isMobile) && <ChevronIcon />}
+                  </Flex>
+                </Menu.Target>
 
-                  {assignments.length > 1 && (
-                    <Menu.Dropdown>
-                      {assignments.map((a) => (
-                        <Menu.Item
-                          key={a.school_id}
-                          onClick={() => setSelectedSchoolId(a.school_id)}
-                        >
-                          {a.schools.name} ({a.schools.short_name})
-                        </Menu.Item>
-                      ))}
-                    </Menu.Dropdown>
-                  )}
-                </Menu>
-              </>
+                {assignments.length > 1 && (
+                  <Menu.Dropdown>
+                    {assignments.map((a) => (
+                      <Menu.Item
+                        key={a.school_id}
+                        onClick={() => setSelectedSchoolId(a.school_id)}
+                      >
+                        {a.schools.name} ({a.schools.short_name})
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
+                )}
+              </Menu>
             )}
           </AppShell.Section>
 
           <AppShell.Section style={{ flex: 1 }}>
             {NAV_LINKS.map((link) => (
-              <NavLink
-                disabled={!link.showOnNoSchool && !selectedSchoolId}
+              <NavLinkWithTooltip
+                isMobile={isMobile}
+                desktopCollapsed={desktopCollapsed}
                 key={link.path}
+                disabled={!link.showOnNoSchool && !selectedSchoolId}
                 active={
                   link.matchPattern
                     ? link.matchPattern.test(location.pathname)
                     : location.pathname === link.path
                 }
-                label={
-                  isMobile ? link.label : desktopCollapsed ? null : link.label
-                }
+                label={link.label}
                 leftSection={<link.icon size="1rem" />}
                 onClick={(e) => {
                   e.preventDefault();
@@ -378,7 +384,7 @@ export default function NavLayout({ children }) {
                   }, 100);
                 }}
                 mb="xs"
-                tabIndex={!link.showOnNoSchool && !selectedSchoolId ? -1 : 0}
+                tabIndex={(isMobile && !mobileOpened) || (!link.showOnNoSchool && !selectedSchoolId) ? -1 : 0}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -399,18 +405,14 @@ export default function NavLayout({ children }) {
             {BOTTOM_LINKS.map((link) => {
               return (
                 link.enabled && (
-                  <NavLink
+                  <NavLinkWithTooltip
+                    isMobile={isMobile}
+                    desktopCollapsed={desktopCollapsed}
                     key={link.label}
                     active={location.pathname === link?.path}
-                    label={
-                      isMobile
-                        ? link.label
-                        : desktopCollapsed
-                        ? null
-                        : link.label
-                    }
+                    label={link.label}
                     leftSection={<link.icon size="1rem" />}
-                    tabIndex={0}
+                    tabIndex={isMobile && !mobileOpened ? -1 : 0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
