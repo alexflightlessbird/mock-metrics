@@ -6,12 +6,11 @@ import {
   Overlay,
   ScrollArea,
 } from "@mantine/core";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { LuX } from "react-icons/lu";
-import { useViewportSize } from "@mantine/hooks";
-import { emToPx } from "../../utils/helpers";
 import { useTheme } from "../../../context/ThemeContext";
 import { useModal } from "../../../context/ModalContext";
+import { useMobile } from "../../../context/MobileContext";
 
 export default function BaseModal({
   modalId,
@@ -30,14 +29,9 @@ export default function BaseModal({
   const theme = useMantineTheme();
   const contentRef = useRef(null);
   const { isDark } = useTheme();
-  const { width } = useViewportSize();
   const { isOpen, openModal, closeModal, closeAllModals } = useModal();
 
-  const smBreakpointPx = useMemo(
-    () => emToPx(parseFloat(theme.breakpoints.sm)),
-    [theme.breakpoints.sm]
-  );
-  const isMobile = width < smBreakpointPx;
+  const { isMobile } = useMobile();
 
   if (!widthVal) {
     widthVal = isMobile ? "100vw" : "90vw";

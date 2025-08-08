@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import {
   AppShell,
   NavLink,
@@ -14,7 +14,6 @@ import {
 } from "@mantine/core";
 import {
   useDisclosure,
-  useViewportSize,
   useLocalStorage,
   useHeadroom,
 } from "@mantine/hooks";
@@ -30,11 +29,11 @@ import {
 import { PiGavelFill } from "react-icons/pi";
 import { TbTournament } from "react-icons/tb";
 import { useNavigate, useLocation } from "react-router-dom";
-import { emToPx } from "../common/utils/helpers";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../assets/svgs/Logo/Logo";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import CookieBanner from "../common/components/CookieBanner";
+import { useMobile } from "../context/MobileContext";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
@@ -101,7 +100,6 @@ export default function NavLayout({ children }) {
     }
   }, [assignments, selectedSchoolId, setSelectedSchoolId]);
 
-  const { width } = useViewportSize();
   const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] =
     useDisclosure();
 
@@ -168,11 +166,7 @@ export default function NavLayout({ children }) {
 
   const [isResizing, setIsResizing] = useState(false);
 
-  const smBreakpointPx = useMemo(
-    () => emToPx(parseFloat(theme.breakpoints.sm)),
-    [theme.breakpoints.sm]
-  );
-  const isMobile = width < smBreakpointPx;
+  const { isMobile } = useMobile();
 
   // Reset mobile state when switching to desktop
   useEffect(() => {

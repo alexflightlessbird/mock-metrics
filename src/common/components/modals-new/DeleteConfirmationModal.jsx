@@ -1,18 +1,14 @@
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState } from "react";
 import BaseModal from "./BaseModal";
 import {
-  useMantineTheme,
   Button,
   Stack,
-  Group,
   Flex,
   Text,
-  Space,
 } from "@mantine/core";
 import { capitalize } from "../../utils/helpers";
 import { useModal } from "../../../context/ModalContext";
-import { emToPx } from "../../utils/helpers";
-import { useViewportSize } from "@mantine/hooks";
+import { useMobile } from "../../../context/MobileContext";
 
 export default function DeleteConfirmationModal({
   onClose,
@@ -25,17 +21,14 @@ export default function DeleteConfirmationModal({
   closeOnSubmit = true,
   closeAllOnSubmit = false,
   layer = 0,
+  type = "delete",
+  removeFrom = "",
+  includeBallots = false,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const firstInputRef = useRef(null);
 
-  const { width } = useViewportSize();
-  const theme = useMantineTheme();
-  const smBreakpointPx = useMemo(
-    () => emToPx(parseFloat(theme.breakpoints.sm)),
-    [theme.breakpoints.sm]
-  );
-  const isMobile = width < smBreakpointPx;
+  const { isMobile } = useMobile();
 
   const { closeModal, closeAllModals } = useModal();
 
@@ -46,7 +39,7 @@ export default function DeleteConfirmationModal({
       else if (onSubmit) await onSubmit(entity.id);
       if (onClose) onClose();
     } finally {
-      if (closeOnSubmit) closeModal(`delete-${entityName}-modal`);
+      if (closeOnSubmit) closeModal(`delete-${entityName}-modal-${entity.id ? entity.id : entity.name}`);
       if (closeAllOnSubmit) closeAllModals();
       setIsLoading(false);
     }
@@ -54,14 +47,15 @@ export default function DeleteConfirmationModal({
 
   return (
     <BaseModal
-      modalId={`delete-${entityName}-modal`}
+      modalId={`delete-${entityName}-modal-${entity.id ? entity.id : entity.name}`}
       trigger={trigger}
-      title={`Delete ${capitalize(entityName)}${
+      title={type === "delete" ? `Delete ${capitalize(entityName)}${
         entity?.name?.length > 0 ? " (" + capitalize(entity.name) + ")" : ""
-      }`}
+      }` : type === "remove" ? `Remove ${capitalize(entityName)}${entity?.name?.length > 0 ? " (" + capitalize(entity.name) + ")" : "" }` : ""}
       initialFocusRef={firstInputRef}
       layer={layer}
       disableCloseButton={isLoading}
+      maxWidth={isMobile ? undefined : "60vw"}
       footer={
         <Flex
           direction="row"
@@ -88,7 +82,7 @@ export default function DeleteConfirmationModal({
               if (closeAllOnCancel) {
                 closeAllModals();
               } else {
-                closeModal(`delete-${entityName}-modal`);
+                closeModal(`delete-${entityName}-modal-${entity.id ? entity.id : entity.name}`);
               }
             }}
             loading={isLoading}
@@ -100,12 +94,12 @@ export default function DeleteConfirmationModal({
     >
       <Stack>
         <Text>
-          Are you sure you want to delete
-          {entity?.name?.length > 0 ? " " + capitalize(entity.name) : ""}?
+          Are you sure you want to {type}
+          {entity?.name?.length > 0 ? " " + capitalize(entity.name) : ""}{type === "remove" && removeFrom.length > 0 ? ` from ${removeFrom}` : null}?
         </Text>
         <Text fz="xs">
-          This action cannot be reversed. It will permanently remove all
-          information associated with the {entityName}.
+          This action cannot be reversed. It will permanently {type} all
+          information associated with the {entityName}.{includeBallots ? ` This will also permanently ${type} all associated ballot information.` : null}
         </Text>
       </Stack>
     </BaseModal>
