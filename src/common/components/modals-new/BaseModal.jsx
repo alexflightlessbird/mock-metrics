@@ -141,6 +141,7 @@ export default function BaseModal({
             "&:focus": { outline: "none" },
           }}
           aria-describedby={undefined}
+          onClick={(e) => e.stopPropagation()}
         >
           {title && (
             <Dialog.Title
