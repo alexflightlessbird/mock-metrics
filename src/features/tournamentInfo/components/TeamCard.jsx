@@ -5,6 +5,8 @@ import {
   Skeleton,
   Stack,
   Text,
+  Group,
+  ActionIcon,
 } from "@mantine/core";
 import { useTournamentTeamRounds } from "../../../common/hooks/useTournamentDetails";
 import { useState } from "react";
@@ -15,12 +17,16 @@ import AddRoundModal from "./AddRoundModal";
 import AddButton from "../../../common/components/AddButton";
 import { useGetRole } from "../../../common/hooks/useGetRole";
 import { useAuth } from "../../../context/AuthContext";
+import { LuTrash } from "react-icons/lu";
+import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
+import { useTournamentTeams } from "../../../common/hooks/useTournamentDetails";
 
 export default function TeamCard({
   team,
   caseType,
   nationalsTournament = false,
   tournamentStatus = true,
+  tournamentName = ""
 }) {
   const [showRounds, setShowRounds] = useState(false);
   const [addRoundModalOpened, setAddRoundModalOpened] = useState(false);
@@ -39,6 +45,7 @@ export default function TeamCard({
     user.id,
     team.teams.school_id
   );
+  const { removeTeam } = useTournamentTeams(team.team_id);
 
   if (roundsLoading || resultsLoading || roleLoading)
     return (
@@ -80,18 +87,41 @@ export default function TeamCard({
         <MantineCard.Section withBorder inheritPadding py="sm">
           <Flex justify="space-between" align="center">
             <Text fw={500}>{team.teams.name}</Text>
-            <Badge
-              fz="sm"
-              color={
-                recordVal > totalRecordVal - recordVal
+            <Group gap="xs">
+              <Badge
+                fz="sm"
+                color={
+                  recordVal > totalRecordVal - recordVal
                   ? "blue"
                   : recordVal == totalRecordVal - recordVal
                   ? "gray"
                   : "pink"
-              }
-            >
-              {record.wins}-{record.losses}-{record.ties}
-            </Badge>
+                }
+                >
+                {record.wins}-{record.losses}-{record.ties}
+              </Badge>
+              {role === "primary" && (
+                <DeleteConfirmationModal
+                  trigger={
+                    <ActionIcon variant="subtle" color="red">
+                      <LuTrash />
+                    </ActionIcon>
+                  }
+                  entity={{
+                    name: team.teams.name,
+                    id: team.team_id
+                  }}
+                  entityName="team"
+                  type="remove"
+                  removeFrom={tournamentName}
+                  onSubmitFunction={() => {
+                    removeTeam({ teamId: team.team_id, tournamentId: team.tournament_id });
+                  }}
+                  layer={0}
+                  includeBallots={true}
+                />
+              )}
+            </Group>
           </Flex>
         </MantineCard.Section>
 

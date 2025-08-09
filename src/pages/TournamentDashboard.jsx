@@ -13,10 +13,15 @@ import {
   Title,
   Chip,
   MultiSelect,
+  Checkbox,
+  Menu,
+  Group,
+  Button,
+  Divider
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useSchoolTournaments } from "../common/hooks/useSchoolDetails";
-import { useLocalStorage } from "@mantine/hooks";
+import { useLocalStorage, useListState } from "@mantine/hooks";
 import Loader from "../common/components/loader/GavelLoader";
 import Card from "../common/components/card/Card";
 import { useState, useMemo } from "react";
@@ -24,7 +29,7 @@ import { useGetRole } from "../common/hooks/useGetRole";
 import { useAuth } from "../context/AuthContext";
 import AddTournamentModal from "../features/tournamentDashboard/components/AddTournamentModal";
 import AddButton from "../common/components/AddButton";
-import { LuArchive, LuArchiveRestore, LuSearch, LuX } from "react-icons/lu";
+import { LuArchive, LuArchiveRestore, LuFilter, LuSearch, LuX } from "react-icons/lu";
 import {
   useArchiveTournament,
   useUnarchiveTournament,
@@ -40,6 +45,16 @@ export default function TournamentDashboard() {
   const { isMobile } = useMobile();
   const [searchValue, setSearchValue] = useState("");
 
+  const [areaFilter, areaFilterHandlers] = useListState([
+    { label: "Invitational", value: "invitational", checked: true },
+    { label: "Regionals", value: "regionals", checked: true },
+    { label: "ORCS", value: "orcs", checked: true },
+    { label: "Nationals", value: "nationals", checked: true },
+    { label: "Rookie Rumble", value: "rookie rumble", checked: true },
+    { label: "OLT", value: "olt", checked: true },
+    { label: "Other", value: "other", checked: true }
+  ]);
+
   const { role, isLoading: roleLoading } = useGetRole(
     user.id,
     selectedSchoolId
@@ -52,32 +67,44 @@ export default function TournamentDashboard() {
   const [filter, setFilter] = useState("active");
 
   const filteredTournaments = useMemo(() => {
+    const selectedAreas = areaFilter.filter((area) => area.checked).map((area) => area.value);
+
+    const filteredActive = allTournaments?.filter((t) => t.is_active);
+    const filteredInactive = allTournaments?.filter((t) => !t.is_active);
+
+    const filterBySearchAndArea = (tournaments) => {
+      let result = tournaments;
+      if (searchValue) {
+        result = result?.filter((t) => t.name.toLowerCase().includes(searchValue.toLowerCase()));
+      }
+      if (selectedAreas.length > 0) {
+        result = result?.filter((t) => selectedAreas.includes(t.area));
+      }
+      return result;
+    }
+    
     switch (filter) {
       case "active":
-        const filteredActive = allTournaments?.filter((t) => t.is_active);
-        if (searchValue) {
-          return filteredActive?.filter((t) =>
-            t.name.toLowerCase().includes(searchValue.toLowerCase())
-          );
-        }
-        return filteredActive;
+        return filterBySearchAndArea(filteredActive);
       case "inactive":
-        const filteredInactive = allTournaments?.filter((t) => !t.is_active);
-        if (searchValue) {
-          return filteredInactive?.filter((t) =>
-            t.name.toLowerCase().includes(searchValue.toLowerCase())
-          );
-        }
-        return filteredInactive;
+        return filterBySearchAndArea(filteredInactive);
       default:
-        if (searchValue) {
-          return allTournaments?.filter((t) =>
-            t.name.toLowerCase().includes(searchValue.toLowerCase())
-          );
-        }
-        return allTournaments;
+        return filterBySearchAndArea(allTournaments);
     }
-  }, [allTournaments, filter, searchValue]);
+  }, [allTournaments, filter, searchValue, areaFilter]);
+
+  const allChecked = areaFilter.every((area) => area.checked);
+  const indeterminate = areaFilter.some((area) => area.checked) && !allChecked;
+
+  const areaItems = areaFilter.map((area, index) => (
+    <Menu.Item key={area.value}>
+      <Checkbox
+        checked={area.checked}
+        label={area.label}
+        onChange={(e) => areaFilterHandlers.setItemProp(index, "checked", e.currentTarget.checked)}
+      />
+    </Menu.Item>
+  ))
 
   if (tournamentsLoading || roleLoading)
     return (
@@ -107,28 +134,49 @@ export default function TournamentDashboard() {
         mb="md"
         align="center"
       >
-        <TextInput
-          id={"search-tournament"}
-          w={isMobile ? "100%" : undefined}
-          flex={isMobile ? undefined : 1}
-          leftSection={<LuSearch />}
-          rightSection={
-            searchValue && (
-              <ActionIcon
-                variant="transparent"
-                onClick={() => {
-                  setSearchValue("");
-                  document.getElementById("search-tournament").focus();
-                }}
-              >
-                <LuX />
-              </ActionIcon>
-            )
-          }
-          placeholder="Search..."
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
+        <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+          <TextInput
+            id={"search-tournament"}
+            w={isMobile ? "100%" : undefined}
+            flex={1}
+            leftSection={<LuSearch />}
+            rightSection={
+              searchValue && (
+                <ActionIcon
+                  variant="transparent"
+                  onClick={() => {
+                    setSearchValue("");
+                    document.getElementById("search-tournament").focus();
+                  }}
+                >
+                  <LuX />
+                </ActionIcon>
+              )
+            }
+            placeholder="Search..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <Menu shadow="md" width="auto" closeOnItemClick={false}>
+            <Menu.Target>
+              <Button variant="outline" leftSection={<LuFilter />}>
+                Filter
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item>
+                <Checkbox
+                  checked={allChecked}
+                  indeterminate={indeterminate}
+                  label="All Areas"
+                  onChange={() => areaFilterHandlers.setState(areaFilter.map((area) => ({ ...area, checked: !allChecked })))}
+                />
+              </Menu.Item>
+              <Divider />
+              {areaItems}
+            </Menu.Dropdown>
+          </Menu>
+        </Flex>
         {(role === "admin" || role === "primary") && (
           <AddTournamentModal
             schoolId={selectedSchoolId}

@@ -61,7 +61,8 @@ export function useTournamentDetails(tournamentId, schoolId) {
 }
 
 export function useTournamentTeams(tournamentId) {
-  const { showError } = useNotifications();
+  const { showError, showSuccess } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["tournament-teams", tournamentId],
@@ -85,9 +86,48 @@ export function useTournamentTeams(tournamentId) {
     },
   });
 
+  const addTeamMutation = useMutation({
+    mutationFn: async ({ teamId, tournamentId }) => {
+      const { error } = await supabase
+        .from("teams_tournaments")
+        .insert({
+          team_id: teamId,
+          tournament_id: tournamentId
+        });
+      if (error) throw error;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["tournament-teams", variables.tournamentId]);
+      showSuccess({ message: "Team added to tournament successfully" });
+    },
+    onError: (error) => {
+      showError({ title: "Failed to add team to tournament", message: error.message })
+    }
+  });
+
+  const deleteTeamMutation = useMutation({
+    mutationFn: async ({ teamId, tournamentId }) => {
+      const { error } = await supabase
+        .from("teams_tournaments")
+        .delete()
+        .eq("team_id", teamId)
+        .eq("tournament_id", tournamentId);
+      if (error) throw error;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["tournament-teams", variables.tournamentId]);
+      showSuccess({ message: "Team removed from tournament successfully" })
+    },
+    onError: (error) => {
+      showError({ message: error.message, title: "Failed to remove team from tournament" });
+    }
+  });
+
   return {
     data,
     isLoading,
+    addTeam: addTeamMutation.mutateAsync,
+    removeTeam: deleteTeamMutation.mutateAsync,
   };
 }
 

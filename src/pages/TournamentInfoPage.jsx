@@ -1,4 +1,4 @@
-import { Grid, Text, Space, Anchor, Button, Group, Flex } from "@mantine/core";
+import { Grid, Text, Space, Anchor, Button, Flex } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useLocalStorage } from "@mantine/hooks";
 import Loader from "../common/components/loader/GavelLoader";
@@ -13,16 +13,16 @@ import TeamCard from "../features/tournamentInfo/components/TeamCard";
 import { LuArrowLeft, LuTrash } from "react-icons/lu";
 import { useAuth } from "../context/AuthContext";
 import { useGetRole } from "../common/hooks/useGetRole";
-import DeleteConfirmationModal from "../common/components/modals/DeleteConfirmationModal";
-import { useState } from "react";
+import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
+import AddButton from "../common/components/AddButton";
+import AddTeamModal from "../features/tournamentInfo/components/AddTeamModal";
+import ShowIdText from "../common/components/ShowIdText";
 
 export default function TournamentDashboard() {
   const [selectedSchoolId] = useLocalStorage({
     key: "school",
     defaultValue: null,
   });
-  const [deleteTournamentModalOpened, setDeleteTournamentModalOpened] =
-    useState(false);
   const { id: tournamentId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -71,32 +71,30 @@ export default function TournamentDashboard() {
               <Text flex={1} c="red" fw={700} size="sm">
                 THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
               </Text>
-              <Button
-                w="fit-content"
-                leftSection={<LuTrash />}
-                color="red"
-                onClick={() => setDeleteTournamentModalOpened(true)}
-                variant="outline"
-              >
-                Delete Tournament
-              </Button>
+              <DeleteConfirmationModal
+                trigger={(
+                  <Button
+                    w="fit-content"
+                    leftSection={<LuTrash />}
+                    color="red"
+                    variant="outline"
+                  >
+                    Delete Tournament
+                  </Button>
+                )}
+                onSubmit={() => {
+                  deleteTournament();
+                  navigate("/tournaments");
+                }}
+                entity={{
+                  name: selectedTournament.name
+                }}
+                entityName="tournament"
+              />
+              
             </Flex>
           </PageSection>
           <Space h="md" />
-          {deleteTournamentModalOpened && (
-            <DeleteConfirmationModal
-              opened={deleteTournamentModalOpened}
-              onClose={() => setDeleteTournamentModalOpened(false)}
-              entityName="tournament"
-              entity={{
-                name: selectedTournament.name,
-              }}
-              onSubmit={() => {
-                deleteTournament();
-                navigate("/tournaments");
-              }}
-            />
-          )}
         </>
       )}
 
@@ -123,11 +121,22 @@ export default function TournamentDashboard() {
             {selectedTournament.cases.name}
           </Anchor>
         </Text>
+        <ShowIdText
+          idName="Tournament"
+          idValue={selectedTournament.id}
+        />
       </PageSection>
 
       <Space h="md" />
 
       <PageSection title="teams">
+        {(role === "admin" || role === "primary") && (
+          <AddTeamModal
+            trigger={<AddButton>Add Team to Tournament</AddButton>}
+            tournamentId={tournamentId}
+            tournamentName={selectedTournament.name}
+          />
+        )}
         {teams.length === 0 ? (
           <Text ta="center" c="dimmed" mt="md">
             No teams found for this tournament.
@@ -144,6 +153,7 @@ export default function TournamentDashboard() {
                     selectedTournament.area.toLowerCase() === "nationals"
                   }
                   tournamentStatus={selectedTournament.is_active}
+                  tournamentName={selectedTournament.name}
                 />
               </Grid.Col>
             ))}
