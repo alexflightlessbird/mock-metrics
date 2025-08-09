@@ -3,22 +3,16 @@ import { useAddRound } from "../hooks/useAddRound";
 import { useTeamStudents } from "../../../common/hooks/useTeamDetails";
 import { useCaseDetails } from "../../../common/hooks/useCaseDetails";
 import useNotifications from "../../../common/hooks/useNotifications";
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
 import Loader from "../../../common/components/loader/GavelLoader";
 import { useModal } from "../../../context/ModalContext";
 import {
   Group,
-  Radio,
   Button,
   Stack,
   Text,
-  Box,
   Table,
-  Flex,
-  useMantineTheme,
-  Card,
-  MultiSelect,
 } from "@mantine/core";
 import {
   ModalMultiSelect,
@@ -36,7 +30,6 @@ export default function AddRoundModal({
   teamId,
   caseId,
 }) {
-  const theme = useMantineTheme();
   const [activePage, setActivePage] = useState(0);
   const [formData, setFormData] = useLocalStorage({
     key: `add-round-form-${teamId}`,
@@ -90,7 +83,6 @@ export default function AddRoundModal({
 
   const { mutate: addRound } = useAddRound();
   const { showError } = useNotifications();
-  const firstInputRef = useRef(null);
   const { closeModal } = useModal();
 
   const { data: caseDetail, isLoading: caseLoading } = useCaseDetails(caseId);
@@ -441,8 +433,8 @@ export default function AddRoundModal({
       },
       {
         onSuccess: () => {
-          onClose();
-          localStorage.removeItem(`add-round-form-${teamId}`);
+          if (onClose) onClose();
+          handleReset();
           closeModal(`add-round-form-${teamId}`);
         },
       }
@@ -564,6 +556,7 @@ export default function AddRoundModal({
         maxValues={3}
         clearable
         hidePickedOptions
+        nothingFoundMessage="No students found"
       />
 
       <ModalMultiSelect
@@ -574,6 +567,7 @@ export default function AddRoundModal({
         maxValues={3}
         clearable
         hidePickedOptions
+        nothingFoundMessage="No students found"
       />
     </Stack>,
 
@@ -1092,7 +1086,7 @@ export default function AddRoundModal({
         changed after being submitted, and to make adjustments to the details
         you will need to delete the round entirely.
       </Text>
-      {(caseLoading || studentsLoading) && <p>Loading...</p>}
+      {(caseLoading || studentsLoading) && <Loader />}
       {!caseLoading && !studentsLoading && pages[activePage]}
     </BaseModal>
   );
