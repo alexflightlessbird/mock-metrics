@@ -21,6 +21,7 @@ export default function BaseModal({
   initialFocusRef,
   layer = 0,
   maxWidth: widthVal,
+  fullOnMobile = false,
   closeButtonClosesAll = false,
   footer,
   disableCloseButton = false,
@@ -35,6 +36,10 @@ export default function BaseModal({
 
   if (!widthVal) {
     widthVal = isMobile ? "100vw" : "90vw";
+  }
+
+  if (widthVal && fullOnMobile) {
+    widthVal = isMobile ? "100vw" : widthVal;
   }
 
   const handleClose = (shouldCloseAll = false) => {

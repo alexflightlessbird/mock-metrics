@@ -14,7 +14,7 @@ import {
   useModalsStack,
   TextInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   useRoundDetails,
   useRoundBallots,
@@ -22,16 +22,16 @@ import {
 import Loader from "../../../common/components/loader/GavelLoader";
 import ShowIdText from "../../../common/components/ShowIdText";
 import { LuTrash } from "react-icons/lu";
-import DeleteConfirmationModal from "../../../common/components/modals/DeleteConfirmationModal";
+import OldDeleteConfirmationModal from "../../../common/components/modals/DeleteConfirmationModal";
+import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
 import { ViewBallots } from "./BallotViews";
-import BaseModal from "../../../common/components/modals/BaseModal";
+import BaseModal from "../../../common/components/modals-new/BaseModal";
 
 export default function RoundManagementModal({
-  opened,
-  onClose,
   selected,
   caseType,
   role,
+  trigger,
   refreshBallots,
   tournamentStatus = true,
 }) {
@@ -52,24 +52,22 @@ export default function RoundManagementModal({
   const { data: roundBallots, isLoading: ballotsLoading } =
     useRoundBallots(round);
 
-  if (roundLoading || ballotsLoading)
-    return (
-      <Modal centered opened={opened} onClose={onClose} title="Loading...">
-        <Loader />
-      </Modal>
-    );
-
   return (
-    <Modal
-      centered
+    <BaseModal
+      modalId={`round-mgt-${round}`}
       onClose={() => {
-        onClose();
         setViewType(null);
         setDetailViewType(null);
         setBallotsView("view");
       }}
-      opened={opened}
-      title="Round Management"
+      title={
+        roundLoading || ballotsLoading
+          ? "Loading..."
+          : `Round Management - Round ${
+              roundDetails.round_number
+            } (${roundDetails.side.toUpperCase()})`
+      }
+      trigger={trigger}
     >
       <Radio.Group
         name="viewOption"
@@ -111,48 +109,34 @@ export default function RoundManagementModal({
 
       {viewType === "detail" && detailViewType === "info" && (
         <>
-          <Text>Round Number: {roundDetails.round_number}</Text>
-          <Text>
-            Side:{" "}
-            {roundDetails.side === "d"
-              ? "Defense"
-              : roundDetails.side === "p"
-              ? caseType === "civil"
-                ? "Plaintiff"
-                : caseType === "criminal"
-                ? "Prosecution"
-                : "Plaintiff/Prosecution"
-              : "-"}
-          </Text>
           <ShowIdText idName="Round" idValue={roundDetails.id} />
 
           {(role === "primary" || role === "admin") && (
-            <>
-              <Button
-                color="red"
-                variant="outline"
-                leftSection={<LuTrash />}
-                mt="sm"
-                onClick={() => setDeleteRoundModalOpened(true)}
-              >
-                Delete Round
-              </Button>
-              {deleteRoundModalOpened && (
-                <DeleteConfirmationModal
-                  entityName="round"
-                  onClose={() => setDeleteRoundModalOpened(false)}
-                  opened={deleteRoundModalOpened}
-                  onSubmitFunction={() => {
-                    deleteRound({
-                      tournamentId: roundDetails.tournament_id,
-                      teamId: roundDetails.team_id,
-                      roundId: roundDetails.id,
-                    });
-                    onClose();
-                  }}
-                />
-              )}
-            </>
+            <DeleteConfirmationModal
+              entityName="round"
+              layer={1}
+              entity={{
+                id: roundDetails.id,
+              }}
+              onSubmitFunction={() => {
+                deleteRound({
+                  tournamentId: roundDetails.tournament_id,
+                  teamId: roundDetails.team_id,
+                  roundId: roundDetails.id,
+                });
+              }}
+              trigger={
+                <Button
+                  color="red"
+                  variant="outline"
+                  leftSection={<LuTrash />}
+                  mt="sm"
+                  onClick={() => setDeleteRoundModalOpened(true)}
+                >
+                  Delete Round
+                </Button>
+              }
+            />
           )}
         </>
       )}
@@ -454,6 +438,6 @@ export default function RoundManagementModal({
           />
         </>
       )}
-    </Modal>
+    </BaseModal>
   );
 }
