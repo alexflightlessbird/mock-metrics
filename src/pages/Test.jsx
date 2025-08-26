@@ -20,7 +20,7 @@ import {
   DocumentAnalysisClient,
   AzureKeyCredential,
 } from "@azure/ai-form-recognizer";
-import { useLocalStorage } from "@mantine/hooks";
+import { useSessionStorage } from "@mantine/hooks";
 import BasePage from "../common/components/BasePage";
 
 function DetailInput({ value, onChange, label }) {
@@ -64,11 +64,11 @@ const formatScore = (scoreStr) => {
 
 export default function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [extractedData, setExtractedData] = useLocalStorage({
+  const [extractedData, setExtractedData] = useSessionStorage({
     key: "ballotExtractedData",
     defaultValue: null,
   });
-  const [formValues, setFormValues] = useLocalStorage({
+  const [formValues, setFormValues] = useSessionStorage({
     key: "ballotForm",
     defaultValue: {
       judgeName: "",

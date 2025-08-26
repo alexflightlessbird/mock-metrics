@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@mantine/hooks";
+import { useSessionStorage } from "@mantine/hooks";
 import { useAddTournament } from "../hooks/useAddTournament";
 import useNotifications from "../../../common/hooks/useNotifications";
 import { useCasesData } from "../../../common/hooks/useCasesData";
@@ -43,7 +43,7 @@ const areaOptions = [
  */
 
 export default function AddTournamentModal({ onClose, trigger, schoolId }) {
-  const [formData, setFormData] = useLocalStorage({
+  const [formData, setFormData] = useSessionStorage({
     key: "add-tournament-form",
     defaultValue: {
       name: "",

@@ -72,7 +72,7 @@ export default function TournamentDashboard() {
                 THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
               </Text>
               <DeleteConfirmationModal
-                trigger={(
+                trigger={
                   <Button
                     w="fit-content"
                     leftSection={<LuTrash />}
@@ -81,17 +81,16 @@ export default function TournamentDashboard() {
                   >
                     Delete Tournament
                   </Button>
-                )}
+                }
                 onSubmit={() => {
                   deleteTournament();
                   navigate("/tournaments");
                 }}
                 entity={{
-                  name: selectedTournament.name
+                  name: selectedTournament.name,
                 }}
                 entityName="tournament"
               />
-              
             </Flex>
           </PageSection>
           <Space h="md" />
@@ -121,10 +120,7 @@ export default function TournamentDashboard() {
             {selectedTournament.cases.name}
           </Anchor>
         </Text>
-        <ShowIdText
-          idName="Tournament"
-          idValue={selectedTournament.id}
-        />
+        <ShowIdText idName="Tournament" idValue={selectedTournament.id} />
       </PageSection>
 
       <Space h="md" />

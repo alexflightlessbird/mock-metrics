@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@mantine/hooks";
+import { useSessionStorage } from "@mantine/hooks";
 import { useAddRound } from "../hooks/useAddRound";
 import { useTeamStudents } from "../../../common/hooks/useTeamDetails";
 import { useCaseDetails } from "../../../common/hooks/useCaseDetails";
@@ -7,13 +7,7 @@ import { useMemo, useState } from "react";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
 import Loader from "../../../common/components/loader/GavelLoader";
 import { useModal } from "../../../context/ModalContext";
-import {
-  Group,
-  Button,
-  Stack,
-  Text,
-  Table,
-} from "@mantine/core";
+import { Group, Button, Stack, Text, Table } from "@mantine/core";
 import {
   ModalMultiSelect,
   ModalSelect,
@@ -31,7 +25,7 @@ export default function AddRoundModal({
   caseId,
 }) {
   const [activePage, setActivePage] = useState(0);
-  const [formData, setFormData] = useLocalStorage({
+  const [formData, setFormData] = useSessionStorage({
     key: `add-round-form-${teamId}`,
     defaultValue: {
       roundNumber: null,
