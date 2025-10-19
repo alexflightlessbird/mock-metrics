@@ -77,7 +77,7 @@ root.render(
                     {/* <App /> */}
                   </AuthProvider>
                 </ThemeProvider>
-                <ReactQueryDevtools />
+                {/* <ReactQueryDevtools /> */}
               </ModalContext>
             </ModalsProvider>
           </MobileProvider>

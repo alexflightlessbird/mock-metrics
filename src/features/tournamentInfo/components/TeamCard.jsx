@@ -26,7 +26,7 @@ export default function TeamCard({
   caseType,
   nationalsTournament = false,
   tournamentStatus = true,
-  tournamentName = ""
+  tournamentName = "",
 }) {
   const [showRounds, setShowRounds] = useState(false);
   const [addRoundModalOpened, setAddRoundModalOpened] = useState(false);
@@ -92,12 +92,12 @@ export default function TeamCard({
                 fz="sm"
                 color={
                   recordVal > totalRecordVal - recordVal
-                  ? "blue"
-                  : recordVal == totalRecordVal - recordVal
-                  ? "gray"
-                  : "pink"
+                    ? "blue"
+                    : recordVal == totalRecordVal - recordVal
+                    ? "gray"
+                    : "pink"
                 }
-                >
+              >
                 {record.wins}-{record.losses}-{record.ties}
               </Badge>
               {role === "primary" && (
@@ -109,13 +109,16 @@ export default function TeamCard({
                   }
                   entity={{
                     name: team.teams.name,
-                    id: team.team_id
+                    id: team.team_id,
                   }}
                   entityName="team"
                   type="remove"
                   removeFrom={tournamentName}
                   onSubmitFunction={() => {
-                    removeTeam({ teamId: team.team_id, tournamentId: team.tournament_id });
+                    removeTeam({
+                      teamId: team.team_id,
+                      tournamentId: team.tournament_id,
+                    });
                   }}
                   layer={0}
                   includeBallots={true}
@@ -168,15 +171,13 @@ export default function TeamCard({
               )}
             {showRounds && sortedResults.length > 0 && (
               <>
-                <Text fw={500} size="sm">
-                  Rounds:
-                </Text>
                 <RoundTable
                   data={sortedResults}
                   caseType={caseType}
                   role={role}
                   refreshBallots={refreshBallots}
                   tournamentStatus={tournamentStatus}
+                  teamName={team.teams.name}
                 />
               </>
             )}

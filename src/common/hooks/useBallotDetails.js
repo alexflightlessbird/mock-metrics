@@ -30,15 +30,28 @@ export function useBallotDetails(ballotId) {
   });
 
   const addBallotMutation = useMutation({
-    mutationFn: async ({ judgeName, roundId }) => {
-      const { error } = await supabase.from("ballots").insert({
-        judge_name: judgeName,
-        round_id: roundId,
-      });
+    mutationFn: async ({ judgeName, roundId, scores = {} }) => {
+      const { data, error } = await supabase
+        .from("ballots")
+        .insert({
+          judge_name: judgeName,
+          round_id: roundId,
+        })
+        .select()
+        .single();
       if (error) throw error;
+
+      const { error: scoresError } = await supabase.from("scores").insert(
+        Object.entries(scores).map(([type, value]) => ({
+          score_type: type,
+          score_value: value,
+          ballot_id: data.id,
+        }))
+      );
+      if (scoresError) throw scoresError;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["round-ballots", roundId]);
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries(["round-ballots", variables.roundId]);
       showSuccess({ message: "Ballot added successfully" });
     },
     onError: (error) => {

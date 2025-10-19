@@ -687,12 +687,10 @@ export default function AddRoundModal({
                 }}
               />
             </Table.Td>
-            <Table.Td align="center">-</Table.Td>
+            <Table.Td></Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td colSpan={3} align="center">
-              -
-            </Table.Td>
+            <Table.Td colSpan={3}></Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Td>
@@ -728,7 +726,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+            <Table.Td>
               {formData.side === "p" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -742,7 +740,6 @@ export default function AddRoundModal({
                   onChange={(value) => handleRoleChange("pRoles", "p3", value)}
                 />
               )}
-              {formData.side === "d" && "-"}
             </Table.Td>
           </Table.Tr>
           <Table.Tr>
@@ -779,7 +776,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+            <Table.Td>
               {formData.side === "p" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -793,7 +790,6 @@ export default function AddRoundModal({
                   onChange={(value) => handleRoleChange("pRoles", "p6", value)}
                 />
               )}
-              {formData.side === "d" && "-"}
             </Table.Td>
           </Table.Tr>
           <Table.Tr>
@@ -830,7 +826,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "d" ? "center" : undefined}>
+            <Table.Td>
               {formData.side === "p" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -844,13 +840,10 @@ export default function AddRoundModal({
                   onChange={(value) => handleRoleChange("pRoles", "p9", value)}
                 />
               )}
-              {formData.side === "d" && "-"}
             </Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td colSpan={3} align="center">
-              -
-            </Table.Td>
+            <Table.Td colSpan={3}></Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Td>
@@ -886,8 +879,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "p" ? "center" : undefined}>
-              {formData.side === "p" && "-"}
+            <Table.Td>
               {formData.side === "d" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -937,8 +929,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "p" ? "center" : undefined}>
-              {formData.side === "p" && "-"}
+            <Table.Td>
               {formData.side === "d" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -988,8 +979,7 @@ export default function AddRoundModal({
                 />
               )}
             </Table.Td>
-            <Table.Td align={formData.side === "p" ? "center" : undefined}>
-              {formData.side === "p" && "-"}
+            <Table.Td>
               {formData.side === "d" && (
                 <ModalSelect
                   data={studentWitnessRoleSelectionOptions.map((w) => ({
@@ -1006,9 +996,7 @@ export default function AddRoundModal({
             </Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td colSpan={3} align="center">
-              -
-            </Table.Td>
+            <Table.Td colSpan={3}></Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Td>Closing</Table.Td>
@@ -1040,7 +1028,7 @@ export default function AddRoundModal({
                 }}
               />
             </Table.Td>
-            <Table.Td align="center">-</Table.Td>
+            <Table.Td></Table.Td>
           </Table.Tr>
         </Table.Tbody>
       </Table>

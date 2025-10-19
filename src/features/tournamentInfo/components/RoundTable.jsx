@@ -1,4 +1,4 @@
-import { Table } from "@mantine/core";
+import { Table, Card } from "@mantine/core";
 import DataTable from "../../../common/components/tables/DataTable";
 import { formatSide } from "../../../common/utils/helpers";
 import RoundManagementModal from "./RoundManagementModal";
@@ -9,6 +9,7 @@ export default function RoundTable({
   role,
   refreshBallots,
   tournamentStatus,
+  teamName,
 }) {
   const roundColumns = [
     { value: "round_number", label: "Round" },
@@ -22,6 +23,7 @@ export default function RoundTable({
     <RoundManagementModal
       key={r.id}
       selected={r.id}
+      teamName={teamName}
       caseType={caseType}
       role={role}
       refreshBallots={refreshBallots}
@@ -46,12 +48,18 @@ export default function RoundTable({
   );
 
   return (
-    <DataTable
-      columns={roundColumns}
-      data={data}
-      renderRow={renderRow}
-      scrollContainer={false}
-      fontSize="sm"
-    />
+    <Card withBorder p="xs" bdrs="md">
+      <Table.ScrollContainer minWidth={150}>
+        <DataTable
+          columns={roundColumns}
+          data={data}
+          renderRow={renderRow}
+          scrollContainer={false}
+          fontSize="sm"
+          emptyMessage="No rounds recorded yet"
+          withTableBorder={false}
+        />
+      </Table.ScrollContainer>
+    </Card>
   );
 }

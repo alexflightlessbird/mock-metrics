@@ -19,7 +19,7 @@ export default function DataTable({
   cursor = "default",
   emptyMessage = "No data available",
   renderRow,
-  striped = true,
+  striped = false,
   highlightOnHover = true,
   withTableBorder = true,
   withColumnBorders = true,

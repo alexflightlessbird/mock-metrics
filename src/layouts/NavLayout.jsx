@@ -12,11 +12,7 @@ import {
   useMantineColorScheme,
   Tooltip,
 } from "@mantine/core";
-import {
-  useDisclosure,
-  useLocalStorage,
-  useHeadroom,
-} from "@mantine/hooks";
+import { useDisclosure, useLocalStorage, useHeadroom } from "@mantine/hooks";
 import {
   LuBriefcase,
   LuSchool,
@@ -56,15 +52,15 @@ const NAV_LINKS = [
 
 const NavLinkWithTooltip = ({ isMobile, desktopCollapsed, ...props }) => {
   if (isMobile || !desktopCollapsed) {
-    return <NavLink {...props} />
+    return <NavLink bdrs="md" {...props} />;
   }
 
   return (
     <Tooltip label={props.label} position="right" withArrow>
-      <NavLink {...props} label={null} />
+      <NavLink bdrs="md" {...props} label={null} />
     </Tooltip>
-  )
-}
+  );
+};
 
 export default function NavLayout({ children }) {
   const theme = useMantineTheme();
@@ -303,18 +299,24 @@ export default function NavLayout({ children }) {
                         ? theme.colors.dark[5]
                         : theme.colors.gray[1]
                     }
+                    bdrs="md"
                     pl="xs"
                     pr="xs"
                     pt="xs"
                     pb="xs"
-                    bdrs={`calc(${theme.spacing.xs} - 2px)`}
                     style={{
                       overflow: "hidden",
                       cursor: assignments.length > 1 ? "pointer" : "default",
                       alignItems: "center",
                       justifyContent: "space-between",
                     }}
-                    tabIndex={isMobile && !mobileOpened ? -1 : assignments.length > 1 ? 0 : ""}
+                    tabIndex={
+                      isMobile && !mobileOpened
+                        ? -1
+                        : assignments.length > 1
+                        ? 0
+                        : ""
+                    }
                     onKeyDown={(e) => {
                       if (
                         assignments.length > 1 &&
@@ -378,7 +380,12 @@ export default function NavLayout({ children }) {
                   }, 100);
                 }}
                 mb="xs"
-                tabIndex={(isMobile && !mobileOpened) || (!link.showOnNoSchool && !selectedSchoolId) ? -1 : 0}
+                tabIndex={
+                  (isMobile && !mobileOpened) ||
+                  (!link.showOnNoSchool && !selectedSchoolId)
+                    ? -1
+                    : 0
+                }
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();

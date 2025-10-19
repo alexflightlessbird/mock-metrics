@@ -48,7 +48,6 @@ export default function Card({ href, children, onClick, ...props }) {
       data-href={href ? href : undefined}
       tabIndex={href || onClick ? 0 : undefined}
       {...props}
-
     >
       {children}
     </MantineCard>

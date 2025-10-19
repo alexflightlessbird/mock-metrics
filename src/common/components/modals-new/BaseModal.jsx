@@ -6,7 +6,7 @@ import {
   Overlay,
   ScrollArea,
 } from "@mantine/core";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, cloneElement } from "react";
 import { LuX } from "react-icons/lu";
 import { useTheme } from "../../../context/ThemeContext";
 import { useModal } from "../../../context/ModalContext";
@@ -59,9 +59,49 @@ export default function BaseModal({
     }
   };
 
+  const enhancedTrigger = trigger
+    ? cloneElement(trigger, {
+        onKeyDown: (e) => {
+          // Call existing onKeyDown if it exists
+          if (trigger.props.onKeyDown) {
+            trigger.props.onKeyDown(e);
+          }
+
+          // Open modal on Enter key press
+          if (e.key === "Enter" && !e.defaultPrevented) {
+            e.preventDefault();
+            e.stopPropagation();
+            openModal(modalId);
+          }
+        },
+        role: "button", // Ensure proper accessibility
+        tabIndex: trigger.props.tabIndex ?? 0, // Make focusable if not already
+      })
+    : null;
+
   // Enhanced focus management
   useEffect(() => {
     if (!isOpen(modalId)) return;
+
+    // Focus management function
+    const manageFocus = () => {
+      if (initialFocusRef?.current) {
+        initialFocusRef.current.focus();
+        return;
+      }
+
+      const focusableElements = getFocusableElements().filter(
+        (el) => !el.className.includes("mantine-NumberInput-control")
+      );
+
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+    };
+
+    // Try to focus immediately and also set a timeout as backup
+    manageFocus();
+    const timeoutId = setTimeout(manageFocus, 50);
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") {
@@ -91,7 +131,7 @@ export default function BaseModal({
       }
     };
 
-    const getFocusableElements = () => {
+    function getFocusableElements() {
       if (!contentRef.current) return [];
       return Array.from(
         contentRef.current.querySelectorAll(
@@ -100,11 +140,12 @@ export default function BaseModal({
       ).filter(
         (el) => !el.hasAttribute("disabled") && el.offsetParent !== null
       );
-    };
+    }
 
     document.addEventListener("keydown", handleKeyDown, { capture: true });
     return () => {
       document.removeEventListener("keydown", handleKeyDown, { capture: true });
+      clearTimeout(timeoutId);
     };
   }, [isOpen(modalId), initialFocusRef]);
 
@@ -114,7 +155,9 @@ export default function BaseModal({
       onOpenChange={handleOpenChange}
       {...props}
     >
-      {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
+      {enhancedTrigger && (
+        <Dialog.Trigger asChild>{enhancedTrigger}</Dialog.Trigger>
+      )}
 
       <Dialog.Portal>
         <Overlay blur={1} zIndex={1000 + layer} pos="fixed" />
