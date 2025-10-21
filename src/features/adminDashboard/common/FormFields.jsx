@@ -44,7 +44,7 @@ export const YearField = ({
         label={label}
         required={required}
         min={1980}
-        max={new Date().getFullYear()}
+        max={new Date().getFullYear() + 1}
       />
       {space && <Space h="xs" />}
     </>

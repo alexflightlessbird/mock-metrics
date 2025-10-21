@@ -138,13 +138,15 @@ export function ViewAssignments({
         scrollContainer={true}
         scrollContainerHeight="30vh"
       />
-      <DeleteConfirmationModal
-        opened={deleteModalOpen}
-        entityName="assignment"
-        entity={{ id: deleteUserId, name: deleteUserName }}
-        onClose={handleDeleteCancel}
-        onSubmit={() => handleDeleteSubmit(deleteUserId)}
-      />
+      {deleteModalOpen && (
+        <DeleteConfirmationModal
+          opened={deleteModalOpen}
+          entityName="assignment"
+          entity={{ id: deleteUserId, name: deleteUserName }}
+          onClose={handleDeleteCancel}
+          onSubmit={() => handleDeleteSubmit(deleteUserId)}
+        />
+      )}
     </>
   );
 }

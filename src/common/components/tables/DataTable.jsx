@@ -16,9 +16,10 @@ export default function DataTable({
   columns,
   removeId = false,
   data,
+  cursor = "default",
   emptyMessage = "No data available",
   renderRow,
-  striped = true,
+  striped = false,
   highlightOnHover = true,
   withTableBorder = true,
   withColumnBorders = true,
@@ -29,8 +30,8 @@ export default function DataTable({
 }) {
   if (!data?.length) return <Text>{emptyMessage}</Text>;
 
-  const filteredColumns = removeId 
-    ? columns.filter(column => column.value.toLowerCase() !== "id")
+  const filteredColumns = removeId
+    ? columns.filter((column) => column.value.toLowerCase() !== "id")
     : columns;
 
   return (
@@ -44,7 +45,7 @@ export default function DataTable({
         withTableBorder={withTableBorder}
         withColumnBorders={withColumnBorders}
         stickyHeader={stickyHeader}
-        style={{ cursor: "default" }}
+        style={{ cursor }}
         fz={fontSize}
       >
         <Table.Thead>

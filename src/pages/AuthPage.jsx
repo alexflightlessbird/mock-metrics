@@ -4,7 +4,7 @@ import {
   Button,
   Space,
   Text,
-  Center
+  Center,
 } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ export default function AuthPage() {
   };
 
   return (
-    <Center maw="100vw" h="100vh" mr="xl" ml="xl" >
+    <Center maw="100vw" h="100vh" mr="xl" ml="xl">
       <BasePage titleText="Sign In" centerTitle styleProps={{ width: "100%" }}>
         <form onSubmit={handleSubmit}>
           <TextInput

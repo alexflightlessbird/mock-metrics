@@ -90,7 +90,7 @@ export default function EntityManagement({
         <TableComponent data={filteredData} onSelect={handleEntitySelect} />
       )}
 
-      {AddModalComponent && addEntity && (
+      {AddModalComponent && addEntity && addModalOpen && (
         <AddModalComponent
           opened={addModalOpen}
           onClose={() => setAddModalOpen(false)}
@@ -98,7 +98,7 @@ export default function EntityManagement({
         />
       )}
 
-      {EditModalComponent && updateEntity && (
+      {EditModalComponent && updateEntity && editModalOpen && (
         <EditModalComponent
           opened={editModalOpen}
           onClose={() => setEditModalOpen(false)}
@@ -107,7 +107,7 @@ export default function EntityManagement({
         />
       )}
 
-      {DeleteModalComponent && deleteEntity && (
+      {DeleteModalComponent && deleteEntity && deleteModalOpen && (
         <DeleteModalComponent
           opened={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}

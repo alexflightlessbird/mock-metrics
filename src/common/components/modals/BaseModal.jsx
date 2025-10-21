@@ -17,6 +17,7 @@ export default function BaseModal({
       title={title}
       size={size}
       centered={centered}
+      mah="80vh"
       fullScreen={fullScreen}
       withCloseButton={withCloseButton}
       overlayProps={{ backgroundOpacity: 0.4, blur: 3 }}

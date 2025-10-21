@@ -7,6 +7,7 @@ export default function DeleteConfirmationModal({
   opened,
   onClose,
   onSubmit,
+  onSubmitFunction,
   entityName,
   entity,
 }) {
@@ -15,7 +16,11 @@ export default function DeleteConfirmationModal({
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      await onSubmit(entity.id);
+      if (onSubmitFunction) {
+        await onSubmitFunction();
+      } else {
+        await onSubmit(entity.id);
+      }
       onClose();
     } finally {
       setIsLoading(false);

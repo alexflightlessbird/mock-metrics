@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_, session) => {
         if (session?.user) {
           setUser(session.user);
           checkSuperAdmin(session.user.id);

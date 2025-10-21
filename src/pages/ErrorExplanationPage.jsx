@@ -1,7 +1,7 @@
 import {
   Stack,
   Text,
-  Card,
+  Card as MantineCard,
   SimpleGrid,
   Grid,
   rem,
@@ -11,6 +11,7 @@ import {
 import BasePage from "../common/components/BasePage";
 import PageSection from "../common/components/PageSection";
 import { useNavigate } from "react-router-dom";
+import Card from "../common/components/card/Card";
 
 export default function ErrorExplanationPage() {
   const navigate = useNavigate();
@@ -98,13 +99,7 @@ export default function ErrorExplanationPage() {
                   verticalSpacing="md"
                 >
                   {errorList.map((error) => (
-                    <Card
-                      key={error.code}
-                      withBorder
-                      shadow="sm"
-                      padding="lg"
-                      radius="md"
-                    >
+                    <Card key={error.code}>
                       <Title order={3} size="h4" c="blue">
                         <Anchor
                           underline="hover"

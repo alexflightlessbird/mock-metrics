@@ -7,7 +7,12 @@ export default function useNotifications() {
     color = "blue",
     position = "bottom-right",
   }) => {
-    notifications.show({ title, message, color, position });
+    notifications.show({
+      title,
+      message,
+      color,
+      position,
+    });
   };
 
   const showSuccess = ({ message, title = "Success" }) => {

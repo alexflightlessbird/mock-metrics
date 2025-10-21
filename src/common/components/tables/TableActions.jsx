@@ -9,14 +9,17 @@ import {
 export function EditDeleteTableActions({
   onEdit,
   onDelete,
+  canEdit = true,
   canDelete = false,
   size = "md",
 }) {
   return (
     <Flex wrap="wrap" rowGap="xs" columnGap="xs">
-      <ActionIcon size={size} onClick={onEdit}>
-        <EditIcon />
-      </ActionIcon>
+      {canEdit && (
+        <ActionIcon size={size} onClick={onEdit}>
+          <EditIcon />
+        </ActionIcon>
+      )}
       {canDelete && (
         <ActionIcon size={size} onClick={onDelete}>
           <DeleteIcon />

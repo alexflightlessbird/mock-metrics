@@ -1,26 +1,21 @@
-import { useMemo } from "react";
-import { Table, useMantineTheme } from "@mantine/core";
+import { Table } from "@mantine/core";
 import DataTable from "../../../../common/components/tables/DataTable";
 import { EditDeleteTableActions } from "../../../../common/components/tables/TableActions";
 import { useAuth } from "../../../../context/AuthContext";
 import { USER_COLUMNS } from "../../common/columns";
-import { emToPx, splitEmail } from "../../../../common/utils/helpers";
-import { useViewportSize } from "@mantine/hooks";
+import { splitEmail } from "../../../../common/utils/helpers";
+import { useMobile } from "../../../../context/MobileContext";
 
 export default function UsersTable({ data, onSelect }) {
   const { isDbManager } = useAuth();
-  const theme = useMantineTheme();
-  const { width } = useViewportSize();
 
-  const smBreakpointPx = useMemo(
-    () => emToPx(parseFloat(theme.breakpoints.sm)),
-    [theme.breakpoints.sm]
-  );
-  const isMobile = width < smBreakpointPx;  
+  const { isMobile } = useMobile();
 
   const renderRow = (user) => (
     <Table.Tr key={user.id}>
-      {!isMobile && <Table.Td style={{ wordBreak: "break-all" }}>{user.id}</Table.Td>}
+      {!isMobile && (
+        <Table.Td style={{ wordBreak: "break-all" }}>{user.id}</Table.Td>
+      )}
       <Table.Td>{splitEmail(user.email)}</Table.Td>
       <Table.Td>{user.name || "-"}</Table.Td>
       <Table.Td>

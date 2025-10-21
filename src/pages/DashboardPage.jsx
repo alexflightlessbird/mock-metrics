@@ -13,8 +13,7 @@ import {
   useSchoolUsers,
   useSchoolTeams,
   useSchoolStudents,
-  useSchoolTournaments,
-} from "../features/schoolInfo/hooks/useSchoolDetails";
+} from "../common/hooks/useSchoolDetails";
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -36,8 +35,6 @@ export default function DashboardPage() {
     useSchoolTeams(selectedSchoolId);
   const { data: students = [], isLoading: studentsLoading = true } =
     useSchoolStudents(selectedSchoolId);
-  const { data: tournaments = [], isLoading: tournamentsLoading = true } =
-    useSchoolTournaments(selectedSchoolId);
   const { data: users = [], isLoading: usersLoading = true } =
     useSchoolUsers(selectedSchoolId);
 
@@ -64,7 +61,7 @@ export default function DashboardPage() {
     return (
       <Container>
         <Flex justify="center" mt="xs" align="center">
-          <Loader key={"dashboard-loader-animation"} scale={1.5} />
+          <Loader scale={1.5} />
         </Flex>
       </Container>
     );
@@ -72,10 +69,10 @@ export default function DashboardPage() {
   return (
     <BasePage titleText="User Dashboard">
       {assignments.length === 0 && (
-          <Text>
-            You are not assigned to any schools. Please have your school's
-            Primary Admin reach out to support to be added.
-          </Text>
+        <Text>
+          You are not assigned to any schools. Please have your school's Primary
+          Admin reach out to support to be added.
+        </Text>
       )}
       {selectedSchoolId && (
         <>
@@ -177,26 +174,6 @@ export default function DashboardPage() {
             </List>
           ) : (
             <Text c="dimmed">No students found</Text>
-          )}
-
-          <Space h="md" />
-          <Title order={3}>Tournaments</Title>
-          {tournamentsLoading ? (
-            <List>
-              {[1, 2, 3].map((i) => (
-                <List.Item key={i}>
-                  <Skeleton height={20} width={150} />
-                </List.Item>
-              ))}
-            </List>
-          ) : tournaments.length > 0 ? (
-            <List>
-              {tournaments.map((t) => (
-                <List.Item key={t.id}>{t.name}</List.Item>
-              ))}
-            </List>
-          ) : (
-            <Text c="dimmed">No tournaments found</Text>
           )}
         </>
       )}

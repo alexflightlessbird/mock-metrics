@@ -1,5 +1,5 @@
 import { List } from "@mantine/core";
-import { useCasesData } from "../features/cases/hooks/useCasesData";
+import { useCasesData } from "../common/hooks/useCasesData";
 import Loader from "../common/components/loader/GavelLoader";
 import BasePage from "../common/components/BasePage";
 

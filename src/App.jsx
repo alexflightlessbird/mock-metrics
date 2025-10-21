@@ -26,6 +26,8 @@ import SettingsPage from "./pages/SettingsPage";
 import BetaOverlay from "./layouts/BetaOverlay";
 import ErrorExplanationPage from "./pages/ErrorExplanationPage";
 import StatusPage from "./pages/StatusPage";
+import TournamentDashboard from "./pages/TournamentDashboard";
+import TournamentInfoPage from "./pages/TournamentInfoPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -87,6 +89,36 @@ export default function App({ onReady }) {
               )
             }
           />
+          <Route path="/tournaments">
+            <Route
+              index
+              element={
+                !user ? (
+                  <Error401 />
+                ) : !selectedSchoolId ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <NavLayout>
+                    <TournamentDashboard />
+                  </NavLayout>
+                )
+              }
+            />
+            <Route
+              path=":id"
+              element={
+                !user ? (
+                  <Error401 />
+                ) : !selectedSchoolId ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <NavLayout>
+                    <TournamentInfoPage />
+                  </NavLayout>
+                )
+              }
+            />
+          </Route>
           <Route
             path="/admin-test"
             element={
