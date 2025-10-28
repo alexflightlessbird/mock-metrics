@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Group, Text } from "@mantine/core";
+import { Box, Button, Group, Text, useMantineTheme } from "@mantine/core";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const { isDark } = useTheme();
+  const theme = useMantineTheme();
 
   useEffect(() => {
     const consentGiven = localStorage.getItem("cookieConsent");
@@ -45,10 +48,10 @@ export default function CookieBanner() {
         left: 0,
         right: 0,
         padding: "16px",
-        backgroundColor: "#f8f9fa",
-        borderTop: "1px solid #dee2e6",
+        backgroundColor: isDark ? theme.colors.dark[6] : "#f8f9fa",
+        borderTop: isDark ? `1px solid ${theme.colors.dark[3]}` : "1px solid #dee2e6",
         zIndex: 1000,
-        boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+        boxShadow: isDark ? `0 -2px 10px rgba(0,0,0,0.5)` : "0 -2px 10px rgba(0,0,0,0.1)",
       }}
     >
       <Group>
