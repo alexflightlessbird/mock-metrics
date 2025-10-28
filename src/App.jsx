@@ -16,7 +16,6 @@ import {
   Error500,
 } from "./pages/ErrorCodePages";
 import Error from "./pages/Error";
-import CasesPage from "./pages/CasesPage";
 import NavLayout from "./layouts/NavLayout";
 import TestPage from "./pages/Test";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
@@ -63,18 +62,6 @@ export default function App({ onReady }) {
               ) : (
                 <NavLayout>
                   <Error403 />
-                </NavLayout>
-              )
-            }
-          />
-          <Route
-            path="/cases"
-            element={
-              !user ? (
-                <Navigate to="/auth" replace />
-              ) : (
-                <NavLayout>
-                  <CasesPage />
                 </NavLayout>
               )
             }

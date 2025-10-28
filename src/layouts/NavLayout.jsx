@@ -14,7 +14,6 @@ import {
 } from "@mantine/core";
 import { useDisclosure, useLocalStorage, useHeadroom } from "@mantine/hooks";
 import {
-  LuBriefcase,
   LuSchool,
   LuLogOut,
   LuDatabase,
@@ -33,13 +32,6 @@ import { useMobile } from "../context/MobileContext";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
-  {
-    icon: LuBriefcase,
-    label: "Cases",
-    path: "/cases",
-    showOnNoSchool: true,
-    matchPattern: /^\/cases(\/[^/]+)?$/,
-  },
   { icon: LuSchool, label: "School", path: "/school", showOnNoSchool: false },
   {
     icon: TbTournament,
