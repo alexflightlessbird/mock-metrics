@@ -9,6 +9,11 @@ import {
   Group,
   Title,
   List,
+  SegmentedControl,
+  Flex,
+  ActionIcon,
+  Grid,
+  Tooltip,
 } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
@@ -18,6 +23,9 @@ import {
   useSchoolTeams,
   useSchoolStudents,
 } from "../common/hooks/useSchoolDetails";
+import { useArchiveStudent, useUnarchiveStudent } from "../features/schoolInfo/hooks/useArchiveStudent";
+import { useArchiveTeam, useUnarchiveTeam } from "../features/schoolInfo/hooks/useArchiveTeam";
+import { useMobile } from "../context/MobileContext";
 import { useLocalStorage } from "@mantine/hooks";
 import { capitalize } from "../common/utils/helpers";
 import BasePage from "../common/components/BasePage";
@@ -25,10 +33,23 @@ import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
 import { useQueryClient } from "@tanstack/react-query";
 import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { LuArchive, LuArchiveRestore, LuSearch, LuX } from "react-icons/lu";
+import AddButton from "../common/components/AddButton";
+import Card from "../common/components/card/Card";
+import AddTeamModal from "../features/schoolInfo/components/AddTeamModal";
+import AddStudentModal from "../features/schoolInfo/components/AddStudentModal";
 
 export default function SchoolInfoPage() {
   const { user } = useAuth();
+  const { isMobile } = useMobile();
+
+  const [teamSearchValue, setTeamSearchValue] = useState("");
+  const [teamFilter, setTeamFilter] = useState("active");
+  
+  const [studentSearchValue, setStudentSearchValue] = useState("");
+  const [studentFilter, setStudentFilter] = useState("active");
+
   const { assignments, isLoading } = useUserAssignments(user.id);
   const queryClient = useQueryClient();
 
@@ -52,8 +73,14 @@ export default function SchoolInfoPage() {
 
   const { data: teams = [], isLoading: teamsLoading = true } =
     useSchoolTeams(selectedSchoolId);
+  const { mutate: archiveTeam } = useArchiveTeam();
+  const { mutate: unarchiveTeam } = useUnarchiveTeam();
+
   const { data: students = [], isLoading: studentsLoading = true } =
     useSchoolStudents(selectedSchoolId);
+  const { mutate: archiveStudent } = useArchiveStudent();
+  const { mutate: unarchiveStudent } = useUnarchiveStudent();
+  
   const { data: users = [], isLoading: usersLoading = true } =
     useSchoolUsers(selectedSchoolId);
 
@@ -71,6 +98,50 @@ export default function SchoolInfoPage() {
     setAdmins(admins);
     setViewers(viewers);
   }, [users, usersLoading]);
+
+  const filteredTeams = useMemo(() => {
+    const filteredActive = teams?.filter((t) => t.is_active);
+    const filteredInactive = teams?.filter((t) => !t.is_active);
+
+    const filterBySearch = (teams) => {
+      let result = teams;
+      if (teamSearchValue) {
+        result = result?.filter((t) => t.name.toLowerCase().includes(teamSearchValue.toLowerCase()));
+      }
+      return result?.sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+    }
+
+    switch (teamFilter) {
+      case "active":
+        return filterBySearch(filteredActive);
+      case "inactive":
+        return filterBySearch(filteredInactive);
+      default:
+        return filterBySearch(teams);
+    }
+  }, [teams, teamFilter, teamSearchValue]);
+
+  const filteredStudents = useMemo(() => {
+    const filteredActive = students?.filter((s) => s.is_active);
+    const filteredInactive = students?.filter((s) => !s.is_active);
+
+    const filterBySearch = (students) => {
+      let result = students;
+      if (studentSearchValue) {
+        result = result?.filter((s) => s.name.toLowerCase().includes(studentSearchValue.toLowerCase()));
+      }
+      return result.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    switch (studentFilter) {
+      case "active":
+        return filterBySearch(filteredActive);
+      case "inactive":
+        return filterBySearch(filteredInactive);
+      default:
+        return filterBySearch(students);
+    }
+  }, [students, studentFilter, studentSearchValue]);
 
   if (!isLoading && !schoolInformation) {
     queryClient.invalidateQueries(["user-assignments", user.id]);
@@ -116,7 +187,7 @@ export default function SchoolInfoPage() {
 
   const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
 
-  if (schoolLoading || isLoading)
+  if (schoolLoading || isLoading || teamsLoading || studentsLoading || usersLoading)
     return (
       <BasePage titleText="School Loading...">
         <Stack>
@@ -231,6 +302,180 @@ export default function SchoolInfoPage() {
           </>
         ) : (
           <Text c="dimmed">No users found</Text>
+        )}
+      </PageSection>
+
+      <Space h="md" />
+
+      <PageSection title="teams" collapsible={true}>
+        <SegmentedControl fullWidth value={teamFilter} onChange={setTeamFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
+        <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
+          <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+            <TextInput
+              id={"search-team"}
+              w={isMobile ? "100%" : undefined}
+              flex={1}
+              leftSection={<LuSearch />}
+              rightSection={
+                teamSearchValue && (
+                  <ActionIcon
+                    variant="transparent"
+                    onClick={() => {
+                      setTeamSearchValue("");
+                      document.getElementById("search-team").focus();
+                    }}
+                  >
+                    <LuX />
+                  </ActionIcon>
+                )
+              }
+              placeholder="Search..."
+              value={teamSearchValue}
+              onChange={(e) => setTeamSearchValue(e.target.value)}
+            />
+          </Flex>
+          {(role === "admin" || role === "primary") && (
+            <AddTeamModal
+              schoolId={selectedSchoolId}
+              trigger={
+                <AddButton w={isMobile ? "100%" : "auto"}>
+                  Add Team
+                </AddButton>
+              }
+            />
+          )}
+        </Flex>
+        {!filteredTeams || filteredTeams.length === 0 ? (
+          <Text ta="center" c="dimmed" mt="md">
+            No {teamFilter === "inactive" ? "archived" : "current"} teams found.
+          </Text>
+        ) : (
+          <Grid>
+            {filteredTeams.map((t) => (
+              <Grid.Col key={t.id} span={{ base: 12, md: 6, xl: 4 }}>
+                <Card>
+                  <Flex justify="space-between" align="center">
+                    <Title order={5}>{t.name}</Title>
+                    {(role === "admin" || role === "primary") && (
+                      <Tooltip
+                        label={t.is_active ? "Archive Team" : "Unarchive Team"}
+                        withArrow
+                      >
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (t.is_active) {
+                              archiveTeam({
+                                teamId: t.id,
+                                schoolId: selectedSchoolId,
+                              });
+                            } else {
+                              unarchiveTeam({
+                                teamId: t.id,
+                                schoolId: selectedSchoolId,
+                              });
+                            }
+                          }}
+                        >
+                          {t.is_active ? <LuArchive /> : <LuArchiveRestore />}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </Flex>
+                  <Text>{t.year}</Text>
+                  <Text tt="capitalize" c="dimmed">
+                    {t.type}
+                  </Text>
+                </Card>
+              </Grid.Col>
+            ))}
+          </Grid>
+        )}
+      </PageSection>
+
+      <Space h="md" />
+
+      <PageSection title="students" collapsible={true}>
+        <SegmentedControl fullWidth value={studentFilter} onChange={setStudentFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
+        <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
+          <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+            <TextInput
+              id={"search-student"}
+              w={isMobile ? "100%" : undefined}
+              flex={1}
+              leftSection={<LuSearch />}
+              rightSection={
+                studentSearchValue && (
+                  <ActionIcon
+                    variant="transparent"
+                    onClick={() => {
+                      setStudentSearchValue("");
+                      document.getElementById("search-student").focus();
+                    }}
+                  >
+                    <LuX />
+                  </ActionIcon>
+                )
+              }
+              placeholder="Search..."
+              value={studentSearchValue}
+              onChange={(e) => setStudentSearchValue(e.target.value)}
+            />
+          </Flex>
+          {(role === "admin" || role === "primary") && (
+            <AddStudentModal
+              schoolId={selectedSchoolId}
+              trigger={
+                <AddButton w={isMobile ? "100%" : "auto"}>
+                  Add Student
+                </AddButton>
+              }
+            />
+          )}
+        </Flex>
+        {!filteredStudents || filteredStudents.length === 0 ? (
+          <Text ta="center" c="dimmed" mt="md">
+            No {studentFilter === "inactive" ? "archived" : "current"} students found.
+          </Text>
+        ) : (
+          <Grid>
+            {filteredStudents.map((s) => (
+              <Grid.Col key={s.id} span={{ base: 12, md: 6, xl: 4 }}>
+                <Card>
+                  <Flex justify="space-between" align="center">
+                    <Title order={5}>{s.name}</Title>
+                    {(role === "admin" || role === "primary") && (
+                      <Tooltip
+                        label={s.is_active ? "Archive Student" : "Unarchive Student"}
+                        withArrow
+                      >
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (s.is_active) {
+                              archiveStudent({
+                                studentId: s.id,
+                                schoolId: selectedSchoolId,
+                              });
+                            } else {
+                              unarchiveStudent({
+                                studentId: s.id,
+                                schoolId: selectedSchoolId,
+                              });
+                            }
+                          }}
+                        >
+                          {s.is_active ? <LuArchive /> : <LuArchiveRestore />}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </Flex>
+                </Card>
+              </Grid.Col>
+            ))}
+          </Grid>
         )}
       </PageSection>
     </BasePage>

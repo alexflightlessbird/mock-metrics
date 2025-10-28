@@ -4,18 +4,12 @@ import {
   Text,
   Flex,
   SegmentedControl,
-  Box,
   Tooltip,
   ActionIcon,
   TextInput,
-  Badge,
-  Stack,
   Title,
-  Chip,
-  MultiSelect,
   Checkbox,
   Menu,
-  Group,
   Button,
   Divider
 } from "@mantine/core";
@@ -80,7 +74,7 @@ export default function TournamentDashboard() {
       if (selectedAreas.length > 0) {
         result = result?.filter((t) => selectedAreas.includes(t.area));
       }
-      return result;
+      return result?.sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
     }
     
     switch (filter) {
@@ -212,7 +206,6 @@ export default function TournamentDashboard() {
                         variant="subtle"
                         onClick={(e) => {
                           e.stopPropagation();
-                          console.log(t.id, selectedSchoolId);
                           if (t.is_active) {
                             archiveTournament({
                               tournamentId: t.id,
