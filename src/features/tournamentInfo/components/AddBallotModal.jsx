@@ -164,11 +164,11 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
           <Table highlightOnHover fz="xs" stickyHeader>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>Role</Table.Th>
-                <Table.Th>
+                <Table.Th width="25%">Role</Table.Th>
+                <Table.Th width="37.5%">
                   {formatSide("p", caseType)} ({totalScore("p")})
                 </Table.Th>
-                <Table.Th>
+                <Table.Th width="37.5%">
                   {formatSide("d", caseType)} ({totalScore("d")})
                 </Table.Th>
               </Table.Tr>

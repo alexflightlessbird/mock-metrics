@@ -109,11 +109,11 @@ export default function BallotManagementModal({
             <Table highlightOnHover fz="xs" stickyHeader>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Role</Table.Th>
-                  <Table.Th>
+                  <Table.Th width="25%">Role</Table.Th>
+                  <Table.Th width="37.5%">
                     {formatSide("p", caseType)}
                   </Table.Th>
-                  <Table.Th>
+                  <Table.Th width="37.5%">
                     {formatSide("d", caseType)}
                   </Table.Th>
                 </Table.Tr>

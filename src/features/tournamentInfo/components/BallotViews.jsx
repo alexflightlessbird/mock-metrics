@@ -1,4 +1,4 @@
-import { Table } from "@mantine/core";
+import { Card, Table } from "@mantine/core";
 import DataTable from "../../../common/components/tables/DataTable";
 import AddButton from "../../../common/components/AddButton";
 import AddBallotModal from "./AddBallotModal";
@@ -78,15 +78,18 @@ export function ViewBallots({
           caseType={caseType}
         />
       )}
-      <DataTable
-        columns={tableColumns}
-        data={ballots}
-        renderRow={renderRow}
-        emptyMessage="No ballots assigned to this round"
-        scrollContainer={true}
-        scrollContainerHeight="30vh"
-        removeId={true}
-      />
+      <Card withBorder p="xs" bdrs="md">
+        <DataTable
+          columns={tableColumns}
+          data={ballots}
+          renderRow={renderRow}
+          emptyMessage="No ballots assigned to this round"
+          scrollContainer={true}
+          scrollContainerHeight="30vh"
+          removeId={true}
+          withTableBorder={false}
+        />
+      </Card>
     </>
   );
 }
