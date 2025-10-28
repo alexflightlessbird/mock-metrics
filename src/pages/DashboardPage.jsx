@@ -77,64 +77,6 @@ export default function DashboardPage() {
       {selectedSchoolId && (
         <>
           <Title order={2}>School Info</Title>
-          <Space h="md" />
-          <Title order={3}>Users</Title>
-          {usersLoading ? (
-            <List>
-              {[1, 2, 3].map((i) => (
-                <List.Item key={i}>
-                  <Skeleton height={20} width={150} />
-                </List.Item>
-              ))}
-            </List>
-          ) : users.length > 0 ? (
-            <>
-              <Title order={4}>Primary Admins</Title>
-              {primaryAdmins.length > 0 ? (
-                <>
-                  <List>
-                    {primaryAdmins.map((u) => (
-                      <List.Item key={u.user_id}>
-                        {u.users.name} ({u.users.email})
-                      </List.Item>
-                    ))}
-                  </List>
-                </>
-              ) : (
-                <Text c="dimmed">No users found</Text>
-              )}
-              <Title order={4}>Admins</Title>
-              {admins.length > 0 ? (
-                <>
-                  <List>
-                    {admins.map((u) => (
-                      <List.Item key={u.user_id}>
-                        {u.users.name} ({u.users.email})
-                      </List.Item>
-                    ))}
-                  </List>
-                </>
-              ) : (
-                <Text c="dimmed">No users found</Text>
-              )}
-              <Title order={4}>Viewers</Title>
-              {viewers.length > 0 ? (
-                <>
-                  <List>
-                    {viewers.map((u) => (
-                      <List.Item key={u.user_id}>
-                        {u.users.name} ({u.users.email})
-                      </List.Item>
-                    ))}
-                  </List>
-                </>
-              ) : (
-                <Text c="dimmed">No users found</Text>
-              )}
-            </>
-          ) : (
-            <Text c="dimmed">No users found</Text>
-          )}
 
           <Space h="md" />
           <Title order={3}>Teams</Title>

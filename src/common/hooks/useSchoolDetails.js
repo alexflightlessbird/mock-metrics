@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
 import useNotifications from "./useNotifications";
 
 export function useSchoolDetails(schoolId) {
-  const { showError } = useNotifications();
+  const { showError, showSuccess } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["school-details", schoolId],
@@ -28,9 +29,38 @@ export function useSchoolDetails(schoolId) {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (updates) => {
+      if (!updates || Object.keys(updates).length === 0)
+        return { noUpdates: true };
+      const { error } = await supabase
+        .from("schools")
+        .update(updates)
+        .eq("id", schoolId);
+      if (error) throw error;
+
+      return { noUpdates: false };
+    },
+    onSuccess: (result) => {
+      if (result.noUpdates) {
+        showSuccess({ message: "No changes to update", title: "No changes" });
+      } else {
+        queryClient.invalidateQueries(["school-details", schoolId]);
+        showSuccess({ message: "School updated successfully" });
+      }
+    },
+    onError: (error) => {
+      showError({
+        title: "Failed to update school",
+        message: error.message,
+      });
+    },
+  });
+
   return {
     data,
     isLoading,
+    updateSchool: updateMutation.mutateAsync,
   };
 }
 
