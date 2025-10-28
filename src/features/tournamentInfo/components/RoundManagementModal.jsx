@@ -343,6 +343,7 @@ export default function RoundManagementModal({
           tournamentStatus={tournamentStatus}
           roundId={round}
           caseType={caseType}
+          teamName={teamName}
         />
       </PageSection>
     </BaseModal>

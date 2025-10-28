@@ -1,9 +1,7 @@
 import { useSessionStorage } from "@mantine/hooks";
-import useNotifications from "../../../common/hooks/useNotifications";
 import { useModal } from "../../../context/ModalContext";
 import {
   Button,
-  Divider,
   Group,
   NumberInput,
   Stack,
@@ -11,7 +9,6 @@ import {
   Text,
   TextInput,
   Card,
-  ScrollAreaAutosize,
   ScrollArea,
 } from "@mantine/core";
 import { formatSide } from "../../../common/utils/helpers";
@@ -19,7 +16,7 @@ import BaseModal from "../../../common/components/modals-new/BaseModal";
 import { useRoundDetails } from "../../../common/hooks/useRoundDetails";
 import { useBallotDetails } from "../../../common/hooks/useBallotDetails";
 
-export default function AddBallotModal({ role, trigger, roundId, caseType }) {
+export default function AddBallotModal({ trigger, roundId, caseType }) {
   const [formData, setFormData] = useSessionStorage({
     key: `add-ballot-modal-${roundId}`,
     defaultValue: {
@@ -55,7 +52,6 @@ export default function AddBallotModal({ role, trigger, roundId, caseType }) {
     },
   });
 
-  const { showError } = useNotifications();
   const { closeModal } = useModal();
   const { addBallot } = useBallotDetails();
 

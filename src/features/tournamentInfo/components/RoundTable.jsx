@@ -7,7 +7,6 @@ export default function RoundTable({
   caseType,
   data,
   role,
-  refreshBallots,
   tournamentStatus,
   teamName,
 }) {
@@ -26,7 +25,6 @@ export default function RoundTable({
       teamName={teamName}
       caseType={caseType}
       role={role}
-      refreshBallots={refreshBallots}
       tournamentStatus={tournamentStatus}
       trigger={
         <Table.Tr style={{ cursor: "pointer" }} tabIndex={0}>

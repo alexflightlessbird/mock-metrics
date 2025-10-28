@@ -1,9 +1,8 @@
-import { Table, Button, Text, Stack, List, Modal } from "@mantine/core";
-import { useState } from "react";
+import { Table } from "@mantine/core";
 import DataTable from "../../../common/components/tables/DataTable";
-import DeleteConfirmationModal from "../../../common/components/modals/DeleteConfirmationModal";
 import AddButton from "../../../common/components/AddButton";
 import AddBallotModal from "./AddBallotModal";
+import BallotManagementModal from "./BallotManagementModal";
 
 export function ViewBallots({
   ballots,
@@ -12,6 +11,7 @@ export function ViewBallots({
   tournamentStatus,
   roundId,
   caseType,
+  teamName
 }) {
   const pTotal = (ballot) => {
     const scores = ballot.scores
@@ -29,30 +29,38 @@ export function ViewBallots({
     return total;
   };
 
-  const renderRow = (ballot) => (
-    <Table.Tr
-      key={ballot.id}
-      style={{ cursor: "pointer" }}
-      onClick={() => handleSelectBallot(ballot.id)}
-    >
-      <Table.Td>{ballot.judge_name || "-"}</Table.Td>
-      <Table.Td>
-        {side === "p"
-          ? pTotal(ballot) - dTotal(ballot) < 0
-            ? `Loss: ${pTotal(ballot) - dTotal(ballot)}`
-            : pTotal(ballot) - dTotal(ballot) == 0
-            ? "Tie"
-            : `Win: +${pTotal(ballot) - dTotal(ballot)}`
-          : side === "d"
-          ? dTotal(ballot) - pTotal(ballot) < 0
-            ? `Loss: ${dTotal(ballot) - pTotal(ballot)}`
-            : dTotal(ballot) - pTotal(ballot) == 0
-            ? "Tie"
-            : `Win: +${dTotal(ballot) - pTotal(ballot)}`
-          : "-"}
-      </Table.Td>
-    </Table.Tr>
-  );
+  const renderRow = (b) => (
+    <BallotManagementModal
+      key={b.id}
+      selected={b.id}
+      roundId={roundId}
+      caseType={caseType}
+      role={role}
+      tournamentStatus={tournamentStatus}
+      teamName={teamName}
+      trigger={
+        <Table.Tr style={{ cursor: "pointer" }} tabIndex={0}>
+          <Table.Td>{b.judge_name || "-"}</Table.Td>
+          <Table.Td>
+            {side === "p" 
+              ? pTotal(b) - dTotal(b) < 0
+                ? `Loss: ${pTotal(b) - dTotal(b)}`
+                : pTotal(b) - dTotal(b) == 0
+                ? "Tie"
+                : `Win: +${pTotal(b) - dTotal(b)}`
+              : side === "d"
+              ? dTotal(b) - pTotal(b) < 0
+                ? `Loss: ${dTotal(b) - pTotal(b)}`
+                : dTotal(b) - pTotal(b) == 0
+                ? "Tie"
+                :  `Win: +${dTotal(b) - pTotal(b)}`
+              : "-"
+            }
+          </Table.Td>
+        </Table.Tr>
+      }
+    ></BallotManagementModal>
+  )
 
   const tableColumns = [
     { value: "id", label: "ID" },
