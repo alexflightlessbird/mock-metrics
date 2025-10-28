@@ -184,7 +184,7 @@ export default function TournamentDashboard() {
       </Flex>
       {!filteredTournaments || filteredTournaments.length === 0 ? (
         <Text ta="center" c="dimmed" mt="md">
-          No {filter === "inactive" ? "archived" : "current"} tournaments found.
+          No {filter === "inactive" ? " archived" : filter === "active" ? " current" : ""} tournaments found.
         </Text>
       ) : (
         <Grid>

@@ -347,7 +347,7 @@ export default function SchoolInfoPage() {
         </Flex>
         {!filteredTeams || filteredTeams.length === 0 ? (
           <Text ta="center" c="dimmed" mt="md">
-            No {teamFilter === "inactive" ? "archived" : "current"} teams found.
+            No {teamFilter === "inactive" ? " archived" : teamFilter === "active" ? " current" : ""} teams found.
           </Text>
         ) : (
           <Grid>
@@ -436,7 +436,7 @@ export default function SchoolInfoPage() {
         </Flex>
         {!filteredStudents || filteredStudents.length === 0 ? (
           <Text ta="center" c="dimmed" mt="md">
-            No {studentFilter === "inactive" ? "archived" : "current"} students found.
+            No {studentFilter === "inactive" ? " archived" : studentFilter === "active" ? " current" : ""} students found.
           </Text>
         ) : (
           <Grid>
