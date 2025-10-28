@@ -70,9 +70,13 @@ export default function App({ onReady }) {
           <Route
             path="/cases"
             element={
-              <NavLayout>
-                <CasesPage />
-              </NavLayout>
+              !user ? (
+                <Navigate to="/auth" replace />
+              ) : (
+                <NavLayout>
+                  <CasesPage />
+                </NavLayout>
+              )
             }
           />
           <Route
