@@ -2,7 +2,6 @@ import {
   Grid,
   Text,
   Space,
-  Anchor,
   Button,
   Flex,
   Divider,
@@ -215,17 +214,7 @@ export default function TournamentDashboard() {
           <Text c="dimmed" fz="sm">
             Associated Case
           </Text>
-          <Anchor
-            fz="sm"
-            href={`/cases/${selectedTournament.case_id}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(`/cases/${selectedTournament.case_id}`);
-            }}
-            tabIndex={0}
-          >
-            {selectedTournament.cases.name}
-          </Anchor>
+          <Text fz="sm">{selectedTournament.cases.name} ({selectedTournament.cases.year})</Text>
         </Stack>
         <ShowIdText
           fz="sm"

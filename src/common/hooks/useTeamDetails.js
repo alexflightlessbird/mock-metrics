@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
 import useNotifications from "./useNotifications";
 
 export function useTeamDetails(teamId) {
-  const { showError } = useNotifications();
+  const { showSuccess, showError } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["team-details", teamId],
@@ -28,9 +29,27 @@ export function useTeamDetails(teamId) {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async ({ teamId, schoolId }) => {
+      const { error } = await supabase
+        .from("teams")
+        .delete()
+        .eq("id", teamId);
+      if (error) throw error;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(["school-teams", variables.schoolId]);
+      showSuccess({ message: "Team deleted successfully" });
+    },
+    onError: (error) => {
+      showError({ message: error.message, title: "Failed to delete team" });
+    },
+  });
+
   return {
     data,
     isLoading,
+    deleteTeam: deleteMutation.mutateAsync,
   };
 }
 
