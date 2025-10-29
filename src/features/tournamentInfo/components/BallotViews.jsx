@@ -1,4 +1,4 @@
-import { Card, Table } from "@mantine/core";
+import { Card, Table, Text } from "@mantine/core";
 import DataTable from "../../../common/components/tables/DataTable";
 import AddButton from "../../../common/components/AddButton";
 import AddBallotModal from "./AddBallotModal";
@@ -68,6 +68,8 @@ export function ViewBallots({
     { value: "result", label: "Result" },
   ];
 
+  console.log(ballots.length);
+
   return (
     <>
       {tournamentStatus && (role === "primary" || role === "admin") && (
@@ -78,18 +80,23 @@ export function ViewBallots({
           caseType={caseType}
         />
       )}
-      <Card withBorder p="xs" bdrs="md">
-        <DataTable
-          columns={tableColumns}
-          data={ballots}
-          renderRow={renderRow}
-          emptyMessage="No ballots assigned to this round"
-          scrollContainer={true}
-          scrollContainerHeight="30vh"
-          removeId={true}
-          withTableBorder={false}
-        />
-      </Card>
+      {ballots.length == 0 && (
+        <Text c="dimmed">No ballots assigned to this round</Text>
+      )}
+      {ballots.length > 0 && (
+        <Card withBorder p="xs" bdrs="md">
+          <DataTable
+            columns={tableColumns}
+            data={ballots}
+            renderRow={renderRow}
+            emptyMessage="No ballots assigned to this round"
+            scrollContainer={true}
+            scrollContainerHeight="30vh"
+            removeId={true}
+            withTableBorder={false}
+          />
+        </Card>
+      )}
     </>
   );
 }
