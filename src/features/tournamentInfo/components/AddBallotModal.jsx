@@ -143,7 +143,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
     let total = 0;
     Object.entries(formData).forEach(([key, value]) => {
       if (key.startsWith(side)) {
-        total += value;
+        total += Number(value);
       }
     });
     return total;
