@@ -122,6 +122,7 @@ export function useTeamStudents(teamId) {
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["team-students", variables.teamId]);
+      queryClient.invalidateQueries(["student-teams", variables.studentId]);
       showSuccess({ message: "Student removed from team successfully" });
     },
     onError: (error) => {
@@ -158,6 +159,7 @@ export function useTeamStudents(teamId) {
         if (removeExistingError) throw removeExistingError;
 
         queryClient.invalidateQueries(["team-students", existingActive.team_id]);
+        queryClient.invalidateQueries(["student-teams", studentId]);
       }
 
       if (existing) {
@@ -176,6 +178,7 @@ export function useTeamStudents(teamId) {
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(["team-students", variables.teamId]);
+      queryClient.invalidateQueries(["student-teams", variables.studentId]);
       showSuccess({ message: "Student added to team successfully" });
     },
     onError: (error) => {

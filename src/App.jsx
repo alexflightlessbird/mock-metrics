@@ -28,6 +28,7 @@ import StatusPage from "./pages/StatusPage";
 import TournamentDashboard from "./pages/TournamentDashboard";
 import TournamentInfoPage from "./pages/TournamentInfoPage";
 import TeamInfoPage from "./pages/TeamInfoPage";
+import StudentInfoPage from "./pages/StudentInfoPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -105,6 +106,7 @@ export default function App({ onReady }) {
                   <Navigate to="/" replace />
                 ) : (
                   <NavLayout>
+                    <StudentInfoPage />
                   </NavLayout>
                 )
               }

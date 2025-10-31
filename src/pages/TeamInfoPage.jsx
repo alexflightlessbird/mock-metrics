@@ -220,7 +220,7 @@ export default function TeamInfoPage() {
                                 }
                                 includeBallots={true}
                                 onSubmit={() => {
-                                    deleteTeam();
+                                    deleteTeam({ teamId: selectedTeam.id, schoolId: selectedSchoolId });
                                     navigate("/school");
                                 }}
                                 entity={{
