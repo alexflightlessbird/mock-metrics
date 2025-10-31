@@ -30,7 +30,7 @@ import AddTeamModal from "../features/tournamentInfo/components/AddTeamModal";
 import ShowIdText from "../common/components/ShowIdText";
 import { useEffect, useState } from "react";
 
-export default function TournamentDashboard() {
+export default function TournamentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
     key: "school",
     defaultValue: null,

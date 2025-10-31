@@ -32,7 +32,7 @@ import BasePage from "../common/components/BasePage";
 import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
 import { useQueryClient } from "@tanstack/react-query";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { LuArchive, LuArchiveRestore, LuSearch, LuX } from "react-icons/lu";
 import AddButton from "../common/components/AddButton";
@@ -43,6 +43,7 @@ import AddStudentModal from "../features/schoolInfo/components/AddStudentModal";
 export default function SchoolInfoPage() {
   const { user } = useAuth();
   const { isMobile } = useMobile();
+  const navigate = useNavigate();
 
   const [teamSearchValue, setTeamSearchValue] = useState("");
   const [teamFilter, setTeamFilter] = useState("active");
@@ -307,7 +308,7 @@ export default function SchoolInfoPage() {
 
       <Space h="md" />
 
-      <PageSection title="teams" collapsible={true}>
+      <PageSection title="teams" collapsible={true} defaultOpen={true}>
         <SegmentedControl fullWidth value={teamFilter} onChange={setTeamFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
         <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
           <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
@@ -353,7 +354,7 @@ export default function SchoolInfoPage() {
           <Grid>
             {filteredTeams.map((t) => (
               <Grid.Col key={t.id} span={{ base: 12, md: 6, xl: 4 }}>
-                <Card>
+                <Card onClick={() => navigate("/school/t/" + t.id)}>
                   <Flex justify="space-between" align="center">
                     <Title order={5}>{t.name}</Title>
                     {(role === "admin" || role === "primary") && (
@@ -396,7 +397,7 @@ export default function SchoolInfoPage() {
 
       <Space h="md" />
 
-      <PageSection title="students" collapsible={true}>
+      <PageSection title="students" collapsible={true} defaultOpen={true}>
         <SegmentedControl fullWidth value={studentFilter} onChange={setStudentFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
         <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
           <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
@@ -442,7 +443,7 @@ export default function SchoolInfoPage() {
           <Grid>
             {filteredStudents.map((s) => (
               <Grid.Col key={s.id} span={{ base: 12, md: 6, xl: 4 }}>
-                <Card>
+                <Card onClick={() => navigate("/school/s/" + s.id)}>
                   <Flex justify="space-between" align="center">
                     <Title order={5}>{s.name}</Title>
                     {(role === "admin" || role === "primary") && (

@@ -137,7 +137,7 @@ export function useSchoolStudents(schoolId) {
       try {
         const { data, error } = await supabase
           .from("students")
-          .select("*")
+          .select("*, students_teams(*, teams(*))")
           .eq("school_id", schoolId);
         if (error) throw error;
         return data;

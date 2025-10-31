@@ -32,7 +32,13 @@ import { useMobile } from "../context/MobileContext";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
-  { icon: LuSchool, label: "School", path: "/school", showOnNoSchool: false },
+  { 
+    icon: LuSchool, 
+    label: "School", 
+    path: "/school", 
+    showOnNoSchool: false,
+    matchPattern: /^\/school(\/(t|s)\/[^/]+)?$/,
+  },
   {
     icon: TbTournament,
     label: "Tournaments",

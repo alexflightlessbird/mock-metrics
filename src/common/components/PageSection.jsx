@@ -2,8 +2,8 @@ import { Box, Text, Stack, Divider, Group, ActionIcon } from "@mantine/core";
 import { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
-export default function PageSection({ title, collapsible = false, children }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function PageSection({ title, collapsible = false, defaultOpen = false, children }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <Box>

@@ -49,9 +49,7 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
                 onSuccess: () => {
                     if (onClose) onClose();
                     closeModal("add-student-form");
-                    setFormData({
-                        name: "",
-                    });
+                    handleReset();
                     localStorage.removeItem("add-student-form");
                 },
             }

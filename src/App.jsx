@@ -27,6 +27,7 @@ import ErrorExplanationPage from "./pages/ErrorExplanationPage";
 import StatusPage from "./pages/StatusPage";
 import TournamentDashboard from "./pages/TournamentDashboard";
 import TournamentInfoPage from "./pages/TournamentInfoPage";
+import TeamInfoPage from "./pages/TeamInfoPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -66,20 +67,49 @@ export default function App({ onReady }) {
               )
             }
           />
-          <Route
-            path="/school"
-            element={
-              !user ? (
-                <Error401 />
-              ) : !selectedSchoolId ? (
-                <Navigate to="/" replace />
-              ) : (
-                <NavLayout>
-                  <SchoolInfoPage />
-                </NavLayout>
-              )
-            }
-          />
+          <Route path="/school">
+            <Route
+              index
+              element={
+                !user ? (
+                  <Error401 />
+                ) : !selectedSchoolId ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <NavLayout>
+                    <SchoolInfoPage />
+                  </NavLayout>
+                )
+              }
+            />
+            <Route 
+              path="t/:id"
+              element={
+                !user ? (
+                  <Error401 />
+                ) : !selectedSchoolId ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <NavLayout>   
+                    <TeamInfoPage />
+                  </NavLayout>
+                )
+              }
+            />
+            <Route
+              path="s/:id"
+              element={
+                !user ? (
+                  <Error401 />
+                ) : !selectedSchoolId ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <NavLayout>
+                  </NavLayout>
+                )
+              }
+            />
+          </Route>
           <Route path="/tournaments">
             <Route
               index
