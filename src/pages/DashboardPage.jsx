@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import Loader from "../common/components/loader/GavelLoader";
 import { useLocalStorage } from "@mantine/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BasePage from "../common/components/BasePage";
 import { useUserDetails } from "../common/hooks/useUserDetails";
 
@@ -20,6 +20,8 @@ export default function DashboardPage() {
     defaultValue: null,
   });
 
+  const [userName, setUserName] = useState("");
+
   const { data: userDetails, isLoading: isLoadingUserDetails } = useUserDetails(user.id);
 
   useEffect(() => {
@@ -29,6 +31,10 @@ export default function DashboardPage() {
     )
       setSelectedSchoolId(assignments[0]?.school_id);
   }, [assignments]);
+
+  useEffect(() => {
+    if (userDetails?.name) setUserName(`, ${userDetails.name}`);
+  }, [userDetails]);
 
   if (isLoading || isLoadingUserDetails)
     return (
@@ -47,7 +53,7 @@ export default function DashboardPage() {
           Admin reach out to support to be added.
         </Text>
       )}
-      <Text>Welcome back{userDetails.name ? `, ${userDetails.name}` : ""}!</Text>
+      <Text>Welcome back{userName}!</Text>
     </BasePage>
   );
 }

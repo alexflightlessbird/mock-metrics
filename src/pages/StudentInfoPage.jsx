@@ -52,12 +52,13 @@ export default function StudentInfoPage() {
         }));
     }, [allTeams]);
 
-    if (studentLoading || studentTeamsLoading || allTeamsLoading) {
-        <BasePage titleText="Loading...">
-            <Loader scale={1.5} />
-        </BasePage>
-    };
-
+    if (studentLoading || studentTeamsLoading || allTeamsLoading) 
+        return (
+            <BasePage titleText="Loading...">
+                <Loader scale={1.5} />
+            </BasePage>
+        );
+    
     if (!selectedStudent || Object.keys(selectedStudent).length === 0)
         return (
             <BasePage titleText="Invalid Student">
