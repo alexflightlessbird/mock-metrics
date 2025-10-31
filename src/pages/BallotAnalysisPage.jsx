@@ -1,13 +1,11 @@
-import { Button, MultiSelect, Text } from "@mantine/core";
+import { Button, Checkbox, Group, MultiSelect, Stack, Text } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useMemo, useState } from "react";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
-import { useAuth } from "../context/AuthContext";
 import { useLocalStorage } from "@mantine/hooks";
 import ballotAverage from "../features/ballotAnalysis/utils/ballotAverage";
 
 export default function BallotAnalysisPage() {
-    const { user } = useAuth();
     const [selectedSchoolId] = useLocalStorage({
         key: "school",
         defaultValue: null,
@@ -42,17 +40,34 @@ export default function BallotAnalysisPage() {
 
     return (
         <BasePage titleText="Ballot Analysis">
-            <MultiSelect
-                data={tournaments.map(t => ({
-                    value: t.id,
-                    label: `${t.name} (${t.year})`
-                }))}
-                value={selectedTournamentIds}
-                onChange={setSelectedTournamentIds}
-                label="Select Tournaments to Analyze"
-                mb="md"
-                required
-            />
+            <Checkbox.Group value={selectedTournamentIds} onChange={setSelectedTournamentIds} label="Select Tournaments to Analyze" mb="md">
+                <Group direction="row" gap="lg" align="start">
+                    {tournaments?.map(t => (
+                        <>
+                            <Stack spacing="xs">
+                                <Checkbox
+                                    key={t.id}
+                                    value={t.id}
+                                    label={t.name}
+                                />
+                                {selectedTournamentIds.includes(t.id) && (
+                                    <Checkbox.Group pl="lg" defaultValue={t.teams_tournaments.map(tt => tt.team_id)} label="Select Teams to Include">
+                                        <Stack gap="xs">
+                                            {t.teams_tournaments.map(tt => (
+                                                <Checkbox
+                                                    key={tt.team_id}
+                                                    value={tt.team_id}
+                                                    label={tt.teams.name}
+                                                />
+                                            ))}
+                                        </Stack>
+                                    </Checkbox.Group>
+                                )}
+                            </Stack>
+                        </>
+                    ))}
+                </Group>
+            </Checkbox.Group>
             <Button onClick={() => window.alert("Run Analysis")}>Run Analysis</Button>
         </BasePage>
     )
