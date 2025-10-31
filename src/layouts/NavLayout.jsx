@@ -20,6 +20,7 @@ import {
   LuChevronsUpDown as ChevronIcon,
   LuLayoutDashboard,
   LuSettings,
+  LuChartScatter
 } from "react-icons/lu";
 import { PiGavelFill } from "react-icons/pi";
 import { TbTournament } from "react-icons/tb";
@@ -46,6 +47,12 @@ const NAV_LINKS = [
     showOnNoSchool: false,
     matchPattern: /^\/tournaments(\/[^/]+)?$/,
   },
+  {
+    icon: LuChartScatter,
+    label: "Ballot Analysis",
+    path: "/ba",
+    showOnNoSchool: false,
+  }
 ];
 
 const NavLinkWithTooltip = ({ isMobile, desktopCollapsed, ...props }) => {
@@ -394,6 +401,7 @@ export default function NavLayout({ children }) {
                 styles={{
                   root: {
                     cursor: "pointer",
+                    display: link.showOnNoSchool || selectedSchoolId ? undefined : "none",
                   },
                 }}
               />

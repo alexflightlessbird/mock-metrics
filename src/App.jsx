@@ -29,6 +29,7 @@ import TournamentDashboard from "./pages/TournamentDashboard";
 import TournamentInfoPage from "./pages/TournamentInfoPage";
 import TeamInfoPage from "./pages/TeamInfoPage";
 import StudentInfoPage from "./pages/StudentInfoPage";
+import BallotAnalysisPage from "./pages/BallotAnalysisPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -64,6 +65,21 @@ export default function App({ onReady }) {
               ) : (
                 <NavLayout>
                   <Error403 />
+                </NavLayout>
+              )
+            }
+          />
+          <Route
+            path="/ba"
+            element={
+              !user ? (
+                <Error401 />
+              ) : !selectedSchoolId ? (
+                <Navigate to="/" replace />
+              ) : (
+                <NavLayout>
+                  <BallotAnalysisPage />
+                  <BetaOverlay />
                 </NavLayout>
               )
             }
