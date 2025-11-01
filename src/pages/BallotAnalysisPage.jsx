@@ -4,6 +4,7 @@ import {
   Group,
   Space,
   Stack,
+  Table,
   Text,
   Tooltip,
 } from "@mantine/core";
@@ -12,11 +13,9 @@ import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTourna
 import { useLocalStorage } from "@mantine/hooks";
 import ballotAverage from "../features/ballotAnalysis/utils/ballotAverage";
 import Card from "../common/components/card/Card";
-import {
-  directCalculation,
-  crossCalculation,
-  speechCalculation,
-} from "../features/ballotAnalysis/utils/calculations";
+import { compileCalculations } from "../features/ballotAnalysis/utils/calculations";
+import { useState } from "react";
+import PageSection from "../common/components/PageSection";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -120,6 +119,7 @@ export default function BallotAnalysisPage() {
                   score_type: s.score_type,
                   score_value: s.score_value,
                 })),
+                calculations: compileCalculations(r.side, b),
               })),
             })),
         })),
@@ -246,15 +246,22 @@ export default function BallotAnalysisPage() {
       </Tooltip>
 
       {showAnalysis && (
-        <>
-          <Text>
-            Tournament:{" "}
-            {tournaments.find((t) => t.id === selectedTournamentIds[0])?.name}
-          </Text>
-          <Text>
-            {selectedTeamIds[selectedTournamentIds[0]].map((id) => id)}
-          </Text>
-        </>
+        <PageSection title="analysis results">
+          <Button
+            onClick={() => {
+              setShowAnalysis(false);
+              setAnalysisRunning(false);
+              setSelectedTournamentIds([]);
+              setSelectedTeamIds({});
+            }}
+          >
+            Refresh
+          </Button>
+
+          <Space h="md" />
+
+          <Table striped highlightOnHover></Table>
+        </PageSection>
       )}
     </BasePage>
   );

@@ -67,8 +67,6 @@ export function ViewBallots({
     { value: "result", label: "Result" },
   ];
 
-  console.log(ballots.length);
-
   return (
     <>
       {tournamentStatus && (role === "primary" || role === "admin") && (

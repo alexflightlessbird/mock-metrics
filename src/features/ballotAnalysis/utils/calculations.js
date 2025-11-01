@@ -1,10 +1,12 @@
+import ballotAverageCalc from "./ballotAverage";
+
 export function directCalculation(oneToCalculate, ballot) {
-  const ballotAverage = ballot.average;
+  const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = ballot.scores.find(
     (s) => s.score_type === oneToCalculate
   ).score_value;
 
-  const directAvg = oneScore - ballotAverage;
+  const directAvg = (oneScore - ballotAverage).toFixed(2);
 
   let otherSideAvg = 0;
 
@@ -70,7 +72,7 @@ export function directCalculation(oneToCalculate, ballot) {
     }
   }
 
-  const directComp = oneScore - round(otherSideAvg, 2);
+  const directComp = oneScore - otherSideAvg.toFixed(2);
 
   return {
     directAvg,
@@ -79,12 +81,12 @@ export function directCalculation(oneToCalculate, ballot) {
 }
 
 export function crossCalculation(oneToCalculate, ballot) {
-  const ballotAverage = ballot.average;
+  const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = ballot.scores.find(
     (s) => s.score_type === oneToCalculate
   ).score_value;
 
-  const crossAvg = oneScore - ballotAverage;
+  const crossAvg = (oneScore - ballotAverage).toFixed(2);
 
   let otherSideComp = 0;
 
@@ -162,12 +164,12 @@ export function crossCalculation(oneToCalculate, ballot) {
 }
 
 export function speechCalculation(oneToCalculate, ballot) {
-  const ballotAverage = ballot.average;
+  const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = ballot.scores.find(
     (s) => s.score_type === oneToCalculate
   ).score_value;
 
-  const speechAvg = oneScore - ballotAverage;
+  const speechAvg = (oneScore - ballotAverage).toFixed(2);
 
   let otherSideComp = 0;
 
@@ -202,4 +204,69 @@ export function speechCalculation(oneToCalculate, ballot) {
     speechAvg,
     speechComp,
   };
+}
+
+export function mergeCalculations({ avg, comp }) {
+  if ((!avg && avg !== 0) || (!comp && comp !== 0)) return null;
+
+  if (isNaN(avg) || isNaN(comp)) return null;
+
+  avg = parseFloat(avg);
+  comp = parseFloat(comp);
+
+  if (comp < 0) {
+    if (avg >= 0) return (avg / (1 + Math.abs(comp) / 100)).toFixed(4);
+    else if (avg < 0) return (avg * (1 + Math.abs(comp) / 100)).toFixed(4);
+  } else if (comp == 0) {
+    return avg.toFixed(4);
+  } else if (comp > 0) {
+    if (avg >= 0) return (avg * (1 + Math.abs(comp) / 100)).toFixed(4);
+    else if (avg < 0) return (avg / (1 + Math.abs(comp) / 100)).toFixed(4);
+  }
+}
+
+export function compileCalculations(side, ballot) {
+  const calculations = {};
+
+  ballot.scores.forEach((s) => {
+    if (s.score_type.startsWith(side)) {
+      let calc;
+
+      if (
+        s.score_type === "p1" ||
+        s.score_type === "d1" ||
+        s.score_type === "p14" ||
+        s.score_type === "d14"
+      ) {
+        calc = speechCalculation(s.score_type, ballot);
+      } else if (
+        s.score_type === "p4" ||
+        s.score_type === "p7" ||
+        s.score_type === "p10" ||
+        s.score_type === "p11" ||
+        s.score_type === "p12" ||
+        s.score_type === "p13" ||
+        s.score_type === "d2" ||
+        s.score_type === "d3" ||
+        s.score_type === "d4" ||
+        s.score_type === "d7" ||
+        s.score_type === "d10" ||
+        s.score_type === "d13"
+      ) {
+        calc = crossCalculation(s.score_type, ballot);
+      } else {
+        calc = directCalculation(s.score_type, ballot);
+      }
+
+      calculations[s.score_type] = {
+        ...calc,
+        merged: mergeCalculations({
+          avg: calc[Object.keys(calc)[0]],
+          comp: calc[Object.keys(calc)[1]],
+        }),
+      };
+    }
+  });
+
+  return calculations;
 }
