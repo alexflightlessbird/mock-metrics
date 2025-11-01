@@ -214,7 +214,9 @@ export default function TournamentInfoPage() {
           <Text c="dimmed" fz="sm">
             Associated Case
           </Text>
-          <Text fz="sm">{selectedTournament.cases.name} ({selectedTournament.cases.year})</Text>
+          <Text fz="sm">
+            {selectedTournament.cases.name} ({selectedTournament.cases.year})
+          </Text>
         </Stack>
         <ShowIdText
           fz="sm"

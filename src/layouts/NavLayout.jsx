@@ -20,7 +20,7 @@ import {
   LuChevronsUpDown as ChevronIcon,
   LuLayoutDashboard,
   LuSettings,
-  LuChartScatter
+  LuChartScatter,
 } from "react-icons/lu";
 import { PiGavelFill } from "react-icons/pi";
 import { TbTournament } from "react-icons/tb";
@@ -33,10 +33,10 @@ import { useMobile } from "../context/MobileContext";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
-  { 
-    icon: LuSchool, 
-    label: "School", 
-    path: "/school", 
+  {
+    icon: LuSchool,
+    label: "School",
+    path: "/school",
     showOnNoSchool: false,
     matchPattern: /^\/school(\/(t|s)\/[^/]+)?$/,
   },
@@ -52,7 +52,7 @@ const NAV_LINKS = [
     label: "Ballot Analysis",
     path: "/ba",
     showOnNoSchool: false,
-  }
+  },
 ];
 
 const NavLinkWithTooltip = ({ isMobile, desktopCollapsed, ...props }) => {
@@ -401,7 +401,10 @@ export default function NavLayout({ children }) {
                 styles={{
                   root: {
                     cursor: "pointer",
-                    display: link.showOnNoSchool || selectedSchoolId ? undefined : "none",
+                    display:
+                      link.showOnNoSchool || selectedSchoolId
+                        ? undefined
+                        : "none",
                   },
                 }}
               />

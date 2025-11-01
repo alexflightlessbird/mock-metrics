@@ -11,7 +11,7 @@ export function ViewBallots({
   tournamentStatus,
   roundId,
   caseType,
-  teamName
+  teamName,
 }) {
   const pTotal = (ballot) => {
     const scores = ballot.scores
@@ -42,7 +42,7 @@ export function ViewBallots({
         <Table.Tr style={{ cursor: "pointer" }} tabIndex={0}>
           <Table.Td>{b.judge_name || "-"}</Table.Td>
           <Table.Td>
-            {side === "p" 
+            {side === "p"
               ? pTotal(b) - dTotal(b) < 0
                 ? `Loss: ${pTotal(b) - dTotal(b)}`
                 : pTotal(b) - dTotal(b) == 0
@@ -53,14 +53,13 @@ export function ViewBallots({
                 ? `Loss: ${dTotal(b) - pTotal(b)}`
                 : dTotal(b) - pTotal(b) == 0
                 ? "Tie"
-                :  `Win: +${dTotal(b) - pTotal(b)}`
-              : "-"
-            }
+                : `Win: +${dTotal(b) - pTotal(b)}`
+              : "-"}
           </Table.Td>
         </Table.Tr>
       }
     ></BallotManagementModal>
-  )
+  );
 
   const tableColumns = [
     { value: "id", label: "ID" },

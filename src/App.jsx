@@ -99,7 +99,7 @@ export default function App({ onReady }) {
                 )
               }
             />
-            <Route 
+            <Route
               path="t/:id"
               element={
                 !user ? (
@@ -107,7 +107,7 @@ export default function App({ onReady }) {
                 ) : !selectedSchoolId ? (
                   <Navigate to="/" replace />
                 ) : (
-                  <NavLayout>   
+                  <NavLayout>
                     <TeamInfoPage />
                   </NavLayout>
                 )

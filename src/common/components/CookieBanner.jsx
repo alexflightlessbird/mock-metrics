@@ -49,9 +49,13 @@ export default function CookieBanner() {
         right: 0,
         padding: "16px",
         backgroundColor: isDark ? theme.colors.dark[6] : "#f8f9fa",
-        borderTop: isDark ? `1px solid ${theme.colors.dark[3]}` : "1px solid #dee2e6",
+        borderTop: isDark
+          ? `1px solid ${theme.colors.dark[3]}`
+          : "1px solid #dee2e6",
         zIndex: 1000,
-        boxShadow: isDark ? `0 -2px 10px rgba(0,0,0,0.5)` : "0 -2px 10px rgba(0,0,0,0.1)",
+        boxShadow: isDark
+          ? `0 -2px 10px rgba(0,0,0,0.5)`
+          : "0 -2px 10px rgba(0,0,0,0.1)",
       }}
     >
       <Group>
