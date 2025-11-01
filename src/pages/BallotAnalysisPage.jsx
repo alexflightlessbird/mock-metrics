@@ -8,11 +8,15 @@ import {
   Tooltip,
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
-import { useMemo, useState } from "react";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
 import { useLocalStorage } from "@mantine/hooks";
 import ballotAverage from "../features/ballotAnalysis/utils/ballotAverage";
 import Card from "../common/components/card/Card";
+import {
+  directCalculation,
+  crossCalculation,
+  speechCalculation,
+} from "../features/ballotAnalysis/utils/calculations";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -57,30 +61,6 @@ export default function BallotAnalysisPage() {
       selectedTournamentIds.length >= maxTournaments
     );
   };
-
-  /*useMemo(() => {
-    if (!tournaments) return;
-    console.log(
-      tournaments.map((t) => ({
-        name: t.name,
-        teams: t.teams_tournaments.map((tt) => ({
-          name: tt.teams.name,
-          rounds: t.rounds
-            .filter((r) => r.teams.id === tt.team_id)
-            .map((r) => ({
-              number: r.round_number,
-              side: r.side,
-              ballots: r.ballots.map((b) => ({
-                judge: b.judge_name,
-                average: ballotAverage(b.scores).overallAverage,
-              })),
-              witnesses: r.witness_rounds,
-              students: r.role_rounds,
-            })),
-        })),
-      }))
-    );
-  }, [tournaments]);*/
 
   if (isLoading)
     return (
