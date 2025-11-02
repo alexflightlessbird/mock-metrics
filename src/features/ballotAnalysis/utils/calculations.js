@@ -226,7 +226,7 @@ export function mergeCalculations({ avg, comp }) {
 }
 
 export function compileCalculations(side, ballot) {
-  const calculations = {};
+  const calculations = [];
 
   ballot.scores.forEach((s) => {
     if (s.score_type.startsWith(side)) {
@@ -258,15 +258,63 @@ export function compileCalculations(side, ballot) {
         calc = directCalculation(s.score_type, ballot);
       }
 
-      calculations[s.score_type] = {
+      calculations.push({
+        score_type: s.score_type,
         ...calc,
-        merged: mergeCalculations({
-          avg: calc[Object.keys(calc)[0]],
-          comp: calc[Object.keys(calc)[1]],
-        }),
-      };
+      });
     }
   });
 
   return calculations;
+}
+
+export function combineBallotsCalculations({ side, ballots, role_rounds }) {
+  const combinedCalculations = [];
+
+  ballots.forEach((ballot) => {
+    const ballotCalculations = compileCalculations(side, ballot);
+    ballotCalculations.forEach((bc) => {
+      const existing = combinedCalculations.find(
+        (cc) => cc.score_type === bc.score_type
+      );
+      if (existing) {
+        existing.avgs.push(
+          parseFloat(bc.directAvg || bc.crossAvg || bc.speechAvg)
+        );
+        existing.comps.push(
+          parseFloat(bc.directComp || bc.crossComp || bc.speechComp)
+        );
+      } else {
+        combinedCalculations.push({
+          score_type: bc.score_type,
+          avgs: [parseFloat(bc.directAvg || bc.crossAvg || bc.speechAvg)],
+          comps: [parseFloat(bc.directComp || bc.crossComp || bc.speechComp)],
+        });
+      }
+    });
+  });
+
+  combinedCalculations.forEach((cc) => {
+    const avgAvg = cc.avgs.reduce((a, b) => a + b, 0) / cc.avgs.length;
+    const compAvg = cc.comps.reduce((a, b) => a + b, 0) / cc.comps.length;
+
+    cc.avg = avgAvg.toFixed(2);
+    cc.comp = compAvg.toFixed(2);
+
+    cc.merged = mergeCalculations({ avg: cc.avg, comp: cc.comp });
+
+    const student = role_rounds.find(
+      (rr) => rr.role_type === cc.score_type
+    )?.students;
+
+    cc.student = {
+      id: student?.id,
+      name: student?.name,
+    };
+
+    delete cc.avgs;
+    delete cc.comps;
+  });
+
+  return combinedCalculations;
 }

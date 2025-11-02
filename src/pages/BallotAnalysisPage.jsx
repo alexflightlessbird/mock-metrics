@@ -4,18 +4,21 @@ import {
   Group,
   Space,
   Stack,
-  Table,
   Text,
   Tooltip,
+  Card as MantineCard,
+  Grid,
+  Flex,
+  Badge,
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
 import { useLocalStorage } from "@mantine/hooks";
-import ballotAverage from "../features/ballotAnalysis/utils/ballotAverage";
 import Card from "../common/components/card/Card";
-import { compileCalculations } from "../features/ballotAnalysis/utils/calculations";
+import { combineBallotsCalculations } from "../features/ballotAnalysis/utils/calculations";
 import { useState } from "react";
 import PageSection from "../common/components/PageSection";
+import RoleTable from "../features/ballotAnalysis/components/RoleTable";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -25,6 +28,7 @@ export default function BallotAnalysisPage() {
 
   const [selectedTournamentIds, setSelectedTournamentIds] = useState([]);
   const [selectedTeamIds, setSelectedTeamIds] = useState({});
+  const [neededTournamentData, setNeededTournamentData] = useState([]);
 
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysisRunning, setAnalysisRunning] = useState(false);
@@ -74,7 +78,7 @@ export default function BallotAnalysisPage() {
       selectedTournamentIds.includes(t.id)
     );
 
-    const neededTournamentData = selectedTournaments.map((t) => ({
+    const currentTournamentData = selectedTournaments.map((t) => ({
       area: t.area,
       case_id: t.case_id,
       id: t.id,
@@ -90,6 +94,7 @@ export default function BallotAnalysisPage() {
           year: tt.teams.year,
           rounds: t.rounds
             .filter((r) => r.team_id === tt.team_id)
+            .sort((a, b) => a.round_number - b.round_number)
             .map((r) => ({
               id: r.id,
               round_number: r.round_number,
@@ -110,22 +115,23 @@ export default function BallotAnalysisPage() {
                   name: rr.students.name,
                 },
               })),
-              ballots: r.ballots.map((b) => ({
-                id: b.id,
-                judge_name: b.judge_name,
-                average: ballotAverage(b.scores).overallAverage,
-                scores: b.scores.map((s) => ({
-                  id: s.id,
-                  score_type: s.score_type,
-                  score_value: s.score_value,
-                })),
-                calculations: compileCalculations(r.side, b),
-              })),
+              calculations: combineBallotsCalculations({
+                side: r.side,
+                ballots: r.ballots,
+                role_rounds: r.role_rounds,
+              }),
+              ballots: r.ballots.length,
             })),
         })),
     }));
 
-    console.log(neededTournamentData);
+    console.log(currentTournamentData);
+    setNeededTournamentData(currentTournamentData);
+
+    setTimeout(() => {
+      setAnalysisRunning(false);
+      setShowAnalysis(true);
+    }, 3000);
   };
 
   return (
@@ -222,24 +228,30 @@ export default function BallotAnalysisPage() {
             ? "Select at least one tournament"
             : Object.values(selectedTeamIds).some((ids) => ids.length === 0)
             ? "Select at least one team for each selected tournament"
+            : analysisRunning
+            ? "Analysis is currently running. Please wait."
+            : showAnalysis
+            ? "Analysis already run. Refresh to run again."
             : ""
         }
         disabled={
           selectedTournamentIds.length > 0 &&
-          !Object.values(selectedTeamIds).some((ids) => ids.length === 0)
+          !Object.values(selectedTeamIds).some((ids) => ids.length === 0) &&
+          (analysisRunning || !showAnalysis)
         }
         position="top"
       >
         <Button
           disabled={
             selectedTournamentIds.length === 0 ||
-            Object.values(selectedTeamIds).some((ids) => ids.length === 0)
+            Object.values(selectedTeamIds).some((ids) => ids.length === 0) ||
+            (!analysisRunning && showAnalysis)
           }
           onClick={() => {
-            setShowAnalysis(true);
             handleSubmit();
           }}
           mb="md"
+          loading={analysisRunning}
         >
           Run Analysis
         </Button>
@@ -260,7 +272,72 @@ export default function BallotAnalysisPage() {
 
           <Space h="md" />
 
-          <Table striped highlightOnHover></Table>
+          {neededTournamentData.map((t) => (
+            <div key={t.id}>
+              <Text size="lg" weight={600} mb="sm" tt="capitalize">
+                {t.name} ({t.year})
+              </Text>
+              {t.teams.map((team) => (
+                <div key={team.id}>
+                  <Text size="md" weight={500} mb="xs">
+                    {team.name} ({team.year})
+                  </Text>
+                  <Text size="sm" c="dimmed" mb="sm">
+                    Rounds Analyzed: {team.rounds.length} (
+                    {team.rounds.reduce((sum, r) => sum + r.ballots, 0)}{" "}
+                    ballots)
+                  </Text>
+                  <Grid>
+                    {team.rounds.map((round) => {
+                      return (
+                        <Grid.Col key={round.id} span={{ base: 12, lg: 6 }}>
+                          <Card>
+                            <MantineCard.Section
+                              withBorder
+                              inheritPadding
+                              py="sm"
+                            >
+                              <Flex justify="space-between" align="center">
+                                <Text fw={500}>
+                                  Round {round.round_number} -{" "}
+                                  {round.side.toUpperCase()}
+                                </Text>
+                                <Group gap="xs">
+                                  <Text size="sm" c="dimmed">
+                                    Ballots:
+                                  </Text>
+                                  <Badge
+                                    fz="sm"
+                                    color={
+                                      round.ballots == 0
+                                        ? "yellow"
+                                        : round.ballots > 1
+                                        ? "blue"
+                                        : "red"
+                                    }
+                                  >
+                                    {round.ballots}
+                                  </Badge>
+                                </Group>
+                              </Flex>
+                            </MantineCard.Section>
+
+                            <MantineCard.Section inheritPadding py="sm">
+                              <RoleTable
+                                role_rounds={round.role_rounds}
+                                witness_rounds={round.witness_rounds}
+                                side={round.side}
+                              />
+                            </MantineCard.Section>
+                          </Card>
+                        </Grid.Col>
+                      );
+                    })}
+                  </Grid>
+                </div>
+              ))}
+            </div>
+          ))}
         </PageSection>
       )}
     </BasePage>
