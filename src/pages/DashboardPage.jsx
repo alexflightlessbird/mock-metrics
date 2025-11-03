@@ -1,8 +1,4 @@
-import {
-  Container,
-  Text,
-  Flex,
-} from "@mantine/core";
+import { Container, Text, Flex } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import Loader from "../common/components/loader/GavelLoader";
@@ -22,7 +18,9 @@ export default function DashboardPage() {
 
   const [userName, setUserName] = useState("");
 
-  const { data: userDetails, isLoading: isLoadingUserDetails } = useUserDetails(user.id);
+  const { data: userDetails, isLoading: isLoadingUserDetails } = useUserDetails(
+    user.id
+  );
 
   useEffect(() => {
     if (

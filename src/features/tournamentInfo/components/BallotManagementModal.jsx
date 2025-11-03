@@ -7,7 +7,7 @@ import {
   Flex,
   Card,
   Group,
-  ScrollArea
+  ScrollArea,
 } from "@mantine/core";
 import { useBallotDetails } from "../../../common/hooks/useBallotDetails";
 import ShowIdText from "../../../common/components/ShowIdText";
@@ -24,18 +24,26 @@ export default function BallotManagementModal({
   caseType,
   role,
   trigger,
-  teamName
+  teamName,
 }) {
   const ballot = selected;
 
-  const { data: ballotDetails, isLoading: ballotLoading, deleteBallot } = useBallotDetails(ballot);
-  const { data: roundDetails, isLoading: roundLoading } = useRoundDetails(roundId);
+  const {
+    data: ballotDetails,
+    isLoading: ballotLoading,
+    deleteBallot,
+  } = useBallotDetails(ballot);
+  const { data: roundDetails, isLoading: roundLoading } =
+    useRoundDetails(roundId);
 
   if (ballotLoading || roundLoading) return;
 
   const scoreDisplay = (scoreType) => {
-    return ballotDetails?.scores?.find((s) => s.score_type === scoreType)?.score_value || "-";
-  }
+    return (
+      ballotDetails?.scores?.find((s) => s.score_type === scoreType)
+        ?.score_value || "-"
+    );
+  };
 
   return (
     <BaseModal
@@ -43,7 +51,7 @@ export default function BallotManagementModal({
       title={
         ballotLoading || roundLoading
           ? "Loading..."
-          : `Ballot Management (${teamName})` 
+          : `Ballot Management (${teamName})`
       }
       trigger={trigger}
       layer={1}
@@ -88,7 +96,7 @@ export default function BallotManagementModal({
                 onSubmitFunction={() => {
                   deleteBallot({
                     ballotId: ballotDetails?.id,
-                    roundId
+                    roundId,
                   });
                 }}
                 entity={{
@@ -110,12 +118,8 @@ export default function BallotManagementModal({
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th width="25%">Role</Table.Th>
-                  <Table.Th width="37.5%">
-                    {formatSide("p", caseType)}
-                  </Table.Th>
-                  <Table.Th width="37.5%">
-                    {formatSide("d", caseType)}
-                  </Table.Th>
+                  <Table.Th width="37.5%">{formatSide("p", caseType)}</Table.Th>
+                  <Table.Th width="37.5%">{formatSide("d", caseType)}</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -133,7 +137,9 @@ export default function BallotManagementModal({
                       <b>
                         P Witness #1 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "p1")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "p1"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -160,7 +166,9 @@ export default function BallotManagementModal({
                       <b>
                         P Witness #2 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "p2")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "p2"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -185,9 +193,11 @@ export default function BallotManagementModal({
                   <Table.Td colSpan={3}>
                     <i>
                       <b>
-                        P Witnesss #3 - {" "}
+                        P Witnesss #3 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "p3")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "p3"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -217,7 +227,9 @@ export default function BallotManagementModal({
                       <b>
                         D Witness #1 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "d1")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "d1"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -244,7 +256,9 @@ export default function BallotManagementModal({
                       <b>
                         D Witness #2 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "d2")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "d2"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -271,7 +285,9 @@ export default function BallotManagementModal({
                       <b>
                         D Witness #3 -{" "}
                         {
-                          roundDetails?.witness_rounds.find((wr) => wr.role_type === "d3")?.witnesses?.name
+                          roundDetails?.witness_rounds.find(
+                            (wr) => wr.role_type === "d3"
+                          )?.witnesses?.name
                         }
                       </b>
                     </i>
@@ -306,5 +322,5 @@ export default function BallotManagementModal({
         </Card>
       </PageSection>
     </BaseModal>
-  )
+  );
 }

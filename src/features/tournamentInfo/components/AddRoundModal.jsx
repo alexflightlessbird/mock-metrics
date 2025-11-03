@@ -26,7 +26,7 @@ export default function AddRoundModal({
 }) {
   const [activePage, setActivePage] = useState(0);
   const [formData, setFormData] = useSessionStorage({
-    key: `add-round-form-${teamId}`,
+    key: `add-round-form-${teamId}-${tournamentId}`,
     defaultValue: {
       roundNumber: null,
       side: null,
@@ -429,7 +429,7 @@ export default function AddRoundModal({
         onSuccess: () => {
           if (onClose) onClose();
           handleReset();
-          closeModal(`add-round-form-${teamId}`);
+          closeModal(`add-round-form-${teamId}-${tournamentId}`);
         },
       }
     );
@@ -1037,7 +1037,7 @@ export default function AddRoundModal({
 
   return (
     <BaseModal
-      modalId={`add-round-form-${teamId}`}
+      modalId={`add-round-form-${teamId}-${tournamentId}`}
       title={caseLoading || studentsLoading ? "Loading..." : "Add Round"}
       trigger={trigger}
       onClose={onClose}

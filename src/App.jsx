@@ -29,6 +29,7 @@ import TournamentDashboard from "./pages/TournamentDashboard";
 import TournamentInfoPage from "./pages/TournamentInfoPage";
 import TeamInfoPage from "./pages/TeamInfoPage";
 import StudentInfoPage from "./pages/StudentInfoPage";
+import BallotAnalysisPage from "./pages/BallotAnalysisPage";
 
 export default function App({ onReady }) {
   const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
@@ -68,6 +69,20 @@ export default function App({ onReady }) {
               )
             }
           />
+          <Route
+            path="/ba"
+            element={
+              !user ? (
+                <Error401 />
+              ) : !selectedSchoolId ? (
+                <Navigate to="/" replace />
+              ) : (
+                <NavLayout>
+                  <BallotAnalysisPage />
+                </NavLayout>
+              )
+            }
+          />
           <Route path="/school">
             <Route
               index
@@ -83,7 +98,7 @@ export default function App({ onReady }) {
                 )
               }
             />
-            <Route 
+            <Route
               path="t/:id"
               element={
                 !user ? (
@@ -91,7 +106,7 @@ export default function App({ onReady }) {
                 ) : !selectedSchoolId ? (
                   <Navigate to="/" replace />
                 ) : (
-                  <NavLayout>   
+                  <NavLayout>
                     <TeamInfoPage />
                   </NavLayout>
                 )

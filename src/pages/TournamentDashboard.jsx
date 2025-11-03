@@ -11,7 +11,7 @@ import {
   Checkbox,
   Menu,
   Button,
-  Divider
+  Divider,
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useSchoolTournaments } from "../common/hooks/useSchoolDetails";
@@ -23,7 +23,13 @@ import { useGetRole } from "../common/hooks/useGetRole";
 import { useAuth } from "../context/AuthContext";
 import AddTournamentModal from "../features/tournamentDashboard/components/AddTournamentModal";
 import AddButton from "../common/components/AddButton";
-import { LuArchive, LuArchiveRestore, LuFilter, LuSearch, LuX } from "react-icons/lu";
+import {
+  LuArchive,
+  LuArchiveRestore,
+  LuFilter,
+  LuSearch,
+  LuX,
+} from "react-icons/lu";
 import {
   useArchiveTournament,
   useUnarchiveTournament,
@@ -46,7 +52,7 @@ export default function TournamentDashboard() {
     { label: "Nationals", value: "nationals", checked: true },
     { label: "Rookie Rumble", value: "rookie rumble", checked: true },
     { label: "OLT", value: "olt", checked: true },
-    { label: "Other", value: "other", checked: true }
+    { label: "Other", value: "other", checked: true },
   ]);
 
   const { role, isLoading: roleLoading } = useGetRole(
@@ -61,7 +67,9 @@ export default function TournamentDashboard() {
   const [filter, setFilter] = useState("active");
 
   const filteredTournaments = useMemo(() => {
-    const selectedAreas = areaFilter.filter((area) => area.checked).map((area) => area.value);
+    const selectedAreas = areaFilter
+      .filter((area) => area.checked)
+      .map((area) => area.value);
 
     const filteredActive = allTournaments?.filter((t) => t.is_active);
     const filteredInactive = allTournaments?.filter((t) => !t.is_active);
@@ -69,14 +77,18 @@ export default function TournamentDashboard() {
     const filterBySearchAndArea = (tournaments) => {
       let result = tournaments;
       if (searchValue) {
-        result = result?.filter((t) => t.name.toLowerCase().includes(searchValue.toLowerCase()));
+        result = result?.filter((t) =>
+          t.name.toLowerCase().includes(searchValue.toLowerCase())
+        );
       }
       if (selectedAreas.length > 0) {
         result = result?.filter((t) => selectedAreas.includes(t.area));
       }
-      return result?.sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
-    }
-    
+      return result?.sort(
+        (a, b) => b.year - a.year || a.name.localeCompare(b.name)
+      );
+    };
+
     switch (filter) {
       case "active":
         return filterBySearchAndArea(filteredActive);
@@ -95,10 +107,16 @@ export default function TournamentDashboard() {
       <Checkbox
         checked={area.checked}
         label={area.label}
-        onChange={(e) => areaFilterHandlers.setItemProp(index, "checked", e.currentTarget.checked)}
+        onChange={(e) =>
+          areaFilterHandlers.setItemProp(
+            index,
+            "checked",
+            e.currentTarget.checked
+          )
+        }
       />
     </Menu.Item>
-  ))
+  ));
 
   if (tournamentsLoading || roleLoading)
     return (
@@ -128,7 +146,12 @@ export default function TournamentDashboard() {
         mb="md"
         align="center"
       >
-        <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+        <Flex
+          direction="row"
+          flex={1}
+          gap="xs"
+          w={isMobile ? "100%" : undefined}
+        >
           <TextInput
             id={"search-tournament"}
             w={isMobile ? "100%" : undefined}
@@ -163,7 +186,14 @@ export default function TournamentDashboard() {
                   checked={allChecked}
                   indeterminate={indeterminate}
                   label="All Areas"
-                  onChange={() => areaFilterHandlers.setState(areaFilter.map((area) => ({ ...area, checked: !allChecked })))}
+                  onChange={() =>
+                    areaFilterHandlers.setState(
+                      areaFilter.map((area) => ({
+                        ...area,
+                        checked: !allChecked,
+                      }))
+                    )
+                  }
                 />
               </Menu.Item>
               <Divider />
@@ -184,7 +214,13 @@ export default function TournamentDashboard() {
       </Flex>
       {!filteredTournaments || filteredTournaments.length === 0 ? (
         <Text ta="center" c="dimmed" mt="md">
-          No {filter === "inactive" ? " archived" : filter === "active" ? " current" : ""} tournaments found.
+          No{" "}
+          {filter === "inactive"
+            ? " archived"
+            : filter === "active"
+            ? " current"
+            : ""}{" "}
+          tournaments found.
         </Text>
       ) : (
         <Grid>

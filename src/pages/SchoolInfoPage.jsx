@@ -23,8 +23,14 @@ import {
   useSchoolTeams,
   useSchoolStudents,
 } from "../common/hooks/useSchoolDetails";
-import { useArchiveStudent, useUnarchiveStudent } from "../features/schoolInfo/hooks/useArchiveStudent";
-import { useArchiveTeam, useUnarchiveTeam } from "../features/schoolInfo/hooks/useArchiveTeam";
+import {
+  useArchiveStudent,
+  useUnarchiveStudent,
+} from "../features/schoolInfo/hooks/useArchiveStudent";
+import {
+  useArchiveTeam,
+  useUnarchiveTeam,
+} from "../features/schoolInfo/hooks/useArchiveTeam";
 import { useMobile } from "../context/MobileContext";
 import { useLocalStorage } from "@mantine/hooks";
 import { capitalize } from "../common/utils/helpers";
@@ -47,7 +53,7 @@ export default function SchoolInfoPage() {
 
   const [teamSearchValue, setTeamSearchValue] = useState("");
   const [teamFilter, setTeamFilter] = useState("active");
-  
+
   const [studentSearchValue, setStudentSearchValue] = useState("");
   const [studentFilter, setStudentFilter] = useState("active");
 
@@ -81,7 +87,7 @@ export default function SchoolInfoPage() {
     useSchoolStudents(selectedSchoolId);
   const { mutate: archiveStudent } = useArchiveStudent();
   const { mutate: unarchiveStudent } = useUnarchiveStudent();
-  
+
   const { data: users = [], isLoading: usersLoading = true } =
     useSchoolUsers(selectedSchoolId);
 
@@ -107,10 +113,14 @@ export default function SchoolInfoPage() {
     const filterBySearch = (teams) => {
       let result = teams;
       if (teamSearchValue) {
-        result = result?.filter((t) => t.name.toLowerCase().includes(teamSearchValue.toLowerCase()));
+        result = result?.filter((t) =>
+          t.name.toLowerCase().includes(teamSearchValue.toLowerCase())
+        );
       }
-      return result?.sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
-    }
+      return result?.sort(
+        (a, b) => b.year - a.year || a.name.localeCompare(b.name)
+      );
+    };
 
     switch (teamFilter) {
       case "active":
@@ -129,10 +139,12 @@ export default function SchoolInfoPage() {
     const filterBySearch = (students) => {
       let result = students;
       if (studentSearchValue) {
-        result = result?.filter((s) => s.name.toLowerCase().includes(studentSearchValue.toLowerCase()));
+        result = result?.filter((s) =>
+          s.name.toLowerCase().includes(studentSearchValue.toLowerCase())
+        );
       }
       return result.sort((a, b) => a.name.localeCompare(b.name));
-    }
+    };
 
     switch (studentFilter) {
       case "active":
@@ -188,7 +200,13 @@ export default function SchoolInfoPage() {
 
   const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
 
-  if (schoolLoading || isLoading || teamsLoading || studentsLoading || usersLoading)
+  if (
+    schoolLoading ||
+    isLoading ||
+    teamsLoading ||
+    studentsLoading ||
+    usersLoading
+  )
     return (
       <BasePage titleText="School Loading...">
         <Stack>
@@ -309,9 +327,29 @@ export default function SchoolInfoPage() {
       <Space h="md" />
 
       <PageSection title="teams" collapsible={true} defaultOpen={true}>
-        <SegmentedControl fullWidth value={teamFilter} onChange={setTeamFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
-        <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
-          <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+        <SegmentedControl
+          fullWidth
+          value={teamFilter}
+          onChange={setTeamFilter}
+          data={[
+            { label: "All", value: "all" },
+            { label: "Current", value: "active" },
+            { label: "Archived", value: "inactive" },
+          ]}
+          mb="md"
+        />
+        <Flex
+          direction={isMobile ? "column" : "row"}
+          gap="sm"
+          mb="md"
+          align="center"
+        >
+          <Flex
+            direction="row"
+            flex={1}
+            gap="xs"
+            w={isMobile ? "100%" : undefined}
+          >
             <TextInput
               id={"search-team"}
               w={isMobile ? "100%" : undefined}
@@ -339,16 +377,20 @@ export default function SchoolInfoPage() {
             <AddTeamModal
               schoolId={selectedSchoolId}
               trigger={
-                <AddButton w={isMobile ? "100%" : "auto"}>
-                  Add Team
-                </AddButton>
+                <AddButton w={isMobile ? "100%" : "auto"}>Add Team</AddButton>
               }
             />
           )}
         </Flex>
         {!filteredTeams || filteredTeams.length === 0 ? (
           <Text ta="center" c="dimmed" mt="md">
-            No {teamFilter === "inactive" ? " archived" : teamFilter === "active" ? " current" : ""} teams found.
+            No{" "}
+            {teamFilter === "inactive"
+              ? " archived"
+              : teamFilter === "active"
+              ? " current"
+              : ""}{" "}
+            teams found.
           </Text>
         ) : (
           <Grid>
@@ -398,9 +440,29 @@ export default function SchoolInfoPage() {
       <Space h="md" />
 
       <PageSection title="students" collapsible={true} defaultOpen={true}>
-        <SegmentedControl fullWidth value={studentFilter} onChange={setStudentFilter} data={[ { label: "All", value: "all" }, { label: "Current", value: "active" }, { label: "Archived", value: "inactive" } ]} mb="md" />
-        <Flex direction={isMobile ? "column" : "row"} gap="sm" mb="md" align="center">
-          <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+        <SegmentedControl
+          fullWidth
+          value={studentFilter}
+          onChange={setStudentFilter}
+          data={[
+            { label: "All", value: "all" },
+            { label: "Current", value: "active" },
+            { label: "Archived", value: "inactive" },
+          ]}
+          mb="md"
+        />
+        <Flex
+          direction={isMobile ? "column" : "row"}
+          gap="sm"
+          mb="md"
+          align="center"
+        >
+          <Flex
+            direction="row"
+            flex={1}
+            gap="xs"
+            w={isMobile ? "100%" : undefined}
+          >
             <TextInput
               id={"search-student"}
               w={isMobile ? "100%" : undefined}
@@ -437,7 +499,13 @@ export default function SchoolInfoPage() {
         </Flex>
         {!filteredStudents || filteredStudents.length === 0 ? (
           <Text ta="center" c="dimmed" mt="md">
-            No {studentFilter === "inactive" ? " archived" : studentFilter === "active" ? " current" : ""} students found.
+            No{" "}
+            {studentFilter === "inactive"
+              ? " archived"
+              : studentFilter === "active"
+              ? " current"
+              : ""}{" "}
+            students found.
           </Text>
         ) : (
           <Grid>
@@ -448,7 +516,9 @@ export default function SchoolInfoPage() {
                     <Title order={5}>{s.name}</Title>
                     {(role === "admin" || role === "primary") && (
                       <Tooltip
-                        label={s.is_active ? "Archive Student" : "Unarchive Student"}
+                        label={
+                          s.is_active ? "Archive Student" : "Unarchive Student"
+                        }
                         withArrow
                       >
                         <ActionIcon

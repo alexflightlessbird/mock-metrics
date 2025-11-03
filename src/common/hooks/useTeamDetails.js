@@ -54,15 +54,12 @@ export function useTeamDetails(teamId, schoolId) {
         title: "Failed to update team",
         message: error.message,
       });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async ({ teamId, schoolId }) => {
-      const { error } = await supabase
-        .from("teams")
-        .delete()
-        .eq("id", teamId);
+      const { error } = await supabase.from("teams").delete().eq("id", teamId);
       if (error) throw error;
     },
     onSuccess: (data, variables) => {
@@ -126,7 +123,10 @@ export function useTeamStudents(teamId) {
       showSuccess({ message: "Student removed from team successfully" });
     },
     onError: (error) => {
-      showError({ message: error.message, title: "Failed to remove student from team" });
+      showError({
+        message: error.message,
+        title: "Failed to remove student from team",
+      });
     },
   });
 
@@ -158,7 +158,10 @@ export function useTeamStudents(teamId) {
           .eq("team_id", existingActive.team_id);
         if (removeExistingError) throw removeExistingError;
 
-        queryClient.invalidateQueries(["team-students", existingActive.team_id]);
+        queryClient.invalidateQueries([
+          "team-students",
+          existingActive.team_id,
+        ]);
         queryClient.invalidateQueries(["student-teams", studentId]);
       }
 
@@ -182,7 +185,10 @@ export function useTeamStudents(teamId) {
       showSuccess({ message: "Student added to team successfully" });
     },
     onError: (error) => {
-      showError({ message: error.message, title: "Failed to add student to team" });
+      showError({
+        message: error.message,
+        title: "Failed to add student to team",
+      });
     },
   });
 
