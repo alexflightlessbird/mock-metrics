@@ -5,10 +5,10 @@ export default function ballotAverage(scores) {
 
   const pTotal = scores
     .filter((s) => s.score_type.startsWith("p"))
-    .reduce((sum, s) => sum + s.score_value, 0);
+    .reduce((sum, s) => sum + Number(s.score_value), 0);
   const dTotal = scores
     .filter((s) => s.score_type.startsWith("d"))
-    .reduce((sum, s) => sum + s.score_value, 0);
+    .reduce((sum, s) => sum + Number(s.score_value), 0);
 
   const pAverage = pTotal / 14;
   const dAverage = dTotal / 14;

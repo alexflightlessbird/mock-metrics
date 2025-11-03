@@ -9,7 +9,7 @@ import {
   findOpeningAttorney,
 } from "../utils/filterRoles";
 
-export default function RoleTable({ role_rounds, witness_rounds, side }) {
+export default function RoundRoleTable({ role_rounds, witness_rounds, side }) {
   const openingAttorney = findOpeningAttorney({ role_rounds, side })?.student;
   const closingAttorney = findClosingAttorney({ role_rounds, side })?.student;
   const middleAttorney = findMiddleAttorney({ role_rounds, side })?.student;
@@ -57,7 +57,13 @@ export default function RoleTable({ role_rounds, witness_rounds, side }) {
   };
 
   return (
-    <Table striped highlightOnHover withTableBorder fz="xs">
+    <Table
+      striped
+      highlightOnHover
+      withTableBorder
+      fz="xs"
+      style={{ userSelect: "none", WebkitUserSelect: "none" }}
+    >
       <Table.Thead>
         <Table.Tr>
           <Table.Th></Table.Th>

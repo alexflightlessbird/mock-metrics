@@ -1,9 +1,9 @@
-export function roundAttorneys({ role_rounds, side }) {
+function roundAttorneys({ role_rounds, side }) {
   const attorneys = role_rounds.filter((rr) => {
     if (side === "p") {
       return ["p2", "p5", "p8"].includes(rr.role_type);
     } else if (side === "d") {
-      return ["d2", "d3", "d4"].includes(rr.role_type);
+      return ["d5", "d8", "d11"].includes(rr.role_type);
     }
     return false;
   });
@@ -11,12 +11,12 @@ export function roundAttorneys({ role_rounds, side }) {
   return attorneys;
 }
 
-export function roundWitnesses({ role_rounds, side }) {
+function roundWitnesses({ role_rounds, side }) {
   const witnesses = role_rounds.filter((rr) => {
     if (side === "p") {
       return ["p3", "p6", "p9"].includes(rr.role_type);
     } else if (side === "d") {
-      return ["d5", "d8", "d11"].includes(rr.role_type);
+      return ["d6", "d9", "d12"].includes(rr.role_type);
     }
     return false;
   });
@@ -24,12 +24,28 @@ export function roundWitnesses({ role_rounds, side }) {
   return witnesses;
 }
 
+export function roundStudents({ role_rounds, side }) {
+  const attorneys = roundAttorneys({ role_rounds, side });
+  const witnesses = roundWitnesses({ role_rounds, side });
+
+  const students = {
+    attorneys: attorneys.sort((a, b) =>
+      a.student.name.localeCompare(b.student.name)
+    ),
+    witnesses: witnesses.sort((a, b) =>
+      a.student.name.localeCompare(b.student.name)
+    ),
+  };
+
+  return students;
+}
+
 export function findOpeningAttorney({ role_rounds, side }) {
-  return role_rounds.find((rr) => rr.role_type === `${side}1`);
+  return role_rounds?.find((rr) => rr.role_type === `${side}1`);
 }
 
 export function findClosingAttorney({ role_rounds, side }) {
-  return role_rounds.find((rr) => rr.role_type === `${side}14`);
+  return role_rounds?.find((rr) => rr.role_type === `${side}14`);
 }
 
 export function findMiddleAttorney({ role_rounds, side }) {
@@ -81,7 +97,7 @@ export function findAttorneyDirectsWitnesses({
   const attorneyDirectsWitnesses = attorneys.map((att) => {
     return {
       ...att,
-      witness: witness_rounds.find((wr) => {
+      witness: witness_rounds?.find((wr) => {
         if (att.role_type === "p2") return wr.role_type === "p1";
         if (att.role_type === "p5") return wr.role_type === "p2";
         if (att.role_type === "p8") return wr.role_type === "p3";
@@ -89,7 +105,7 @@ export function findAttorneyDirectsWitnesses({
         if (att.role_type === "d8") return wr.role_type === "d2";
         if (att.role_type === "d11") return wr.role_type === "d3";
       }),
-      witness_student: role_rounds.find((wr) => {
+      witness_student: role_rounds?.find((wr) => {
         if (att.role_type === "p2") return wr.role_type === "p3";
         if (att.role_type === "p5") return wr.role_type === "p6";
         if (att.role_type === "p8") return wr.role_type === "p9";
@@ -113,7 +129,7 @@ export function findAttorneyCrossesWitnesses({
   const attorneyCrossesWitnesses = attorneys.map((att) => {
     return {
       ...att,
-      witness: witness_rounds.find((wr) => {
+      witness: witness_rounds?.find((wr) => {
         if (att.role_type === "p11") return wr.role_type === "d1";
         if (att.role_type === "p12") return wr.role_type === "d2";
         if (att.role_type === "p13") return wr.role_type === "d3";
@@ -131,7 +147,7 @@ export function attorneyDirectsHelpers({
   attorneyDirectsWitnesses,
   attorneyId,
 }) {
-  const selected = attorneyDirectsWitnesses.find(
+  const selected = attorneyDirectsWitnesses?.find(
     (adw) => adw.student.id === attorneyId
   );
 
@@ -146,12 +162,59 @@ export function attorneyCrossesHelpers({
   attorneyCrossesWitnesses,
   attorneyId,
 }) {
-  const selected = attorneyCrossesWitnesses.find(
-    (adw) => adw.student.id === attorneyId
+  const selected = attorneyCrossesWitnesses?.find(
+    (acw) => acw.student.id === attorneyId
   );
 
   const witnessName = selected?.witness?.witness?.name;
   const crossOrder = selected?.witness?.role_type?.slice(-1);
 
   return { witnessName, crossOrder };
+}
+
+export function attorneyWitnessHelper({
+  attorneyDirectsWitnesses,
+  attorneyCrossesWitnesses,
+  attorneyId,
+}) {
+  const selectedDirect = attorneyDirectsWitnesses?.find(
+    (adw) => adw.student.id === attorneyId
+  );
+  const selectedCross = attorneyCrossesWitnesses?.find(
+    (acw) => acw.student.id === attorneyId
+  );
+
+  const directWitness = selectedDirect?.witness?.witness;
+  const crossWitness = selectedCross?.witness?.witness;
+
+  return { directWitness, crossWitness };
+}
+
+export function witnessWitnessHelper({
+  role_rounds,
+  witness_rounds,
+  witnessId,
+}) {
+  const selectedWitness = role_rounds
+    .sort(
+      (a, b) => Number(a.role_type.slice(-1)) - Number(b.role_type.slice(-1))
+    )
+    .filter((rr) => rr.student.id === witnessId);
+
+  switch (selectedWitness[0]?.role_type) {
+    case "p3":
+      return witness_rounds?.find((wr) => wr.role_type === "p1")?.witness;
+    case "p6":
+      return witness_rounds?.find((wr) => wr.role_type === "p2")?.witness;
+    case "p9":
+      return witness_rounds?.find((wr) => wr.role_type === "p3")?.witness;
+    case "d6":
+      return witness_rounds?.find((wr) => wr.role_type === "d1")?.witness;
+    case "d9":
+      return witness_rounds?.find((wr) => wr.role_type === "d2")?.witness;
+    case "d12":
+      return witness_rounds?.find((wr) => wr.role_type === "d3")?.witness;
+    default:
+      return null;
+  }
 }

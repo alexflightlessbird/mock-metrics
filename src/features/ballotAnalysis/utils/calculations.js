@@ -2,13 +2,15 @@ import ballotAverageCalc from "./ballotAverage";
 
 export function directCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
-  const oneScore = ballot.scores.find(
-    (s) => s.score_type === oneToCalculate
-  ).score_value;
+  const oneScore = parseInt(
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+  );
 
   const directAvg = (oneScore - ballotAverage).toFixed(2);
 
-  let otherSideAvg = 0;
+  let otherSideScore1;
+  let otherSideScore2;
+  let otherSideScore3;
 
   if (oneToCalculate.startsWith("p")) {
     if (
@@ -16,29 +18,17 @@ export function directCalculation(oneToCalculate, ballot) {
       oneToCalculate === "p5" ||
       oneToCalculate === "p8"
     ) {
-      const otherSideScore1 = ballot.scores.find((s) => s.score_type === "d5");
-      const otherSideScore2 = ballot.scores.find((s) => s.score_type === "d8");
-      const otherSideScore3 = ballot.scores.find((s) => s.score_type === "d11");
-
-      otherSideAvg =
-        (otherSideScore1.score_value +
-          otherSideScore2.score_value +
-          otherSideScore3.score_value) /
-        3;
+      otherSideScore1 = ballot.scores.find((s) => s.score_type === "d5");
+      otherSideScore2 = ballot.scores.find((s) => s.score_type === "d8");
+      otherSideScore3 = ballot.scores.find((s) => s.score_type === "d11");
     } else if (
       oneToCalculate === "p3" ||
       oneToCalculate === "p6" ||
       oneToCalculate === "p9"
     ) {
-      const otherSideScore1 = ballot.scores.find((s) => s.score_type === "d6");
-      const otherSideScore2 = ballot.scores.find((s) => s.score_type === "d9");
-      const otherSideScore3 = ballot.scores.find((s) => s.score_type === "d12");
-
-      otherSideAvg =
-        (otherSideScore1.score_value +
-          otherSideScore2.score_value +
-          otherSideScore3.score_value) /
-        3;
+      otherSideScore1 = ballot.scores.find((s) => s.score_type === "d6");
+      otherSideScore2 = ballot.scores.find((s) => s.score_type === "d9");
+      otherSideScore3 = ballot.scores.find((s) => s.score_type === "d12");
     }
   } else if (oneToCalculate.startsWith("d")) {
     if (
@@ -46,45 +36,39 @@ export function directCalculation(oneToCalculate, ballot) {
       oneToCalculate === "d8" ||
       oneToCalculate === "d11"
     ) {
-      const otherSideScore1 = ballot.scores.find((s) => s.score_type === "p2");
-      const otherSideScore2 = ballot.scores.find((s) => s.score_type === "p5");
-      const otherSideScore3 = ballot.scores.find((s) => s.score_type === "p8");
-
-      otherSideAvg =
-        (otherSideScore1.score_value +
-          otherSideScore2.score_value +
-          otherSideScore3.score_value) /
-        3;
+      otherSideScore1 = ballot.scores.find((s) => s.score_type === "p2");
+      otherSideScore2 = ballot.scores.find((s) => s.score_type === "p5");
+      otherSideScore3 = ballot.scores.find((s) => s.score_type === "p8");
     } else if (
       oneToCalculate === "d6" ||
       oneToCalculate === "d9" ||
       oneToCalculate === "d12"
     ) {
-      const otherSideScore1 = ballot.scores.find((s) => s.score_type === "p3");
-      const otherSideScore2 = ballot.scores.find((s) => s.score_type === "p6");
-      const otherSideScore3 = ballot.scores.find((s) => s.score_type === "p9");
-
-      otherSideAvg =
-        (otherSideScore1.score_value +
-          otherSideScore2.score_value +
-          otherSideScore3.score_value) /
-        3;
+      otherSideScore1 = ballot.scores.find((s) => s.score_type === "p3");
+      otherSideScore2 = ballot.scores.find((s) => s.score_type === "p6");
+      otherSideScore3 = ballot.scores.find((s) => s.score_type === "p9");
     }
   }
+
+  const otherSideAvg =
+    (parseInt(otherSideScore1.score_value) +
+      parseInt(otherSideScore2.score_value) +
+      parseInt(otherSideScore3.score_value)) /
+    3;
 
   const directComp = oneScore - otherSideAvg.toFixed(2);
 
   return {
-    directAvg,
-    directComp,
+    avg: parseFloat(directAvg),
+    comp: parseFloat(directComp),
   };
 }
 
 export function crossCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
-  const oneScore = ballot.scores.find(
-    (s) => s.score_type === oneToCalculate
-  ).score_value;
+  const oneScore = parseInt(
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+  );
 
   const crossAvg = (oneScore - ballotAverage).toFixed(2);
 
@@ -92,64 +76,64 @@ export function crossCalculation(oneToCalculate, ballot) {
 
   switch (oneToCalculate) {
     case "p4":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d2"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d2").score_value
+      );
       break;
     case "p7":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d3"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d3").score_value
+      );
       break;
     case "p10":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d4"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d4").score_value
+      );
       break;
     case "p11":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d7"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d7").score_value
+      );
       break;
     case "p12":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d10"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d10").score_value
+      );
       break;
     case "p13":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d13"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d13").score_value
+      );
       break;
     case "d2":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p4"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p4").score_value
+      );
       break;
     case "d3":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p7"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p7").score_value
+      );
       break;
     case "d4":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p10"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p10").score_value
+      );
       break;
     case "d7":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p11"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p11").score_value
+      );
       break;
     case "d10":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p12"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p12").score_value
+      );
       break;
     case "d13":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p13"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p13").score_value
+      );
       break;
     default:
       otherSideComp = 0;
@@ -158,16 +142,16 @@ export function crossCalculation(oneToCalculate, ballot) {
   const crossComp = oneScore - otherSideComp;
 
   return {
-    crossAvg,
-    crossComp,
+    avg: parseFloat(crossAvg),
+    comp: parseFloat(crossComp),
   };
 }
 
 export function speechCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
-  const oneScore = ballot.scores.find(
-    (s) => s.score_type === oneToCalculate
-  ).score_value;
+  const oneScore = parseInt(
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+  );
 
   const speechAvg = (oneScore - ballotAverage).toFixed(2);
 
@@ -175,24 +159,24 @@ export function speechCalculation(oneToCalculate, ballot) {
 
   switch (oneToCalculate) {
     case "p1":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d1"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d1").score_value
+      );
       break;
     case "p14":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "d14"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "d14").score_value
+      );
       break;
     case "d1":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p1"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p1").score_value
+      );
       break;
     case "d14":
-      otherSideComp = ballot.scores.find(
-        (s) => s.score_type === "p14"
-      ).score_value;
+      otherSideComp = parseInt(
+        ballot.scores.find((s) => s.score_type === "p14").score_value
+      );
       break;
     default:
       otherSideComp = 0;
@@ -201,8 +185,8 @@ export function speechCalculation(oneToCalculate, ballot) {
   const speechComp = oneScore - otherSideComp;
 
   return {
-    speechAvg,
-    speechComp,
+    avg: parseFloat(speechAvg),
+    comp: parseFloat(speechComp),
   };
 }
 
@@ -273,22 +257,19 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
 
   ballots.forEach((ballot) => {
     const ballotCalculations = compileCalculations(side, ballot);
+
     ballotCalculations.forEach((bc) => {
-      const existing = combinedCalculations.find(
+      const existing = combinedCalculations?.find(
         (cc) => cc.score_type === bc.score_type
       );
       if (existing) {
-        existing.avgs.push(
-          parseFloat(bc.directAvg || bc.crossAvg || bc.speechAvg)
-        );
-        existing.comps.push(
-          parseFloat(bc.directComp || bc.crossComp || bc.speechComp)
-        );
+        existing.avgs.push(parseFloat(bc.avg));
+        existing.comps.push(parseFloat(bc.comp));
       } else {
         combinedCalculations.push({
           score_type: bc.score_type,
-          avgs: [parseFloat(bc.directAvg || bc.crossAvg || bc.speechAvg)],
-          comps: [parseFloat(bc.directComp || bc.crossComp || bc.speechComp)],
+          avgs: [parseFloat(bc.avg)],
+          comps: [parseFloat(bc.comp)],
         });
       }
     });
@@ -317,4 +298,37 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
   });
 
   return combinedCalculations;
+}
+
+export function fullTournamentCalculations({ tournament }) {
+  const tournamentTeams = tournament?.teamScores;
+
+  const allAttorneyCalculations = [];
+  const allWitnessCalculations = [];
+
+  tournamentTeams?.forEach((team) => {
+    const attorneys = team.scores.dAttorneyScores.concat(
+      team.scores.pAttorneyScores
+    );
+    const witnesses = team.scores.dWitnessScores.concat(
+      team.scores.pWitnessScores
+    );
+
+    attorneys.forEach((attorney) => {
+      attorney.teamName = team.teamName;
+      attorney.teamId = team.teamId;
+    });
+    witnesses.forEach((witness) => {
+      witness.teamName = team.teamName;
+      witness.teamId = team.teamId;
+    });
+
+    allAttorneyCalculations.push(...attorneys);
+    allWitnessCalculations.push(...witnesses);
+  });
+
+  return {
+    attorneys: allAttorneyCalculations,
+    witnesses: allWitnessCalculations,
+  };
 }

@@ -79,7 +79,6 @@ export default function App({ onReady }) {
               ) : (
                 <NavLayout>
                   <BallotAnalysisPage />
-                  <BetaOverlay />
                 </NavLayout>
               )
             }

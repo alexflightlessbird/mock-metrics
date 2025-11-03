@@ -2,7 +2,13 @@ import { Card as MantineCard } from "@mantine/core";
 import styles from "./Card.module.css";
 import { useNavigate } from "react-router-dom";
 
-export default function Card({ href, children, onClick, ...props }) {
+export default function Card({
+  href,
+  children,
+  onClick,
+  expandWhenHover = true,
+  ...props
+}) {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -33,7 +39,7 @@ export default function Card({ href, children, onClick, ...props }) {
       shadow="md"
       radius="md"
       padding="lg"
-      className={styles.card}
+      className={expandWhenHover ? styles.card : styles.nonExpandableCard}
       component="div"
       onClick={handleClick}
       onKeyDown={(e) => {

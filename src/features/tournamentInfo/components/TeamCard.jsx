@@ -170,16 +170,14 @@ export default function TeamCard({
                 />
               )}
             {showRounds && sortedResults.length > 0 && (
-              <>
-                <RoundTable
-                  data={sortedResults}
-                  caseType={caseType}
-                  role={role}
-                  refreshBallots={refreshBallots}
-                  tournamentStatus={tournamentStatus}
-                  teamName={team.teams.name}
-                />
-              </>
+              <RoundTable
+                data={sortedResults}
+                caseType={caseType}
+                role={role}
+                refreshBallots={refreshBallots}
+                tournamentStatus={tournamentStatus}
+                teamName={team.teams.name}
+              />
             )}
             {showRounds && sortedResults.length == 0 && (
               <Text c="dimmed">No rounds associated with this team.</Text>
