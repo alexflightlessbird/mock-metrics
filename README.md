@@ -4,14 +4,16 @@
 *Data-driven insights to elevate your AMTA performance*
 
 [![Contributing](https://img.shields.io/badge/Contributions-Welcome-%23FF8300)](CONTRIBUTING.md)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Security](https://img.shields.io/badge/Security-Policy-%2344CC11)](SECURITY.md)
 
 ![MockMetrics Screenshot](https://via.placeholder.com/800x400?text=MockMetrics+UI+Screenshot)  
 *(Replace with actual screenshot)*
 
 ## 🔍 What is MockMetrics?
+
 A specialized analytics platform that helps **college mock trial teams**:
+
 - 📊 Visualize scoring patterns from AMTA ballots
 - 🎯 Identify strengths/weaknesses across case details, witnesses, and attorneys
 - 🔄 Compare performance across tournaments
@@ -20,22 +22,26 @@ A specialized analytics platform that helps **college mock trial teams**:
 *Note: This is an independent tool not affiliated with the American Mock Trial Association (AMTA).*
 
 ## 🚀 Key Features
+
 - **Ballot Breakdowns** - Heatmaps of scoring categories
 - **Trend Analysis** - Performance evolution across tournaments
 - **Role Comparisons** - Witness/attorney effectiveness metrics
 - **Custom Reports** - Exportable data visualizations
 
-## 💎 Premium Features (Optional)
-- **AI-Assisted Strategy Suggestions** *Coming Soon* - Get customized recommendations
+## 💎 Premium Features (Optional + Coming Soon)
+
+- **AI-Assisted Strategy Suggestions** - Get customized recommendations
 - **AI-Assisted Ballot Image Inputs** - Use pictures to upload ballots, rather than typing everything out
-- **Advanced Analytics** *Coming Soon* - Deeper trend analysis across seasons
+- **Advanced Analytics** - Deeper trend analysis across seasons
 - **Priority Support** - Faster response times
 
 *AI features use Azure Cognitive Services and may incur API costs for local development. No AMTA data is used to train models created by MockMetrics.*
 *All core functionality remains free forever. Premium features help sustain development.*
 
 ## 🛠️ Tech Stack
+
 ### Core
+
 - **Frontend**: React + Vite
 - **UI Components**: Mantine UI
 - **State Management**: TanStack Query
@@ -45,35 +51,48 @@ A specialized analytics platform that helps **college mock trial teams**:
 - **Dates**: Day.js + Mantine Dates
 
 ### Services
+
 - **Authentication**: Supabase Auth
 - **Database**: Supabase PostgreSQL
 - **Storage**: Supabase Storage
-- **AI Services**: Azure Form Recognizer
+- **AI Services**: Azure Form Recognizer & Self-Hosted AI Model
 
 ### Utilities
+
 - **Error Handling**: React Error Boundary
 - **Image Processing**: heic2any
 - **Icons**: React Icons
 
 ### Tooling
+
 - **Build Tool**: Vite
 - **Linting**: ESLint
 - **Hosting**: Render
 
 ## ⚖️ Legal Disclaimer
+
 MockMetrics:
+
 1. Is **not endorsed by or affiliated with AMTA**
-2. Uses **no copyrighted AMTA materials** 
+2. Uses **no copyrighted AMTA materials**
 3. Processes only **user-uploaded ballot data**
 4. Complies with FERPA for student data protection
 5. Complies with GDPR for individual data privacy
 
+## License
+
+MockMetrics is licensed under the [GNU AGPL v3.0](LICENSE).  
+This means you’re free to use, modify, and distribute this project —  
+but if you host or deploy a modified version, you must share your source code.
+
 ## 🤝 Contributing
+
 We welcome contributions! Please read our [Contribution Guidelines](CONTRIBUTING.md) before submitting changes.
 
 [![Contributing Guide](https://img.shields.io/badge/Guide-CONTRIBUTING.md-blue)](CONTRIBUTING.md)
 
 ## 🏗️ Development Setup
+
 ```bash
 git clone https://github.com/alexflightlessbird/mock-metrics.git
 cd mock-metrics
@@ -83,6 +102,7 @@ npm run dev
 ```
 
 ## 💻 Requirements for Development
+
 - Node.js v18+
 - npm v9+
 - Supabase account
