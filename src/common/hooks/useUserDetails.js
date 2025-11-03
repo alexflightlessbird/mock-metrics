@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
+import logger from "../utils/logger";
 
 export function useUserDetails(userId) {
   const { data, isLoading } = useQuery({
@@ -16,7 +17,7 @@ export function useUserDetails(userId) {
         if (error) throw error;
         return data;
       } catch (error) {
-        console.log(error);
+        logger.error("Error in loading user details", error);
         return {};
       }
     },

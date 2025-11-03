@@ -244,7 +244,7 @@ export function compileCalculations(side, ballot) {
 
       calculations.push({
         score_type: s.score_type,
-        weight: parseFloat(s.weight) ?? 1,
+        weight: s.weight !== undefined ? parseFloat(s.weight) : 1,
         ...calc,
       });
     }
@@ -277,8 +277,15 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
   });
 
   combinedCalculations.forEach((cc) => {
-    const avgAvg = cc.avgs.reduce((sum, a) => sum + a.value * a.weight, 0) / cc.avgs.reduce((sum, a) => sum + a.weight, 0);
-    const compAvg = cc.comps.reduce((sum, c) => sum + c.value * c.weight, 0) / cc.comps.reduce((sum, c) => sum + c.weight, 0);
+    const avgWeightSum = cc.avgs.reduce((sum, a) => sum + a.weight, 0);
+    const compWeightSum = cc.comps.reduce((sum, c) => sum + c.weight, 0);
+
+    const avgAvg = avgWeightSum === 0
+      ? 0
+      : cc.avgs.reduce((sum, a) => sum + a.value * a.weight, 0) / avgWeightSum;
+    const compAvg = compWeightSum === 0
+      ? 0
+      : cc.comps.reduce((sum, c) => sum + c.value * c.weight, 0) / compWeightSum;
 
     cc.avg = avgAvg.toFixed(2);
     cc.comp = compAvg.toFixed(2);
