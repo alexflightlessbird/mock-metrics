@@ -16,7 +16,7 @@ import {
   combineBallotsCalculations,
   fullTournamentCalculations,
 } from "../features/ballotAnalysis/utils/calculations";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import PageSection from "../common/components/PageSection";
 import tournamentTeamScores from "../features/ballotAnalysis/utils/tournamentTeamScores";
 import TeamCard from "../features/ballotAnalysis/components/TeamCard";
@@ -134,6 +134,7 @@ export default function BallotAnalysisPage() {
                 scores: b.scores.map((s) => ({
                   score_type: s.score_type,
                   score_value: s.score_value,
+                  score_weight: s.weight,
                 })),
               })),
             })),
@@ -176,6 +177,8 @@ export default function BallotAnalysisPage() {
       //console.log(currentTournamentData);
       //console.log(tournamentTeamScoresCalc);
       //console.log(tournamentTeamsAll);
+      console.log("Attorneys", overallScoresData.attorneys);
+      console.log("Witnesses", overallScoresData.witnesses);
     }, 3000);
   };
 
@@ -314,7 +317,7 @@ export default function BallotAnalysisPage() {
       )}
 
       {showAnalysis && (
-        <PageSection title="analysis results">
+        <>
           <Button
             onClick={() => {
               setShowAnalysis(false);
@@ -323,6 +326,7 @@ export default function BallotAnalysisPage() {
               setSelectedTeamIds({});
               setShowTournamentSelection(true);
             }}
+            fullWidth
           >
             Refresh
           </Button>
@@ -365,29 +369,24 @@ export default function BallotAnalysisPage() {
 
           <Space h="md" />
           <PageSection title="overall scores">
-            <Title order={3} mb="xs">
+            <Title order={3} mb="sm">
               Attorneys
             </Title>
             {/* add filter to show team breakdowns - filter the overallScores.attorneys to be only from that particular team(s) */}
             <AttorneyTable
               showTeam={true}
               allScores={overallScores.attorneys}
-              scrollHeight="80vh"
             />
 
             <Space h="sm" />
 
-            <Title order={3} mb="xs">
+            <Title order={3} mb="sm">
               Witnesses
             </Title>
             {/* same as attorney - need filter */}
-            <WitnessTable
-              showTeam={true}
-              allScores={overallScores.witnesses}
-              scrollHeight="80vh"
-            />
+            <WitnessTable showTeam={true} allScores={overallScores.witnesses} />
           </PageSection>
-        </PageSection>
+        </>
       )}
     </BasePage>
   );
