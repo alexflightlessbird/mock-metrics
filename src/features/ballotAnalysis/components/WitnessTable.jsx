@@ -3,7 +3,11 @@ import { sortData } from "../utils/sortData";
 import { Table } from "@mantine/core";
 import SortableTh from "./SortableTh";
 
-export default function WitnessTable({ allScores, showTeam = false }) {
+export default function WitnessTable({
+  allScores,
+  showTeam = false,
+  scrollHeight = 500,
+}) {
   const [sorting, setSorting] = useState({
     sortBy: null,
     reversed: false,
@@ -23,12 +27,16 @@ export default function WitnessTable({ allScores, showTeam = false }) {
   };
 
   return (
-    <Table.ScrollContainer minWidth={150} maxHeight={500} type="scrollarea">
+    <Table.ScrollContainer
+      minWidth={150}
+      maxHeight={scrollHeight}
+      type="scrollarea"
+    >
       <Table
         striped
         highlightOnHover
         style={{ userSelect: "none", WebkitUserSelect: "none" }}
-        fz="sm"
+        fz="xs"
         stickyHeader
       >
         <Table.Thead>

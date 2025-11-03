@@ -365,22 +365,27 @@ export default function BallotAnalysisPage() {
 
           <Space h="md" />
           <PageSection title="overall scores">
-            <Title order={3} mb="sm">
+            <Title order={3} mb="xs">
               Attorneys
             </Title>
             {/* add filter to show team breakdowns - filter the overallScores.attorneys to be only from that particular team(s) */}
             <AttorneyTable
               showTeam={true}
               allScores={overallScores.attorneys}
+              scrollHeight="80vh"
             />
 
             <Space h="sm" />
 
-            <Title order={3} mb="sm">
+            <Title order={3} mb="xs">
               Witnesses
             </Title>
             {/* same as attorney - need filter */}
-            <WitnessTable showTeam={true} allScores={overallScores.witnesses} />
+            <WitnessTable
+              showTeam={true}
+              allScores={overallScores.witnesses}
+              scrollHeight="80vh"
+            />
           </PageSection>
         </PageSection>
       )}
