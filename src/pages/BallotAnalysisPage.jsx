@@ -25,6 +25,7 @@ import overallScoresCalculator from "../features/ballotAnalysis/utils/overallSco
 import AttorneyTable from "../features/ballotAnalysis/components/AttorneyTable";
 import WitnessTable from "../features/ballotAnalysis/components/WitnessTable";
 import { LuFilter } from "react-icons/lu";
+import logger from "../common/utils/logger";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -174,11 +175,8 @@ export default function BallotAnalysisPage() {
       setShowAnalysis(true);
       setShowTournamentSelection(false);
 
-      //console.log(currentTournamentData);
-      //console.log(tournamentTeamScoresCalc);
-      //console.log(tournamentTeamsAll);
-      console.log("Attorneys", overallScoresData.attorneys);
-      console.log("Witnesses", overallScoresData.witnesses);
+      logger.info("BA Attorneys", overallScoresData.attorneys);
+      logger.info("BA Witnesses", overallScoresData.witnesses);
     }, 3000);
   };
 

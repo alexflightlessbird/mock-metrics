@@ -38,7 +38,7 @@ export default function BallotManagementModal({
     data: ballotDetails,
     isLoading: ballotLoading,
     deleteBallot,
-    udpateScoreWeight
+    updateScoreWeight,
   } = useBallotDetails(ballot);
   const { data: roundDetails, isLoading: roundLoading } =
     useRoundDetails(roundId);
@@ -70,7 +70,7 @@ export default function BallotManagementModal({
 
   const handleWeightSave = async (scoreType) => {
     if (weightValue >= 0 && weightValue <= 1) {
-      await udpateScoreWeight({
+      await updateScoreWeight({
         ballotId: ballotDetails?.id,
         scoreType,
         weight: parseFloat(weightValue.toFixed(2)),
