@@ -244,6 +244,7 @@ export function compileCalculations(side, ballot) {
 
       calculations.push({
         score_type: s.score_type,
+        weight: parseFloat(s.weight) ?? 1,
         ...calc,
       });
     }
@@ -263,21 +264,21 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
         (cc) => cc.score_type === bc.score_type
       );
       if (existing) {
-        existing.avgs.push(parseFloat(bc.avg));
-        existing.comps.push(parseFloat(bc.comp));
+        existing.avgs.push({ value: parseFloat(bc.avg), weight: bc.weight });
+        existing.comps.push({ value: parseFloat(bc.comp), weight: bc.weight });
       } else {
         combinedCalculations.push({
           score_type: bc.score_type,
-          avgs: [parseFloat(bc.avg)],
-          comps: [parseFloat(bc.comp)],
+          avgs: [{ value: parseFloat(bc.avg), weight: bc.weight }],
+          comps: [{ value: parseFloat(bc.comp), weight: bc.weight }],
         });
       }
     });
   });
 
   combinedCalculations.forEach((cc) => {
-    const avgAvg = cc.avgs.reduce((a, b) => a + b, 0) / cc.avgs.length;
-    const compAvg = cc.comps.reduce((a, b) => a + b, 0) / cc.comps.length;
+    const avgAvg = cc.avgs.reduce((sum, a) => sum + a.value * a.weight, 0) / cc.avgs.reduce((sum, a) => sum + a.weight, 0);
+    const compAvg = cc.comps.reduce((sum, c) => sum + c.value * c.weight, 0) / cc.comps.reduce((sum, c) => sum + c.weight, 0);
 
     cc.avg = avgAvg.toFixed(2);
     cc.comp = compAvg.toFixed(2);

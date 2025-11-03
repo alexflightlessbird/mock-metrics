@@ -46,6 +46,7 @@ export function useBallotDetails(ballotId) {
           score_type: type,
           score_value: value,
           ballot_id: data.id,
+          weight: 1,
         }))
       );
       if (scoresError) throw scoresError;
@@ -83,6 +84,7 @@ export function useBallotDetails(ballotId) {
           score_type: score.type,
           score_value: score.value,
           ballot_id: ballotId,
+          weight: score.weight || 1,
         }))
       );
       if (error) throw error;
@@ -113,6 +115,39 @@ export function useBallotDetails(ballotId) {
     },
   });
 
+  const updateScoreWeightMutation = useMutation({
+    mutationFn: async ({ ballotId, scoreType, weight }) => {
+      const { data: scoreData, error: findError } = await supabase
+        .from("scores")
+        .select("id")
+        .eq("ballot_id", ballotId)
+        .eq("score_type", scoreType)
+        .maybeSingle();
+      if (findError) throw findError;
+
+      if (!scoreData) {
+        throw new Error(`Score not found for type: ${scoreType}`);
+      }
+
+      const { error: updateError } = await supabase
+        .from("scores")
+        .update({ weight })
+        .eq("id", scoreData.id);
+
+      if (updateError) throw updateError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["ballot-details", ballotId]);
+      showSuccess({ message: "Score weight updated successfully" });
+    },
+    onError: (error) => {
+      showError({
+        message: error.message,
+        title: "Failed to update score weight",
+      })
+    }
+  })
+
   const deleteMutation = useMutation({
     mutationFn: async ({ ballotId, roundId }) => {
       const { error } = await supabase
@@ -141,5 +176,6 @@ export function useBallotDetails(ballotId) {
     deleteBallot: deleteMutation.mutateAsync,
     addScores: addScoresMutation.mutateAsync,
     updateScores: updateScoresMutation.mutateAsync,
+    udpateScoreWeight: updateScoreWeightMutation.mutateAsync,
   };
 }
