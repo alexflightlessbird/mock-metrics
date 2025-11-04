@@ -44,7 +44,7 @@ export default function AddStudentToTeamModal({
           : ""
       }`,
     }));
-  });
+  }, [availableStudents]);
 
   const validateForm = () => {
     return formData.studentId !== null;
