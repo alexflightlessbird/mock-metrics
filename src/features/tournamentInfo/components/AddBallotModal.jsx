@@ -133,6 +133,8 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
         value={formData[inputName]}
         min={0}
         max={10}
+        decimalScale={0}
+        fixedDecimalScale
         size="sm"
         onChange={(value) => handleInputChange(inputName, value)}
       />
