@@ -203,16 +203,22 @@ export function witnessWitnessHelper({
 
   switch (selectedWitness[0]?.role_type) {
     case "p3":
+    case "p4":
       return witness_rounds?.find((wr) => wr.role_type === "p1")?.witness;
     case "p6":
+    case "p7":
       return witness_rounds?.find((wr) => wr.role_type === "p2")?.witness;
     case "p9":
+    case "p10":
       return witness_rounds?.find((wr) => wr.role_type === "p3")?.witness;
     case "d6":
+    case "d7":
       return witness_rounds?.find((wr) => wr.role_type === "d1")?.witness;
     case "d9":
+    case "d10":
       return witness_rounds?.find((wr) => wr.role_type === "d2")?.witness;
     case "d12":
+    case "d13":
       return witness_rounds?.find((wr) => wr.role_type === "d3")?.witness;
     default:
       return null;
