@@ -60,6 +60,12 @@ const removeLoadingScreen = () => {
   }
 };
 
+const notificationsStyles = {
+  root: {
+    zIndex: 9999,
+  }
+}
+
 const root = createRoot(document.getElementById("root"));
 
 root.render(
@@ -72,7 +78,7 @@ root.render(
               <ModalContext>
                 <ThemeProvider>
                   <AuthProvider>
-                    <Notifications />
+                    <Notifications styles={notificationsStyles} />
                     <App onReady={removeLoadingScreen} />
                     {/* <App /> */}
                   </AuthProvider>
