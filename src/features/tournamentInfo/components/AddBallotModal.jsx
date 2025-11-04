@@ -65,7 +65,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
       formData.judgeName.trim() !== "" &&
       Object.values(formData)
         .slice(1)
-        .every((score) => score >= 0 && score <= 10)
+        .every((score) => score !== null && score !== "" && score >= 0 && score <= 10)
     );
   };
 
