@@ -244,7 +244,7 @@ export function compileCalculations(side, ballot) {
 
       calculations.push({
         score_type: s.score_type,
-        weight: s.weight !== undefined ? parseFloat(s.weight) : 1,
+        weight: s.weight != null ? parseFloat(s.weight) : 1,
         ...calc,
       });
     }
