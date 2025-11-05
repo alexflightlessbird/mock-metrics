@@ -2,7 +2,7 @@ import { useTeamStudents } from "../../../common/hooks/useTeamDetails";
 import useNotifications from "../../../common/hooks/useNotifications";
 import { useRef, useMemo, useState } from "react";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
-import { Group, Select, Stack, Button, Text } from "@mantine/core";
+import { Group, Stack, Button, Text } from "@mantine/core";
 import { useModal } from "../../../context/ModalContext";
 import { ModalSelect } from "../../../common/components/modals-new/ModalDropdownComponents";
 

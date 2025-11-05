@@ -4,8 +4,6 @@ import {
   Anchor,
   Center,
   Divider,
-  Group,
-  Space,
   Flex,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";

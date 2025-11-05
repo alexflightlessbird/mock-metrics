@@ -8,7 +8,6 @@ import {
   Divider,
   Anchor,
   Progress,
-  Title,
 } from "@mantine/core";
 import {
   LuExternalLink as IconExternalLink,

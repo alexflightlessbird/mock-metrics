@@ -1,4 +1,4 @@
-import { Container, Title, Text, Space, List, Divider } from "@mantine/core";
+import { Title, Text, Space, List, Divider } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 
 export default function PrivacyAndSecurityPage() {
