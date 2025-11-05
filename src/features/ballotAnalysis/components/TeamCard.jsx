@@ -12,14 +12,12 @@ import { useState } from "react";
 import Card from "../../../common/components/card/Card";
 import RoundDetailModal from "./RoundDetailModal";
 import PageSection from "../../../common/components/PageSection";
-import AttorneyTable from "./AttorneyTable";
-import WitnessTable from "./WitnessTable";
+import ScoreTable from "./ScoreTable";
 
 export default function TeamCard({
   team,
   tournamentTeamScores,
   tournamentName,
-  ml,
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const teamScores = tournamentTeamScores.teamScores.find(
@@ -104,7 +102,7 @@ export default function TeamCard({
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                setShowRounds(!showRounds);
+                setShowDetails(!showDetails);
               }
             }}
           >
@@ -133,7 +131,7 @@ export default function TeamCard({
                 collapsible={true}
                 defaultOpen={false}
               >
-                <AttorneyTable allScores={allScores} />
+                <ScoreTable type="attorney" allScores={allScores} />
               </PageSection>
 
               <Space h="xs" />
@@ -143,7 +141,7 @@ export default function TeamCard({
                 collapsible={true}
                 defaultOpen={false}
               >
-                <WitnessTable allScores={allScores} />
+                <ScoreTable type="witness" allScores={allScores} />
               </PageSection>
             </>
           )}
