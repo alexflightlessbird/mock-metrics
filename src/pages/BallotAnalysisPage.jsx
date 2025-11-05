@@ -26,6 +26,7 @@ import AttorneyTable from "../features/ballotAnalysis/components/AttorneyTable";
 import WitnessTable from "../features/ballotAnalysis/components/WitnessTable";
 import { LuFilter } from "react-icons/lu";
 import logger from "../common/utils/logger";
+import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -275,42 +276,13 @@ export default function BallotAnalysisPage() {
               </Group>
             </Checkbox.Group>
           </Stack>
-          <Tooltip
-            label={
-              selectedTournamentIds.length === 0
-                ? "Select at least one tournament"
-                : Object.values(selectedTeamIds).some((ids) => ids.length === 0)
-                ? "Select at least one team for each selected tournament"
-                : analysisRunning
-                ? "Analysis is currently running. Please wait."
-                : showAnalysis
-                ? "Analysis already run. Refresh to run again."
-                : ""
-            }
-            disabled={
-              selectedTournamentIds.length > 0 &&
-              !Object.values(selectedTeamIds).some((ids) => ids.length === 0) &&
-              (analysisRunning || !showAnalysis)
-            }
-            position="top"
-          >
-            <Button
-              disabled={
-                selectedTournamentIds.length === 0 ||
-                Object.values(selectedTeamIds).some(
-                  (ids) => ids.length === 0
-                ) ||
-                (!analysisRunning && showAnalysis)
-              }
-              onClick={() => {
-                handleSubmit();
-              }}
-              mb="md"
-              loading={analysisRunning}
-            >
-              Run Analysis
-            </Button>
-          </Tooltip>
+          <RunAnalysisButton
+            selectedTournamentIds={selectedTournamentIds}
+            selectedTeamIds={selectedTeamIds}
+            analysisRunning={analysisRunning}
+            showAnalysis={showAnalysis}
+            onRunAnalysis={handleSubmit}
+          />
         </>
       )}
 

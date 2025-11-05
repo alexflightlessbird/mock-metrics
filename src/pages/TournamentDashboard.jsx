@@ -4,7 +4,6 @@ import {
   Text,
   Flex,
   SegmentedControl,
-  Tooltip,
   ActionIcon,
   TextInput,
   Title,
@@ -23,18 +22,13 @@ import { useGetRole } from "../common/hooks/useGetRole";
 import { useAuth } from "../context/AuthContext";
 import AddTournamentModal from "../features/tournamentDashboard/components/AddTournamentModal";
 import AddButton from "../common/components/AddButton";
-import {
-  LuArchive,
-  LuArchiveRestore,
-  LuFilter,
-  LuSearch,
-  LuX,
-} from "react-icons/lu";
+import { LuFilter, LuSearch, LuX } from "react-icons/lu";
 import {
   useArchiveTournament,
   useUnarchiveTournament,
 } from "../features/tournamentDashboard/hooks/useArchiveTournament";
 import { useMobile } from "../context/MobileContext";
+import ArchiveAction from "../common/components/ArchiveAction";
 
 export default function TournamentDashboard() {
   const [selectedSchoolId] = useLocalStorage({
@@ -230,34 +224,21 @@ export default function TournamentDashboard() {
                 <Flex justify="space-between" align="center">
                   <Title order={5}>{t.name}</Title>
                   {(role === "admin" || role === "primary") && (
-                    <Tooltip
-                      label={
-                        t.is_active
-                          ? "Archive Tournament"
-                          : "Unarchive Tournament"
+                    <ArchiveAction
+                      isActive={t.is_active}
+                      onArchive={() =>
+                        archiveTournament({
+                          tournamentId: t.id,
+                          schoolId: selectedSchoolId,
+                        })
                       }
-                      withArrow
-                    >
-                      <ActionIcon
-                        variant="subtle"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (t.is_active) {
-                            archiveTournament({
-                              tournamentId: t.id,
-                              schoolId: selectedSchoolId,
-                            });
-                          } else {
-                            unarchiveTournament({
-                              tournamentId: t.id,
-                              schoolId: selectedSchoolId,
-                            });
-                          }
-                        }}
-                      >
-                        {t.is_active ? <LuArchive /> : <LuArchiveRestore />}
-                      </ActionIcon>
-                    </Tooltip>
+                      onUnarchive={() =>
+                        unarchiveTournament({
+                          tournamentId: t.id,
+                          schoolId: selectedSchoolId,
+                        })
+                      }
+                    />
                   )}
                 </Flex>
                 <Text>{t.year}</Text>
