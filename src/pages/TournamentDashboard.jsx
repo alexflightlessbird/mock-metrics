@@ -164,7 +164,7 @@ export default function TournamentDashboard() {
                 </ActionIcon>
               )
             }
-            placeholder="Search..."
+            placeholder="Search tournaments..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
