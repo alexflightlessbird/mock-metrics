@@ -114,7 +114,7 @@ export default function TeamCard({
                   entityName="team"
                   type="remove"
                   removeFrom={tournamentName}
-                  onSubmitFunction={() => {
+                  onSubmit={() => {
                     removeTeam({
                       teamId: team.team_id,
                       tournamentId: team.tournament_id,

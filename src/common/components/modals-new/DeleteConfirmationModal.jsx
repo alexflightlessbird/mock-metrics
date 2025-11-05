@@ -8,7 +8,6 @@ import { useMobile } from "../../../context/MobileContext";
 export default function DeleteConfirmationModal({
   onClose,
   onSubmit,
-  onSubmitFunction,
   entityName,
   entity,
   trigger,
@@ -30,8 +29,7 @@ export default function DeleteConfirmationModal({
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      if (onSubmitFunction) await onSubmitFunction();
-      else if (onSubmit) await onSubmit(entity.id);
+      if (onSubmit) await onSubmit();
       if (onClose) onClose();
     } finally {
       if (closeOnSubmit)

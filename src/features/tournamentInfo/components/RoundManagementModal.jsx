@@ -1,23 +1,20 @@
 import {
-  Button,
   Text,
   Table,
   Space,
-  Flex,
   Card,
 } from "@mantine/core";
 import {
   useRoundDetails,
   useRoundBallots,
 } from "../../../common/hooks/useRoundDetails";
-import { LuTrash } from "react-icons/lu";
-import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
 import { ViewBallots } from "./BallotViews";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
 import { formatSide } from "../../../common/utils/helpers";
 import PageSection from "../../../common/components/PageSection";
 import { useTheme } from "../../../context/ThemeContext";
 import PageDetailSection from "../../../common/components/PageDetailSection";
+import DangerZoneSection from "../../../common/components/DangerZoneSection";
 
 export default function RoundManagementModal({
   selected,
@@ -67,41 +64,20 @@ export default function RoundManagementModal({
       <Space h="md" />
 
       {(role === "primary" || role === "admin") && (
-        <>
-          <PageSection title="Danger Zone">
-            <Flex gap="xl" align="center">
-              <Text flex={1} c="red" fw={700} size="sm">
-                THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
-              </Text>
-              <DeleteConfirmationModal
-                trigger={
-                  <Button
-                    w="fit-content"
-                    leftSection={<LuTrash />}
-                    color="red"
-                    variant="outline"
-                  >
-                    Delete Round
-                  </Button>
-                }
-                includeBallots={true}
-                onSubmitFunction={() => {
-                  deleteRound({
-                    tournamentId: roundDetails?.tournament_id,
-                    teamId: roundDetails?.team_id,
-                    roundId: roundDetails?.id,
-                  });
-                }}
-                entity={{
-                  id: roundDetails?.id,
-                }}
-                entityName="round"
-                layer={1}
-              />
-            </Flex>
-          </PageSection>
-          <Space h="md" />
-        </>
+        <DangerZoneSection
+          buttonLabel="Round"
+          includeBallots={true}
+          onSubmit={() => {
+            deleteRound({
+              tournamentId: roundDetails?.tournament_id,
+              teamId: roundDetails?.team_id,
+              roundId: roundDetails?.id,
+            });
+          }}
+          entity={{ id: roundDetails?.id }}
+          entityName="round"
+          layer={1}
+        />
       )}
 
       <PageSection title="Roles" collapsible={true}>

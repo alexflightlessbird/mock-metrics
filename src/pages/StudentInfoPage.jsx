@@ -12,16 +12,14 @@ import BasePage from "../common/components/BasePage";
 import {
   Button,
   Divider,
-  Flex,
   Select,
   Space,
   Text,
 } from "@mantine/core";
-import { LuArrowLeft, LuTrash } from "react-icons/lu";
+import { LuArrowLeft } from "react-icons/lu";
 import Loader from "../common/components/loader/GavelLoader";
-import PageSection from "../common/components/PageSection";
-import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
 import PageDetailSection from "../common/components/PageDetailSection";
+import DangerZoneSection from "../common/components/DangerZoneSection";
 
 export default function StudentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -168,39 +166,19 @@ export default function StudentInfoPage() {
       <Space h="md" />
 
       {role === "primary" && (
-        <>
-          <PageSection title="danger zone">
-            <Flex gap="xl" align="center">
-              <Text flex={1} c="red" fw={700} size="sm">
-                THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
-              </Text>
-              <DeleteConfirmationModal
-                trigger={
-                  <Button
-                    w="fit-content"
-                    leftSection={<LuTrash />}
-                    color="red"
-                    variant="outline"
-                  >
-                    Delete Student
-                  </Button>
-                }
-                includeBallots={true}
-                onSubmit={() => {
-                  deleteStudent({
-                    studentId: selectedStudent.id,
-                    schoolId: selectedSchoolId,
-                  });
-                  navigate("/school");
-                }}
-                entity={{
-                  name: selectedStudent.name,
-                }}
-                entityName="student"
-              />
-            </Flex>
-          </PageSection>
-        </>
+        <DangerZoneSection
+          buttonLabel="Student"
+          includeBallots={true}
+          onSubmit={() => {
+            deleteStudent({ 
+              studentId: selectedStudent.id, 
+              schoolId: selectedSchoolId 
+            });
+            navigate("/school");
+          }}
+          entity={{ name: selectedStudent.name }}
+          entityName="student"
+        />
       )}
     </BasePage>
   );
