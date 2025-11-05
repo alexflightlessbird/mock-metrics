@@ -26,6 +26,7 @@ import AddTeamModal from "../features/tournamentInfo/components/AddTeamModal";
 import { useEffect, useState } from "react";
 import PageDetailSection from "../common/components/PageDetailSection";
 import DangerZoneSection from "../common/components/DangerZoneSection";
+import { styleProps } from "../common/editModeStyleProps";
 
 export default function TournamentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -92,16 +93,6 @@ export default function TournamentInfoPage() {
     }
     await updateTournament(updates);
     setEditMode(false);
-  };
-
-  const styleProps = {
-    fontSize: "1.875rem",
-    fontWeight: 700,
-    lineHeight: 1.2,
-    border: "none",
-    borderBottom: "2px solid #000",
-    outline: "none",
-    marginRight: "10px",
   };
 
   return (

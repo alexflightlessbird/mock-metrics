@@ -21,6 +21,7 @@ import PageDetailSection from "../common/components/PageDetailSection";
 import TeamsSection from "../features/schoolInfo/components/TeamsSection";
 import StudentsSection from "../features/schoolInfo/components/StudentsSection";
 import UsersSection from "../features/schoolInfo/components/UsersSection";
+import { styleProps } from "../common/editModeStyleProps";
 
 export default function SchoolInfoPage() {
   const { user } = useAuth();
@@ -61,12 +62,8 @@ export default function SchoolInfoPage() {
   const handleSave = async ({ title }) => {
     const updates = {};
 
-    if (title !== schoolInformation.name) {
-      updates.name = title;
-    }
-    if (schoolShortName !== schoolInformation.short_name) {
-      updates.short_name = schoolShortName;
-    }
+    if (title !== schoolInformation.name) updates.name = title;
+    if (schoolShortName !== schoolInformation.short_name) updates.short_name = schoolShortName;
 
     await updateSchool(updates);
     setEditMode(false);
@@ -92,30 +89,16 @@ export default function SchoolInfoPage() {
 
   const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
 
-  if (
-    schoolLoading ||
-    isLoading
-  )
-    return (
-      <BasePage titleText="School Loading...">
-        <Stack>
-          <Skeleton height={20} width={200} />
-          <Skeleton height={20} width={200} />
-          <Skeleton height={20} width={200} />
-          <Skeleton height={20} width={200} />
-        </Stack>
-      </BasePage>
-    );
-
-  const styleProps = {
-    fontSize: "1.875rem",
-    fontWeight: 700,
-    lineHeight: 1.2,
-    border: "none",
-    borderBottom: "2px solid #000",
-    outline: "none",
-    marginRight: "10px",
-  };
+  if ( schoolLoading || isLoading) return (
+    <BasePage titleText="School Loading...">
+      <Stack>
+        <Skeleton height={20} width={200} />
+        <Skeleton height={20} width={200} />
+        <Skeleton height={20} width={200} />
+        <Skeleton height={20} width={200} />
+      </Stack>
+    </BasePage>
+  );
 
   return (
     <BasePage

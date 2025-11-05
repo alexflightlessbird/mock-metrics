@@ -20,6 +20,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import Loader from "../common/components/loader/GavelLoader";
 import PageDetailSection from "../common/components/PageDetailSection";
 import DangerZoneSection from "../common/components/DangerZoneSection";
+import { styleProps } from "../common/editModeStyleProps";
 
 export default function StudentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -112,16 +113,6 @@ export default function StudentInfoPage() {
     }
 
     setEditMode(false);
-  };
-
-  const styleProps = {
-    fontSize: "1.875rem",
-    fontWeight: 700,
-    lineHeight: 1.2,
-    border: "none",
-    borderBottom: "2px solid #000",
-    outline: "none",
-    marginRight: "10px",
   };
 
   return (
