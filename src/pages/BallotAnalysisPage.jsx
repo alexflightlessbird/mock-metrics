@@ -1,12 +1,10 @@
 import {
-  Button,
   Checkbox,
   Group,
   Space,
   Stack,
   Text,
   Tooltip,
-  Title,
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
@@ -16,12 +14,11 @@ import { useState } from "react";
 import PageSection from "../common/components/PageSection";
 import TeamCard from "../features/ballotAnalysis/components/TeamCard";
 import TournamentSummaryCard from "../features/ballotAnalysis/components/TournamentSummaryCard";
-import AttorneyTable from "../features/ballotAnalysis/components/AttorneyTable";
-import WitnessTable from "../features/ballotAnalysis/components/WitnessTable";
 import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
 import RefreshAnalysisButton from "../features/ballotAnalysis/components/RefreshAnalysisButton";
+import OverallScoresSection from "../features/ballotAnalysis/components/OverallScoresSection";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -242,24 +239,8 @@ export default function BallotAnalysisPage() {
           </PageSection>
 
           <Space h="md" />
-          <PageSection title="overall scores">
-            <Title order={3} mb="sm">
-              Attorneys
-            </Title>
-            {/* add filter to show team breakdowns - filter the overallScores.attorneys to be only from that particular team(s) */}
-            <AttorneyTable
-              showTeam={true}
-              allScores={overallScores.attorneys}
-            />
 
-            <Space h="sm" />
-
-            <Title order={3} mb="sm">
-              Witnesses
-            </Title>
-            {/* same as attorney - need filter */}
-            <WitnessTable showTeam={true} allScores={overallScores.witnesses} />
-          </PageSection>
+          <OverallScoresSection attorneys={overallScores.attorneys} witnesses={overallScores.witnesses} />
         </>
       )}
     </BasePage>
