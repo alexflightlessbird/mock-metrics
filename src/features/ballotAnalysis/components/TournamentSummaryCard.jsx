@@ -10,8 +10,7 @@ import {
   Text,
 } from "@mantine/core";
 import PageSection from "../../../common/components/PageSection";
-import AttorneyTable from "./AttorneyTable";
-import WitnessTable from "./WitnessTable";
+import ScoreTable from "./ScoreTable";
 
 export default function TournamentSummaryCard({
   tournament,
@@ -101,7 +100,7 @@ export default function TournamentSummaryCard({
                 collapsible={true}
                 defaultOpen={false}
               >
-                <AttorneyTable allScores={attorneyScores} />
+                <ScoreTable type="attorney" allScores={attorneyScores} />
               </PageSection>
 
               <Space h="xs" />
@@ -111,7 +110,7 @@ export default function TournamentSummaryCard({
                 collapsible={true}
                 defaultOpen={false}
               >
-                <WitnessTable allScores={witnessScores} />
+                <ScoreTable type="witness" allScores={witnessScores} />
               </PageSection>
 
               <Space h="xs" />
