@@ -29,6 +29,7 @@ import AddButton from "../common/components/AddButton";
 import AddTeamModal from "../features/tournamentInfo/components/AddTeamModal";
 import ShowIdText from "../common/components/ShowIdText";
 import { useEffect, useState } from "react";
+import PageDetailSection from "../common/components/PageDetailSection";
 
 export default function TournamentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -97,6 +98,16 @@ export default function TournamentInfoPage() {
     setEditMode(false);
   };
 
+  const styleProps = {
+    fontSize: "1.875rem",
+    fontWeight: 700,
+    lineHeight: 1.2,
+    border: "none",
+    borderBottom: "2px solid #000",
+    outline: "none",
+    marginRight: "10px",
+  };
+
   return (
     <BasePage
       titleText={selectedTournament.name}
@@ -121,68 +132,30 @@ export default function TournamentInfoPage() {
 
       <Divider mb="md" />
 
-      <Group justify="space-between" align="flex-start" mb="xs">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Year
-          </Text>
-          {editMode && (
+      <PageDetailSection
+        editable={editMode}
+        details={[
+          { name: "Year", value: editMode ? (
             <NumberInput
               value={tournamentYear}
-              onChange={(e) => setTournamentYear(e)}
+              onChange={setTournamentYear}
               min={1980}
               max={new Date().getFullYear() + 1}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}
             />
-          )}
-          {!editMode && <Text fz="sm">{selectedTournament.year}</Text>}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Type
-          </Text>
-          {editMode && (
+          ) : selectedTournament.year },
+          { name: "Type", value: editMode ? (
             <Select
               value={tournamentType}
               onChange={setTournamentType}
               data={[
                 { value: "pre-stack", label: "Pre-Stack" },
-                { value: "post-stack", label: "Post-Stack" },
+                { value: "post-stack", label: "Post-Stack" }
               ]}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}
             />
-          )}
-          {!editMode && (
-            <Text fz="sm">
-              {selectedTournament.type === "pre-stack"
-                ? "Pre-Stack"
-                : selectedTournament.type === "post-stack"
-                ? "Post-Stack"
-                : ""}
-            </Text>
-          )}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Area
-          </Text>
-          {editMode && (
+          ) : selectedTournament.type === "pre-stack" ? "Pre-Stack" : selectedTournament.type === "post-stack" ? "Post-Stack" : "" },
+          { name: "Area", value: editMode ? (
             <Select
               value={tournamentArea}
               onChange={setTournamentArea}
@@ -195,35 +168,15 @@ export default function TournamentInfoPage() {
                 { value: "olt", label: "OLT" },
                 { label: "Other", value: "other" },
               ]}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}  
             />
-          )}
-          {!editMode && (
-            <Text fz="sm">{capitalize(selectedTournament.area)}</Text>
-          )}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Associated Case
-          </Text>
-          <Text fz="sm">
-            {selectedTournament.cases.name} ({selectedTournament.cases.year})
-          </Text>
-        </Stack>
-        <ShowIdText
-          fz="sm"
-          idName="Tournament"
-          idValue={selectedTournament.id}
-        />
-      </Group>
+          ) : capitalize(selectedTournament.area) },
+          { name: "Associated Case", value: `${selectedTournament.cases.name} (${selectedTournament.cases.year})` },
+          { type: "id", name: "Tournament", value: selectedTournament.id }
+        ]}
+      />
+
+      <Space h="md" />
 
       {role === "primary" && (
         <>

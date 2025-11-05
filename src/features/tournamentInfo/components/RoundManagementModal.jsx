@@ -1,18 +1,15 @@
 import {
   Button,
-  Stack,
   Text,
   Table,
   Space,
   Flex,
   Card,
-  Group,
 } from "@mantine/core";
 import {
   useRoundDetails,
   useRoundBallots,
 } from "../../../common/hooks/useRoundDetails";
-import ShowIdText from "../../../common/components/ShowIdText";
 import { LuTrash } from "react-icons/lu";
 import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
 import { ViewBallots } from "./BallotViews";
@@ -20,6 +17,7 @@ import BaseModal from "../../../common/components/modals-new/BaseModal";
 import { formatSide } from "../../../common/utils/helpers";
 import PageSection from "../../../common/components/PageSection";
 import { useTheme } from "../../../context/ThemeContext";
+import PageDetailSection from "../../../common/components/PageDetailSection";
 
 export default function RoundManagementModal({
   selected,
@@ -58,21 +56,13 @@ export default function RoundManagementModal({
         </Text>
       }
     >
-      <Group justify="space-between" align="flex-start">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Round #
-          </Text>
-          <Text fz="sm">{roundDetails?.round_number}</Text>
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Side
-          </Text>
-          <Text fz="sm">{formatSide(roundDetails?.side, caseType)}</Text>
-        </Stack>
-        <ShowIdText idName="Round" idValue={roundDetails?.id} fz="sm" />
-      </Group>
+      <PageDetailSection
+        details={[
+          { name: "Round #", value: roundDetails?.round_number },
+          { name: "Side", value: formatSide(roundDetails?.side, caseType) },
+          { type: "id", name: "Round", value: roundDetails?.id }
+        ]}
+      />
 
       <Space h="md" />
 

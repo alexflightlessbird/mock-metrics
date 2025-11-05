@@ -6,7 +6,6 @@ import {
   Stack,
   Divider,
   TextInput,
-  Group,
   Title,
   List,
   SegmentedControl,
@@ -45,6 +44,7 @@ import Card from "../common/components/card/Card";
 import AddTeamModal from "../features/schoolInfo/components/AddTeamModal";
 import AddStudentModal from "../features/schoolInfo/components/AddStudentModal";
 import ArchiveAction from "../common/components/ArchiveAction";
+import PageDetailSection from "../common/components/PageDetailSection";
 
 export default function SchoolInfoPage() {
   const { user } = useAuth();
@@ -218,6 +218,16 @@ export default function SchoolInfoPage() {
       </BasePage>
     );
 
+  const styleProps = {
+    fontSize: "1.875rem",
+    fontWeight: 700,
+    lineHeight: 1.2,
+    border: "none",
+    borderBottom: "2px solid #000",
+    outline: "none",
+    marginRight: "10px",
+  };
+
   return (
     <BasePage
       titleText={schoolInformation.name}
@@ -234,46 +244,21 @@ export default function SchoolInfoPage() {
 
       <Divider mb="md" />
 
-      <Group justify="space-between" align="flex-start" mb="xs">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Short Name
-          </Text>
-          {editMode && (
-            <TextInput
-              value={schoolShortName}
-              onChange={(e) => setSchoolShortName(e.target.value)}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
-            />
-          )}
-          {!editMode && <Text fz="sm">{schoolInformation.short_name}</Text>}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Premium Status
-          </Text>
-          <Text fz="sm">
-            {schoolInformation.is_premium ? "Active" : "Inactive"}
-          </Text>
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Your Role
-          </Text>
-          <Text fz="sm">
-            {role === "primary" ? "Primary Admin" : capitalize(role)}
-          </Text>
-        </Stack>
-        <ShowIdText idName="School" idValue={selectedSchoolId} />
-      </Group>
+      <PageDetailSection
+        editable={editMode}
+        details={[
+          { name: "Short Name", value: editMode ? (
+              <TextInput 
+                value={schoolShortName}
+                onChange={e => setSchoolShortName(e.target.value)}
+                style={styleProps}
+              />
+            ) : schoolInformation.short_name },
+            { name: "Premium Status", value: schoolInformation.is_premium ? "Active" : "Inactive" },
+            { name: "Your Role", value: role === "primary" ? "Primary Admin" : capitalize(role) },
+            { type: "id", name: "School", value: selectedSchoolId }
+        ]}
+      />
 
       <Space h="md" />
 

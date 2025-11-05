@@ -17,23 +17,21 @@ import {
   Divider,
   Flex,
   Grid,
-  Group,
   NumberInput,
   Select,
   Space,
-  Stack,
   Text,
   Title,
   Tooltip,
 } from "@mantine/core";
 import { LuArrowLeft, LuTrash, LuX } from "react-icons/lu";
 import Loader from "../common/components/loader/GavelLoader";
-import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
 import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
 import AddButton from "../common/components/AddButton";
 import Card from "../common/components/card/Card";
 import AddStudentToTeamModal from "../features/teamInfo/components/AddStudentToTeamModal";
+import PageDetailSection from "../common/components/PageDetailSection";
 
 export default function TeamInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -113,6 +111,16 @@ export default function TeamInfoPage() {
     setEditMode(false);
   };
 
+  const styleProps = {
+    fontSize: "1.875rem",
+    fontWeight: 700,
+    lineHeight: 1.2,
+    border: "none",
+    borderBottom: "2px solid #000",
+    outline: "none",
+    marginRight: "10px",
+  };
+
   return (
     <BasePage
       titleText={selectedTeam.name}
@@ -137,95 +145,44 @@ export default function TeamInfoPage() {
 
       <Divider mb="md" />
 
-      <Group justify="space-between" align="flex-start" mb="xs">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Year
-          </Text>
-          {editMode && (
+      <PageDetailSection
+        editable={editMode}
+        details={[
+          { name: "Year", value: editMode ? (
             <NumberInput
               value={teamYear}
-              onChange={(e) => setTeamYear(e)}
+              onChange={setTeamYear}
               min={1980}
               max={new Date().getFullYear() + 1}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}
             />
-          )}
-          {!editMode && <Text fz="sm">{selectedTeam.year}</Text>}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Type
-          </Text>
-          {editMode && (
+          ) : selectedTeam.year },
+          { name: "Type", value: editMode ? (
             <Select
               value={teamType}
               onChange={setTeamType}
               data={[
                 { value: "pre-stack", label: "Pre-Stack" },
-                { value: "post-stack", label: "Post-Stack" },
+                { value: "post-stack", label: "Post-Stack" }
               ]}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}
             />
-          )}
-          {!editMode && (
-            <Text fz="sm">
-              {selectedTeam.type === "pre-stack"
-                ? "Pre-Stack"
-                : selectedTeam.type === "post-stack"
-                ? "Post-Stack"
-                : ""}
-            </Text>
-          )}
-        </Stack>
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Associated Case
-          </Text>
-          {editMode && allCases.filter((c) => c.is_active).length > 1 && (
+          ) : selectedTeam.type === "pre-stack" ? "Pre-Stack" : selectedTeam.type === "post-stack" ? "Post-Stack" : "" },
+          { name: "Associated Case", value: editMode && allCases.filter(c => c.is_active).length > 1 ? (
             <Select
               value={teamCase}
               onChange={setTeamCase}
-              data={allCases
-                .filter((c) => c.is_active)
-                .map((c) => {
-                  return { value: c.id, label: c.name + " (" + c.year + ")" };
-                })}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              data={allCases.filter(c => c.is_active)
+                .map(c => ({ value: c.id, label: c.name + " (" + c.year + ")" }))
+              }
+              style={styleProps}
             />
-          )}
-          {(!editMode || allCases.filter((c) => c.is_active).length <= 1) && (
-            <Text fz="sm">
-              {caseDetails && caseDetails.name + " (" + caseDetails.year + ")"}
-            </Text>
-          )}
-        </Stack>
-        <ShowIdText fz="sm" idName="Team" idValue={selectedTeam.id} />
-      </Group>
+          ) : editMode && caseDetails ? caseDetails.name + " (" + caseDetails.year + ")" : <Text fz="sm">{caseDetails.name + " (" + caseDetails.year + ")"}</Text> },
+          { type: "id", name: "Team", value: selectedTeam.id }
+        ]}
+      />
+
+      <Space h="md" />
 
       {role === "primary" && (
         <>

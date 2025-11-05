@@ -1,6 +1,5 @@
 import {
   Button,
-  Stack,
   Text,
   Table,
   Space,
@@ -13,7 +12,6 @@ import {
   Tooltip
 } from "@mantine/core";
 import { useBallotDetails } from "../../../common/hooks/useBallotDetails";
-import ShowIdText from "../../../common/components/ShowIdText";
 import { LuTrash, LuPencil as LuEdit, LuWeight } from "react-icons/lu";
 import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
@@ -21,6 +19,7 @@ import PageSection from "../../../common/components/PageSection";
 import { formatSide } from "../../../common/utils/helpers";
 import { useRoundDetails } from "../../../common/hooks/useRoundDetails";
 import { useState } from "react";
+import PageDetailSection from "../../../common/components/PageDetailSection";
 
 export default function BallotManagementModal({
   selected,
@@ -186,15 +185,12 @@ export default function BallotManagementModal({
         </Group>
       }
     >
-      <Group justify="space-between" align="flex-start">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Judge
-          </Text>
-          <Text fz="sm">{ballotDetails?.judge_name}</Text>
-        </Stack>
-        <ShowIdText idName="Ballot" idValue={ballotDetails?.id} fz="sm" />
-      </Group>
+      <PageDetailSection
+        details={[
+          { name: "Judge", value: ballotDetails?.judge_name },
+          { type: "id", name: "Ballot", value: ballotDetails?.id }
+        ]}
+      />
 
       <Space h="md" />
 
