@@ -12,21 +12,15 @@ import BasePage from "../common/components/BasePage";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
 import { useLocalStorage } from "@mantine/hooks";
 import Card from "../common/components/card/Card";
-import {
-  combineBallotsCalculations,
-  fullTournamentCalculations,
-} from "../features/ballotAnalysis/utils/calculations";
 import { useState } from "react";
 import PageSection from "../common/components/PageSection";
-import tournamentTeamScores from "../features/ballotAnalysis/utils/tournamentTeamScores";
 import TeamCard from "../features/ballotAnalysis/components/TeamCard";
 import TournamentSummaryCard from "../features/ballotAnalysis/components/TournamentSummaryCard";
-import overallScoresCalculator from "../features/ballotAnalysis/utils/overallScores";
 import AttorneyTable from "../features/ballotAnalysis/components/AttorneyTable";
 import WitnessTable from "../features/ballotAnalysis/components/WitnessTable";
 import { LuFilter } from "react-icons/lu";
-import logger from "../common/utils/logger";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
+import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -35,16 +29,20 @@ export default function BallotAnalysisPage() {
   });
   const [selectedTournamentIds, setSelectedTournamentIds] = useState([]);
   const [selectedTeamIds, setSelectedTeamIds] = useState({});
-  const [neededTournamentData, setNeededTournamentData] = useState([]);
-  const [calculatedTeamScores, setCalculatedTeamScores] = useState([]);
-  const [allTeamScores, setAllTeamScores] = useState([]);
-  const [overallScores, setOverallScores] = useState([]);
 
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [analysisRunning, setAnalysisRunning] = useState(false);
   const [showTournamentSelection, setShowTournamentSelection] = useState(true);
 
   const { data: tournaments, isLoading } = useGetTournaments(selectedSchoolId);
+  const { 
+    runAnalysis, 
+    analysisRunning, 
+    setAnalysisRunning, 
+    neededTournamentData, 
+    calculatedTeamScores,
+    allTeamScores,
+    overallScores
+  } = useRunBallotAnalysis();
 
   const maxTournaments = 10;
 
@@ -83,101 +81,11 @@ export default function BallotAnalysisPage() {
     );
 
   const handleSubmit = async () => {
-    setAnalysisRunning(true);
-    const selectedTournaments = tournaments.filter((t) =>
-      selectedTournamentIds.includes(t.id)
-    );
-
-    const currentTournamentData = selectedTournaments.map((t) => ({
-      area: t.area,
-      case_id: t.case_id,
-      id: t.id,
-      name: t.name,
-      type: t.type,
-      year: t.year,
-      teams: t.teams_tournaments
-        .filter((tt) => selectedTeamIds[t.id]?.includes(tt.team_id))
-        .map((tt) => ({
-          id: tt.team_id,
-          name: tt.teams.name,
-          type: tt.teams.type,
-          year: tt.teams.year,
-          rounds: t.rounds
-            .filter((r) => r.team_id === tt.team_id)
-            .sort((a, b) => a.round_number - b.round_number)
-            .map((r) => ({
-              id: r.id,
-              round_number: r.round_number,
-              side: r.side,
-              witness_rounds: r.witness_rounds.map((wr) => ({
-                role_type: wr.role_type,
-                witness: {
-                  id: wr.witnesses.id,
-                  name: wr.witnesses.name,
-                  side: wr.witnesses.side,
-                  type: wr.witnesses.type,
-                },
-              })),
-              role_rounds: r.role_rounds.map((rr) => ({
-                role_type: rr.role_type,
-                student: {
-                  id: rr.students.id,
-                  name: rr.students.name,
-                },
-              })),
-              calculations: combineBallotsCalculations({
-                side: r.side,
-                ballots: r.ballots,
-                role_rounds: r.role_rounds,
-              }),
-              ballots: r.ballots.length,
-              ballots_with_scores: r.ballots.map((b) => ({
-                id: b.id,
-                scores: b.scores.map((s) => ({
-                  score_type: s.score_type,
-                  score_value: s.score_value,
-                  score_weight: s.weight,
-                })),
-              })),
-            })),
-        })),
-    }));
-
-    const tournamentTeamScoresCalc = currentTournamentData.map((tournament) => {
-      return {
-        tournamentId: tournament.id,
-        tournamentName: tournament.name,
-        teamScores: tournament.teams.map((team) => ({
-          teamId: team.id,
-          teamName: team.name,
-          scores: tournamentTeamScores({ team }),
-        })),
-      };
-    });
-
-    const tournamentTeamsAll = tournamentTeamScoresCalc.map((tournament) => {
-      return {
-        tournamentId: tournament.tournamentId,
-        calculations: fullTournamentCalculations({ tournament }),
-      };
-    });
-
-    const overallScoresData = overallScoresCalculator({
-      tournaments: tournamentTeamsAll,
-    });
-
-    setNeededTournamentData(currentTournamentData);
-    setCalculatedTeamScores(tournamentTeamScoresCalc);
-    setAllTeamScores(tournamentTeamsAll);
-    setOverallScores(overallScoresData);
+    await runAnalysis(tournaments, selectedTournamentIds, selectedTeamIds);
 
     setTimeout(() => {
-      setAnalysisRunning(false);
       setShowAnalysis(true);
       setShowTournamentSelection(false);
-
-      logger.info("BA Attorneys", overallScoresData.attorneys);
-      logger.info("BA Witnesses", overallScoresData.witnesses);
     }, 3000);
   };
 
