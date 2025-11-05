@@ -100,7 +100,7 @@ export default function SearchableSection({
                 {(role === "admin" || role === "primary") && addModal }
             </Flex>
             {!filtered || filtered.length === 0 ? (
-                <Text ta="center" c-="dimmed" mt="md">
+                <Text ta="center" c="dimmed" mt="md">
                     No{filter === "inactive" ? " archived " : filter === "active" ? " current " : " " }{sectionName} found.
                 </Text>
             ) : (
