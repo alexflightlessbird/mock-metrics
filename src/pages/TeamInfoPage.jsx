@@ -24,14 +24,14 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { LuArrowLeft, LuTrash, LuX } from "react-icons/lu";
+import { LuArrowLeft, LuX } from "react-icons/lu";
 import Loader from "../common/components/loader/GavelLoader";
 import PageSection from "../common/components/PageSection";
-import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
 import AddButton from "../common/components/AddButton";
 import Card from "../common/components/card/Card";
 import AddStudentToTeamModal from "../features/teamInfo/components/AddStudentToTeamModal";
 import PageDetailSection from "../common/components/PageDetailSection";
+import DangerZoneSection from "../common/components/DangerZoneSection";
 
 export default function TeamInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -185,40 +185,19 @@ export default function TeamInfoPage() {
       <Space h="md" />
 
       {role === "primary" && (
-        <>
-          <PageSection title="danger zone">
-            <Flex gap="xl" align="center">
-              <Text flex={1} c="red" fw={700} size="sm">
-                THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
-              </Text>
-              <DeleteConfirmationModal
-                trigger={
-                  <Button
-                    w="fit-content"
-                    leftSection={<LuTrash />}
-                    color="red"
-                    variant="outline"
-                  >
-                    Delete Team
-                  </Button>
-                }
-                includeBallots={true}
-                onSubmit={() => {
-                  deleteTeam({
-                    teamId: selectedTeam.id,
-                    schoolId: selectedSchoolId,
-                  });
-                  navigate("/school");
-                }}
-                entity={{
-                  name: selectedTeam.name,
-                }}
-                entityName="team"
-              />
-            </Flex>
-          </PageSection>
-          <Space h="md" />
-        </>
+        <DangerZoneSection
+          buttonLabel="Team"
+          includeBallots={true}
+          onSubmit={() => {
+            deleteTeam({
+              teamId: selectedTeam.id,
+              schoolId: selectedSchoolId,
+            });
+            navigate("/school");
+          }}
+          entity={{ name: selectedTeam.name }}
+          entityName="team"
+        />
       )}
 
       <PageSection title="students">

@@ -3,10 +3,7 @@ import {
   Text,
   Space,
   Button,
-  Flex,
   Divider,
-  Group,
-  Stack,
   NumberInput,
   Select,
 } from "@mantine/core";
@@ -21,15 +18,14 @@ import {
 import PageSection from "../common/components/PageSection";
 import { capitalize } from "../common/utils/helpers";
 import TeamCard from "../features/tournamentInfo/components/TeamCard";
-import { LuArrowLeft, LuTrash } from "react-icons/lu";
+import { LuArrowLeft } from "react-icons/lu";
 import { useAuth } from "../context/AuthContext";
 import { useGetRole } from "../common/hooks/useGetRole";
-import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
 import AddButton from "../common/components/AddButton";
 import AddTeamModal from "../features/tournamentInfo/components/AddTeamModal";
-import ShowIdText from "../common/components/ShowIdText";
 import { useEffect, useState } from "react";
 import PageDetailSection from "../common/components/PageDetailSection";
+import DangerZoneSection from "../common/components/DangerZoneSection";
 
 export default function TournamentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -179,37 +175,16 @@ export default function TournamentInfoPage() {
       <Space h="md" />
 
       {role === "primary" && (
-        <>
-          <PageSection title="danger zone">
-            <Flex gap="xl" align="center">
-              <Text flex={1} c="red" fw={700} size="sm">
-                THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
-              </Text>
-              <DeleteConfirmationModal
-                trigger={
-                  <Button
-                    w="fit-content"
-                    leftSection={<LuTrash />}
-                    color="red"
-                    variant="outline"
-                  >
-                    Delete Tournament
-                  </Button>
-                }
-                includeBallots={true}
-                onSubmit={() => {
-                  deleteTournament();
-                  navigate("/tournaments");
-                }}
-                entity={{
-                  name: selectedTournament.name,
-                }}
-                entityName="tournament"
-              />
-            </Flex>
-          </PageSection>
-          <Space h="md" />
-        </>
+        <DangerZoneSection
+          buttonLabel="Tournament"
+          includeBallots={true}
+          onSubmit={() => {
+            deleteTournament();
+            navigate("/tournaments");
+          }}
+          entity={{ name: selectedTournament.name }}
+          entityName="tournament"
+        />
       )}
 
       <PageSection title="teams">

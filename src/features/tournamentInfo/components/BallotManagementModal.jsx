@@ -3,7 +3,6 @@ import {
   Text,
   Table,
   Space,
-  Flex,
   Card,
   Group,
   ScrollArea,
@@ -12,14 +11,14 @@ import {
   Tooltip
 } from "@mantine/core";
 import { useBallotDetails } from "../../../common/hooks/useBallotDetails";
-import { LuTrash, LuPencil as LuEdit, LuWeight } from "react-icons/lu";
-import DeleteConfirmationModal from "../../../common/components/modals-new/DeleteConfirmationModal";
+import { LuPencil as LuEdit, LuWeight } from "react-icons/lu";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
 import PageSection from "../../../common/components/PageSection";
 import { formatSide } from "../../../common/utils/helpers";
 import { useRoundDetails } from "../../../common/hooks/useRoundDetails";
 import { useState } from "react";
 import PageDetailSection from "../../../common/components/PageDetailSection";
+import DangerZoneSection from "../../../common/components/DangerZoneSection";
 
 export default function BallotManagementModal({
   selected,
@@ -195,40 +194,19 @@ export default function BallotManagementModal({
       <Space h="md" />
 
       {(role === "primary" || role === "admin") && (
-        <>
-          <PageSection title="Danger Zone">
-            <Flex gap="xl" align="center">
-              <Text flex={1} c="red" fw={700} size="sm">
-                THIS ACTION CANNOT BE REVERSED. PLEASE PROCEED WITH CAUTION.
-              </Text>
-              <DeleteConfirmationModal
-                trigger={
-                  <Button
-                    w="fit-content"
-                    leftSection={<LuTrash />}
-                    color="red"
-                    variant="outline"
-                  >
-                    Delete Ballot
-                  </Button>
-                }
-                includeBallots={false}
-                onSubmitFunction={() => {
-                  deleteBallot({
-                    ballotId: ballotDetails?.id,
-                    roundId,
-                  });
-                }}
-                entity={{
-                  id: ballotDetails?.id,
-                }}
-                entityName="ballot"
-                layer={2}
-              />
-            </Flex>
-          </PageSection>
-          <Space h="md" />
-        </>
+        <DangerZoneSection
+          buttonLabel="Ballot"
+          includeBallots={false}
+          onSubmit={() => {
+            deleteBallot({
+              ballotId: ballotDetails?.id,
+              roundId,
+            });
+          }}
+          entity={{ id: ballotDetails?.id }}
+          entityName="ballot"
+          layer={2}
+        />
       )}
 
       <PageSection title="Scores">
