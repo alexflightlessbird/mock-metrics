@@ -14,6 +14,7 @@ import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
 import AnalysisResults from "../features/ballotAnalysis/components/AnalysisResults";
+import Loader from "../common/components/loader/GavelLoader";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -68,7 +69,8 @@ export default function BallotAnalysisPage() {
   if (isLoading)
     return (
       <BasePage titleText="Loading...">
-        <Text>Loading tournaments...</Text>
+        <Loader scale={1.5} />
+        <Text c="dimmed" ta="center" mt="sm" size="lg">This may take a moment.</Text>
       </BasePage>
     );
 
