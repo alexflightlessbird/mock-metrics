@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { LuPencil, LuSave } from "react-icons/lu";
+import { styleProps as editModeStyleProps } from "../editModeStyleProps";
 
 export default function BasePage({
   titleText,
@@ -60,15 +61,7 @@ export default function BasePage({
               type="text"
               value={currentTitle}
               onChange={(e) => setCurrentTitle(e.target.value)}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={editModeStyleProps}
             />
           )}
           {!(editableTitle && editEnabled && editMode) && currentTitle}

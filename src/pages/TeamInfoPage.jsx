@@ -32,6 +32,7 @@ import Card from "../common/components/card/Card";
 import AddStudentToTeamModal from "../features/teamInfo/components/AddStudentToTeamModal";
 import PageDetailSection from "../common/components/PageDetailSection";
 import DangerZoneSection from "../common/components/DangerZoneSection";
+import { styleProps } from "../common/editModeStyleProps";
 
 export default function TeamInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -109,16 +110,6 @@ export default function TeamInfoPage() {
     }
     await updateTeam(updates);
     setEditMode(false);
-  };
-
-  const styleProps = {
-    fontSize: "1.875rem",
-    fontWeight: 700,
-    lineHeight: 1.2,
-    border: "none",
-    borderBottom: "2px solid #000",
-    outline: "none",
-    marginRight: "10px",
   };
 
   return (
