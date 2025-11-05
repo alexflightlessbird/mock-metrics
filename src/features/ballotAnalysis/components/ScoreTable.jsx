@@ -86,7 +86,7 @@ export default function ScoreTable({
                                 reversed={sorting.reversed}
                                 onSort={() => handleSetSorting("averageSpeech")}
                             >
-
+                                Speech
                             </SortableTh>
                         )}
                     </Table.Tr>
