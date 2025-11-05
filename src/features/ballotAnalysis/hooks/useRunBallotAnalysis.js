@@ -103,5 +103,5 @@ export default function useRunBallotAnalysis() {
         }, 3000);
     }
 
-    return { runAnalysis, analysisRunning, setAnalysisRunning, neededTournamentData, calculatedTeamScores, allTeamScores, overallScores };
+    return { runAnalysis, analysisRunning, neededTournamentData, calculatedTeamScores, allTeamScores, overallScores };
 }
