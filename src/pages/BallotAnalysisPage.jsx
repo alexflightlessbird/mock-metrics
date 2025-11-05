@@ -21,6 +21,7 @@ import WitnessTable from "../features/ballotAnalysis/components/WitnessTable";
 import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
+import RefreshAnalysisButton from "../features/ballotAnalysis/components/RefreshAnalysisButton";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -37,7 +38,6 @@ export default function BallotAnalysisPage() {
   const { 
     runAnalysis, 
     analysisRunning, 
-    setAnalysisRunning, 
     neededTournamentData, 
     calculatedTeamScores,
     allTeamScores,
@@ -88,6 +88,13 @@ export default function BallotAnalysisPage() {
       setShowTournamentSelection(false);
     }, 3000);
   };
+
+  const handleRefresh = () => {
+    setShowAnalysis(false);
+    setSelectedTournamentIds([]);
+    setSelectedTeamIds({});
+    setShowTournamentSelection(true);
+  }
 
   return (
     <BasePage titleText="Ballot Analysis">
@@ -196,18 +203,7 @@ export default function BallotAnalysisPage() {
 
       {showAnalysis && (
         <>
-          <Button
-            onClick={() => {
-              setShowAnalysis(false);
-              setAnalysisRunning(false);
-              setSelectedTournamentIds([]);
-              setSelectedTeamIds({});
-              setShowTournamentSelection(true);
-            }}
-            fullWidth
-          >
-            Refresh
-          </Button>
+          <RefreshAnalysisButton onRefresh={handleRefresh} />
 
           <Space h="md" />
 
