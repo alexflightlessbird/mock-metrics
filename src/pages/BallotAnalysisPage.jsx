@@ -1,7 +1,6 @@
 import {
   Checkbox,
   Group,
-  Space,
   Stack,
   Text,
   Tooltip,
@@ -14,9 +13,7 @@ import { useState } from "react";
 import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
-import RefreshAnalysisButton from "../features/ballotAnalysis/components/RefreshAnalysisButton";
-import OverallScoresSection from "../features/ballotAnalysis/components/OverallScoresSection";
-import TournamentSummariesSection from "../features/ballotAnalysis/components/TournamentSummariesSection";
+import AnalysisResults from "../features/ballotAnalysis/components/AnalysisResults";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -197,21 +194,14 @@ export default function BallotAnalysisPage() {
       )}
 
       {showAnalysis && (
-        <>
-          <RefreshAnalysisButton onRefresh={handleRefresh} />
-
-          <Space h="md" />
-
-          <TournamentSummariesSection
-            neededTournamentData={neededTournamentData}
-            calculatedTeamScores={calculatedTeamScores}
-            allTeamScores={allTeamScores}
-          />
-
-          <Space h="md" />
-
-          <OverallScoresSection attorneys={overallScores.attorneys} witnesses={overallScores.witnesses} />
-        </>
+        <AnalysisResults 
+          handleRefresh={handleRefresh}
+          neededTournamentData={neededTournamentData}
+          calculatedTeamScores={calculatedTeamScores}
+          allTeamScores={allTeamScores}
+          attorneys={overallScores.attorneys}
+          witnesses={overallScores.witnesses}
+        />
       )}
     </BasePage>
   );
