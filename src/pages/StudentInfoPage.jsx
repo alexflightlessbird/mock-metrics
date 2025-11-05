@@ -13,16 +13,15 @@ import {
   Button,
   Divider,
   Flex,
-  Group,
   Select,
-  Stack,
+  Space,
   Text,
 } from "@mantine/core";
 import { LuArrowLeft, LuTrash } from "react-icons/lu";
 import Loader from "../common/components/loader/GavelLoader";
-import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
 import DeleteConfirmationModal from "../common/components/modals-new/DeleteConfirmationModal";
+import PageDetailSection from "../common/components/PageDetailSection";
 
 export default function StudentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -117,6 +116,16 @@ export default function StudentInfoPage() {
     setEditMode(false);
   };
 
+  const styleProps = {
+    fontSize: "1.875rem",
+    fontWeight: 700,
+    lineHeight: 1.2,
+    border: "none",
+    borderBottom: "2px solid #000",
+    outline: "none",
+    marginRight: "10px",
+  };
+
   return (
     <BasePage
       titleText={selectedStudent.name}
@@ -141,36 +150,22 @@ export default function StudentInfoPage() {
 
       <Divider mb="md" />
 
-      <Group justify="space-between" align="flex-start" mb="xs">
-        <Stack gap="0">
-          <Text c="dimmed" fz="sm">
-            Current Team
-          </Text>
-          {editMode && (
+      <PageDetailSection
+        editable={editMode}
+        details={[
+          { name: "Current Team", value: editMode ? (
             <Select
               value={currentTeamId}
               onChange={setCurrentTeamId}
               data={availableTeams}
-              style={{
-                fontSize: "1.875rem",
-                fontWeight: 700,
-                lineHeight: 1.2,
-                border: "none",
-                borderBottom: "2px solid #000",
-                outline: "none",
-                marginRight: "10px",
-              }}
+              style={styleProps}
             />
-          )}
-          {!editMode && (
-            <Text fz="sm">
-              {initialCurrentTeam?.teams?.name ||
-                "Not currently assigned to a team"}
-            </Text>
-          )}
-        </Stack>
-        <ShowIdText fz="sm" idName="Student" idValue={selectedStudent.id} />
-      </Group>
+          ) : initialCurrentTeam?.teams?.name || "Not currently assigned to a team" },
+          { type: "id", name: "Student", value: selectedStudent.id }
+        ]}
+      />
+
+      <Space h="md" />
 
       {role === "primary" && (
         <>

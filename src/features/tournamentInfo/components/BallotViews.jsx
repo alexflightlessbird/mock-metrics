@@ -58,7 +58,7 @@ export function ViewBallots({
           </Table.Td>
         </Table.Tr>
       }
-    ></BallotManagementModal>
+    />
   );
 
   const tableColumns = [
