@@ -11,14 +11,12 @@ import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTourna
 import { useLocalStorage } from "@mantine/hooks";
 import Card from "../common/components/card/Card";
 import { useState } from "react";
-import PageSection from "../common/components/PageSection";
-import TeamCard from "../features/ballotAnalysis/components/TeamCard";
-import TournamentSummaryCard from "../features/ballotAnalysis/components/TournamentSummaryCard";
 import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
 import RefreshAnalysisButton from "../features/ballotAnalysis/components/RefreshAnalysisButton";
 import OverallScoresSection from "../features/ballotAnalysis/components/OverallScoresSection";
+import TournamentSummariesSection from "../features/ballotAnalysis/components/TournamentSummariesSection";
 
 export default function BallotAnalysisPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -204,39 +202,11 @@ export default function BallotAnalysisPage() {
 
           <Space h="md" />
 
-          <PageSection
-            title="tournament summaries"
-            collapsible={true}
-            defaultOpen={true}
-          >
-            {neededTournamentData.map((t) => {
-              const tournamentTeamScores = calculatedTeamScores.find(
-                (ts) => ts.tournamentId === t.id
-              );
-
-              return (
-                <Stack gap="md" key={t.id}>
-                  <TournamentSummaryCard
-                    tournament={t}
-                    allTeamScores={allTeamScores.filter(
-                      (ts) => ts.tournamentId === t.id
-                    )}
-                  >
-                    {t.teams.map((team) => {
-                      return (
-                        <TeamCard
-                          key={team.id}
-                          team={team}
-                          tournamentTeamScores={tournamentTeamScores}
-                          tournamentName={t.name}
-                        />
-                      );
-                    })}
-                  </TournamentSummaryCard>
-                </Stack>
-              );
-            })}
-          </PageSection>
+          <TournamentSummariesSection
+            neededTournamentData={neededTournamentData}
+            calculatedTeamScores={calculatedTeamScores}
+            allTeamScores={allTeamScores}
+          />
 
           <Space h="md" />
 
