@@ -168,7 +168,7 @@ export default function TeamInfoPage() {
               }
               style={styleProps}
             />
-          ) : editMode && caseDetails ? caseDetails.name + " (" + caseDetails.year + ")" : <Text fz="sm">{caseDetails.name + " (" + caseDetails.year + ")"}</Text> },
+          ) : caseDetails.name + " (" + caseDetails.year + ")" },
           { type: "id", name: "Team", value: selectedTeam.id }
         ]}
       />
