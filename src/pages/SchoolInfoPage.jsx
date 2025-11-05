@@ -13,7 +13,6 @@ import {
   Flex,
   ActionIcon,
   Grid,
-  Tooltip,
 } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
@@ -40,11 +39,12 @@ import PageSection from "../common/components/PageSection";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { LuArchive, LuArchiveRestore, LuSearch, LuX } from "react-icons/lu";
+import { LuSearch, LuX } from "react-icons/lu";
 import AddButton from "../common/components/AddButton";
 import Card from "../common/components/card/Card";
 import AddTeamModal from "../features/schoolInfo/components/AddTeamModal";
 import AddStudentModal from "../features/schoolInfo/components/AddStudentModal";
+import ArchiveAction from "../common/components/ArchiveAction";
 
 export default function SchoolInfoPage() {
   const { user } = useAuth();
@@ -400,30 +400,21 @@ export default function SchoolInfoPage() {
                   <Flex justify="space-between" align="center">
                     <Title order={5}>{t.name}</Title>
                     {(role === "admin" || role === "primary") && (
-                      <Tooltip
-                        label={t.is_active ? "Archive Team" : "Unarchive Team"}
-                        withArrow
-                      >
-                        <ActionIcon
-                          variant="subtle"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (t.is_active) {
-                              archiveTeam({
-                                teamId: t.id,
-                                schoolId: selectedSchoolId,
-                              });
-                            } else {
-                              unarchiveTeam({
-                                teamId: t.id,
-                                schoolId: selectedSchoolId,
-                              });
-                            }
-                          }}
-                        >
-                          {t.is_active ? <LuArchive /> : <LuArchiveRestore />}
-                        </ActionIcon>
-                      </Tooltip>
+                      <ArchiveAction
+                        isActive={t.is_active}
+                        onArchive={() =>
+                          archiveTeam({
+                            teamId: t.id,
+                            schoolId: selectedSchoolId,
+                          })
+                        }
+                        onUnarchive={() =>
+                          unarchiveTeam({
+                            teamId: t.id,
+                            schoolId: selectedSchoolId,
+                          })
+                        }
+                      />
                     )}
                   </Flex>
                   <Text>{t.year}</Text>
@@ -515,32 +506,21 @@ export default function SchoolInfoPage() {
                   <Flex justify="space-between" align="center">
                     <Title order={5}>{s.name}</Title>
                     {(role === "admin" || role === "primary") && (
-                      <Tooltip
-                        label={
-                          s.is_active ? "Archive Student" : "Unarchive Student"
+                      <ArchiveAction
+                        isActive={s.is_active}
+                        onArchive={() =>
+                          archiveStudent({
+                            studentId: s.id,
+                            schoolId: selectedSchoolId,
+                          })
                         }
-                        withArrow
-                      >
-                        <ActionIcon
-                          variant="subtle"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (s.is_active) {
-                              archiveStudent({
-                                studentId: s.id,
-                                schoolId: selectedSchoolId,
-                              });
-                            } else {
-                              unarchiveStudent({
-                                studentId: s.id,
-                                schoolId: selectedSchoolId,
-                              });
-                            }
-                          }}
-                        >
-                          {s.is_active ? <LuArchive /> : <LuArchiveRestore />}
-                        </ActionIcon>
-                      </Tooltip>
+                        onUnarchive={() =>
+                          unarchiveStudent({
+                            studentId: s.id,
+                            schoolId: selectedSchoolId,
+                          })
+                        }
+                      />
                     )}
                   </Flex>
                 </Card>
