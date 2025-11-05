@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import App from "./App";
-import { MantineProvider, SegmentedControl, createTheme } from "@mantine/core";
+import { MantineProvider, createTheme } from "@mantine/core";
 import "./assets/css/globals.css";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";

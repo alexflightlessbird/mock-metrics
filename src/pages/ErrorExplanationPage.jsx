@@ -1,7 +1,6 @@
 import {
   Stack,
   Text,
-  Card as MantineCard,
   SimpleGrid,
   Grid,
   rem,

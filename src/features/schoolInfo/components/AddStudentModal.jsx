@@ -1,11 +1,10 @@
 import { useSessionStorage } from "@mantine/hooks";
 import { useAddStudent } from "../hooks/useAddStudent";
 import useNotifications from "../../../common/hooks/useNotifications";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
 import { Group, TextInput, Stack, Button, Text } from "@mantine/core";
 import { useModal } from "../../../context/ModalContext";
-import Loader from "../../../common/components/loader/GavelLoader";
 
 export default function AddStudentModal({ onClose, trigger, schoolId }) {
   const [formData, setFormData] = useSessionStorage({

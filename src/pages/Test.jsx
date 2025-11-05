@@ -14,7 +14,6 @@ import {
   Group,
   Space,
   Overlay,
-  Modal,
 } from "@mantine/core";
 import {
   DocumentAnalysisClient,
@@ -301,8 +300,6 @@ export default function Test() {
       />
     );
   };
-
-  const [modalOpened, setModalOpend] = useState(false);
 
   return (
     <BasePage
