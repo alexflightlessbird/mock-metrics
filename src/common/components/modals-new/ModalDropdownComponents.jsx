@@ -5,7 +5,9 @@ export function ModalSelect({ clearable = true, ...props }) {
     <Select
       {...props}
       comboboxProps={{ withinPortal: false, zIndex: 1 }}
-      styles={{ dropdown: { position: "fixed" } }}
+      styles={{
+        dropdown: { position: "fixed", zIndex: 100, overflow: "auto" },
+      }}
       clearable={clearable}
     />
   );
@@ -22,6 +24,8 @@ export function ModalMultiSelect({ ...props }) {
       styles={{
         dropdown: {
           position: "fixed",
+          zIndex: 100,
+          overflow: "auto",
         },
       }}
     />
