@@ -140,6 +140,9 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
         size="sm"
         onChange={(value) => handleInputChange(inputName, value)}
         inputMode="numeric"
+        onFocus={(e) => {
+          setTimeout(() => e.target.select());
+        }}
       />
     );
   };
