@@ -187,6 +187,9 @@ export default function BaseModal({
             display: "flex",
             flexDirection: "column",
             "&:focus": { outline: "none" },
+            WebkitOverflowScrolling: "touch",
+            overflow: "hidden",
+            maxWidth: isMobile ? "100vw" : "none",
           }}
           aria-describedby={undefined}
           onClick={(e) => e.stopPropagation()}
