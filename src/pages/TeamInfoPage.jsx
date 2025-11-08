@@ -139,38 +139,61 @@ export default function TeamInfoPage() {
       <PageDetailSection
         editable={editMode}
         details={[
-          { name: "Year", value: editMode ? (
-            <NumberInput
-              value={teamYear}
-              onChange={setTeamYear}
-              min={1980}
-              max={new Date().getFullYear() + 1}
-              style={styleProps}
-            />
-          ) : selectedTeam.year },
-          { name: "Type", value: editMode ? (
-            <Select
-              value={teamType}
-              onChange={setTeamType}
-              data={[
-                { value: "pre-stack", label: "Pre-Stack" },
-                { value: "post-stack", label: "Post-Stack" }
-              ]}
-              style={styleProps}
-            />
-          ) : selectedTeam.type === "pre-stack" ? "Pre-Stack" : selectedTeam.type === "post-stack" ? "Post-Stack" : "" },
-          { name: "Associated Case", value: editMode && allCases.filter(c => c.is_active).length > 1 ? (
-            <Select
-              value={teamCase}
-              onChange={setTeamCase}
-              data={allCases.filter(c => c.is_active)
-                .map(c => ({ value: c.id, label: c.name + " (" + c.year + ")" }))
-              }
-              style={styleProps}
-            />
-          ) : caseDetails.name + " (" + caseDetails.year + ")" },
-          { type: "id", name: "Team", value: selectedTeam.id }
+          {
+            name: "Year",
+            value: editMode ? (
+              <NumberInput
+                value={teamYear}
+                onChange={setTeamYear}
+                min={1980}
+                max={new Date().getFullYear() + 1}
+                style={styleProps}
                 inputMode="numeric"
+              />
+            ) : (
+              selectedTeam.year
+            ),
+          },
+          {
+            name: "Type",
+            value: editMode ? (
+              <Select
+                value={teamType}
+                onChange={setTeamType}
+                data={[
+                  { value: "pre-stack", label: "Pre-Stack" },
+                  { value: "post-stack", label: "Post-Stack" },
+                ]}
+                style={styleProps}
+              />
+            ) : selectedTeam.type === "pre-stack" ? (
+              "Pre-Stack"
+            ) : selectedTeam.type === "post-stack" ? (
+              "Post-Stack"
+            ) : (
+              ""
+            ),
+          },
+          {
+            name: "Associated Case",
+            value:
+              editMode && allCases.filter((c) => c.is_active).length > 1 ? (
+                <Select
+                  value={teamCase}
+                  onChange={setTeamCase}
+                  data={allCases
+                    .filter((c) => c.is_active)
+                    .map((c) => ({
+                      value: c.id,
+                      label: c.name + " (" + c.year + ")",
+                    }))}
+                  style={styleProps}
+                />
+              ) : (
+                caseDetails.name + " (" + caseDetails.year + ")"
+              ),
+          },
+          { type: "id", name: "Team", value: selectedTeam.id },
         ]}
       />
 
