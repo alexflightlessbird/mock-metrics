@@ -144,12 +144,19 @@ export function useTournamentTeams(tournamentId) {
 
   const deleteTeamMutation = useMutation({
     mutationFn: async ({ teamId, tournamentId }) => {
-      const { error } = await supabase
+      const { error: roundsError } = await supabase
+        .from("rounds")
+        .delete()
+        .eq("team_id", teamId)
+        .eq("tournament_id", tournamentId);
+      if (roundsError) throw roundsError;
+
+      const { error: teamTournamentError } = await supabase
         .from("teams_tournaments")
         .delete()
         .eq("team_id", teamId)
         .eq("tournament_id", tournamentId);
-      if (error) throw error;
+      if (teamTournamentError) throw error;
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries([
