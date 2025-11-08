@@ -170,6 +170,7 @@ export default function TeamInfoPage() {
             />
           ) : caseDetails.name + " (" + caseDetails.year + ")" },
           { type: "id", name: "Team", value: selectedTeam.id }
+                inputMode="numeric"
         ]}
       />
 

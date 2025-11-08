@@ -130,6 +130,7 @@ export default function AddTeamModal({ onClose, trigger, schoolId }) {
         min={1980}
         max={new Date().getFullYear() + 1}
         required
+        inputMode="numeric"
       />
 
       <RadioCardGroup

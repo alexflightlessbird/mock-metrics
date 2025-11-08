@@ -109,6 +109,7 @@ export default function BallotManagementModal({
               onChange={setWeightValue}
               decimalScale={2}
               fixedDecimalScale
+              inputMode="decimal"
             />
             <Button size="xs" variant="light" onClick={() => handleWeightSave(scoreType)}>Save</Button>
             <Button size="xs" variant="subtle" onClick={handleWeightCancel}>Cancel</Button>
