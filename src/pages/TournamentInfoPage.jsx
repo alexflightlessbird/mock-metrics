@@ -122,45 +122,67 @@ export default function TournamentInfoPage() {
       <PageDetailSection
         editable={editMode}
         details={[
-          { name: "Year", value: editMode ? (
-            <NumberInput
-              value={tournamentYear}
-              onChange={setTournamentYear}
-              min={1980}
-              max={new Date().getFullYear() + 1}
-              style={styleProps}
-            />
-          ) : selectedTournament.year },
-          { name: "Type", value: editMode ? (
-            <Select
-              value={tournamentType}
-              onChange={setTournamentType}
-              data={[
-                { value: "pre-stack", label: "Pre-Stack" },
-                { value: "post-stack", label: "Post-Stack" }
-              ]}
-              style={styleProps}
-            />
-          ) : selectedTournament.type === "pre-stack" ? "Pre-Stack" : selectedTournament.type === "post-stack" ? "Post-Stack" : "" },
-          { name: "Area", value: editMode ? (
-            <Select
-              value={tournamentArea}
-              onChange={setTournamentArea}
-              data={[
-                { value: "invitational", label: "Invitational" },
-                { value: "regionals", label: "Regionals" },
-                { value: "orcs", label: "ORCS" },
-                { value: "nationals", label: "Nationals" },
-                { value: "rookie rumble", label: "Rookie Rumble" },
-                { value: "olt", label: "OLT" },
-                { label: "Other", value: "other" },
-              ]}
-              style={styleProps}  
-            />
-          ) : capitalize(selectedTournament.area) },
-          { name: "Associated Case", value: `${selectedTournament.cases.name} (${selectedTournament.cases.year})` },
-          { type: "id", name: "Tournament", value: selectedTournament.id }
+          {
+            name: "Year",
+            value: editMode ? (
+              <NumberInput
+                value={tournamentYear}
+                onChange={setTournamentYear}
+                min={1980}
+                max={new Date().getFullYear() + 1}
+                style={styleProps}
                 inputMode="numeric"
+              />
+            ) : (
+              selectedTournament.year
+            ),
+          },
+          {
+            name: "Type",
+            value: editMode ? (
+              <Select
+                value={tournamentType}
+                onChange={setTournamentType}
+                data={[
+                  { value: "pre-stack", label: "Pre-Stack" },
+                  { value: "post-stack", label: "Post-Stack" },
+                ]}
+                style={styleProps}
+              />
+            ) : selectedTournament.type === "pre-stack" ? (
+              "Pre-Stack"
+            ) : selectedTournament.type === "post-stack" ? (
+              "Post-Stack"
+            ) : (
+              ""
+            ),
+          },
+          {
+            name: "Area",
+            value: editMode ? (
+              <Select
+                value={tournamentArea}
+                onChange={setTournamentArea}
+                data={[
+                  { value: "invitational", label: "Invitational" },
+                  { value: "regionals", label: "Regionals" },
+                  { value: "orcs", label: "ORCS" },
+                  { value: "nationals", label: "Nationals" },
+                  { value: "rookie rumble", label: "Rookie Rumble" },
+                  { value: "olt", label: "OLT" },
+                  { label: "Other", value: "other" },
+                ]}
+                style={styleProps}
+              />
+            ) : (
+              capitalize(selectedTournament.area)
+            ),
+          },
+          {
+            name: "Associated Case",
+            value: `${selectedTournament.cases.name} (${selectedTournament.cases.year})`,
+          },
+          { type: "id", name: "Tournament", value: selectedTournament.id },
         ]}
       />
 

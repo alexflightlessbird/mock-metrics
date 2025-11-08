@@ -8,7 +8,7 @@ import {
   ScrollArea,
   NumberInput,
   ActionIcon,
-  Tooltip
+  Tooltip,
 } from "@mantine/core";
 import { useBallotDetails } from "../../../common/hooks/useBallotDetails";
 import { LuPencil as LuEdit, LuWeight } from "react-icons/lu";
@@ -52,8 +52,8 @@ export default function BallotManagementModal({
 
   const scoreWeight = (scoreType) => {
     return (
-      ballotDetails?.scores?.find((s) => s.score_type === scoreType)
-        ?.weight || 1
+      ballotDetails?.scores?.find((s) => s.score_type === scoreType)?.weight ||
+      1
     );
   };
 
@@ -87,8 +87,10 @@ export default function BallotManagementModal({
     const currentWeight = scoreWeight(scoreType);
     const isEditing = editingWeight === scoreType;
 
-    const shouldShow = isEditing ||
-      (role === "admin" || role === "primary") ||
+    const shouldShow =
+      isEditing ||
+      role === "admin" ||
+      role === "primary" ||
       currentWeight !== 1 ||
       hasCustomWeights();
 
@@ -111,8 +113,16 @@ export default function BallotManagementModal({
               fixedDecimalScale
               inputMode="decimal"
             />
-            <Button size="xs" variant="light" onClick={() => handleWeightSave(scoreType)}>Save</Button>
-            <Button size="xs" variant="subtle" onClick={handleWeightCancel}>Cancel</Button>
+            <Button
+              size="xs"
+              variant="light"
+              onClick={() => handleWeightSave(scoreType)}
+            >
+              Save
+            </Button>
+            <Button size="xs" variant="subtle" onClick={handleWeightCancel}>
+              Cancel
+            </Button>
           </Group>
         ) : (
           <Group gap="xs">
@@ -178,7 +188,9 @@ export default function BallotManagementModal({
             <Tooltip label="This ballot has custom score weights applied">
               <Group gap="xs">
                 <LuWeight size={16} />
-                <Text fz="xs" c="dimmed">Custom Weights Applied</Text>
+                <Text fz="xs" c="dimmed">
+                  Custom Weights Applied
+                </Text>
               </Group>
             </Tooltip>
           )}
@@ -188,7 +200,7 @@ export default function BallotManagementModal({
       <PageDetailSection
         details={[
           { name: "Judge", value: ballotDetails?.judge_name },
-          { type: "id", name: "Ballot", value: ballotDetails?.id }
+          { type: "id", name: "Ballot", value: ballotDetails?.id },
         ]}
       />
 
@@ -242,7 +254,7 @@ export default function BallotManagementModal({
                     </i>
                   </Table.Td>
                 </Table.Tr>
-                
+
                 <ScoreRow label="Direct - Attorney" pScore="p2" />
                 <ScoreRow label="Direct - Witness" pScore="p3" />
                 <ScoreRow label="Cross" pScore="p4" dScore="d2" />
@@ -261,7 +273,7 @@ export default function BallotManagementModal({
                     </i>
                   </Table.Td>
                 </Table.Tr>
-                
+
                 <ScoreRow label="Direct - Attorney" pScore="p5" />
                 <ScoreRow label="Direct - Witness" pScore="p6" />
                 <ScoreRow label="Cross" pScore="p7" dScore="d3" />
@@ -303,7 +315,7 @@ export default function BallotManagementModal({
                     </i>
                   </Table.Td>
                 </Table.Tr>
-                
+
                 <ScoreRow label="Direct - Attorney" dScore="d5" />
                 <ScoreRow label="Direct - Witness" dScore="d6" />
                 <ScoreRow label="Cross" pScore="p11" dScore="d7" />
@@ -349,7 +361,7 @@ export default function BallotManagementModal({
                 <Table.Tr>
                   <Table.Td colSpan={3}></Table.Td>
                 </Table.Tr>
-                
+
                 <ScoreRow label="Closing" pScore="p14" dScore="d14" />
               </Table.Tbody>
             </Table>
