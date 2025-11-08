@@ -160,6 +160,7 @@ export default function TournamentInfoPage() {
           ) : capitalize(selectedTournament.area) },
           { name: "Associated Case", value: `${selectedTournament.cases.name} (${selectedTournament.cases.year})` },
           { type: "id", name: "Tournament", value: selectedTournament.id }
+                inputMode="numeric"
         ]}
       />
 

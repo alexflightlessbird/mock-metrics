@@ -155,6 +155,7 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
         min={1980}
         max={new Date().getFullYear() + 1}
         required
+        inputMode="numeric"
       />
 
       <RadioCardGroup
