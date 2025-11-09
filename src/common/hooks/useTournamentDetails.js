@@ -156,7 +156,7 @@ export function useTournamentTeams(tournamentId) {
         .delete()
         .eq("team_id", teamId)
         .eq("tournament_id", tournamentId);
-      if (teamTournamentError) throw error;
+      if (teamTournamentError) throw teamTournamentError;
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries([
