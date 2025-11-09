@@ -7,10 +7,11 @@ export function useAddStudent() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ schoolId, name }) => {
+    mutationFn: async ({ schoolId, name, yearsInMock = 1 }) => {
       const { data, error } = await supabase.from("students").insert({
         school_id: schoolId,
         name: name.trim(),
+        years_in_mock: yearsInMock,
       });
       if (error) throw error;
       return data;

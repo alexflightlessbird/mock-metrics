@@ -3,7 +3,14 @@ import { useAddStudent } from "../hooks/useAddStudent";
 import useNotifications from "../../../common/hooks/useNotifications";
 import { useRef } from "react";
 import BaseModal from "../../../common/components/modals-new/BaseModal";
-import { Group, TextInput, Stack, Button, Text } from "@mantine/core";
+import {
+  Group,
+  TextInput,
+  Stack,
+  Button,
+  Text,
+  NumberInput,
+} from "@mantine/core";
 import { useModal } from "../../../context/ModalContext";
 
 export default function AddStudentModal({ onClose, trigger, schoolId }) {
@@ -11,6 +18,7 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
     key: "add-student-form",
     defaultValue: {
       name: "",
+      yearsInMock: 1,
     },
   });
   const { mutate: addStudent } = useAddStudent();
@@ -19,12 +27,17 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
   const { closeModal } = useModal();
 
   const validateForm = () => {
-    return formData.name.trim() !== "";
+    return (
+      formData.name.trim() !== "" &&
+      formData.yearsInMock !== null &&
+      formData.yearsInMock > 0
+    );
   };
 
   const handleReset = () => {
     setFormData({
       name: "",
+      yearsInMock: 1,
     });
   };
 
@@ -41,6 +54,7 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
       {
         name: formData.name,
         schoolId,
+        yearsInMock: formData.yearsInMock,
       },
       {
         onSuccess: () => {
@@ -73,6 +87,16 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
         onChange={(e) => handleInputChange("name", e.target.value)}
         label="Student Name"
         required
+      />
+
+      <NumberInput
+        value={formData.yearsInMock}
+        onChange={(value) => handleInputChange("yearsInMock", value)}
+        label="Years in Mock"
+        min={1}
+        max={5}
+        required
+        inputMode="numeric"
       />
     </Stack>,
   ];
