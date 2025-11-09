@@ -2,7 +2,6 @@ import { useState } from "react";
 import { sortData } from "../utils/sortData";
 import { Table, Tooltip } from "@mantine/core";
 import SortableTh from "./SortableTh";
-import logger from "../../../common/utils/logger";
 import {
   attorneyScoresByWitness,
   witnessScoresByWitness,
@@ -29,20 +28,14 @@ export default function ScoreTable({
     }));
   };
 
-  const ColoredCell = ({ score, id }) => {
-    return (
-      <Table.Td id={id} c={score >= 0 ? undefined : "red"}>
-        {score}
-      </Table.Td>
-    );
-  };
-
   const TooltipCell = ({ score, tooltipContent, colored = true }) => {
+    const lines = tooltipContent ? tooltipContent.split("\n") : [];
+
     const formattedLabel = tooltipContent
-      ? tooltipContent.split("\n").map((line, index) => (
+      ? lines.map((line, index) => (
           <div key={index}>
             {line}
-            {index < tooltipContent.split("\n").length - 1 && <br />}
+            {index < lines.length - 1 && <br />}
           </div>
         ))
       : null;
@@ -74,7 +67,6 @@ export default function ScoreTable({
       const { crossByWitness, directByWitness, speechByType } =
         attorneyScoresByWitness(student.scores);
 
-      scores.directHover.number = directByWitness.length;
       scores.directHover.display = directByWitness
         .sort((a, b) => b.average - a.average)
         .map(
@@ -85,7 +77,6 @@ export default function ScoreTable({
         )
         .join("\n");
 
-      scores.crossHover.number = crossByWitness.length;
       scores.crossHover.display = crossByWitness
         .sort((a, b) => b.average - a.average)
         .map(
@@ -96,7 +87,6 @@ export default function ScoreTable({
         )
         .join("\n");
 
-      scores.speechHover.number = speechByType.length;
       scores.speechHover.display = speechByType
         .sort((a, b) => b.average - a.average)
         .map(
@@ -111,7 +101,6 @@ export default function ScoreTable({
         student.scores
       );
 
-      scores.directHover.number = directByWitness.length;
       scores.directHover.display = directByWitness
         .sort((a, b) => b.average - a.average)
         .map(
@@ -122,7 +111,6 @@ export default function ScoreTable({
         )
         .join("\n");
 
-      scores.crossHover.number = crossByWitness.length;
       scores.crossHover.display = crossByWitness
         .sort((a, b) => b.average - a.average)
         .map(

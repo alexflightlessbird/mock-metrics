@@ -55,6 +55,11 @@ export default function roundScores({
         speech = calcs.find((c) => c.score_type === "d1" || c.score_type === "d14") || null;
     }
 
+    const getSpeechType = (scoreType) => {
+      const suffix = scoreType.slice(1);
+      return suffix === "1" ? "open" : suffix === "14" ? "close" : null;
+    };
+
     return {
       student: att.student,
       side,
@@ -69,13 +74,7 @@ export default function roundScores({
         },
         speech: {
           score: speech ? parseFloat(speech.merged) : null,
-          type: speech
-            ? speech.score_type.slice(1) === "1"
-              ? "open"
-              : speech.score_type.slice(1) === "14"
-              ? "close"
-              : null
-            : null,
+          type: speech ? getSpeechType(speech.score_type) : null,
         },
       },
     };
