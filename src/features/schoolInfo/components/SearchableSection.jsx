@@ -141,7 +141,7 @@ export default function SearchableSection({
                             ? "pink"
                             : i.years_in_mock === 4
                             ? "red"
-                            : i._years_in_mock === 5
+                            : i.years_in_mock === 5
                             ? "grape"
                             : "gray"
                         }
