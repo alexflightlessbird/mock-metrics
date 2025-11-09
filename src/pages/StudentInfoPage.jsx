@@ -12,6 +12,7 @@ import BasePage from "../common/components/BasePage";
 import {
   Button,
   Divider,
+  NumberInput,
   Select,
   Space,
   Text,
@@ -34,6 +35,7 @@ export default function StudentInfoPage() {
 
   const [currentTeamId, setCurrentTeamId] = useState(null);
   const [initialCurrentTeam, setInitialCurrentTeam] = useState(null);
+  const [yearsInMock, setYearsInMock] = useState(null);
 
   const { role } = useGetRole(user.id, selectedSchoolId);
 
@@ -56,6 +58,10 @@ export default function StudentInfoPage() {
     setCurrentTeamId(studentTeams?.find((st) => st.is_active)?.team_id || null);
     setInitialCurrentTeam(studentTeams?.find((st) => st.is_active) || null);
   }, [studentTeams]);
+
+  useEffect(() => {
+    setYearsInMock(selectedStudent?.years_in_mock || null);
+  }, [selectedStudent]);
 
   const availableTeams = useMemo(() => {
     return allTeams
@@ -91,6 +97,9 @@ export default function StudentInfoPage() {
 
     if (title !== selectedStudent.name) {
       updates.name = title;
+    }
+    if (yearsInMock !== selectedStudent.years_in_mock) {
+      updates.years_in_mock = yearsInMock;
     }
 
     if (currentTeamId !== initialCurrentTeam?.team_id) {
@@ -142,15 +151,35 @@ export default function StudentInfoPage() {
       <PageDetailSection
         editable={editMode}
         details={[
-          { name: "Current Team", value: editMode ? (
-            <Select
-              value={currentTeamId}
-              onChange={setCurrentTeamId}
-              data={availableTeams}
-              style={styleProps}
-            />
-          ) : initialCurrentTeam?.teams?.name || "Not currently assigned to a team" },
-          { type: "id", name: "Student", value: selectedStudent.id }
+          {
+            name: "Current Team",
+            value: editMode ? (
+              <Select
+                value={currentTeamId}
+                onChange={setCurrentTeamId}
+                data={availableTeams}
+                style={styleProps}
+              />
+            ) : (
+              initialCurrentTeam?.teams?.name ||
+              "Not currently assigned to a team"
+            ),
+          },
+          {
+            name: "Years in Mock",
+            value: editMode ? (
+              <NumberInput
+                value={yearsInMock}
+                onChange={setYearsInMock}
+                min={1}
+                max={5}
+                style={styleProps}
+              />
+            ) : (
+              selectedStudent.years_in_mock
+            ),
+          },
+          { type: "id", name: "Student", value: selectedStudent.id },
         ]}
       />
 
@@ -161,9 +190,9 @@ export default function StudentInfoPage() {
           buttonLabel="Student"
           includeBallots={true}
           onSubmit={() => {
-            deleteStudent({ 
-              studentId: selectedStudent.id, 
-              schoolId: selectedSchoolId 
+            deleteStudent({
+              studentId: selectedStudent.id,
+              schoolId: selectedSchoolId,
             });
             navigate("/school");
           }}
