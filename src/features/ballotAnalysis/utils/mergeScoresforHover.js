@@ -5,7 +5,7 @@ export function attorneyScoresByWitness(scoresArray) {
 
   const directByWitness = Object.values(
     directScores.reduce((acc, direct) => {
-      if (!direct || !direct?.witness?.id) return acc;
+      if (!direct || !direct?.witness?.id || !direct?.score) return acc;
 
       const witnessId = direct.witness.id;
       if (!acc[witnessId]) {
@@ -19,7 +19,7 @@ export function attorneyScoresByWitness(scoresArray) {
     }, {})
   );
 
-  directByWitness.map((d) => {
+  directByWitness.forEach((d) => {
     const rounds = d.scores.length;
     const average = d.scores.reduce((sum, s) => sum + s, 0) / rounds;
     d.average = parseFloat(average.toFixed(4));
@@ -30,7 +30,7 @@ export function attorneyScoresByWitness(scoresArray) {
 
   const crossByWitness = Object.values(
     crossScores.reduce((acc, cross) => {
-      if (!cross || !cross?.witness?.id) return acc;
+      if (!cross || !cross?.witness?.id || !cross?.score) return acc;
 
       const witnessId = cross.witness.id;
       if (!acc[witnessId]) {
@@ -44,7 +44,7 @@ export function attorneyScoresByWitness(scoresArray) {
     }, {})
   );
 
-  crossByWitness.map((c) => {
+  crossByWitness.forEach((c) => {
     const rounds = c.scores.length;
     const average = c.scores.reduce((sum, s) => sum + s, 0) / rounds;
     c.average = parseFloat(average.toFixed(4));
@@ -55,7 +55,7 @@ export function attorneyScoresByWitness(scoresArray) {
 
   const speechByType = Object.values(
     speechScores.reduce((acc, speech) => {
-      if (!speech || !speech?.type) return acc;
+      if (!speech || !speech?.type || !speech?.score) return acc;
 
       const type = speech.type;
       if (!acc[type]) {
@@ -69,7 +69,7 @@ export function attorneyScoresByWitness(scoresArray) {
     }, {})
   );
 
-  speechByType.map((s) => {
+  speechByType.forEach((s) => {
     const rounds = s.scores.length;
     const average = s.scores.reduce((sum, s) => sum + s, 0) / rounds;
     s.average = parseFloat(average.toFixed(4));
@@ -87,7 +87,12 @@ export function attorneyScoresByWitness(scoresArray) {
 
 export function witnessScoresByWitness(scoresArray) {
   const witnessGroups = scoresArray.reduce((acc, scoreObj) => {
-    if (!scoreObj.witness?.id) return acc;
+    if (
+      !scoreObj.witness?.id ||
+      !scoreObj.direct?.score ||
+      !scoreObj.cross?.score
+    )
+      return acc;
 
     const witnessId = scoreObj.witness.id;
 
