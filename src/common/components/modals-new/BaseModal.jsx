@@ -188,7 +188,7 @@ export default function BaseModal({
             flexDirection: "column",
             "&:focus": { outline: "none" },
             WebkitOverflowScrolling: "touch",
-            overflow: "hidden",
+            overflow: isMobile ? "hidden" : undefined,
             maxWidth: isMobile ? "100vw" : "none",
           }}
           aria-describedby={undefined}
