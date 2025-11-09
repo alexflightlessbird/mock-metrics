@@ -91,7 +91,7 @@ export default function ScoreTable({
         .sort((a, b) => b.average - a.average)
         .map(
           (s) =>
-            `${capitalize(s.type)}: ${s.average} (${s.rounds} round${
+            `${capitalize(s.type) || 'Unknown'}: ${s.average} (${s.rounds} round${
               s.rounds === 1 ? "" : "s"
             })`
         )
