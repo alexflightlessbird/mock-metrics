@@ -69,6 +69,13 @@ export default function roundScores({
         },
         speech: {
           score: speech ? parseFloat(speech.merged) : null,
+          type: speech
+            ? speech.score_type.slice(1) === "1"
+              ? "open"
+              : speech.score_type.slice(1) === "14"
+              ? "close"
+              : null
+            : null,
         },
       },
     };
