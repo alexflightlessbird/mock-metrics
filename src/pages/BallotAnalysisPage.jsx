@@ -117,7 +117,7 @@ export default function BallotAnalysisPage() {
               <Group direction="row" gap="lg" align="start">
                 {tournaments?.map((t) => {
                   const disabled =
-                    isTournamentDisabled(t.id) || analysisRunning;
+                    isTournamentDisabled(t.id) || analysisRunning || buttonLoading;
 
                   return (
                     <Tooltip
