@@ -9,7 +9,7 @@ import BasePage from "../common/components/BasePage";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
 import { useLocalStorage } from "@mantine/hooks";
 import Card from "../common/components/card/Card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuFilter } from "react-icons/lu";
 import RunAnalysisButton from "../features/ballotAnalysis/components/RunAnalysisButton";
 import useRunBallotAnalysis from "../features/ballotAnalysis/hooks/useRunBallotAnalysis";
@@ -26,6 +26,7 @@ export default function BallotAnalysisPage() {
 
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showTournamentSelection, setShowTournamentSelection] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const { data: tournaments, isLoading } = useGetTournaments(selectedSchoolId);
   const { 
@@ -66,6 +67,19 @@ export default function BallotAnalysisPage() {
     );
   };
 
+  useEffect(() => {
+    if (!neededTournamentData || neededTournamentData.length === 0) return;
+    if (!calculatedTeamScores || calculatedTeamScores.length === 0) return;
+    if (!allTeamScores || allTeamScores.length === 0) return;
+    if (analysisRunning) return;
+
+    setTimeout(() => {
+      setShowTournamentSelection(false);
+      setShowAnalysis(true);
+      setButtonLoading(false);
+    }, 1000);
+  }, [neededTournamentData, calculatedTeamScores, allTeamScores, analysisRunning]);
+
   if (isLoading)
     return (
       <BasePage titleText="Loading...">
@@ -75,12 +89,8 @@ export default function BallotAnalysisPage() {
     );
 
   const handleSubmit = async () => {
-    await runAnalysis(tournaments, selectedTournamentIds, selectedTeamIds);
-
-    setTimeout(() => {
-      setShowAnalysis(true);
-      setShowTournamentSelection(false);
-    }, 3000);
+    setButtonLoading(true);
+    await runAnalysis(selectedTournamentIds, selectedTeamIds);
   };
 
   const handleRefresh = () => {
@@ -188,7 +198,7 @@ export default function BallotAnalysisPage() {
           <RunAnalysisButton
             selectedTournamentIds={selectedTournamentIds}
             selectedTeamIds={selectedTeamIds}
-            analysisRunning={analysisRunning}
+            loading={buttonLoading}
             showAnalysis={showAnalysis}
             onRunAnalysis={handleSubmit}
           />

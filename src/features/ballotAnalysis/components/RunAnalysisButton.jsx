@@ -3,21 +3,22 @@ import { Button, Tooltip } from "@mantine/core";
 export default function RunAnalysisButton({
   selectedTournamentIds,
   selectedTeamIds,
-  analysisRunning,
+  loading,
   showAnalysis,
   onRunAnalysis,
 }) {
   const isDisabled =
     selectedTournamentIds.length === 0 ||
     Object.values(selectedTeamIds).some((ids) => ids.length === 0) ||
-    (!analysisRunning && showAnalysis);
+    loading ||
+    (!loading && showAnalysis);
 
   const tooltipLabel =
     selectedTournamentIds.length === 0
       ? "Select at least one tournament"
       : Object.values(selectedTeamIds).some((ids) => ids.length === 0)
       ? "Select at least one team for each selected tournament"
-      : analysisRunning
+      : loading
       ? "Analysis is currently running. Please wait."
       : showAnalysis
       ? "Analysis already run. Refresh to run again."
@@ -29,7 +30,7 @@ export default function RunAnalysisButton({
         disabled={isDisabled}
         onClick={onRunAnalysis}
         mb="md"
-        loading={analysisRunning}
+        loading={loading}
       >
         Run Analysis
       </Button>

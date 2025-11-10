@@ -217,7 +217,7 @@ export default function ScoreTable({
         </Table.Thead>
 
         <Table.Tbody>
-          {sorted.map((s) => (
+          {sorted?.map((s) => (
             <StudentRow
               key={`${s.student.id}-${s.side}-${s.teamId}`}
               student={s}
