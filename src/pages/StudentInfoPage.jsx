@@ -72,8 +72,8 @@ export default function StudentInfoPage() {
           t.type === "pre-stack"
             ? " Pre-Stack"
             : t.type === "post-stack"
-            ? " Post-Stack"
-            : ""
+              ? " Post-Stack"
+              : ""
         })`,
       }));
   }, [allTeams]);
@@ -164,6 +164,10 @@ export default function StudentInfoPage() {
               initialCurrentTeam?.teams?.name ||
               "Not currently assigned to a team"
             ),
+          },
+          {
+            name: "Status",
+            value: selectedStudent.is_active ? "Active" : "Inactive",
           },
           {
             name: "Years in Mock",
