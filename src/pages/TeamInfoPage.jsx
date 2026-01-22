@@ -112,8 +112,6 @@ export default function TeamInfoPage() {
     setEditMode(false);
   };
 
-  console.log(teamStudents);
-
   return (
     <BasePage
       titleText={selectedTeam.name}
