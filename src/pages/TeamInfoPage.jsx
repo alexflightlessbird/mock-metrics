@@ -112,6 +112,8 @@ export default function TeamInfoPage() {
     setEditMode(false);
   };
 
+  console.log(teamStudents);
+
   return (
     <BasePage
       titleText={selectedTeam.name}
@@ -232,40 +234,42 @@ export default function TeamInfoPage() {
           </Text>
         ) : (
           <Grid>
-            {teamStudents.map((s) => (
-              <Grid.Col key={s.student_id} span={{ base: 12, md: 6, xl: 4 }}>
-                <Card onClick={() => navigate("/school/s/" + s.student_id)}>
-                  <Flex justify="space-between" align="center">
-                    <Title order={5}>{s.students.name}</Title>
-                    {(role === "admin" || role === "primary") &&
-                      selectedTeam.is_active && (
-                        <Tooltip
-                          label={
-                            "Remove " +
-                            s.students.name +
-                            " from " +
-                            selectedTeam.name
-                          }
-                          withArrow
-                        >
-                          <ActionIcon
-                            variant="subtle"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeStudentFromTeam({
-                                studentId: s.student_id,
-                                teamId: selectedTeam.id,
-                              });
-                            }}
+            {teamStudents
+              .filter((s) => s.students.is_active)
+              .map((s) => (
+                <Grid.Col key={s.student_id} span={{ base: 12, md: 6, xl: 4 }}>
+                  <Card onClick={() => navigate("/school/s/" + s.student_id)}>
+                    <Flex justify="space-between" align="center">
+                      <Title order={5}>{s.students.name}</Title>
+                      {(role === "admin" || role === "primary") &&
+                        selectedTeam.is_active && (
+                          <Tooltip
+                            label={
+                              "Remove " +
+                              s.students.name +
+                              " from " +
+                              selectedTeam.name
+                            }
+                            withArrow
                           >
-                            <LuX />
-                          </ActionIcon>
-                        </Tooltip>
-                      )}
-                  </Flex>
-                </Card>
-              </Grid.Col>
-            ))}
+                            <ActionIcon
+                              variant="subtle"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeStudentFromTeam({
+                                  studentId: s.student_id,
+                                  teamId: selectedTeam.id,
+                                });
+                              }}
+                            >
+                              <LuX />
+                            </ActionIcon>
+                          </Tooltip>
+                        )}
+                    </Flex>
+                  </Card>
+                </Grid.Col>
+              ))}
           </Grid>
         )}
       </PageSection>
