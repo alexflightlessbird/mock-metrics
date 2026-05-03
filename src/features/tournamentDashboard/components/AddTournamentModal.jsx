@@ -13,7 +13,10 @@ import {
   Text,
 } from "@mantine/core";
 import { useModal } from "../../../context/ModalContext";
-import { ModalSelect } from "../../../common/components/modals-new/ModalDropdownComponents";
+import {
+  ModalDateInput,
+  ModalSelect,
+} from "../../../common/components/modals-new/ModalDropdownComponents";
 import Loader from "../../../common/components/loader/GavelLoader";
 import RadioCardGroup from "../../../common/components/RadioCards";
 
@@ -49,6 +52,7 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
       name: "",
       year: new Date().getFullYear(),
       type: null,
+      date: new Date(),
       area: null,
       caseId: null,
     },
@@ -68,7 +72,7 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
           label: `${c.name} (${c.year})`,
           value: c.id,
         })),
-    [cases]
+    [cases],
   );
 
   const validateForm = () => {
@@ -77,7 +81,9 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
       formData.year !== null &&
       formData.type !== null &&
       formData.area !== null &&
-      formData.caseId !== null
+      formData.caseId !== null &&
+      formData.date !== null &&
+      new Date(formData.date).getFullYear() == formData.year
     );
   };
 
@@ -86,6 +92,7 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
       name: "",
       year: new Date().getFullYear(),
       type: null,
+      date: new Date(),
       area: null,
       caseId: null,
     });
@@ -107,6 +114,7 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
         type: formData.type,
         area: formData.area,
         caseId: formData.caseId,
+        date: formData.date,
         schoolId,
       },
       {
@@ -119,10 +127,11 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
             type: null,
             area: null,
             caseId: null,
+            date: new Date(),
           });
           localStorage.removeItem("add-tournament-form");
         },
-      }
+      },
     );
   };
 
@@ -133,13 +142,19 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
     }));
   };
 
+  const handleDateChange = (date) => {
+    handleInputChange("date", date);
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    handleInputChange("year", year);
+  };
+
   const pages = [
     // Page 0: Tournament Details
     <Stack key={0}>
       <Text size="sm" c="dimmed">
         Enter the tournament details
       </Text>
-
       <TextInput
         ref={firstInputRef}
         value={formData.name}
@@ -148,14 +163,15 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
         required
       />
 
-      <NumberInput
-        value={formData.year}
-        onChange={(value) => handleInputChange("year", value)}
-        label="Tournament Year"
-        min={1980}
-        max={new Date().getFullYear() + 1}
+      <ModalDateInput
+        value={formData.date}
+        onChange={(date) => handleDateChange(date)}
+        label="Tournament Start Date"
         required
-        inputMode="numeric"
+        maxDate={new Date(new Date().getFullYear() + 1, 11, 31)} // last day of the next year
+        minDate={new Date(1980, 0, 1)} // first day of 1980
+        highlightToday
+        firstDayOfWeek={1}
       />
 
       <RadioCardGroup
@@ -166,7 +182,6 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
         onChange={(_, value) => handleInputChange("type", value)}
         required={true}
       />
-
       <RadioCardGroup
         name="tournamentArea"
         label="Tournament Area"
@@ -175,7 +190,6 @@ export default function AddTournamentModal({ onClose, trigger, schoolId }) {
         onChange={(_, value) => handleInputChange("area", value)}
         required={true}
       />
-
       <ModalSelect
         data={caseOptions}
         value={formData.caseId}

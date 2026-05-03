@@ -7,13 +7,14 @@ export function useAddTournament() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ schoolId, name, year, type, area, caseId }) => {
+    mutationFn: async ({ schoolId, name, year, type, area, caseId, date }) => {
       const { data, error } = await supabase.from("tournaments").insert({
         school_id: schoolId,
         name: name.trim(),
         year,
         type,
         area,
+        start_date: new Date(date).toISOString().split("T")[0], // format as YYYY-MM-DD
         case_id: caseId,
       });
       if (error) throw error;

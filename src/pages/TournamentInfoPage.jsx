@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import PageDetailSection from "../common/components/PageDetailSection";
 import DangerZoneSection from "../common/components/DangerZoneSection";
 import { styleProps } from "../common/editModeStyleProps";
+import { DatePickerInput } from "@mantine/dates";
 
 export default function TournamentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -38,13 +39,17 @@ export default function TournamentInfoPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const [tournamentYear, setTournamentYear] = useState(null);
+  useEffect(() => {
+    console.log(selectedTournament?.start_date);
+  }, [editMode]);
+
+  const [tournamentDate, setTournamentDate] = useState(null);
   const [tournamentType, setTournamentType] = useState(null);
   const [tournamentArea, setTournamentArea] = useState(null);
 
   const { role, isLoading: roleLoading } = useGetRole(
     user.id,
-    selectedSchoolId
+    selectedSchoolId,
   );
 
   const {
@@ -57,7 +62,7 @@ export default function TournamentInfoPage() {
     useTournamentTeams(tournamentId);
 
   useEffect(() => {
-    setTournamentYear(selectedTournament?.year);
+    setTournamentDate(selectedTournament?.start_date);
     setTournamentType(selectedTournament?.type);
     setTournamentArea(selectedTournament?.area);
   }, [selectedTournament]);
@@ -82,8 +87,8 @@ export default function TournamentInfoPage() {
     if (title !== selectedTournament.name) {
       updates.name = title;
     }
-    if (tournamentYear !== selectedTournament.year) {
-      updates.year = tournamentYear;
+    if (tournamentDate !== selectedTournament.start_date) {
+      updates.start_date = tournamentDate;
     }
     if (tournamentType !== selectedTournament.type) {
       updates.type = tournamentType;
@@ -123,18 +128,22 @@ export default function TournamentInfoPage() {
         editable={editMode}
         details={[
           {
-            name: "Year",
+            name: "Date",
             value: editMode ? (
-              <NumberInput
-                value={tournamentYear}
-                onChange={setTournamentYear}
-                min={1980}
-                max={new Date().getFullYear() + 1}
+              <DatePickerInput
+                value={tournamentDate}
+                onChange={setTournamentDate}
+                min={new Date(1980, 0, 1)}
+                max={new Date().getFullYear() + 1, 11, 31}
                 style={styleProps}
-                inputMode="numeric"
               />
             ) : (
-              selectedTournament.year
+              new Date(selectedTournament.start_date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+                timeZone: "UTC",
+              })
             ),
           },
           {
