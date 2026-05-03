@@ -12,6 +12,7 @@ export default function tournamentTeamScores({ team }) {
       calculations: round.calculations,
       side: round.side,
       witness_rounds: round.witness_rounds,
+      round_number: round.round_number,
     });
 
     const attorneys = roundCalculations.attorneys;
@@ -26,6 +27,7 @@ export default function tournamentTeamScores({ team }) {
       calculations: round.calculations,
       side: round.side,
       witness_rounds: round.witness_rounds,
+      round_number: round.round_number,
     });
 
     const attorneys = roundCalculations.attorneys;
@@ -51,7 +53,7 @@ export default function tournamentTeamScores({ team }) {
         grouped[studentId].scores.push(attorney.calculations);
 
         return grouped;
-      }, {})
+      }, {}),
   );
 
   pAttorneyScores.map((attorneyScore) => {
@@ -59,29 +61,29 @@ export default function tournamentTeamScores({ team }) {
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.averageCross = parseFloat(
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.average = parseFloat(
       ((attorneyScore.averageDirect + attorneyScore.averageCross) / 2).toFixed(
-        2
-      )
+        2,
+      ),
     );
     attorneyScore.averageSpeech = attorneyScore.scores.some(
-      (calc) => calc.speech.score !== null
+      (calc) => calc.speech.score !== null,
     )
       ? parseFloat(
           (
             attorneyScore.scores.reduce(
               (sum, calc) => sum + calc.speech.score,
-              0
+              0,
             ) / attorneyScore.scores.length
-          ).toFixed(4)
+          ).toFixed(4),
         )
       : null;
   });
@@ -103,7 +105,7 @@ export default function tournamentTeamScores({ team }) {
         grouped[studentId].scores.push(witness.calculations);
 
         return grouped;
-      }, {})
+      }, {}),
   );
 
   pWitnessScores.map((witnessScore) => {
@@ -111,16 +113,16 @@ export default function tournamentTeamScores({ team }) {
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.averageCross = parseFloat(
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.average = parseFloat(
-      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2)
+      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2),
     );
   });
 
@@ -141,7 +143,7 @@ export default function tournamentTeamScores({ team }) {
         grouped[studentId].scores.push(attorney.calculations);
 
         return grouped;
-      }, {})
+      }, {}),
   );
 
   dAttorneyScores.map((attorneyScore) => {
@@ -149,29 +151,29 @@ export default function tournamentTeamScores({ team }) {
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.averageCross = parseFloat(
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.average = parseFloat(
       ((attorneyScore.averageDirect + attorneyScore.averageCross) / 2).toFixed(
-        2
-      )
+        2,
+      ),
     );
     attorneyScore.averageSpeech = attorneyScore.scores.some(
-      (calc) => calc.speech.score !== null
+      (calc) => calc.speech.score !== null,
     )
       ? parseFloat(
           (
             attorneyScore.scores.reduce(
               (sum, calc) => sum + calc.speech.score,
-              0
+              0,
             ) / attorneyScore.scores.length
-          ).toFixed(4)
+          ).toFixed(4),
         )
       : null;
   });
@@ -193,7 +195,7 @@ export default function tournamentTeamScores({ team }) {
         grouped[studentId].scores.push(witness.calculations);
 
         return grouped;
-      }, {})
+      }, {}),
   );
 
   dWitnessScores.map((witnessScore) => {
@@ -201,16 +203,16 @@ export default function tournamentTeamScores({ team }) {
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.averageCross = parseFloat(
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.average = parseFloat(
-      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2)
+      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2),
     );
   });
 

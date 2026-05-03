@@ -1,124 +1,134 @@
 import { useEffect, useState } from "react";
-import { combineBallotsCalculations, fullTournamentCalculations } from "../utils/calculations";
+import {
+  combineBallotsCalculations,
+  fullTournamentCalculations,
+} from "../utils/calculations";
 import tournamentTeamScores from "../utils/tournamentTeamScores";
 import overallScoresCalculator from "../utils/overallScores";
 import logger from "../../../common/utils/logger";
 import { useGetTournamentDetails } from "./useGetTournamentDetails";
 
 export default function useRunBallotAnalysis() {
-    const [analysisRunning, setAnalysisRunning] = useState(false);
-    const [neededTournamentData, setNeededTournamentData] = useState([]);
-    const [calculatedTeamScores, setCalculatedTeamScores] = useState([]);
-    const [allTeamScores, setAllTeamScores] = useState([]);
-    const [overallScores, setOverallScores] = useState([]);
+  const [analysisRunning, setAnalysisRunning] = useState(false);
+  const [neededTournamentData, setNeededTournamentData] = useState([]);
+  const [calculatedTeamScores, setCalculatedTeamScores] = useState([]);
+  const [allTeamScores, setAllTeamScores] = useState([]);
+  const [overallScores, setOverallScores] = useState([]);
 
-    const [tournamentIdsToFetch, setTournamentIdsToFetch] = useState([]);
-    const [teamIds, setTeamIds] = useState({});
+  const [tournamentIdsToFetch, setTournamentIdsToFetch] = useState([]);
+  const [teamIds, setTeamIds] = useState({});
 
-    const { data: tournamentDetails, isLoading: detailsLoading } = useGetTournamentDetails(tournamentIdsToFetch);
+  const { data: tournamentDetails, isLoading: detailsLoading } =
+    useGetTournamentDetails(tournamentIdsToFetch);
 
-    const runAnalysis = async (selectedTournamentIds, selectedTeamIds) => {
-        setAnalysisRunning(true);
-        setTournamentIdsToFetch(selectedTournamentIds);
-        setTeamIds(selectedTeamIds);
-    };
+  const runAnalysis = async (selectedTournamentIds, selectedTeamIds) => {
+    setAnalysisRunning(true);
+    setTournamentIdsToFetch(selectedTournamentIds);
+    setTeamIds(selectedTeamIds);
+  };
 
-    useEffect(() => {
-        if (tournamentDetails && tournamentDetails.length > 0 && analysisRunning) processTournamentData(tournamentDetails);
-    }, [tournamentDetails, analysisRunning]);
+  useEffect(() => {
+    if (tournamentDetails && tournamentDetails.length > 0 && analysisRunning)
+      processTournamentData(tournamentDetails);
+  }, [tournamentDetails, analysisRunning]);
 
-    const processTournamentData = (tournamentDetails) => {
-        const currentTournamentData = tournamentDetails.map(t => ({
-            area: t.area,
-            case_id: t.case_id,
-            id: t.id,
-            name: t.name,
-            type: t.type,
-            year: t.year,
-            teams: t.teams_tournaments
-                .filter(tt => teamIds[t.id]?.includes(tt.team_id))
-                .map(tt => ({
-                    id: tt.team_id,
-                    name: tt.teams.name,
-                    type: tt.teams.type,
-                    year: tt.teams.year,
-                    rounds: t.rounds
-                        .filter(r => r.team_id === tt.team_id)
-                        .sort((a, b) => a.round_number - b.round_number)
-                        .map(r => ({
-                            id: r.id,
-                            round_number: r.round_number,
-                            side: r.side,
-                            witness_rounds: r.witness_rounds.map(wr => ({
-                                role_type: wr.role_type,
-                                witness: {
-                                    id: wr.witnesses.id,
-                                    name: wr.witnesses.name,
-                                    side: wr.witnesses.side,
-                                    type: wr.witnesses.type,
-                                },
-                            })),
-                            role_rounds: r.role_rounds.map(rr => ({
-                                role_type: rr.role_type,
-                                student: {
-                                    id: rr.students.id,
-                                    name: rr.students.name,
-                                },
-                            })),
-                            calculations: combineBallotsCalculations({
-                                side: r.side,
-                                ballots: r.ballots,
-                                role_rounds: r.role_rounds,
-                            }),
-                            ballots: r.ballots.length,
-                            ballots_with_scores: r.ballots.map(b => ({
-                                id: b.id,
-                                scores: b.scores.map(s => ({
-                                    score_type: s.score_type,
-                                    score_value: s.score_value,
-                                    score_weight: s.weight,
-                                })),
-                            })),
-                        })),
+  const processTournamentData = (tournamentDetails) => {
+    const currentTournamentData = tournamentDetails.map((t) => ({
+      area: t.area,
+      case_id: t.case_id,
+      id: t.id,
+      name: t.name,
+      type: t.type,
+      year: t.year,
+      date: t.start_date,
+      teams: t.teams_tournaments
+        .filter((tt) => teamIds[t.id]?.includes(tt.team_id))
+        .map((tt) => ({
+          id: tt.team_id,
+          name: tt.teams.name,
+          type: tt.teams.type,
+          year: tt.teams.year,
+          rounds: t.rounds
+            .filter((r) => r.team_id === tt.team_id)
+            .sort((a, b) => a.round_number - b.round_number)
+            .map((r) => ({
+              id: r.id,
+              round_number: r.round_number,
+              side: r.side,
+              witness_rounds: r.witness_rounds.map((wr) => ({
+                role_type: wr.role_type,
+                witness: {
+                  id: wr.witnesses.id,
+                  name: wr.witnesses.name,
+                  side: wr.witnesses.side,
+                  type: wr.witnesses.type,
+                },
+              })),
+              role_rounds: r.role_rounds.map((rr) => ({
+                role_type: rr.role_type,
+                student: {
+                  id: rr.students.id,
+                  name: rr.students.name,
+                },
+              })),
+              calculations: combineBallotsCalculations({
+                side: r.side,
+                ballots: r.ballots,
+                role_rounds: r.role_rounds,
+              }),
+              ballots: r.ballots.length,
+              ballots_with_scores: r.ballots.map((b) => ({
+                id: b.id,
+                scores: b.scores.map((s) => ({
+                  score_type: s.score_type,
+                  score_value: s.score_value,
+                  score_weight: s.weight,
+                  round: r.round_number,
+                  score_date: t.start_date,
                 })),
-        }));
-
-        const tournamentTeamScoresCalc = currentTournamentData.map(t => ({
-            tournamentId: t.id,
-            tournamentName: t.name,
-            teamScores: t.teams.map(team => ({
-                teamId: team.id,
-                teamName: team.name,
-                scores: tournamentTeamScores({ team }),
+              })),
             })),
-        }));
+        })),
+    }));
 
-        const tournamentTeamsAll = tournamentTeamScoresCalc.map(t => ({
-            tournamentId: t.tournamentId,
-            calculations: fullTournamentCalculations({ tournament: t })
-        }));
+    const tournamentTeamScoresCalc = currentTournamentData.map((t) => ({
+      tournamentId: t.id,
+      tournamentName: t.name,
+      tournamentDate: t.date,
+      teamScores: t.teams.map((team) => ({
+        teamId: team.id,
+        teamName: team.name,
+        scores: tournamentTeamScores({ team }),
+      })),
+    }));
 
-        const overallScoresData = overallScoresCalculator({
-            tournaments: tournamentTeamsAll,
-        });
+    const tournamentTeamsAll = tournamentTeamScoresCalc.map((t) => ({
+      tournamentId: t.tournamentId,
+      tournamentDate: t.tournamentDate,
+      calculations: fullTournamentCalculations({ tournament: t }),
+    }));
 
-        setNeededTournamentData(currentTournamentData);
-        setCalculatedTeamScores(tournamentTeamScoresCalc);
-        setAllTeamScores(tournamentTeamsAll);
-        setOverallScores(overallScoresData);
+    const overallScoresData = overallScoresCalculator({
+      tournaments: tournamentTeamsAll,
+    });
 
-        setAnalysisRunning(false);
+    setNeededTournamentData(currentTournamentData);
+    setCalculatedTeamScores(tournamentTeamScoresCalc);
+    setAllTeamScores(tournamentTeamsAll);
+    setOverallScores(overallScoresData);
 
-        logger.info("BA Attorneys", overallScoresData.attorneys);
-        logger.info("BA Witnesses", overallScoresData.witnesses);
-    }
+    setAnalysisRunning(false);
 
-    return { 
-        runAnalysis, 
-        analysisRunning: analysisRunning || detailsLoading, 
-        neededTournamentData, 
-        calculatedTeamScores, 
-        allTeamScores, 
-        overallScores 
-    };
+    logger.info("BA Attorneys", overallScoresData.attorneys);
+    logger.info("BA Witnesses", overallScoresData.witnesses);
+  };
+
+  return {
+    runAnalysis,
+    analysisRunning: analysisRunning || detailsLoading,
+    neededTournamentData,
+    calculatedTeamScores,
+    allTeamScores,
+    overallScores,
+  };
 }

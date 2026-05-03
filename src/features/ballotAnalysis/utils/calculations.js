@@ -3,7 +3,7 @@ import ballotAverageCalc from "./ballotAverage";
 export function directCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = parseInt(
-    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value,
   );
 
   const directAvg = (oneScore - ballotAverage).toFixed(2);
@@ -67,7 +67,7 @@ export function directCalculation(oneToCalculate, ballot) {
 export function crossCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = parseInt(
-    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value,
   );
 
   const crossAvg = (oneScore - ballotAverage).toFixed(2);
@@ -77,62 +77,62 @@ export function crossCalculation(oneToCalculate, ballot) {
   switch (oneToCalculate) {
     case "p4":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d2").score_value
+        ballot.scores.find((s) => s.score_type === "d2").score_value,
       );
       break;
     case "p7":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d3").score_value
+        ballot.scores.find((s) => s.score_type === "d3").score_value,
       );
       break;
     case "p10":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d4").score_value
+        ballot.scores.find((s) => s.score_type === "d4").score_value,
       );
       break;
     case "p11":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d7").score_value
+        ballot.scores.find((s) => s.score_type === "d7").score_value,
       );
       break;
     case "p12":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d10").score_value
+        ballot.scores.find((s) => s.score_type === "d10").score_value,
       );
       break;
     case "p13":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d13").score_value
+        ballot.scores.find((s) => s.score_type === "d13").score_value,
       );
       break;
     case "d2":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p4").score_value
+        ballot.scores.find((s) => s.score_type === "p4").score_value,
       );
       break;
     case "d3":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p7").score_value
+        ballot.scores.find((s) => s.score_type === "p7").score_value,
       );
       break;
     case "d4":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p10").score_value
+        ballot.scores.find((s) => s.score_type === "p10").score_value,
       );
       break;
     case "d7":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p11").score_value
+        ballot.scores.find((s) => s.score_type === "p11").score_value,
       );
       break;
     case "d10":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p12").score_value
+        ballot.scores.find((s) => s.score_type === "p12").score_value,
       );
       break;
     case "d13":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p13").score_value
+        ballot.scores.find((s) => s.score_type === "p13").score_value,
       );
       break;
     default:
@@ -150,7 +150,7 @@ export function crossCalculation(oneToCalculate, ballot) {
 export function speechCalculation(oneToCalculate, ballot) {
   const ballotAverage = ballotAverageCalc(ballot.scores).overallAverage;
   const oneScore = parseInt(
-    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value
+    ballot.scores.find((s) => s.score_type === oneToCalculate).score_value,
   );
 
   const speechAvg = (oneScore - ballotAverage).toFixed(2);
@@ -160,22 +160,22 @@ export function speechCalculation(oneToCalculate, ballot) {
   switch (oneToCalculate) {
     case "p1":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d1").score_value
+        ballot.scores.find((s) => s.score_type === "d1").score_value,
       );
       break;
     case "p14":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "d14").score_value
+        ballot.scores.find((s) => s.score_type === "d14").score_value,
       );
       break;
     case "d1":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p1").score_value
+        ballot.scores.find((s) => s.score_type === "p1").score_value,
       );
       break;
     case "d14":
       otherSideComp = parseInt(
-        ballot.scores.find((s) => s.score_type === "p14").score_value
+        ballot.scores.find((s) => s.score_type === "p14").score_value,
       );
       break;
     default:
@@ -261,7 +261,7 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
 
     ballotCalculations.forEach((bc) => {
       const existing = combinedCalculations?.find(
-        (cc) => cc.score_type === bc.score_type
+        (cc) => cc.score_type === bc.score_type,
       );
       if (existing) {
         existing.avgs.push({ value: parseFloat(bc.avg), weight: bc.weight });
@@ -297,7 +297,7 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
     cc.merged = mergeCalculations({ avg: cc.avg, comp: cc.comp });
 
     const student = role_rounds.find(
-      (rr) => rr.role_type === cc.score_type
+      (rr) => rr.role_type === cc.score_type,
     )?.students;
 
     cc.student = {
@@ -320,10 +320,10 @@ export function fullTournamentCalculations({ tournament }) {
 
   tournamentTeams?.forEach((team) => {
     const attorneys = team.scores.dAttorneyScores.concat(
-      team.scores.pAttorneyScores
+      team.scores.pAttorneyScores,
     );
     const witnesses = team.scores.dWitnessScores.concat(
-      team.scores.pWitnessScores
+      team.scores.pWitnessScores,
     );
 
     attorneys.forEach((attorney) => {
