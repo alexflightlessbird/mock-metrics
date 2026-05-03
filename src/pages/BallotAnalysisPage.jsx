@@ -1,10 +1,4 @@
-import {
-  Checkbox,
-  Group,
-  Stack,
-  Text,
-  Tooltip,
-} from "@mantine/core";
+import { Checkbox, Flex, Group, Stack, Text, Tooltip } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useGetTournaments } from "../features/ballotAnalysis/hooks/useGetTournaments";
 import { useLocalStorage } from "@mantine/hooks";
@@ -29,16 +23,16 @@ export default function BallotAnalysisPage() {
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const { data: tournaments, isLoading } = useGetTournaments(selectedSchoolId);
-  const { 
-    runAnalysis, 
-    analysisRunning, 
-    neededTournamentData, 
+  const {
+    runAnalysis,
+    analysisRunning,
+    neededTournamentData,
     calculatedTeamScores,
     allTeamScores,
-    overallScores
+    overallScores,
   } = useRunBallotAnalysis();
 
-  const maxTournaments = 10;
+  const maxTournaments = 50;
 
   const handleTournamentChange = (tournamentIds) => {
     const limitedSelection = tournamentIds.slice(0, maxTournaments);
@@ -46,16 +40,23 @@ export default function BallotAnalysisPage() {
 
     setSelectedTeamIds((prev) => {
       const newSelectedTeams = { ...prev };
+
       limitedSelection.forEach((tId) => {
         if (!newSelectedTeams[tId]) {
-          newSelectedTeams[tId] = [];
+          const teamsForTournament = tournaments
+            .find((t) => t.id === tId)
+            ?.teams_tournaments.map((tt) => tt.team_id);
+
+          newSelectedTeams[tId] = teamsForTournament || [];
         }
       });
+
       Object.keys(newSelectedTeams).forEach((tId) => {
         if (!limitedSelection.includes(tId)) {
           delete newSelectedTeams[tId];
         }
       });
+
       return newSelectedTeams;
     });
   };
@@ -75,21 +76,30 @@ export default function BallotAnalysisPage() {
 
     setTimeout(() => {
       setShowTournamentSelection(false);
-      setShowAnalysis(true);
       setButtonLoading(false);
-    }, 1000);
-  }, [neededTournamentData, calculatedTeamScores, allTeamScores, analysisRunning]);
+      setShowAnalysis(true);
+    }, 500);
+  }, [
+    neededTournamentData,
+    calculatedTeamScores,
+    allTeamScores,
+    analysisRunning,
+  ]);
 
   if (isLoading)
     return (
       <BasePage titleText="Loading...">
         <Loader scale={1.5} />
-        <Text c="dimmed" ta="center" mt="sm" size="lg">This may take a moment.</Text>
+        <Text c="dimmed" ta="center" mt="sm" size="lg">
+          This may take a moment.
+        </Text>
       </BasePage>
     );
 
   const handleSubmit = async () => {
     setButtonLoading(true);
+    // bring the user up to the top of the page so they can see the loading state and results when they appear
+    window.scrollTo({ top: 0, behavior: "smooth" });
     await runAnalysis(selectedTournamentIds, selectedTeamIds);
   };
 
@@ -98,12 +108,19 @@ export default function BallotAnalysisPage() {
     setSelectedTournamentIds([]);
     setSelectedTeamIds({});
     setShowTournamentSelection(true);
-  }
+  };
 
   return (
     <BasePage titleText="Ballot Analysis">
       {showTournamentSelection && (
         <>
+          <RunAnalysisButton
+            selectedTournamentIds={selectedTournamentIds}
+            selectedTeamIds={selectedTeamIds}
+            loading={buttonLoading}
+            showAnalysis={showAnalysis}
+            onRunAnalysis={handleSubmit}
+          />
           <Stack spacing="sm" mb="md">
             <Text size="sm" c="dimmed">
               Select up to {maxTournaments} tournaments (
@@ -114,10 +131,12 @@ export default function BallotAnalysisPage() {
               value={selectedTournamentIds}
               onChange={handleTournamentChange}
             >
-              <Group direction="row" gap="lg" align="start">
+              <Flex wrap="wrap" gap="lg" align="start">
                 {tournaments?.map((t) => {
                   const disabled =
-                    isTournamentDisabled(t.id) || analysisRunning || buttonLoading;
+                    isTournamentDisabled(t.id) ||
+                    analysisRunning ||
+                    buttonLoading;
 
                   return (
                     <Tooltip
@@ -146,8 +165,8 @@ export default function BallotAnalysisPage() {
                               if (selectedTournamentIds.includes(t.id)) {
                                 handleTournamentChange(
                                   selectedTournamentIds.filter(
-                                    (id) => id !== t.id
-                                  )
+                                    (id) => id !== t.id,
+                                  ),
                                 );
                               } else {
                                 handleTournamentChange([
@@ -161,7 +180,14 @@ export default function BallotAnalysisPage() {
                           <Stack spacing="xs">
                             <Checkbox
                               value={t.id}
-                              label={t.name}
+                              label={
+                                <Stack gap={0}>
+                                  <Text size="sm">{t.name}</Text>
+                                  <Text size="sm" c="dimmed">
+                                    {t.year}
+                                  </Text>
+                                </Stack>
+                              }
                               disabled={disabled}
                             />
                             {selectedTournamentIds.includes(t.id) && (
@@ -173,6 +199,7 @@ export default function BallotAnalysisPage() {
                                     [t.id]: teamIds,
                                   }));
                                 }}
+                                value={selectedTeamIds[t.id] || []}
                               >
                                 <Stack gap="xs">
                                   {t.teams_tournaments.map((tt) => (
@@ -192,21 +219,14 @@ export default function BallotAnalysisPage() {
                     </Tooltip>
                   );
                 })}
-              </Group>
+              </Flex>
             </Checkbox.Group>
           </Stack>
-          <RunAnalysisButton
-            selectedTournamentIds={selectedTournamentIds}
-            selectedTeamIds={selectedTeamIds}
-            loading={buttonLoading}
-            showAnalysis={showAnalysis}
-            onRunAnalysis={handleSubmit}
-          />
         </>
       )}
 
       {showAnalysis && (
-        <AnalysisResults 
+        <AnalysisResults
           handleRefresh={handleRefresh}
           neededTournamentData={neededTournamentData}
           calculatedTeamScores={calculatedTeamScores}

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { sortData } from "../utils/sortData";
-import { Table, Tooltip } from "@mantine/core";
+import { Button, Table, Tooltip } from "@mantine/core";
 import SortableTh from "./SortableTh";
 import {
   attorneyScoresByWitness,
   witnessScoresByWitness,
 } from "../utils/mergeScoresforHover";
 import { capitalize } from "../../../common/utils/helpers";
+import { LuX } from "react-icons/lu";
 
 export default function ScoreTable({
   type,
@@ -19,13 +20,93 @@ export default function ScoreTable({
     reversed: false,
   });
 
-  const sorted = sortData(allScores, sorting.sortBy, sorting.reversed);
+  const [filters, setFilters] = useState({
+    name: "",
+    teamName: "",
+    side: "",
+    average: "",
+    averageDirect: "",
+    averageCross: "",
+    averageSpeech: "",
+  });
 
   const handleSetSorting = (field) => {
     setSorting((prev) => ({
       reversed: field === prev.sortBy ? !prev.reversed : false,
       sortBy: field,
     }));
+  };
+
+  const handleFilterChange = (field, value) => {
+    setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const filteredData = useMemo(() => {
+    if (!allScores) return [];
+
+    return allScores.filter((student) => {
+      if (
+        filters.name &&
+        !student.student.name.toLowerCase().includes(filters.name.toLowerCase())
+      )
+        return false;
+
+      if (
+        showTeam &&
+        filters.teamName &&
+        !student.teamName
+          ?.toLowerCase()
+          .includes(filters.teamName.toLowerCase())
+      )
+        return false;
+
+      if (
+        filters.side &&
+        !student.side.toLowerCase().includes(filters.side.toLowerCase())
+      )
+        return false;
+
+      if (filters.average) {
+        const avgFilter = parseFloat(filters.average);
+        if (isNaN(avgFilter) || student.average < avgFilter) return false;
+      }
+
+      if (filters.averageDirect) {
+        const directFilter = parseFloat(filters.averageDirect);
+        if (isNaN(directFilter) || student.averageDirect < directFilter)
+          return false;
+      }
+
+      if (filters.averageCross) {
+        const crossFilter = parseFloat(filters.averageCross);
+        if (isNaN(crossFilter) || student.averageCross < crossFilter)
+          return false;
+      }
+
+      if (type === "attorney" && filters.averageSpeech) {
+        const speechFilter = parseFloat(filters.averageSpeech);
+        if (isNaN(speechFilter) || student.averageSpeech < speechFilter)
+          return false;
+      }
+
+      return true;
+    });
+  }, [allScores, filters, showTeam, type]);
+
+  const sorted = sortData(filteredData, sorting.sortBy, sorting.reversed);
+
+  const hasActiveFilters = Object.values(filters).some((f) => f !== "");
+
+  const clearAllFilters = () => {
+    setFilters({
+      name: "",
+      teamName: "",
+      side: "",
+      average: "",
+      averageDirect: "",
+      averageCross: "",
+      averageSpeech: "",
+    });
   };
 
   const TooltipCell = ({ score, tooltipContent, colored = true }) => {
@@ -73,7 +154,7 @@ export default function ScoreTable({
           (d) =>
             `${d.witness.name}: ${d.average} (${d.rounds} round${
               d.rounds === 1 ? "" : "s"
-            })`
+            })`,
         )
         .join("\n");
 
@@ -83,7 +164,7 @@ export default function ScoreTable({
           (c) =>
             `${c.witness.name}: ${c.average} (${c.rounds} round${
               c.rounds === 1 ? "" : "s"
-            })`
+            })`,
         )
         .join("\n");
 
@@ -91,14 +172,14 @@ export default function ScoreTable({
         .sort((a, b) => b.average - a.average)
         .map(
           (s) =>
-            `${capitalize(s.type) || 'Unknown'}: ${s.average} (${s.rounds} round${
+            `${capitalize(s.type) || "Unknown"}: ${s.average} (${s.rounds} round${
               s.rounds === 1 ? "" : "s"
-            })`
+            })`,
         )
         .join("\n");
     } else if (type === "witness") {
       const { directByWitness, crossByWitness } = witnessScoresByWitness(
-        student.scores
+        student.scores,
       );
 
       scores.directHover.display = directByWitness
@@ -107,7 +188,7 @@ export default function ScoreTable({
           (d) =>
             `${d.witness.name}: ${d.average} (${d.rounds} round${
               d.rounds === 1 ? "" : "s"
-            })`
+            })`,
         )
         .join("\n");
 
@@ -117,7 +198,7 @@ export default function ScoreTable({
           (c) =>
             `${c.witness.name}: ${c.average} (${c.rounds} round${
               c.rounds === 1 ? "" : "s"
-            })`
+            })`,
         )
         .join("\n");
     }
@@ -152,79 +233,142 @@ export default function ScoreTable({
   };
 
   return (
-    <Table.ScrollContainer
-      minWidth={150}
-      maxHeight={scrollHeight}
-      type="scrollarea"
-    >
-      <Table
-        striped
-        highlightOnHover
-        style={{ userSelect: "none", WebkitUserSelect: "none" }}
-        fz="xs"
-        stickyHeader
+    <>
+      {hasActiveFilters && (
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={clearAllFilters}
+          leftSection={<LuX />}
+        >
+          Clear all filters
+        </Button>
+      )}
+      <Table.ScrollContainer
+        minWidth={150}
+        maxHeight={scrollHeight}
+        type="scrollarea"
       >
-        <Table.Thead>
-          <Table.Tr>
-            <SortableTh
-              sorted={sorting.sortBy === "student.name"}
-              reversed={sorting.reversed}
-              onSort={() => handleSetSorting("student.name")}
-            >
-              Name
-            </SortableTh>
-            {showTeam && (
+        <Table
+          striped
+          highlightOnHover
+          style={{ userSelect: "none", WebkitUserSelect: "none" }}
+          fz="xs"
+          stickyHeader
+        >
+          <Table.Thead>
+            <Table.Tr>
               <SortableTh
-                sorted={sorting.sortBy === "teamName"}
+                sorted={sorting.sortBy === "student.name"}
                 reversed={sorting.reversed}
-                onSort={() => handleSetSorting("teamName")}
+                onSort={() => handleSetSorting("student.name")}
+                filterable={true}
+                filterValue={filters.name}
+                onFilterChange={(value) => handleFilterChange("name", value)}
+                filterPlaceholder="Filter by name..."
               >
-                Team
+                Name
               </SortableTh>
-            )}
-            <Table.Th>Side</Table.Th>
-            <SortableTh
-              sorted={sorting.sortBy === "average"}
-              reversed={sorting.reversed}
-              onSort={() => handleSetSorting("average")}
-            >
-              Average
-            </SortableTh>
-            <SortableTh
-              sorted={sorting.sortBy === "averageDirect"}
-              reversed={sorting.reversed}
-              onSort={() => handleSetSorting("averageDirect")}
-            >
-              Direct
-            </SortableTh>
-            <SortableTh
-              sorted={sorting.sortBy === "averageCross"}
-              reversed={sorting.reversed}
-              onSort={() => handleSetSorting("averageCross")}
-            >
-              Cross
-            </SortableTh>
-            {type === "attorney" && (
+              {showTeam && (
+                <SortableTh
+                  sorted={sorting.sortBy === "teamName"}
+                  reversed={sorting.reversed}
+                  onSort={() => handleSetSorting("teamName")}
+                  filterable={true}
+                  filterValue={filters.teamName}
+                  onFilterChange={(value) =>
+                    handleFilterChange("teamName", value)
+                  }
+                  filterPlaceholder="Filter by team..."
+                >
+                  Team
+                </SortableTh>
+              )}
               <SortableTh
-                sorted={sorting.sortBy === "averageSpeech"}
+                sorted={sorting.sortBy === "side"}
                 reversed={sorting.reversed}
-                onSort={() => handleSetSorting("averageSpeech")}
+                onSort={() => handleSetSorting("side")}
+                filterable={true}
+                filterValue={filters.side}
+                onFilterChange={(value) => handleFilterChange("side", value)}
+                filterPlaceholder="Filter by side (P/D)..."
               >
-                Speech
+                Side
               </SortableTh>
-            )}
-          </Table.Tr>
-        </Table.Thead>
+              <SortableTh
+                sorted={sorting.sortBy === "average"}
+                reversed={sorting.reversed}
+                onSort={() => handleSetSorting("average")}
+                filterable={true}
+                filterValue={filters.average}
+                onFilterChange={(value) => handleFilterChange("average", value)}
+                filterPlaceholder="Filter by minimum average..."
+              >
+                Average
+              </SortableTh>
+              <SortableTh
+                sorted={sorting.sortBy === "averageDirect"}
+                reversed={sorting.reversed}
+                onSort={() => handleSetSorting("averageDirect")}
+                filterable={true}
+                filterValue={filters.averageDirect}
+                onFilterChange={(value) =>
+                  handleFilterChange("averageDirect", value)
+                }
+                filterPlaceholder="Filter by minimum direct average..."
+              >
+                Direct
+              </SortableTh>
+              <SortableTh
+                sorted={sorting.sortBy === "averageCross"}
+                reversed={sorting.reversed}
+                onSort={() => handleSetSorting("averageCross")}
+                filterable={true}
+                filterValue={filters.averageCross}
+                onFilterChange={(value) =>
+                  handleFilterChange("averageCross", value)
+                }
+                filterPlaceholder="Filter by minimum cross average..."
+              >
+                Cross
+              </SortableTh>
+              {type === "attorney" && (
+                <SortableTh
+                  sorted={sorting.sortBy === "averageSpeech"}
+                  reversed={sorting.reversed}
+                  onSort={() => handleSetSorting("averageSpeech")}
+                  filterable={true}
+                  filterValue={filters.averageSpeech}
+                  onFilterChange={(value) =>
+                    handleFilterChange("averageSpeech", value)
+                  }
+                  filterPlaceholder="Filter by minimum speech average..."
+                >
+                  Speech
+                </SortableTh>
+              )}
+            </Table.Tr>
+          </Table.Thead>
 
-        <Table.Tbody>
-          {sorted?.map((s) => (
-            <StudentRow
-              key={`${s.student.id}-${s.side}-${s.teamId}`}
-              student={s}
-            />
-          ))}
-        </Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+          <Table.Tbody>
+            {sorted?.map((s) => (
+              <StudentRow
+                key={`${s.student.id}-${s.side}-${s.teamId}`}
+                student={s}
+              />
+            ))}
+            {sorted?.length === 0 && (
+              <Table.Tr>
+                <Table.Td colSpan={showTeam ? 7 : 6} c="dimmed" ta="center">
+                  {hasActiveFilters
+                    ? "No results match the current filters."
+                    : "No data available."}
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
+    </>
   );
 }
