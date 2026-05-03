@@ -85,7 +85,7 @@ export default function AddRoundModal({
 
   const roundOptions = useMemo(
     () => (nationalsTournament ? [1, 2, 3, 4, 5] : [1, 2, 3, 4]),
-    [nationalsTournament]
+    [nationalsTournament],
   );
   const sideOptions = useMemo(
     () => [
@@ -95,23 +95,25 @@ export default function AddRoundModal({
           caseType === "civil"
             ? "Plaintiff"
             : caseType === "criminal"
-            ? "Prosecution"
-            : "Plaintiff/Prosecution",
+              ? "Prosecution"
+              : "Plaintiff/Prosecution",
       },
       {
         value: "d",
         label: "Defense",
       },
     ],
-    [caseType]
+    [caseType],
   );
 
   const studentOptions = useMemo(() => {
     if (!students) return [];
-    return students.map((s) => ({
-      label: s.students.name,
-      value: s.student_id,
-    }));
+    return students
+      .filter((s) => s.students.is_active)
+      .map((s) => ({
+        label: s.students.name,
+        value: s.student_id,
+      }));
   }, [students]);
 
   const studentAttorneySelectionOptions = useMemo(
@@ -120,7 +122,7 @@ export default function AddRoundModal({
         ...s,
         disabled: formData.studentsWitnesses?.includes(s.value),
       })),
-    [studentOptions, formData.studentsWitnesses]
+    [studentOptions, formData.studentsWitnesses],
   );
 
   const studentWitnessSelectionOptions = useMemo(
@@ -129,7 +131,7 @@ export default function AddRoundModal({
         ...s,
         disabled: formData.studentsAttorneys?.includes(s.value),
       })),
-    [studentOptions, formData.studentsAttorneys]
+    [studentOptions, formData.studentsAttorneys],
   );
 
   const caseWitnessOptions = useMemo(() => {
@@ -148,15 +150,15 @@ export default function AddRoundModal({
 
   const pWitnesses = useMemo(
     () => caseWitnessOptions.filter((w) => w.side === "p"),
-    [caseWitnessOptions]
+    [caseWitnessOptions],
   );
   const dWitnesses = useMemo(
     () => caseWitnessOptions.filter((w) => w.side === "d"),
-    [caseWitnessOptions]
+    [caseWitnessOptions],
   );
   const sWitnesses = useMemo(
     () => caseWitnessOptions.filter((w) => w.side === "s"),
-    [caseWitnessOptions]
+    [caseWitnessOptions],
   );
 
   const pWitnessOptions = useMemo(
@@ -188,7 +190,7 @@ export default function AddRoundModal({
         })),
       },
     ],
-    [pWitnesses, sWitnesses, formData.witnesses]
+    [pWitnesses, sWitnesses, formData.witnesses],
   );
   const dWitnessOptions = useMemo(
     () => [
@@ -219,7 +221,7 @@ export default function AddRoundModal({
         })),
       },
     ],
-    [dWitnesses, sWitnesses, formData.witnesses]
+    [dWitnesses, sWitnesses, formData.witnesses],
   );
 
   const studentAttorneyRoleSelectionOptions = useMemo(() => {
@@ -431,7 +433,7 @@ export default function AddRoundModal({
           handleReset();
           closeModal(`add-round-form-${teamId}-${tournamentId}`);
         },
-      }
+      },
     );
   };
 
@@ -576,8 +578,8 @@ export default function AddRoundModal({
         {caseType === "civil"
           ? "Plaintiff"
           : caseType === "criminal"
-          ? "Prosecution"
-          : "Plaintiff/Prosecution"}{" "}
+            ? "Prosecution"
+            : "Plaintiff/Prosecution"}{" "}
         Witnesses
       </Text>
 
@@ -589,8 +591,8 @@ export default function AddRoundModal({
           caseType === "civil"
             ? "Plaintiff"
             : caseType === "criminal"
-            ? "Prosecution"
-            : "Plaintiff/Prosecution"
+              ? "Prosecution"
+              : "Plaintiff/Prosecution"
         } Witness 1`}
       />
       <ModalSelect
@@ -601,8 +603,8 @@ export default function AddRoundModal({
           caseType === "civil"
             ? "Plaintiff"
             : caseType === "criminal"
-            ? "Prosecution"
-            : "Plaintiff/Prosecution"
+              ? "Prosecution"
+              : "Plaintiff/Prosecution"
         } Witness 2`}
       />
       <ModalSelect
@@ -613,8 +615,8 @@ export default function AddRoundModal({
           caseType === "civil"
             ? "Plaintiff"
             : caseType === "criminal"
-            ? "Prosecution"
-            : "Plaintiff/Prosecution"
+              ? "Prosecution"
+              : "Plaintiff/Prosecution"
         } Witness 3`}
       />
 
@@ -681,7 +683,7 @@ export default function AddRoundModal({
                     handleRoleChange(
                       `${formData.side}Roles`,
                       `${formData.side}1`,
-                      value
+                      value,
                     );
                   }
                 }}
@@ -1022,7 +1024,7 @@ export default function AddRoundModal({
                     handleRoleChange(
                       `${formData.side}Roles`,
                       `${formData.side}14`,
-                      value
+                      value,
                     );
                   }
                 }}

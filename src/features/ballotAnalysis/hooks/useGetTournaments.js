@@ -14,7 +14,7 @@ export function useGetTournaments(schoolId) {
         const { data, error } = await supabase
           .from("tournaments")
           .select(
-            "*, teams_tournaments(*, teams(*, students_teams(*, students(*)))), rounds(*, teams(*, students_teams(*, students(*))), ballots(*, scores(*)), witness_rounds(*, witnesses(*)), role_rounds(*, students(*))))"
+            "*, teams_tournaments(*, teams(*))"
           )
           .eq("school_id", schoolId)
           .eq("is_active", true);

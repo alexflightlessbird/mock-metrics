@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { combineBallotsCalculations, fullTournamentCalculations } from "../utils/calculations";
 import tournamentTeamScores from "../utils/tournamentTeamScores";
 import overallScoresCalculator from "../utils/overallScores";
 import logger from "../../../common/utils/logger";
+import { useGetTournamentDetails } from "./useGetTournamentDetails";
 
 export default function useRunBallotAnalysis() {
     const [analysisRunning, setAnalysisRunning] = useState(false);
@@ -11,12 +12,23 @@ export default function useRunBallotAnalysis() {
     const [allTeamScores, setAllTeamScores] = useState([]);
     const [overallScores, setOverallScores] = useState([]);
 
-    const runAnalysis = async (tournaments, selectedTournamentIds, selectedTeamIds) => {
+    const [tournamentIdsToFetch, setTournamentIdsToFetch] = useState([]);
+    const [teamIds, setTeamIds] = useState({});
+
+    const { data: tournamentDetails, isLoading: detailsLoading } = useGetTournamentDetails(tournamentIdsToFetch);
+
+    const runAnalysis = async (selectedTournamentIds, selectedTeamIds) => {
         setAnalysisRunning(true);
+        setTournamentIdsToFetch(selectedTournamentIds);
+        setTeamIds(selectedTeamIds);
+    };
 
-        const selectedTournaments = tournaments.filter(t => selectedTournamentIds.includes(t.id));
+    useEffect(() => {
+        if (tournamentDetails && tournamentDetails.length > 0 && analysisRunning) processTournamentData(tournamentDetails);
+    }, [tournamentDetails, analysisRunning]);
 
-        const currentTournamentData = selectedTournaments.map(t => ({
+    const processTournamentData = (tournamentDetails) => {
+        const currentTournamentData = tournamentDetails.map(t => ({
             area: t.area,
             case_id: t.case_id,
             id: t.id,
@@ -24,7 +36,7 @@ export default function useRunBallotAnalysis() {
             type: t.type,
             year: t.year,
             teams: t.teams_tournaments
-                .filter(tt => selectedTeamIds[t.id]?.includes(tt.team_id))
+                .filter(tt => teamIds[t.id]?.includes(tt.team_id))
                 .map(tt => ({
                     id: tt.team_id,
                     name: tt.teams.name,
@@ -83,7 +95,7 @@ export default function useRunBallotAnalysis() {
 
         const tournamentTeamsAll = tournamentTeamScoresCalc.map(t => ({
             tournamentId: t.tournamentId,
-            calculations: fullTournamentCalculations({ tournament: t }),
+            calculations: fullTournamentCalculations({ tournament: t })
         }));
 
         const overallScoresData = overallScoresCalculator({
@@ -95,13 +107,18 @@ export default function useRunBallotAnalysis() {
         setAllTeamScores(tournamentTeamsAll);
         setOverallScores(overallScoresData);
 
-        setTimeout(() => {
-            setAnalysisRunning(false);
+        setAnalysisRunning(false);
 
-            logger.info("BA Attorneys", overallScoresData.attorneys);
-            logger.info("BA Witnesses", overallScoresData.witnesses);
-        }, 3000);
+        logger.info("BA Attorneys", overallScoresData.attorneys);
+        logger.info("BA Witnesses", overallScoresData.witnesses);
     }
 
-    return { runAnalysis, analysisRunning, neededTournamentData, calculatedTeamScores, allTeamScores, overallScores };
+    return { 
+        runAnalysis, 
+        analysisRunning: analysisRunning || detailsLoading, 
+        neededTournamentData, 
+        calculatedTeamScores, 
+        allTeamScores, 
+        overallScores 
+    };
 }
