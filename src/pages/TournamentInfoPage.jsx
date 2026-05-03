@@ -39,10 +39,6 @@ export default function TournamentInfoPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  useEffect(() => {
-    console.log(selectedTournament?.start_date);
-  }, [editMode]);
-
   const [tournamentDate, setTournamentDate] = useState(null);
   const [tournamentType, setTournamentType] = useState(null);
   const [tournamentArea, setTournamentArea] = useState(null);
