@@ -17,12 +17,12 @@ export default function RunAnalysisButton({
     selectedTournamentIds.length === 0
       ? "Select at least one tournament"
       : Object.values(selectedTeamIds).some((ids) => ids.length === 0)
-      ? "Select at least one team for each selected tournament"
-      : loading
-      ? "Analysis is currently running. Please wait."
-      : showAnalysis
-      ? "Analysis already run. Refresh to run again."
-      : "";
+        ? "Select at least one team for each selected tournament"
+        : loading
+          ? "Analysis is currently running. Please wait."
+          : showAnalysis
+            ? "Analysis already run. Refresh to run again."
+            : "";
 
   return (
     <Tooltip label={tooltipLabel} disabled={!isDisabled} position="top">
@@ -31,6 +31,7 @@ export default function RunAnalysisButton({
         onClick={onRunAnalysis}
         mb="md"
         loading={loading}
+        fullWidth
       >
         Run Analysis
       </Button>
