@@ -46,7 +46,7 @@ export default function SortableTh({
               >
                 <Popover.Target>
                   <ActionIcon
-                    variant="subtle"
+                    variant={filterValue ? "light" : "subtle"}
                     size="sm"
                     onClick={() => setOpened((o) => !o)}
                     color={filterValue ? "blue" : "gray"}
@@ -77,11 +77,12 @@ export default function SortableTh({
               </Popover>
             )}
             <ActionIcon
-              variant="transparent"
-              c={isDark ? "white" : "dark"}
+              variant={Icon != LuChevronsUpDown ? "light" : "subtle"}
+              size="sm"
               onClick={onSort}
+              color={Icon != LuChevronsUpDown ? "blue" : "gray"}
             >
-              <Icon />
+              <Icon size={14} />
             </ActionIcon>
           </Group>
         </Group>
