@@ -11,6 +11,7 @@ export default function roundScores({
   calculations,
   side,
   witness_rounds,
+  round_number,
 }) {
   const students = roundStudents({ role_rounds, side });
 
@@ -76,6 +77,7 @@ export default function roundScores({
           score: speech ? parseFloat(speech.merged) : null,
           type: speech ? getSpeechType(speech.score_type) : null,
         },
+        round_number,
       },
     };
   });
@@ -112,6 +114,7 @@ export default function roundScores({
         cross: {
           score: cross ? parseFloat(cross.merged) : null,
         },
+        round_number,
       },
     };
   });

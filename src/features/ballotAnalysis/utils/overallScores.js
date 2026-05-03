@@ -1,6 +1,23 @@
 export default function overallScores({ tournaments }) {
-  const attorneys = tournaments.map((t) => t.calculations.attorneys).flat();
-  const witnesses = tournaments.map((t) => t.calculations.witnesses).flat();
+  // add the tournament date to each score for sorting purposes
+  // the tournament date is t.tournamentDate
+  // in the maps below, add tournamentDate: t.tournamentDate to each score object
+  const attorneys = tournaments
+    .map((t) => {
+      return t.calculations.attorneys.map((a) => ({
+        ...a,
+        tournamentDate: t.tournamentDate,
+      }));
+    })
+    .flat();
+  const witnesses = tournaments
+    .map((t) => {
+      return t.calculations.witnesses.map((w) => ({
+        ...w,
+        tournamentDate: t.tournamentDate,
+      }));
+    })
+    .flat();
 
   // group attorneys by their team ID first, then merge their scores for that team. If a student competed on multiple teams, their scores should not be merged between teams
   const groupedAttorneys = Object.values(
@@ -17,10 +34,14 @@ export default function overallScores({ tournaments }) {
         };
       }
 
+      //add tournament date to each score for sorting purposes
+      attorney.scores.forEach((score) => {
+        score.tournamentDate = attorney.tournamentDate;
+      });
       grouped[key].scores.push(...attorney.scores);
 
       return grouped;
-    }, {})
+    }, {}),
   );
 
   const groupedWitnesses = Object.values(
@@ -37,10 +58,14 @@ export default function overallScores({ tournaments }) {
         };
       }
 
+      //add tournament date to each score for sorting purposes
+      witness.scores.forEach((score) => {
+        score.tournamentDate = witness.tournamentDate;
+      });
       grouped[key].scores.push(...witness.scores);
 
       return grouped;
-    }, {})
+    }, {}),
   );
 
   groupedAttorneys.map((attorneyScore) => {
@@ -48,29 +73,29 @@ export default function overallScores({ tournaments }) {
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.averageCross = parseFloat(
       (
         attorneyScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         attorneyScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     attorneyScore.average = parseFloat(
       ((attorneyScore.averageDirect + attorneyScore.averageCross) / 2).toFixed(
-        2
-      )
+        2,
+      ),
     );
     attorneyScore.averageSpeech = attorneyScore.scores.some(
-      (calc) => calc.speech.score !== null
+      (calc) => calc.speech.score !== null,
     )
       ? parseFloat(
           (
             attorneyScore.scores.reduce(
               (sum, calc) => sum + calc.speech.score,
-              0
+              0,
             ) / attorneyScore.scores.length
-          ).toFixed(4)
+          ).toFixed(4),
         )
       : null;
   });
@@ -80,16 +105,16 @@ export default function overallScores({ tournaments }) {
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.direct.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.averageCross = parseFloat(
       (
         witnessScore.scores.reduce((sum, calc) => sum + calc.cross.score, 0) /
         witnessScore.scores.length
-      ).toFixed(4)
+      ).toFixed(4),
     );
     witnessScore.average = parseFloat(
-      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2)
+      ((witnessScore.averageDirect + witnessScore.averageCross) / 2).toFixed(2),
     );
   });
 
