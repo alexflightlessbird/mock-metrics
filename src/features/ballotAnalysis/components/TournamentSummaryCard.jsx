@@ -21,12 +21,12 @@ export default function TournamentSummaryCard({
   const teamCount = tournament.teams.length;
   const totalRounds = tournament.teams.reduce(
     (sum, team) => sum + team.rounds.length,
-    0
+    0,
   );
   const totalBallots = tournament.teams.reduce((sum, team) => {
     const teamBallots = team.rounds.reduce(
       (roundSum, round) => roundSum + round.ballots,
-      0
+      0,
     );
     return sum + teamBallots;
   }, 0);
@@ -115,17 +115,15 @@ export default function TournamentSummaryCard({
 
               <Space h="xs" />
 
-              <MantineCard.Section inheritPadding py="sm">
-                <PageSection
-                  title="team breakdowns"
-                  collapsible={true}
-                  defaultOpen={false}
-                >
-                  <Flex direction="column" gap="md" justify="center">
-                    {children}
-                  </Flex>
-                </PageSection>
-              </MantineCard.Section>
+              <PageSection
+                title="team breakdowns"
+                collapsible={true}
+                defaultOpen={false}
+              >
+                <Flex direction="column" gap="md" justify="center">
+                  {children}
+                </Flex>
+              </PageSection>
 
               <Space h="xs" />
             </>

@@ -234,6 +234,7 @@ export default function TeamInfoPage() {
           <Grid>
             {teamStudents
               .filter((s) => s.students.is_active)
+              .sort((a, b) => a.students.name.localeCompare(b.students.name))
               .map((s) => (
                 <Grid.Col key={s.student_id} span={{ base: 12, md: 6, xl: 4 }}>
                   <Card onClick={() => navigate("/school/s/" + s.student_id)}>

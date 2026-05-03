@@ -11,6 +11,7 @@ import {
   Menu,
   Button,
   Divider,
+  Center,
 } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
 import { useSchoolTournaments } from "../common/hooks/useSchoolDetails";
@@ -49,9 +50,14 @@ export default function TournamentDashboard() {
     { label: "Other", value: "other", checked: true },
   ]);
 
+  const [typeFilter, typeFilterHandlers] = useListState([
+    { label: "Pre-Stack", value: "pre-stack", checked: true },
+    { label: "Post-Stack", value: "post-stack", checked: true },
+  ]);
+
   const { role, isLoading: roleLoading } = useGetRole(
     user.id,
-    selectedSchoolId
+    selectedSchoolId,
   );
   const { mutate: archiveTournament } = useArchiveTournament();
   const { mutate: unarchiveTournament } = useUnarchiveTournament();
@@ -65,39 +71,59 @@ export default function TournamentDashboard() {
       .filter((area) => area.checked)
       .map((area) => area.value);
 
+    const selectedTypes = typeFilter
+      .filter((type) => type.checked)
+      .map((type) => type.value);
+
     const filteredActive = allTournaments?.filter((t) => t.is_active);
     const filteredInactive = allTournaments?.filter((t) => !t.is_active);
 
-    const filterBySearchAndArea = (tournaments) => {
+    const filterBySearchAndAreaAndType = (tournaments) => {
       let result = tournaments;
       if (searchValue) {
         result = result?.filter((t) =>
-          t.name.toLowerCase().includes(searchValue.toLowerCase())
+          t.name.toLowerCase().includes(searchValue.toLowerCase()),
         );
       }
       if (selectedAreas.length > 0) {
         result = result?.filter((t) => selectedAreas.includes(t.area));
       }
+      if (selectedTypes.length > 0) {
+        result = result?.filter((t) => selectedTypes.includes(t.type));
+      }
       return result?.sort(
-        (a, b) => b.year - a.year || a.name.localeCompare(b.name)
+        (a, b) => b.year - a.year || a.name.localeCompare(b.name),
       );
     };
 
     switch (filter) {
       case "active":
-        return filterBySearchAndArea(filteredActive);
+        return filterBySearchAndAreaAndType(filteredActive)
+          ?.sort((a, b) => b.name.localeCompare(a.name))
+          .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
       case "inactive":
-        return filterBySearchAndArea(filteredInactive);
+        return filterBySearchAndAreaAndType(filteredInactive)
+          ?.sort((a, b) => b.name.localeCompare(a.name))
+          .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
       default:
-        return filterBySearchAndArea(allTournaments);
+        return filterBySearchAndAreaAndType(
+          allTournaments
+            ?.sort((a, b) => b.name.localeCompare(a.name))
+            .sort((a, b) => new Date(b.start_date) - new Date(a.start_date)),
+        );
     }
-  }, [allTournaments, filter, searchValue, areaFilter]);
+  }, [allTournaments, filter, searchValue, areaFilter, typeFilter]);
 
-  const allChecked = areaFilter.every((area) => area.checked);
-  const indeterminate = areaFilter.some((area) => area.checked) && !allChecked;
+  const allAreaChecked = areaFilter.every((area) => area.checked);
+  const indeterminateArea =
+    areaFilter.some((area) => area.checked) && !allAreaChecked;
+
+  const allTypeChecked = typeFilter.every((type) => type.checked);
+  const indeterminateType =
+    typeFilter.some((type) => type.checked) && !allTypeChecked;
 
   const areaItems = areaFilter.map((area, index) => (
-    <Menu.Item key={area.value}>
+    <Menu.Item key={area.value} pl="xl">
       <Checkbox
         checked={area.checked}
         label={area.label}
@@ -105,7 +131,23 @@ export default function TournamentDashboard() {
           areaFilterHandlers.setItemProp(
             index,
             "checked",
-            e.currentTarget.checked
+            e.currentTarget.checked,
+          )
+        }
+      />
+    </Menu.Item>
+  ));
+
+  const typeItems = typeFilter.map((type, index) => (
+    <Menu.Item key={type.value} pl="xl">
+      <Checkbox
+        checked={type.checked}
+        label={type.label}
+        onChange={(e) =>
+          typeFilterHandlers.setItemProp(
+            index,
+            "checked",
+            e.currentTarget.checked,
           )
         }
       />
@@ -175,23 +217,57 @@ export default function TournamentDashboard() {
               </Button>
             </Menu.Target>
             <Menu.Dropdown>
+              {/* put button in center of dropdown */}
+              <Center m="xs">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    areaFilterHandlers.setState(
+                      areaFilter.map((area) => ({ ...area, checked: true })),
+                    );
+                    typeFilterHandlers.setState(
+                      typeFilter.map((type) => ({ ...type, checked: true })),
+                    );
+                  }}
+                  size="xs"
+                >
+                  Reset Filters
+                </Button>
+              </Center>
+
               <Menu.Item>
                 <Checkbox
-                  checked={allChecked}
-                  indeterminate={indeterminate}
+                  checked={allAreaChecked}
+                  indeterminate={indeterminateArea}
                   label="All Areas"
                   onChange={() =>
                     areaFilterHandlers.setState(
                       areaFilter.map((area) => ({
                         ...area,
-                        checked: !allChecked,
-                      }))
+                        checked: !allAreaChecked,
+                      })),
                     )
                   }
                 />
               </Menu.Item>
-              <Divider />
               {areaItems}
+              <Divider />
+              <Menu.Item>
+                <Checkbox
+                  checked={allTypeChecked}
+                  indeterminate={indeterminateType}
+                  label="All Types"
+                  onChange={() =>
+                    typeFilterHandlers.setState(
+                      typeFilter.map((type) => ({
+                        ...type,
+                        checked: !allTypeChecked,
+                      })),
+                    )
+                  }
+                />
+              </Menu.Item>
+              {typeItems}
             </Menu.Dropdown>
           </Menu>
         </Flex>
