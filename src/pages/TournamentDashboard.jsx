@@ -212,8 +212,8 @@ export default function TournamentDashboard() {
           {filter === "inactive"
             ? " archived"
             : filter === "active"
-            ? " current"
-            : ""}{" "}
+              ? " current"
+              : ""}{" "}
           tournaments found.
         </Text>
       ) : (
@@ -241,8 +241,17 @@ export default function TournamentDashboard() {
                     />
                   )}
                 </Flex>
-                <Text>{t.year}</Text>
+                <Divider mt="xs" mb="xs" />
+                <Text c="dimmed">
+                  {new Date(t.start_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </Text>
                 <Text tt="capitalize" c="dimmed">
+                  {t.type} |{" "}
                   {t.area === "orcs" || t.area === "olt"
                     ? t.area.toUpperCase()
                     : t.area}

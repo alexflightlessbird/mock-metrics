@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
 import App from "./App";
 import { MantineProvider, createTheme } from "@mantine/core";
 import "./assets/css/globals.css";
@@ -63,8 +64,8 @@ const removeLoadingScreen = () => {
 const notificationsStyles = {
   root: {
     zIndex: 9999,
-  }
-}
+  },
+};
 
 const root = createRoot(document.getElementById("root"));
 
@@ -90,5 +91,5 @@ root.render(
         </MantineProvider>
       </QueryClientProvider>
     </ErrorBoundary>
-  </StrictMode>
+  </StrictMode>,
 );

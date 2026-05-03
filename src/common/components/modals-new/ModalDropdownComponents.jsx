@@ -1,4 +1,5 @@
 import { MultiSelect, Select } from "@mantine/core";
+import { DateInput, DatePickerInput } from "@mantine/dates";
 
 export function ModalSelect({ clearable = true, ...props }) {
   return (
@@ -28,6 +29,22 @@ export function ModalMultiSelect({ ...props }) {
           overflow: "auto",
         },
       }}
+    />
+  );
+}
+
+export function ModalDateInput({ ...props }) {
+  return (
+    <DatePickerInput
+      {...props}
+      popoverProps={{
+        withinPortal: false,
+        position: "fixed",
+        zIndex: 100,
+        overflow: "auto",
+      }}
+      clearable
+      fullwidth
     />
   );
 }
