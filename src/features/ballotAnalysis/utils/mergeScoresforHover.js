@@ -1,7 +1,13 @@
 export function attorneyScoresByWitness(scoresArray) {
-  const directScores = scoresArray.map((s) => s.direct);
-  const crossScores = scoresArray.map((s) => s.cross);
-  const speechScores = scoresArray.map((s) => s.speech);
+  const directScores = scoresArray
+    .map((s) => s.direct)
+    .filter((d) => d?.score !== null);
+  const crossScores = scoresArray
+    .map((s) => s.cross)
+    .filter((c) => c?.score !== null);
+  const speechScores = scoresArray
+    .map((s) => s.speech)
+    .filter((s) => s?.score !== null);
 
   const directByWitness = Object.values(
     directScores.reduce((acc, direct) => {
@@ -16,7 +22,7 @@ export function attorneyScoresByWitness(scoresArray) {
       }
       acc[witnessId].scores.push(direct.score);
       return acc;
-    }, {})
+    }, {}),
   );
 
   directByWitness.forEach((d) => {
@@ -41,7 +47,7 @@ export function attorneyScoresByWitness(scoresArray) {
       }
       acc[witnessId].scores.push(cross.score);
       return acc;
-    }, {})
+    }, {}),
   );
 
   crossByWitness.forEach((c) => {
@@ -66,7 +72,7 @@ export function attorneyScoresByWitness(scoresArray) {
       }
       acc[type].scores.push(speech.score);
       return acc;
-    }, {})
+    }, {}),
   );
 
   speechByType.forEach((s) => {
@@ -89,8 +95,8 @@ export function witnessScoresByWitness(scoresArray) {
   const witnessGroups = scoresArray.reduce((acc, scoreObj) => {
     if (
       !scoreObj.witness?.id ||
-      !scoreObj.direct?.score ||
-      !scoreObj.cross?.score
+      scoreObj.direct?.score === null ||
+      scoreObj.cross?.score === null
     )
       return acc;
 

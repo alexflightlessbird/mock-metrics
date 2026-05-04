@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { sortData } from "../utils/sortData";
-import { Button, Table, Tooltip } from "@mantine/core";
+import { Button, Space, Table, Tooltip } from "@mantine/core";
 import SortableTh from "./SortableTh";
 import {
   attorneyScoresByWitness,
@@ -8,6 +8,12 @@ import {
 } from "../utils/mergeScoresforHover";
 import { capitalize } from "../../../common/utils/helpers";
 import { LuX } from "react-icons/lu";
+import WitnessFilter from "./WitnessFilter";
+import {
+  filterAttorneysByWitness,
+  filterWitnessesByWitness,
+} from "../utils/filterByWitness";
+import extractUniqueWitnesses from "../utils/extractUniqueWitnesses";
 
 export default function ScoreTable({
   type,
@@ -20,6 +26,13 @@ export default function ScoreTable({
     reversed: false,
   });
 
+  const [witnessFilters, setWitnessFilters] = useState({
+    witnessTypes: [],
+    witnessIds: [],
+  });
+  const [filteredScores, setFilteredScores] = useState(allScores);
+  const [availableWitnesses, setAvailableWitnesses] = useState([]);
+
   const [filters, setFilters] = useState({
     name: "",
     teamName: "",
@@ -29,6 +42,38 @@ export default function ScoreTable({
     averageCross: "",
     averageSpeech: "",
   });
+
+  useEffect(() => {
+    if (allScores && allScores.length > 0) {
+      const witnesses = extractUniqueWitnesses(allScores, type);
+      setAvailableWitnesses(witnesses);
+    }
+  }, [allScores, type]);
+
+  useEffect(() => {
+    if (!allScores) {
+      setFilteredScores([]);
+      return;
+    }
+
+    let filtered = allScores;
+
+    if (
+      witnessFilters.witnessTypes.length > 0 ||
+      witnessFilters.witnessIds.length > 0
+    ) {
+      if (type === "attorney")
+        filtered = filterAttorneysByWitness(allScores, witnessFilters);
+      else if (type === "witness")
+        filtered = filterWitnessesByWitness(allScores, witnessFilters);
+    }
+
+    setFilteredScores(filtered);
+  }, [allScores, witnessFilters, type]);
+
+  const handleWitnessFilterChange = (filters) => {
+    setWitnessFilters(filters);
+  };
 
   const handleSetSorting = (field) => {
     setSorting((prev) => ({
@@ -42,9 +87,9 @@ export default function ScoreTable({
   };
 
   const filteredData = useMemo(() => {
-    if (!allScores) return [];
+    if (!filteredScores) return [];
 
-    return allScores.filter((student) => {
+    return filteredScores.filter((student) => {
       if (
         filters.name &&
         !student.student.name.toLowerCase().includes(filters.name.toLowerCase())
@@ -91,7 +136,7 @@ export default function ScoreTable({
 
       return true;
     });
-  }, [allScores, filters, showTeam, type]);
+  }, [filteredScores, filters, showTeam, type]);
 
   const sorted = sortData(filteredData, sorting.sortBy, sorting.reversed);
 
@@ -234,6 +279,15 @@ export default function ScoreTable({
 
   return (
     <>
+      <WitnessFilter
+        onFilterChange={handleWitnessFilterChange}
+        availableWitnesses={availableWitnesses}
+        initialTypeFilters={[]}
+        initialWitnessFilters={[]}
+      />
+
+      <Space h="md" />
+
       {hasActiveFilters && (
         <Button
           variant="outline"
@@ -244,6 +298,7 @@ export default function ScoreTable({
           Clear all filters
         </Button>
       )}
+
       <Table.ScrollContainer
         minWidth={150}
         maxHeight={scrollHeight}
