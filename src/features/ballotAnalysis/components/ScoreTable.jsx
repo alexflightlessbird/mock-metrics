@@ -14,6 +14,8 @@ import {
   filterWitnessesByWitness,
 } from "../utils/filterByWitness";
 import extractUniqueWitnesses from "../utils/extractUniqueWitnesses";
+import { filterAttorneysBySpeech } from "../utils/filterBySpeech";
+import SpeechFilter from "./SpeechFilter";
 
 export default function ScoreTable({
   type,
@@ -29,6 +31,9 @@ export default function ScoreTable({
   const [witnessFilters, setWitnessFilters] = useState({
     witnessTypes: [],
     witnessIds: [],
+  });
+  const [speechTypeFilters, setSpeechTypeFilters] = useState({
+    speechTypes: [],
   });
   const [filteredScores, setFilteredScores] = useState(allScores);
   const [availableWitnesses, setAvailableWitnesses] = useState([]);
@@ -68,11 +73,21 @@ export default function ScoreTable({
         filtered = filterWitnessesByWitness(allScores, witnessFilters);
     }
 
+    if (speechTypeFilters.speechTypes.length > 0) {
+      if (type === "attorney") {
+        filtered = filterAttorneysBySpeech(filtered, speechTypeFilters);
+      }
+    }
+
     setFilteredScores(filtered);
-  }, [allScores, witnessFilters, type]);
+  }, [allScores, witnessFilters, speechTypeFilters, type]);
 
   const handleWitnessFilterChange = (filters) => {
     setWitnessFilters(filters);
+  };
+
+  const handleSpeechTypeFilterChange = (filters) => {
+    setSpeechTypeFilters(filters);
   };
 
   const handleSetSorting = (field) => {
@@ -286,6 +301,13 @@ export default function ScoreTable({
         initialWitnessFilters={[]}
       />
 
+      {type === "attorney" && (
+        <SpeechFilter
+          onFilterChange={handleSpeechTypeFilterChange}
+          initialFilters={[]}
+        />
+      )}
+
       <Space h="md" />
 
       {hasActiveFilters && (
@@ -303,6 +325,7 @@ export default function ScoreTable({
         minWidth={150}
         maxHeight={scrollHeight}
         type="scrollarea"
+        style={{ border: "1px solid #dee2e6", borderRadius: 4 }}
       >
         <Table
           striped
