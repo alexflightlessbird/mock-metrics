@@ -1,7 +1,5 @@
 export default function overallScores({ tournaments }) {
   // add the tournament date to each score for sorting purposes
-  // the tournament date is t.tournamentDate
-  // in the maps below, add tournamentDate: t.tournamentDate to each score object
   const attorneys = tournaments
     .map((t) => {
       return t.calculations.attorneys.map((a) => ({
