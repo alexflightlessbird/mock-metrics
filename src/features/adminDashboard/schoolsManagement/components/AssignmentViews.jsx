@@ -27,15 +27,15 @@ export function ViewAssignments({
 
   const primaryAdminCount = assignments.reduce(
     (acc, cur) => (cur.role === "primary" ? ++acc : acc),
-    0
+    0,
   );
   const adminCount = assignments.reduce(
     (acc, cur) => (cur.role === "admin" ? ++acc : acc),
-    0
+    0,
   );
   const viewerCount = assignments.reduce(
     (acc, cur) => (cur.role === "viewer" ? ++acc : acc),
-    0
+    0,
   );
 
   const handleEditStart = (assignment) => {
@@ -171,15 +171,15 @@ export function AddAssignment({
 
   const primaryAdminCount = assignments.reduce(
     (acc, cur) => (cur.role === "primary" ? ++acc : acc),
-    0
+    0,
   );
   const adminCount = assignments.reduce(
     (acc, cur) => (cur.role === "admin" ? ++acc : acc),
-    0
+    0,
   );
   const viewerCount = assignments.reduce(
     (acc, cur) => (cur.role === "viewer" ? ++acc : acc),
-    0
+    0,
   );
 
   return (

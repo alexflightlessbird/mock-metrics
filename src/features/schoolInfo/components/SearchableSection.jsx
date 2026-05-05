@@ -37,14 +37,14 @@ export default function SearchableSection({
       let result = items;
       if (searchValue) {
         result = result?.filter((i) =>
-          i.name.toLowerCase().includes(searchValue.toLowerCase())
+          i.name.toLowerCase().includes(searchValue.toLowerCase()),
         );
       }
       if (sectionName.toLowerCase() === "students") {
         return result?.sort((a, b) => a.name.localeCompare(b.name));
       } else if (sectionName.toLowerCase() === "teams") {
         return result?.sort(
-          (a, b) => b.year - a.year || a.name.localeCompare(b.name)
+          (a, b) => b.year - a.year || a.name.localeCompare(b.name),
         );
       }
     };
@@ -115,8 +115,8 @@ export default function SearchableSection({
           {filter === "inactive"
             ? " archived "
             : filter === "active"
-            ? " current "
-            : " "}
+              ? " current "
+              : " "}
           {sectionName} found.
         </Text>
       ) : (
@@ -134,26 +134,26 @@ export default function SearchableSection({
                           !i.is_active
                             ? "gray"
                             : i.years_in_mock === 1
-                            ? "cyan"
-                            : i.years_in_mock === 2
-                            ? "blue"
-                            : i.years_in_mock === 3
-                            ? "pink"
-                            : i.years_in_mock === 4
-                            ? "red"
-                            : i.years_in_mock === 5
-                            ? "grape"
-                            : "gray"
+                              ? "cyan"
+                              : i.years_in_mock === 2
+                                ? "blue"
+                                : i.years_in_mock === 3
+                                  ? "pink"
+                                  : i.years_in_mock === 4
+                                    ? "red"
+                                    : i.years_in_mock === 5
+                                      ? "grape"
+                                      : "gray"
                         }
                       >
                         {i.years_in_mock}
                         {i.years_in_mock === 1
                           ? "st"
                           : i.years_in_mock === 2
-                          ? "nd"
-                          : i.years_in_mock === 3
-                          ? "rd"
-                          : "th"}
+                            ? "nd"
+                            : i.years_in_mock === 3
+                              ? "rd"
+                              : "th"}
                       </Badge>
                     )}
                     {(role === "admin" || role === "primary") && (

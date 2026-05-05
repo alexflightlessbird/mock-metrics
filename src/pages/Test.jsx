@@ -124,7 +124,7 @@ export default function Test() {
 
       const client = new DocumentAnalysisClient(
         endpoint,
-        new AzureKeyCredential(apiKey)
+        new AzureKeyCredential(apiKey),
       );
 
       const arrayBuffer = await file.arrayBuffer();
@@ -137,7 +137,7 @@ export default function Test() {
       if (forms.documents.length > 0) {
         if (forms.documents[0].confidence < 0.7) {
           throw new Error(
-            "Image unable to be processed due to low confidence in results. Please upload a clearer picture and try again. This result may also occur if the image is not of a ballot."
+            "Image unable to be processed due to low confidence in results. Please upload a clearer picture and try again. This result may also occur if the image is not of a ballot.",
           );
         }
         processFormResults(forms.documents[0]);
@@ -637,15 +637,15 @@ export default function Test() {
                     {pTotal == dTotal
                       ? "Tie"
                       : pTotal > dTotal
-                      ? `Win (+${pTotal - dTotal})`
-                      : `Loss (-${dTotal - pTotal})`}
+                        ? `Win (+${pTotal - dTotal})`
+                        : `Loss (-${dTotal - pTotal})`}
                   </Table.Td>
                   <Table.Td>
                     {dTotal == pTotal
                       ? "Tie"
                       : dTotal > pTotal
-                      ? `Win (+${dTotal - pTotal})`
-                      : `Loss (-${pTotal - dTotal})`}
+                        ? `Win (+${dTotal - pTotal})`
+                        : `Loss (-${pTotal - dTotal})`}
                   </Table.Td>
                 </Table.Tr>
               </Table.Tfoot>

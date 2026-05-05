@@ -73,7 +73,7 @@ export function useTournamentDetails(tournamentId, schoolId) {
     onSuccess: () => {
       queryClient.invalidateQueries(
         ["school-tournaments", schoolId],
-        ["tournament-details", tournamentId, schoolId]
+        ["tournament-details", tournamentId, schoolId],
       );
       showSuccess({ message: "Tournament deleted successfully" });
     },

@@ -13,12 +13,12 @@ export default function useUsersFilter({ data, searchTerm, searchColumn }) {
         (user) =>
           user.id.toString().toLowerCase().includes(lowerSearchTerm) ||
           user.email.toString().toLowerCase().includes(lowerSearchTerm) ||
-          user.name.toString().toLowerCase().includes(lowerSearchTerm)
+          user.name.toString().toLowerCase().includes(lowerSearchTerm),
       );
     }
 
     return users.filter((user) =>
-      String(user[searchColumn]).toLowerCase().includes(lowerSearchTerm)
+      String(user[searchColumn]).toLowerCase().includes(lowerSearchTerm),
     );
   }, [users, searchTerm, searchColumn]);
 }

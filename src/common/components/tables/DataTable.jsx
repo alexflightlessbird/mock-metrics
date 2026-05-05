@@ -57,8 +57,8 @@ export default function DataTable({
                   column?.type?.toLowerCase() === "actions-md"
                     ? { minWidth: "90px" }
                     : column?.type?.toLowerCase() === "actions-lg"
-                    ? { minWidth: "100px" }
-                    : {}
+                      ? { minWidth: "100px" }
+                      : {}
                 }
               >
                 {column.label}

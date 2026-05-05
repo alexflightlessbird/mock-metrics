@@ -3,29 +3,29 @@ import RefreshAnalysisButton from "./RefreshAnalysisButton";
 import TournamentSummariesSection from "./TournamentSummariesSection";
 import OverallScoresSection from "./OverallScoresSection";
 
-export default function AnalysisResults({ 
-    handleRefresh, 
-    neededTournamentData,
-    calculatedTeamScores,
-    allTeamScores,
-    attorneys,
-    witnesses
+export default function AnalysisResults({
+  handleRefresh,
+  neededTournamentData,
+  calculatedTeamScores,
+  allTeamScores,
+  attorneys,
+  witnesses,
 }) {
-    return (
-        <>
-            <RefreshAnalysisButton onRefresh={handleRefresh} />
+  return (
+    <>
+      <RefreshAnalysisButton onRefresh={handleRefresh} />
 
-            <Space h="md" />
+      <Space h="md" />
 
-            <TournamentSummariesSection
-                neededTournamentData={neededTournamentData}
-                calculatedTeamScores={calculatedTeamScores}
-                allTeamScores={allTeamScores}
-            />
+      <TournamentSummariesSection
+        neededTournamentData={neededTournamentData}
+        calculatedTeamScores={calculatedTeamScores}
+        allTeamScores={allTeamScores}
+      />
 
-            <Space h="md" />
+      <Space h="md" />
 
-            <OverallScoresSection attorneys={attorneys} witnesses={witnesses} />
-        </>
-    )
+      <OverallScoresSection attorneys={attorneys} witnesses={witnesses} />
+    </>
+  );
 }

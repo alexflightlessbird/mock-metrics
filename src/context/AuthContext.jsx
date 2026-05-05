@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
           setSuperAdminLoading(false);
         }
         setLoading(false);
-      }
+      },
     );
 
     return () => authListener.subscription.unsubscribe();

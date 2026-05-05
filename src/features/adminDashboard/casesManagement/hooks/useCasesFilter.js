@@ -14,12 +14,12 @@ export default function useCasesFilter({ data, searchTerm, searchColumn }) {
           caseVal.name.toString().toLowerCase().includes(lowerSearchTerm) ||
           caseVal.year.toString().toLowerCase().includes(lowerSearchTerm) ||
           caseVal.type.toString().toLowerCase().includes(lowerSearchTerm) ||
-          caseVal.area.toString().toLowerCase().includes(lowerSearchTerm)
+          caseVal.area.toString().toLowerCase().includes(lowerSearchTerm),
       );
     }
 
     return cases.filter((caseVal) =>
-      String(caseVal[searchColumn]).toLowerCase().includes(lowerSearchTerm)
+      String(caseVal[searchColumn]).toLowerCase().includes(lowerSearchTerm),
     );
   }, [cases, searchTerm, searchColumn]);
 }

@@ -41,7 +41,7 @@ export function splitEmail(email) {
 
 export function emToPx(emValue) {
   const rootFontSize = parseFloat(
-    getComputedStyle(document.documentElement).fontSize
+    getComputedStyle(document.documentElement).fontSize,
   );
   return emValue * rootFontSize;
 }

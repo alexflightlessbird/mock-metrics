@@ -15,7 +15,7 @@ export function useRoundDetails(roundId) {
         const { data, error } = await supabase
           .from("rounds")
           .select(
-            "*, role_rounds(*, students(*)), witness_rounds(*, witnesses(*))"
+            "*, role_rounds(*, students(*)), witness_rounds(*, witnesses(*))",
           )
           .eq("id", roundId)
           .maybeSingle();
@@ -42,7 +42,7 @@ export function useRoundDetails(roundId) {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(
         ["tournament-team-rounds", variables.tournamentId, variables.teamId],
-        ["round-details", variables.roundId]
+        ["round-details", variables.roundId],
       );
       showSuccess({ message: "Round deleted sucessfully" });
     },

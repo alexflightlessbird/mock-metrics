@@ -13,12 +13,12 @@ export default function useSchoolsFilter({ data, searchTerm, searchColumn }) {
         (school) =>
           school.id.toString().toLowerCase().includes(lowerSearchTerm) ||
           school.name.toString().toLowerCase().includes(lowerSearchTerm) ||
-          school.short_name.toString().toLowerCase().includes(lowerSearchTerm)
+          school.short_name.toString().toLowerCase().includes(lowerSearchTerm),
       );
     }
 
     return schools.filter((school) =>
-      String(school[searchColumn]).toLowerCase().includes(lowerSearchTerm)
+      String(school[searchColumn]).toLowerCase().includes(lowerSearchTerm),
     );
   }, [schools, searchTerm, searchColumn]);
 }

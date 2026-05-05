@@ -47,7 +47,7 @@ export function useBallotDetails(ballotId) {
           score_value: value,
           ballot_id: data.id,
           weight: 1,
-        }))
+        })),
       );
       if (scoresError) throw scoresError;
     },
@@ -85,7 +85,7 @@ export function useBallotDetails(ballotId) {
           score_value: score.value,
           ballot_id: ballotId,
           weight: score.weight || 1,
-        }))
+        })),
       );
       if (error) throw error;
     },
@@ -144,9 +144,9 @@ export function useBallotDetails(ballotId) {
       showError({
         message: error.message,
         title: "Failed to update score weight",
-      })
-    }
-  })
+      });
+    },
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async ({ ballotId, roundId }) => {
@@ -159,7 +159,7 @@ export function useBallotDetails(ballotId) {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries(
         ["round-ballots", variables.roundId],
-        ["ballot-details", variables.ballotId]
+        ["ballot-details", variables.ballotId],
       );
       showSuccess({ message: "Ballot deleted successfully" });
     },

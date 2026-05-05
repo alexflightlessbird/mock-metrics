@@ -23,7 +23,7 @@ export default function RoundDetailModal({
           { name: "Round Number", value: round.round_number },
           { name: "Side", value: round.side.toUpperCase() },
           { name: "Ballots", value: round.ballots },
-          { type: "id", name: "Round", value: round.id }
+          { type: "id", name: "Round", value: round.id },
         ]}
       />
 
