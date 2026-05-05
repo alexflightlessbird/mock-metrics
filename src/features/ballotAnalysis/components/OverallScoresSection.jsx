@@ -4,18 +4,16 @@ import ScoreTable from "./ScoreTable";
 
 export default function OverallScoresSection({ attorneys, witnesses }) {
   return (
-    <PageSection title="overall scores" collapsible defaultOpen>
-      <Title order={3} mb="sm">
-        Attorneys
-      </Title>
-      <ScoreTable type="attorney" showTeam={true} allScores={attorneys} />
+    <>
+      <PageSection title="overall scores - attorneys" collapsible defaultOpen>
+        <ScoreTable type="attorney" showTeam={true} allScores={attorneys} />
+      </PageSection>
 
-      <Space h="sm" />
+      <Space h="md" />
 
-      <Title order={3} mb="sm">
-        Witnesses
-      </Title>
-      <ScoreTable type="witness" showTeam={true} allScores={witnesses} />
-    </PageSection>
+      <PageSection title="overall scores - witnesses" collapsible defaultOpen>
+        <ScoreTable type="witness" showTeam={true} allScores={witnesses} />
+      </PageSection>
+    </>
   );
 }
