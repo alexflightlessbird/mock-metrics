@@ -73,7 +73,7 @@ export default function AddStudentToTeamModal({
           closeModal("add-student-to-team-modal-" + teamId);
           handleReset();
         },
-      }
+      },
     );
   };
 
@@ -89,7 +89,8 @@ export default function AddStudentToTeamModal({
     <Stack key={0}>
       <Text size="sm" c="dimmed">
         This will remove the selected student from their current team if they
-        are already assigned to one. Ballots and ballot analysis will remain intact from any previous teams.
+        are already assigned to one. Ballots and ballot analysis will remain
+        intact from any previous teams.
       </Text>
 
       <ModalSelect

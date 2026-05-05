@@ -22,7 +22,7 @@ export function useRoundBallots(rounds) {
 
         return rounds.map((round) => {
           const roundBallots = ballotsData?.filter(
-            (b) => b.round_id === round.id
+            (b) => b.round_id === round.id,
           );
 
           if (roundBallots.length === 0) {
@@ -42,10 +42,10 @@ export function useRoundBallots(rounds) {
           roundBallots.forEach((ballot) => {
             const scores = ballot.scores || [];
             const pScores = scores.filter((s) =>
-              s.score_type.toLowerCase().startsWith("p")
+              s.score_type.toLowerCase().startsWith("p"),
             );
             const dScores = scores.filter((s) =>
-              s.score_type.toLowerCase().startsWith("d")
+              s.score_type.toLowerCase().startsWith("d"),
             );
             const pTotal = pScores.reduce((sum, s) => sum + s.score_value, 0);
             const dTotal = dScores.reduce((sum, s) => sum + s.score_value, 0);

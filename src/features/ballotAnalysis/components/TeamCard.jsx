@@ -21,11 +21,11 @@ export default function TeamCard({
 }) {
   const [showDetails, setShowDetails] = useState(false);
   const teamScores = tournamentTeamScores.teamScores.find(
-    (ts) => ts.teamId === team.id
+    (ts) => ts.teamId === team.id,
   );
 
   const allScores = teamScores.scores.pAttorneyScores.concat(
-    teamScores.scores.dAttorneyScores
+    teamScores.scores.dAttorneyScores,
   );
 
   return (
@@ -53,8 +53,8 @@ export default function TeamCard({
                   team.rounds.length == 0
                     ? "yellow"
                     : team.rounds.length > 3
-                    ? "blue"
-                    : "red"
+                      ? "blue"
+                      : "red"
                 }
               >
                 {team.rounds.length}
@@ -73,9 +73,9 @@ export default function TeamCard({
                   team.rounds.length == 0
                     ? "yellow"
                     : team.rounds.length * 2 >
-                      team.rounds.reduce((sum, r) => sum + r.ballots, 0)
-                    ? "red"
-                    : "blue"
+                        team.rounds.reduce((sum, r) => sum + r.ballots, 0)
+                      ? "red"
+                      : "blue"
                 }
               >
                 {team.rounds.reduce((sum, r) => sum + r.ballots, 0)}

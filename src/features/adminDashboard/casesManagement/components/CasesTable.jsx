@@ -25,10 +25,10 @@ export default function CasesTable({ data, onSelect }) {
           caseVal.area === "invitationals/regionals/orcs"
             ? "Invitationals/Regionals/ORCS"
             : caseVal.area === "rookie rumble"
-            ? "Rookie Rumble"
-            : caseVal.area === "olt"
-            ? "OLT"
-            : capitalize(caseVal.area)
+              ? "Rookie Rumble"
+              : caseVal.area === "olt"
+                ? "OLT"
+                : capitalize(caseVal.area),
         )}
       </Table.Td>
       <Table.Td>

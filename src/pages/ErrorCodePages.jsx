@@ -1,11 +1,4 @@
-import {
-  Text,
-  Button,
-  Anchor,
-  Center,
-  Divider,
-  Flex,
-} from "@mantine/core";
+import { Text, Button, Anchor, Center, Divider, Flex } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import GavelLoader from "../common/components/loader/GavelLoader";
 import BasePage from "../common/components/BasePage";
@@ -33,12 +26,12 @@ function ErrorBase({
           {errorType === "rule"
             ? " Violation"
             : errorType === "motion"
-            ? " Granted"
-            : errorType === "objection"
-            ? ""
-            : errorType === "exhibit"
-            ? " Submitted"
-            : " Occurred"}
+              ? " Granted"
+              : errorType === "objection"
+                ? ""
+                : errorType === "exhibit"
+                  ? " Submitted"
+                  : " Occurred"}
         </>
       }
       centerTitle

@@ -10,7 +10,7 @@ export function MobileProvider({ children }) {
   const { width } = useViewportSize();
   const smBreakpointPx = useMemo(
     () => emToPx(parseFloat(theme.breakpoints.sm)),
-    [theme.breakpoints.sm]
+    [theme.breakpoints.sm],
   );
   const isMobile = width < smBreakpointPx;
 

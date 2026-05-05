@@ -227,8 +227,8 @@ export default function NavLayout({ children }) {
             ? sidebarWidth
             : 0
           : desktopCollapsed
-          ? 80
-          : sidebarWidth,
+            ? 80
+            : sidebarWidth,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
@@ -319,8 +319,8 @@ export default function NavLayout({ children }) {
                       isMobile && !mobileOpened
                         ? -1
                         : assignments.length > 1
-                        ? 0
-                        : ""
+                          ? 0
+                          : ""
                     }
                     onKeyDown={(e) => {
                       if (
@@ -335,10 +335,10 @@ export default function NavLayout({ children }) {
                     <Text truncate size={isMobile ? "md" : "xs"}>
                       {desktopCollapsed && !isMobile
                         ? assignments.find(
-                            (a) => a.school_id === selectedSchoolId
+                            (a) => a.school_id === selectedSchoolId,
                           )?.schools.short_name
                         : assignments.find(
-                            (a) => a.school_id === selectedSchoolId
+                            (a) => a.school_id === selectedSchoolId,
                           )?.schools.name}
                     </Text>
                     {assignments.length > 1 &&

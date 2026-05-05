@@ -129,8 +129,8 @@ export const WitnessSideField = ({
               pSide === "prosecution"
                 ? "Prosecution"
                 : pSide === "plaintiff"
-                ? "Plaintiff"
-                : "Plaintiff/Prosecution",
+                  ? "Plaintiff"
+                  : "Plaintiff/Prosecution",
           },
           { value: "d", label: "Defense" },
           { value: "s", label: "Swing" },

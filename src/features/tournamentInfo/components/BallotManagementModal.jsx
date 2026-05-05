@@ -247,7 +247,7 @@ export default function BallotManagementModal({
                         P Witness #1 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "p1"
+                            (wr) => wr.role_type === "p1",
                           )?.witnesses?.name
                         }
                       </b>
@@ -266,7 +266,7 @@ export default function BallotManagementModal({
                         P Witness #2 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "p2"
+                            (wr) => wr.role_type === "p2",
                           )?.witnesses?.name
                         }
                       </b>
@@ -285,7 +285,7 @@ export default function BallotManagementModal({
                         P Witnesss #3 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "p3"
+                            (wr) => wr.role_type === "p3",
                           )?.witnesses?.name
                         }
                       </b>
@@ -308,7 +308,7 @@ export default function BallotManagementModal({
                         D Witness #1 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "d1"
+                            (wr) => wr.role_type === "d1",
                           )?.witnesses?.name
                         }
                       </b>
@@ -327,7 +327,7 @@ export default function BallotManagementModal({
                         D Witness #2 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "d2"
+                            (wr) => wr.role_type === "d2",
                           )?.witnesses?.name
                         }
                       </b>
@@ -346,7 +346,7 @@ export default function BallotManagementModal({
                         D Witness #3 -{" "}
                         {
                           roundDetails?.witness_rounds.find(
-                            (wr) => wr.role_type === "d3"
+                            (wr) => wr.role_type === "d3",
                           )?.witnesses?.name
                         }
                       </b>

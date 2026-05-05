@@ -24,7 +24,7 @@ export function useAddRound() {
           side: side,
           witness_data: witnessRoundData,
           role_data: roleRoundData,
-        }
+        },
       );
       if (error) throw error;
       return data;

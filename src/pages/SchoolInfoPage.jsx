@@ -63,7 +63,8 @@ export default function SchoolInfoPage() {
     const updates = {};
 
     if (title !== schoolInformation.name) updates.name = title;
-    if (schoolShortName !== schoolInformation.short_name) updates.short_name = schoolShortName;
+    if (schoolShortName !== schoolInformation.short_name)
+      updates.short_name = schoolShortName;
 
     await updateSchool(updates);
     setEditMode(false);
@@ -89,16 +90,17 @@ export default function SchoolInfoPage() {
 
   const role = assignments.find((a) => a.school_id === selectedSchoolId)?.role;
 
-  if ( schoolLoading || isLoading) return (
-    <BasePage titleText="School Loading...">
-      <Stack>
-        <Skeleton height={20} width={200} />
-        <Skeleton height={20} width={200} />
-        <Skeleton height={20} width={200} />
-        <Skeleton height={20} width={200} />
-      </Stack>
-    </BasePage>
-  );
+  if (schoolLoading || isLoading)
+    return (
+      <BasePage titleText="School Loading...">
+        <Stack>
+          <Skeleton height={20} width={200} />
+          <Skeleton height={20} width={200} />
+          <Skeleton height={20} width={200} />
+          <Skeleton height={20} width={200} />
+        </Stack>
+      </BasePage>
+    );
 
   return (
     <BasePage
@@ -119,16 +121,27 @@ export default function SchoolInfoPage() {
       <PageDetailSection
         editable={editMode}
         details={[
-          { name: "Short Name", value: editMode ? (
-              <TextInput 
+          {
+            name: "Short Name",
+            value: editMode ? (
+              <TextInput
                 value={schoolShortName}
-                onChange={e => setSchoolShortName(e.target.value)}
+                onChange={(e) => setSchoolShortName(e.target.value)}
                 style={styleProps}
               />
-            ) : schoolInformation.short_name },
-            { name: "Premium Status", value: schoolInformation.is_premium ? "Active" : "Inactive" },
-            { name: "Your Role", value: role === "primary" ? "Primary Admin" : capitalize(role) },
-            { type: "id", name: "School", value: selectedSchoolId }
+            ) : (
+              schoolInformation.short_name
+            ),
+          },
+          {
+            name: "Premium Status",
+            value: schoolInformation.is_premium ? "Active" : "Inactive",
+          },
+          {
+            name: "Your Role",
+            value: role === "primary" ? "Primary Admin" : capitalize(role),
+          },
+          { type: "id", name: "School", value: selectedSchoolId },
         ]}
       />
 
@@ -138,11 +151,21 @@ export default function SchoolInfoPage() {
 
       <Space h="md" />
 
-      <TeamsSection schoolId={selectedSchoolId} role={role} isMobile={isMobile} navigate={navigate} />
+      <TeamsSection
+        schoolId={selectedSchoolId}
+        role={role}
+        isMobile={isMobile}
+        navigate={navigate}
+      />
 
       <Space h="md" />
 
-      <StudentsSection schoolId={selectedSchoolId} role={role} isMobile={isMobile} navigate={navigate} />
+      <StudentsSection
+        schoolId={selectedSchoolId}
+        role={role}
+        isMobile={isMobile}
+        navigate={navigate}
+      />
     </BasePage>
   );
 }

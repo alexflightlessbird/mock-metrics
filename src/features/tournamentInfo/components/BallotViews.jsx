@@ -46,15 +46,15 @@ export function ViewBallots({
               ? pTotal(b) - dTotal(b) < 0
                 ? `Loss: ${pTotal(b) - dTotal(b)}`
                 : pTotal(b) - dTotal(b) == 0
-                ? "Tie"
-                : `Win: +${pTotal(b) - dTotal(b)}`
+                  ? "Tie"
+                  : `Win: +${pTotal(b) - dTotal(b)}`
               : side === "d"
-              ? dTotal(b) - pTotal(b) < 0
-                ? `Loss: ${dTotal(b) - pTotal(b)}`
-                : dTotal(b) - pTotal(b) == 0
-                ? "Tie"
-                : `Win: +${dTotal(b) - pTotal(b)}`
-              : "-"}
+                ? dTotal(b) - pTotal(b) < 0
+                  ? `Loss: ${dTotal(b) - pTotal(b)}`
+                  : dTotal(b) - pTotal(b) == 0
+                    ? "Tie"
+                    : `Win: +${dTotal(b) - pTotal(b)}`
+                : "-"}
           </Table.Td>
         </Table.Tr>
       }

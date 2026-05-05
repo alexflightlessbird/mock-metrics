@@ -47,7 +47,7 @@ export default function AddTeamModal({ onClose, trigger, schoolId }) {
           label: `${c.name} (${c.year})`,
           value: c.id,
         })),
-    [cases]
+    [cases],
   );
 
   const validateForm = () => {
@@ -97,7 +97,7 @@ export default function AddTeamModal({ onClose, trigger, schoolId }) {
           });
           localStorage.removeItem("add-team-form");
         },
-      }
+      },
     );
   };
 

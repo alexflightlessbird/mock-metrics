@@ -91,7 +91,7 @@ export default function BaseModal({
       }
 
       const focusableElements = getFocusableElements().filter(
-        (el) => !el.className.includes("mantine-NumberInput-control")
+        (el) => !el.className.includes("mantine-NumberInput-control"),
       );
 
       if (focusableElements.length > 0) {
@@ -109,7 +109,7 @@ export default function BaseModal({
         e.stopPropagation();
 
         const focusableElements = getFocusableElements().filter(
-          (el) => !el.className.includes("mantine-NumberInput-control")
+          (el) => !el.className.includes("mantine-NumberInput-control"),
         );
         if (focusableElements.length === 0) return;
 
@@ -135,10 +135,10 @@ export default function BaseModal({
       if (!contentRef.current) return [];
       return Array.from(
         contentRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ),
       ).filter(
-        (el) => !el.hasAttribute("disabled") && el.offsetParent !== null
+        (el) => !el.hasAttribute("disabled") && el.offsetParent !== null,
       );
     }
 

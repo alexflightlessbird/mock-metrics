@@ -94,8 +94,8 @@ export function ViewWitnesses({
               caseType === "criminal"
                 ? "prosecution"
                 : caseType === "civil"
-                ? "plaintiff"
-                : ""
+                  ? "plaintiff"
+                  : ""
             }
             label=""
           />
@@ -197,8 +197,8 @@ export function AddWitness({ onSubmit, isLoading, caseType, setType }) {
           caseType === "criminal"
             ? "prosecution"
             : caseType === "civil"
-            ? "plaintiff"
-            : ""
+              ? "plaintiff"
+              : ""
         }
       />
       <WitnessTypeField

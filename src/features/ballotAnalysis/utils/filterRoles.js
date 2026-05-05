@@ -30,10 +30,10 @@ export function roundStudents({ role_rounds, side }) {
 
   const students = {
     attorneys: attorneys.sort((a, b) =>
-      a.student.name.localeCompare(b.student.name)
+      a.student.name.localeCompare(b.student.name),
     ),
     witnesses: witnesses.sort((a, b) =>
-      a.student.name.localeCompare(b.student.name)
+      a.student.name.localeCompare(b.student.name),
     ),
   };
 
@@ -148,7 +148,7 @@ export function attorneyDirectsHelpers({
   attorneyId,
 }) {
   const selected = attorneyDirectsWitnesses?.find(
-    (adw) => adw.student.id === attorneyId
+    (adw) => adw.student.id === attorneyId,
   );
 
   const witnessStudentName = selected?.witness_student?.name;
@@ -163,7 +163,7 @@ export function attorneyCrossesHelpers({
   attorneyId,
 }) {
   const selected = attorneyCrossesWitnesses?.find(
-    (acw) => acw.student.id === attorneyId
+    (acw) => acw.student.id === attorneyId,
   );
 
   const witnessName = selected?.witness?.witness?.name;
@@ -178,10 +178,10 @@ export function attorneyWitnessHelper({
   attorneyId,
 }) {
   const selectedDirect = attorneyDirectsWitnesses?.find(
-    (adw) => adw.student.id === attorneyId
+    (adw) => adw.student.id === attorneyId,
   );
   const selectedCross = attorneyCrossesWitnesses?.find(
-    (acw) => acw.student.id === attorneyId
+    (acw) => acw.student.id === attorneyId,
   );
 
   const directWitness = selectedDirect?.witness?.witness;
@@ -197,7 +197,7 @@ export function witnessWitnessHelper({
 }) {
   const selectedWitness = role_rounds
     .sort(
-      (a, b) => Number(a.role_type.slice(-1)) - Number(b.role_type.slice(-1))
+      (a, b) => Number(a.role_type.slice(-1)) - Number(b.role_type.slice(-1)),
     )
     .filter((rr) => rr.student.id === witnessId);
 

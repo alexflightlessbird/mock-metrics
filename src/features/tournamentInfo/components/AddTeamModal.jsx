@@ -30,14 +30,14 @@ export default function AddTeamModal({
 
   const currentTeamsIdList = useMemo(
     () => currentTeams?.map((t) => t.team_id) || [],
-    [currentTeams]
+    [currentTeams],
   );
   const availableTeams = useMemo(
     () =>
       allTeams
         ?.filter((t) => t.is_active)
         .filter((t) => !currentTeamsIdList?.includes(t.id)) || [],
-    [allTeams, currentTeamsIdList]
+    [allTeams, currentTeamsIdList],
   );
 
   const handleSubmit = () => {
@@ -51,7 +51,7 @@ export default function AddTeamModal({
           setSelectedTeamId(null);
           closeModal(`add-team-to-tournament-form-${tournamentId}`);
         },
-      }
+      },
     );
   };
 

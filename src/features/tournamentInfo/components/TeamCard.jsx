@@ -32,7 +32,7 @@ export default function TeamCard({
   const [addRoundModalOpened, setAddRoundModalOpened] = useState(false);
   const { data: rounds, isLoading: roundsLoading } = useTournamentTeamRounds(
     team.tournament_id,
-    team.team_id
+    team.team_id,
   );
   const {
     data: roundResults,
@@ -43,7 +43,7 @@ export default function TeamCard({
 
   const { role, isLoading: roleLoading } = useGetRole(
     user.id,
-    team.teams.school_id
+    team.teams.school_id,
   );
   const { removeTeam } = useTournamentTeams(team.team_id);
 
@@ -55,7 +55,7 @@ export default function TeamCard({
     );
 
   const sortedResults = [...(roundResults || [])].sort(
-    (a, b) => a.round_number - b.round_number
+    (a, b) => a.round_number - b.round_number,
   );
 
   const calculateRecord = () => {
@@ -94,8 +94,8 @@ export default function TeamCard({
                   recordVal > totalRecordVal - recordVal
                     ? "blue"
                     : recordVal == totalRecordVal - recordVal
-                    ? "gray"
-                    : "pink"
+                      ? "gray"
+                      : "pink"
                 }
               >
                 {record.wins}-{record.losses}-{record.ties}

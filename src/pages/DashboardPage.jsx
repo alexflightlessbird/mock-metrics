@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState("");
 
   const { data: userDetails, isLoading: isLoadingUserDetails } = useUserDetails(
-    user.id
+    user.id,
   );
 
   useEffect(() => {

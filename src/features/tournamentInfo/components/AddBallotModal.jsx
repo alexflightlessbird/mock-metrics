@@ -66,7 +66,8 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
       Object.values(formData)
         .slice(1)
         .every(
-          (score) => score !== null && score !== "" && score >= 0 && score <= 10
+          (score) =>
+            score !== null && score !== "" && score >= 0 && score <= 10,
         )
     );
   };
@@ -114,7 +115,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
       judgeName: formData.judgeName,
       roundId,
       scores: Object.fromEntries(
-        Object.entries(formData).filter(([key]) => key !== "judgeName")
+        Object.entries(formData).filter(([key]) => key !== "judgeName"),
       ),
     });
 
@@ -197,7 +198,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       P Witness #1 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "p1"
+                          (wr) => wr.role_type === "p1",
                         )?.witnesses?.name
                       }
                     </b>
@@ -226,7 +227,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       P Witness #2 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "p2"
+                          (wr) => wr.role_type === "p2",
                         )?.witnesses?.name
                       }
                     </b>
@@ -255,7 +256,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       P Witness #3 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "p3"
+                          (wr) => wr.role_type === "p3",
                         )?.witnesses?.name
                       }
                     </b>
@@ -287,7 +288,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       D Witness #1 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "d1"
+                          (wr) => wr.role_type === "d1",
                         )?.witnesses?.name
                       }
                     </b>
@@ -316,7 +317,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       D Witness #2 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "d2"
+                          (wr) => wr.role_type === "d2",
                         )?.witnesses?.name
                       }
                     </b>
@@ -345,7 +346,7 @@ export default function AddBallotModal({ trigger, roundId, caseType }) {
                       D Witness #3 -{" "}
                       {
                         roundDetails?.witness_rounds.find(
-                          (wr) => wr.role_type === "d3"
+                          (wr) => wr.role_type === "d3",
                         )?.witnesses?.name
                       }
                     </b>

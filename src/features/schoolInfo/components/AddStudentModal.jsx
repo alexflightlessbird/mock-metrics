@@ -63,7 +63,7 @@ export default function AddStudentModal({ onClose, trigger, schoolId }) {
           handleReset();
           localStorage.removeItem("add-student-form");
         },
-      }
+      },
     );
   };
 

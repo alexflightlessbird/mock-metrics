@@ -1,9 +1,4 @@
-import {
-  Text,
-  Table,
-  Space,
-  Card,
-} from "@mantine/core";
+import { Text, Table, Space, Card } from "@mantine/core";
 import {
   useRoundDetails,
   useRoundBallots,
@@ -57,7 +52,7 @@ export default function RoundManagementModal({
         details={[
           { name: "Round #", value: roundDetails?.round_number },
           { name: "Side", value: formatSide(roundDetails?.side, caseType) },
-          { type: "id", name: "Round", value: roundDetails?.id }
+          { type: "id", name: "Round", value: roundDetails?.id },
         ]}
       />
 
@@ -103,7 +98,7 @@ export default function RoundManagementModal({
                 <Table.Td>Opening</Table.Td>
                 <Table.Td>
                   {roundDetails?.role_rounds?.find(
-                    (r) => r.role_type === `${roundDetails.side}1`
+                    (r) => r.role_type === `${roundDetails.side}1`,
                   )?.students?.name || "-"}
                 </Table.Td>
                 <Table.Td></Table.Td>
@@ -116,25 +111,25 @@ export default function RoundManagementModal({
                   P1
                   <br />
                   {roundDetails?.witness_rounds?.find(
-                    (w) => w.role_type === "p1"
+                    (w) => w.role_type === "p1",
                   )?.witnesses?.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p2"
+                        (s) => s.role_type === "p2",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d2"
+                        (s) => s.role_type === "d2",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p3"
+                        (s) => s.role_type === "p3",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -144,25 +139,25 @@ export default function RoundManagementModal({
                   P2
                   <br />
                   {roundDetails.witness_rounds?.find(
-                    (w) => w.role_type === "p2"
+                    (w) => w.role_type === "p2",
                   )?.witnesses.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p5"
+                        (s) => s.role_type === "p5",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d3"
+                        (s) => s.role_type === "d3",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p6"
+                        (s) => s.role_type === "p6",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -172,25 +167,25 @@ export default function RoundManagementModal({
                   P3
                   <br />
                   {roundDetails.witness_rounds?.find(
-                    (w) => w.role_type === "p3"
+                    (w) => w.role_type === "p3",
                   )?.witnesses.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p8"
+                        (s) => s.role_type === "p8",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d4"
+                        (s) => s.role_type === "d4",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p9"
+                        (s) => s.role_type === "p9",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -203,25 +198,25 @@ export default function RoundManagementModal({
                   D1
                   <br />
                   {roundDetails.witness_rounds?.find(
-                    (w) => w.role_type === "d1"
+                    (w) => w.role_type === "d1",
                   )?.witnesses.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p11"
+                        (s) => s.role_type === "p11",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d5"
+                        (s) => s.role_type === "d5",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d6"
+                        (s) => s.role_type === "d6",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -231,25 +226,25 @@ export default function RoundManagementModal({
                   D2
                   <br />
                   {roundDetails.witness_rounds?.find(
-                    (w) => w.role_type === "d2"
+                    (w) => w.role_type === "d2",
                   )?.witnesses.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p12"
+                        (s) => s.role_type === "p12",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d8"
+                        (s) => s.role_type === "d8",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d9"
+                        (s) => s.role_type === "d9",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -259,25 +254,25 @@ export default function RoundManagementModal({
                   D3
                   <br />
                   {roundDetails.witness_rounds?.find(
-                    (w) => w.role_type === "d3"
+                    (w) => w.role_type === "d3",
                   )?.witnesses.name || "-"}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "p"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "p13"
+                        (s) => s.role_type === "p13",
                       )?.students?.name || "-"
                     : null}
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d11"
+                        (s) => s.role_type === "d11",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
                 <Table.Td>
                   {roundDetails.side === "d"
                     ? roundDetails?.role_rounds?.find(
-                        (s) => s.role_type === "d12"
+                        (s) => s.role_type === "d12",
                       )?.students?.name || "-"
                     : null}
                 </Table.Td>
@@ -289,7 +284,7 @@ export default function RoundManagementModal({
                 <Table.Td>Closing</Table.Td>
                 <Table.Td>
                   {roundDetails?.role_rounds?.find(
-                    (r) => r.role_type === `${roundDetails.side}14`
+                    (r) => r.role_type === `${roundDetails.side}14`,
                   )?.students?.name || "-"}
                 </Table.Td>
                 <Table.Td></Table.Td>

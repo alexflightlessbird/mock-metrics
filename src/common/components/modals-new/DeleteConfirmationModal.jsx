@@ -34,7 +34,7 @@ export default function DeleteConfirmationModal({
     } finally {
       if (closeOnSubmit)
         closeModal(
-          `delete-${entityName}-modal-${entity.id ? entity.id : entity.name}`
+          `delete-${entityName}-modal-${entity.id ? entity.id : entity.name}`,
         );
       if (closeAllOnSubmit) closeAllModals();
       setIsLoading(false);
@@ -55,12 +55,12 @@ export default function DeleteConfirmationModal({
                 : ""
             }`
           : type === "remove"
-          ? `Remove ${capitalize(entityName)}${
-              entity?.name?.length > 0
-                ? " (" + capitalize(entity.name) + ")"
-                : ""
-            }`
-          : ""
+            ? `Remove ${capitalize(entityName)}${
+                entity?.name?.length > 0
+                  ? " (" + capitalize(entity.name) + ")"
+                  : ""
+              }`
+            : ""
       }
       initialFocusRef={firstInputRef}
       layer={layer}
@@ -95,7 +95,7 @@ export default function DeleteConfirmationModal({
                 closeModal(
                   `delete-${entityName}-modal-${
                     entity.id ? entity.id : entity.name
-                  }`
+                  }`,
                 );
               }
             }}
