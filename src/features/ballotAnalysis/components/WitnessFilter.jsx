@@ -36,10 +36,18 @@ export default function WitnessFilter({
   const [witnessesOpen, setWitnessesOpen] = useState(false);
   const isInitialMount = useRef(true);
 
+  // Filter available witnesses based on selected types
+  const filteredWitnessesByType = useMemo(() => {
+    if (selectedTypes.length === 0) return availableWitnesses;
+    return availableWitnesses.filter((witness) =>
+      selectedTypes.includes(witness.type || "other"),
+    );
+  }, [selectedTypes, availableWitnesses]);
+
   // Group witnesses by type for better organization
   const witnessesByType = useMemo(() => {
     const grouped = {};
-    availableWitnesses.forEach((witness) => {
+    filteredWitnessesByType.forEach((witness) => {
       const type = witness.type || "other";
       if (!grouped[type]) {
         grouped[type] = [];
@@ -47,7 +55,7 @@ export default function WitnessFilter({
       grouped[type].push(witness);
     });
     return grouped;
-  }, [availableWitnesses]);
+  }, [filteredWitnessesByType]);
 
   // Memoize the filter object to prevent unnecessary re-renders
   const filterValue = useMemo(
@@ -73,6 +81,21 @@ export default function WitnessFilter({
       onFilterChange(filterValue);
     }
   }, [filterValue, onFilterChange]);
+
+  // Clean up selected witnesses that are no longer available due to type filters
+  useEffect(() => {
+    const availableWitnessIds = new Set(
+      filteredWitnessesByType.map((w) => w.id),
+    );
+    const invalidWitnessIds = selectedWitnesses.filter(
+      (id) => !availableWitnessIds.has(id),
+    );
+    if (invalidWitnessIds.length > 0) {
+      setSelectedWitnesses((prev) =>
+        prev.filter((id) => !invalidWitnessIds.includes(id)),
+      );
+    }
+  }, [filteredWitnessesByType, selectedWitnesses]);
 
   const handleTypeToggle = useCallback((type) => {
     setSelectedTypes((prev) =>
@@ -211,11 +234,18 @@ export default function WitnessFilter({
                 <Accordion.Control>
                   <Group justify="space-between" w="100%">
                     <Text size="sm">By Specific Witness</Text>
-                    {selectedWitnesses.length > 0 && (
-                      <Badge size="xs" color="blue">
-                        {selectedWitnesses.length} selected
-                      </Badge>
-                    )}
+                    <Group gap="xs">
+                      {selectedTypes.length > 0 && (
+                        <Badge size="xs" color="gray" variant="light">
+                          Filtered by type
+                        </Badge>
+                      )}
+                      {selectedWitnesses.length > 0 && (
+                        <Badge size="xs" color="blue">
+                          {selectedWitnesses.length} selected
+                        </Badge>
+                      )}
+                    </Group>
                   </Group>
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -239,49 +269,56 @@ export default function WitnessFilter({
                         Clear All
                       </Text>
                     </Group>
-                    <ScrollArea h={300} type="auto">
-                      <Stack gap="xs">
-                        {Object.entries(witnessesByType).map(
-                          ([type, witnesses]) => (
-                            <Stack key={type} gap="xs">
-                              <Text
-                                size="xs"
-                                fw={600}
-                                c="dimmed"
-                                tt="capitalize"
-                              >
-                                {getTypeLabel(type)}
-                              </Text>
-                              {witnesses.map((witness) => (
-                                <Checkbox
-                                  key={witness.id}
-                                  label={
-                                    <Group gap="xs">
-                                      <Text size="xs">{witness.name}</Text>
-                                      <Badge
-                                        size="xs"
-                                        color="gray"
-                                        variant="light"
-                                      >
-                                        {witness.side?.toUpperCase()}
-                                      </Badge>
-                                    </Group>
-                                  }
-                                  checked={selectedWitnesses.includes(
-                                    witness.id,
-                                  )}
-                                  onChange={() =>
-                                    handleWitnessToggle(witness.id)
-                                  }
+                    {filteredWitnessesByType.length === 0 ? (
+                      <Text size="sm" c="dimmed" ta="center" py="md">
+                        No witnesses match the selected type
+                        {selectedTypes.length > 1 ? "s" : ""}
+                      </Text>
+                    ) : (
+                      <ScrollArea type="auto">
+                        <Stack gap="xs">
+                          {Object.entries(witnessesByType).map(
+                            ([type, witnesses]) => (
+                              <Stack key={type} gap="xs">
+                                <Text
                                   size="xs"
-                                  pl="md"
-                                />
-                              ))}
-                            </Stack>
-                          ),
-                        )}
-                      </Stack>
-                    </ScrollArea>
+                                  fw={600}
+                                  c="dimmed"
+                                  tt="capitalize"
+                                >
+                                  {getTypeLabel(type)}
+                                </Text>
+                                {witnesses.map((witness) => (
+                                  <Checkbox
+                                    key={witness.id}
+                                    label={
+                                      <Group gap="xs">
+                                        <Text size="xs">{witness.name}</Text>
+                                        <Badge
+                                          size="xs"
+                                          color="gray"
+                                          variant="light"
+                                        >
+                                          {witness.side?.toUpperCase()}
+                                        </Badge>
+                                      </Group>
+                                    }
+                                    checked={selectedWitnesses.includes(
+                                      witness.id,
+                                    )}
+                                    onChange={() =>
+                                      handleWitnessToggle(witness.id)
+                                    }
+                                    size="xs"
+                                    pl="md"
+                                  />
+                                ))}
+                              </Stack>
+                            ),
+                          )}
+                        </Stack>
+                      </ScrollArea>
+                    )}
                   </Stack>
                 </Accordion.Panel>
               </Accordion.Item>
