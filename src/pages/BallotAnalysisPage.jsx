@@ -183,8 +183,8 @@ export default function BallotAnalysisPage() {
                               label={
                                 <Stack gap={0}>
                                   <Text size="sm">{t.name}</Text>
-                                  <Text size="sm" c="dimmed">
-                                    {t.year}
+                                  <Text size="sm" c="dimmed" tt="capitalize">
+                                    {t.year} | {t.type}
                                   </Text>
                                 </Stack>
                               }
