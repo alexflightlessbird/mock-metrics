@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { sortData } from "../utils/sortData";
-import { Button, Space, Table, Tooltip } from "@mantine/core";
+import { Button, Flex, Group, Space, Table, Tooltip } from "@mantine/core";
 import SortableTh from "./SortableTh";
 import {
   attorneyScoresByWitness,
@@ -294,19 +294,21 @@ export default function ScoreTable({
 
   return (
     <>
-      <WitnessFilter
-        onFilterChange={handleWitnessFilterChange}
-        availableWitnesses={availableWitnesses}
-        initialTypeFilters={[]}
-        initialWitnessFilters={[]}
-      />
-
-      {type === "attorney" && (
-        <SpeechFilter
-          onFilterChange={handleSpeechTypeFilterChange}
-          initialFilters={[]}
+      <Group justify="space-between" gap="sm" grow align="start">
+        <WitnessFilter
+          onFilterChange={handleWitnessFilterChange}
+          availableWitnesses={availableWitnesses}
+          initialTypeFilters={[]}
+          initialWitnessFilters={[]}
         />
-      )}
+
+        {type === "attorney" && (
+          <SpeechFilter
+            onFilterChange={handleSpeechTypeFilterChange}
+            initialFilters={[]}
+          />
+        )}
+      </Group>
 
       <Space h="md" />
 

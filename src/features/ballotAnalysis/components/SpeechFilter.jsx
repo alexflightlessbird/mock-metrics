@@ -5,26 +5,27 @@ import {
   Stack,
   Text,
   Divider,
-  Accordion,
-  ScrollArea,
   Badge,
   ActionIcon,
-  Tooltip,
+  Box,
+  ThemeIcon,
+  Flex,
 } from "@mantine/core";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { LuX, LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { LuX, LuMic } from "react-icons/lu";
 
 const SPEECH_TYPES = [
-  { value: "close", label: "Close" },
   { value: "open", label: "Open" },
+  { value: "close", label: "Close" },
+  { value: "none", label: "Middle" },
 ];
 
 export default function SpeechFilter({ onFilterChange, initialFilters = [] }) {
   const [selectedSpeechTypes, setSelectedSpeechTypes] =
     useState(initialFilters);
-  const [isOpen, setIsOpen] = useState(false);
+  const isInitialMount = useRef(true);
 
-  // Memoize the filter options to prevent unnecessary re-renders
+  // Memoize the filter options
   const speechTypeOptions = useMemo(
     () =>
       SPEECH_TYPES.map((type) => ({
@@ -42,7 +43,7 @@ export default function SpeechFilter({ onFilterChange, initialFilters = [] }) {
 
   const handleSelectAll = useCallback(() => {
     setSelectedSpeechTypes(speechTypeOptions.map((option) => option.value));
-  });
+  }, [speechTypeOptions]);
 
   const handleClearAll = useCallback(() => {
     setSelectedSpeechTypes([]);
@@ -51,7 +52,7 @@ export default function SpeechFilter({ onFilterChange, initialFilters = [] }) {
   const hasActiveFilters = selectedSpeechTypes.length > 0;
   const activeFilterCount = selectedSpeechTypes.length;
 
-  // Memoize the filter object to prevent unnecessary re-renders
+  // Memoize the filter object
   const filterValue = useMemo(
     () => ({
       speechTypes: selectedSpeechTypes,
@@ -62,6 +63,11 @@ export default function SpeechFilter({ onFilterChange, initialFilters = [] }) {
   const prevFilterValue = useRef(filterValue);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     if (
       JSON.stringify(prevFilterValue.current) !== JSON.stringify(filterValue)
     ) {
@@ -70,84 +76,109 @@ export default function SpeechFilter({ onFilterChange, initialFilters = [] }) {
     }
   }, [filterValue, onFilterChange]);
 
+  const getSpeechLabel = (value) => {
+    return SPEECH_TYPES.find((type) => type.value === value)?.label || value;
+  };
+
   return (
-    <Paper withBorder p="sm" radius="md">
-      <Stack gap="xs">
-        <Group justify="space-between">
+    <Paper withBorder radius="md" style={{ overflow: "hidden" }}>
+      <Box
+        bg="var(--mantine-color-body)"
+        style={{
+          borderBottom: "1px solid var(--mantine-color-default-border)",
+        }}
+      >
+        <Group justify="space-between" p="sm">
           <Group gap="xs">
-            <Text size="sm" fw={500}>
+            <ThemeIcon size="sm" variant="light" color="violet">
+              <LuMic size={12} />
+            </ThemeIcon>
+            <Text size="sm" fw={600}>
               Filter by Speech
             </Text>
             {hasActiveFilters && (
-              <Badge size="xs" color="blue" variant="light">
-                {activeFilterCount} active
+              <Badge size="sm" color="violet" variant="filled" radius="sm">
+                {activeFilterCount}
               </Badge>
             )}
           </Group>
           {hasActiveFilters && (
-            <Tooltip label="Clear all filters">
-              <ActionIcon size="sm" variant="subtle" onClick={handleClearAll}>
-                <LuX size={14} />
-              </ActionIcon>
-            </Tooltip>
+            <ActionIcon
+              size="sm"
+              variant="subtle"
+              onClick={handleClearAll}
+              color="gray"
+            >
+              <LuX size={14} />
+            </ActionIcon>
           )}
         </Group>
+      </Box>
 
-        <Divider />
-
-        <Accordion
-          variant="separated"
-          value={isOpen ? "open" : null}
-          onChange={() => setIsOpen(!isOpen)}
+      <Stack gap="md" p="sm">
+        <Flex
+          justify="space-between"
+          direction="row-reverse"
+          wrap="wrap"
+          gap="md"
         >
-          <Accordion.Item value="open">
-            <Accordion.Control>
-              <Group justify="space-between" w="100%">
-                <Text size="sm">By Speech Type</Text>
-                {selectedSpeechTypes.length > 0 && (
-                  <Badge size="xs" color="blue">
-                    {selectedSpeechTypes.length} selected
-                  </Badge>
-                )}
-              </Group>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Stack gap="xs">
-                <Group justify="flex-end">
-                  <Text
-                    size="xs"
-                    c="blue"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleSelectAll}
-                  >
-                    Select All
-                  </Text>
-                  <Divider orientation="vertical" />
-                  <Text
-                    size="xs"
-                    c="red"
-                    style={{ cursor: "pointer" }}
-                    onClick={handleClearAll}
-                  >
-                    Clear All
-                  </Text>
-                </Group>
-                <Group gap="md">
-                  {SPEECH_TYPES.map((type) => (
-                    <Checkbox
-                      key={type.value}
-                      label={type.label}
-                      checked={selectedSpeechTypes.includes(type.value)}
-                      onChange={() => handleSpeechTypeToggle(type.value)}
-                      size="xs"
-                    />
-                  ))}
-                </Group>
-              </Stack>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
+          <Group justify="flex-end" gap="xs">
+            <Text
+              size="xs"
+              c="violet"
+              style={{ cursor: "pointer" }}
+              onClick={handleSelectAll}
+            >
+              Select All
+            </Text>
+            <Divider orientation="vertical" />
+            <Text
+              size="xs"
+              c="red"
+              style={{ cursor: "pointer" }}
+              onClick={handleClearAll}
+            >
+              Clear All
+            </Text>
+          </Group>
+
+          <Group gap="xl" wrap="wrap">
+            {SPEECH_TYPES.map((type) => (
+              <Checkbox
+                key={type.value}
+                label={
+                  <Group gap="xs">
+                    <Box>
+                      <Text size="sm" fw={500}>
+                        {type.label}
+                      </Text>
+                    </Box>
+                  </Group>
+                }
+                checked={selectedSpeechTypes.includes(type.value)}
+                onChange={() => handleSpeechTypeToggle(type.value)}
+                size="sm"
+              />
+            ))}
+          </Group>
+        </Flex>
       </Stack>
+
+      {/* Active Filters Summary - Same style as WitnessFilter */}
+      {hasActiveFilters && (
+        <Box
+          p="xs"
+          style={{
+            backgroundColor: "var(--mantine-color-violet-0)",
+            borderTop: "1px solid var(--mantine-color-violet-2)",
+          }}
+        >
+          <Text size="xs" c="violet" fw={500}>
+            Speech Types:{" "}
+            {selectedSpeechTypes.map((t) => getSpeechLabel(t)).join(", ")}
+          </Text>
+        </Box>
+      )}
     </Paper>
   );
 }
