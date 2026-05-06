@@ -67,14 +67,17 @@ export default function roundScores({
       calculations: {
         direct: {
           score: direct ? parseFloat(direct.merged) : null,
+          score_type: direct ? direct.score_type : null,
           witness: directWitness,
         },
         cross: {
           score: cross ? parseFloat(cross.merged) : null,
+          score_type: cross ? cross.score_type : null,
           witness: crossWitness,
         },
         speech: {
           score: speech ? parseFloat(speech.merged) : null,
+          score_type: speech ? speech.score_type : null,
           type: speech ? getSpeechType(speech.score_type) : null,
         },
         round_number,
@@ -110,9 +113,11 @@ export default function roundScores({
         witness,
         direct: {
           score: direct ? parseFloat(direct.merged) : null,
+          score_type: direct ? direct.score_type : null,
         },
         cross: {
           score: cross ? parseFloat(cross.merged) : null,
+          score_type: cross ? cross.score_type : null,
         },
         round_number,
       },
