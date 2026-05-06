@@ -3,57 +3,64 @@ export function filterAttorneysBySpeech(attorneyScoresArray, filters = {}) {
 
   const hasSpeechTypeFilter = speechTypes.length > 0;
 
+  const includeNone = speechTypes.includes("none");
+  const includeOpen = speechTypes.includes("open");
+  const includeClose = speechTypes.includes("close");
+
   if (!hasSpeechTypeFilter) return attorneyScoresArray;
 
   return attorneyScoresArray
     .map((attorney) => {
-      const filteredScores = attorney.scores
-        .map((score) => {
-          const filteredScore = { ...score };
+      const openScores = [];
+      const closeScores = [];
+      const noneScores = [];
 
-          if (score.speech?.type) {
-            const matchesSpeechType = speechTypes.includes(score.speech.type);
+      attorney.scores.forEach((score) => {
+        if (score.speech?.type === "open") {
+          openScores.push(score);
+        } else if (score.speech?.type === "close") {
+          closeScores.push(score);
+        } else if (!score.speech?.type || score.speech?.type === null) {
+          noneScores.push(score);
+        }
+      });
 
-            if (matchesSpeechType) {
-              filteredScore.speech = score.speech;
-            } else {
-              filteredScore.speech = { score: null, type: null };
-            }
-          }
+      let filteredScores = [];
 
-          filteredScore.direct = score.direct;
-          filteredScore.cross = score.cross;
-
-          const hasValidSpeech =
-            filteredScore.speech?.score !== null &&
-            filteredScore.speech?.score !== undefined;
-
-          return hasValidSpeech ? filteredScore : null;
-        })
-        .filter(Boolean);
+      if (includeOpen) filteredScores.push(...openScores);
+      if (includeClose) filteredScores.push(...closeScores);
+      if (includeNone) filteredScores.push(...noneScores);
 
       if (filteredScores.length === 0) return null;
-
-      const validSpeechScores = filteredScores.filter(
-        (s) => s.speech?.score !== null && s.speech?.score !== undefined,
-      );
 
       const recalculated = {
         ...attorney,
         scores: filteredScores,
       };
 
-      recalculated.averageSpeech =
-        validSpeechScores.length > 0
-          ? parseFloat(
-              (
-                validSpeechScores.reduce(
-                  (sum, calc) => sum + (calc.speech?.score || 0),
-                  0,
-                ) / validSpeechScores.length
-              ).toFixed(4),
-            )
-          : null;
+      const validSpeechScores = filteredScores.filter(
+        (s) => s.speech?.score !== null && s.speech?.score !== undefined,
+      );
+
+      if (
+        includeNone &&
+        !includeOpen &&
+        !includeClose &&
+        validSpeechScores.length === 0
+      )
+        recalculated.averageSpeech = null;
+      else if (validSpeechScores.length > 0) {
+        recalculated.averageSpeech = parseFloat(
+          (
+            validSpeechScores.reduce(
+              (sum, calc) => sum + (calc.speech?.score || 0),
+              0,
+            ) / validSpeechScores.length
+          ).toFixed(4),
+        );
+      } else {
+        recalculated.averageSpeech = null;
+      }
 
       return recalculated;
     })
