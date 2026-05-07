@@ -132,27 +132,26 @@ export default function BallotAnalysisPage() {
               onChange={handleTournamentChange}
             >
               <Flex wrap="wrap" gap="lg" align="start">
-                {tournaments?.map((t) => {
-                  const disabled =
-                    isTournamentDisabled(t.id) ||
-                    analysisRunning ||
-                    buttonLoading;
+                {tournaments
+                  ?.sort((a, b) => b.start_date.localeCompare(a.start_date))
+                  .map((t) => {
+                    const disabled =
+                      isTournamentDisabled(t.id) ||
+                      analysisRunning ||
+                      buttonLoading;
 
-                  return (
-                    <Tooltip
-                      key={`${t.id}-tooltip`}
-                      label={
-                        disabled
-                          ? analysisRunning
-                            ? "Analysis is currently running. Please wait."
-                            : `Maximum ${maxTournaments} tournaments selected. Deselect some to select more.`
-                          : ""
-                      }
-                      disabled={!disabled}
-                      position="top"
-                    >
-                      <div
-                        style={{ cursor: disabled ? "not-allowed" : "default" }}
+                    return (
+                      <Tooltip
+                        key={`${t.id}-tooltip`}
+                        label={
+                          disabled
+                            ? analysisRunning
+                              ? "Analysis is currently running. Please wait."
+                              : `Maximum ${maxTournaments} tournaments selected. Deselect some to select more.`
+                            : ""
+                        }
+                        disabled={!disabled}
+                        position="top"
                       >
                         <Card
                           style={{
