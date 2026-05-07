@@ -214,10 +214,9 @@ export default function BallotAnalysisPage() {
                             )}
                           </Stack>
                         </Card>
-                      </div>
-                    </Tooltip>
-                  );
-                })}
+                      </Tooltip>
+                    );
+                  })}
               </Flex>
             </Checkbox.Group>
           </Stack>
