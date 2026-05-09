@@ -303,6 +303,7 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
     cc.student = {
       id: student?.id,
       name: student?.name,
+      is_active: student?.is_active,
     };
 
     delete cc.avgs;

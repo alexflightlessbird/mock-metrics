@@ -69,6 +69,7 @@ export default function useRunBallotAnalysis() {
                 student: {
                   id: rr.students.id,
                   name: rr.students.name,
+                  is_active: rr.students.is_active,
                 },
               })),
               calculations: combineBallotsCalculations({

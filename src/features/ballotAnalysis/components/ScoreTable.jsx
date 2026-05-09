@@ -266,7 +266,11 @@ export default function ScoreTable({
     return (
       <Table.Tr>
         <Table.Td>{student.student.name}</Table.Td>
-        {showTeam && <Table.Td>{student.teamName}</Table.Td>}
+        {showTeam && (
+          <Table.Td style={{ whiteSpace: "pre-line" }}>
+            {student.teamName.replace(/, /g, "\n")}
+          </Table.Td>
+        )}
         <Table.Td>{student.side.toUpperCase()}</Table.Td>
         <TooltipCell
           score={student.average}
