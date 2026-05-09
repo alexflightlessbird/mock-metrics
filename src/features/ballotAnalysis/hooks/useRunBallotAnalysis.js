@@ -70,6 +70,7 @@ export default function useRunBallotAnalysis() {
                   id: rr.students.id,
                   name: rr.students.name,
                   is_active: rr.students.is_active,
+                  years_in_mock: rr.students.years_in_mock,
                 },
               })),
               calculations: combineBallotsCalculations({
