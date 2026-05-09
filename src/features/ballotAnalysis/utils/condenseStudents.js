@@ -138,7 +138,7 @@ export function condenseStudentBySide(studentsArr, type = "attorney") {
     const sideDetails = entriesForStudent
       ?.map((s) => s.side)
       .flat()
-      .sort();
+      .sort((a, b) => b.localeCompare(a));
 
     // Only keep unique side details
     const uniqueSideDetails = [...new Set(sideDetails)];
@@ -259,7 +259,7 @@ export function condenseStudentByTeamAndSide(studentsArr, type = "attorney") {
     const sideDetails = entriesForStudent
       ?.map((s) => s.side)
       .flat()
-      .sort();
+      .sort((a, b) => b.localeCompare(a));
 
     // Only keep unique side details
     const uniqueSideDetails = [...new Set(sideDetails)];
