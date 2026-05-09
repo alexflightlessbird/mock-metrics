@@ -304,6 +304,7 @@ export function combineBallotsCalculations({ side, ballots, role_rounds }) {
       id: student?.id,
       name: student?.name,
       is_active: student?.is_active,
+      years_in_mock: student?.years_in_mock,
     };
 
     delete cc.avgs;
