@@ -1,3 +1,10 @@
+function getWitnessSideLabel(side, pSideLabel) {
+  if (side === "p") return pSideLabel || "Plaintiff/Prosecution";
+  if (side === "d") return "Defense";
+  if (side === "s") return "Swing";
+  return "Unknown side";
+}
+
 export default function overallScores({ tournaments }) {
   // add the tournament date to each score for sorting purposes
   const attorneys = tournaments
@@ -5,6 +12,7 @@ export default function overallScores({ tournaments }) {
       return t.calculations.attorneys.map((a) => ({
         ...a,
         tournamentDate: t.tournamentDate,
+        pSideLabel: t.pSideLabel,
       }));
     })
     .flat();
@@ -13,6 +21,7 @@ export default function overallScores({ tournaments }) {
       return t.calculations.witnesses.map((w) => ({
         ...w,
         tournamentDate: t.tournamentDate,
+        pSideLabel: t.pSideLabel,
       }));
     })
     .flat();
@@ -28,6 +37,7 @@ export default function overallScores({ tournaments }) {
           teamId: attorney.teamId,
           teamName: attorney.teamName,
           side: attorney.side,
+          pSideLabel: attorney.pSideLabel,
           scores: [],
         };
       }
@@ -35,6 +45,16 @@ export default function overallScores({ tournaments }) {
       //add tournament date to each score for sorting purposes
       attorney.scores.forEach((score) => {
         score.tournamentDate = attorney.tournamentDate;
+        score.sideLabel =
+          attorney.side === "p" ? attorney.pSideLabel : "Defense";
+        score.directWitnessSideLabel = getWitnessSideLabel(
+          score.direct?.witness?.side,
+          attorney.pSideLabel,
+        );
+        score.crossWitnessSideLabel = getWitnessSideLabel(
+          score.cross?.witness?.side,
+          attorney.pSideLabel,
+        );
       });
       grouped[key].scores.push(...attorney.scores);
 
@@ -52,6 +72,7 @@ export default function overallScores({ tournaments }) {
           teamId: witness.teamId,
           teamName: witness.teamName,
           side: witness.side,
+          pSideLabel: witness.pSideLabel,
           scores: [],
         };
       }
@@ -59,6 +80,11 @@ export default function overallScores({ tournaments }) {
       //add tournament date to each score for sorting purposes
       witness.scores.forEach((score) => {
         score.tournamentDate = witness.tournamentDate;
+        score.sideLabel = witness.side === "p" ? witness.pSideLabel : "Defense";
+        score.witnessSideLabel = getWitnessSideLabel(
+          score.witness?.side,
+          witness.pSideLabel,
+        );
       });
       grouped[key].scores.push(...witness.scores);
 

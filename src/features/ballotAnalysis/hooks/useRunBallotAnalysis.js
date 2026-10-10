@@ -33,17 +33,27 @@ export default function useRunBallotAnalysis() {
   }, [tournamentDetails, analysisRunning]);
 
   const processTournamentData = (tournamentDetails) => {
-    const currentTournamentData = tournamentDetails.map((t) => ({
-      area: t.area,
-      case_id: t.case_id,
-      id: t.id,
-      name: t.name,
-      type: t.type,
-      year: t.year,
-      date: t.start_date,
-      teams: t.teams_tournaments
-        .filter((tt) => teamIds[t.id]?.includes(tt.team_id))
-        .map((tt) => ({
+    const currentTournamentData = tournamentDetails.map((t) => {
+      const caseDetails = Array.isArray(t.cases) ? t.cases[0] : t.cases;
+      const pSideLabel =
+        caseDetails?.type === "civil"
+          ? "Plaintiff"
+          : caseDetails?.type === "criminal"
+            ? "Prosecution"
+            : "Plaintiff/Prosecution";
+
+      return {
+        area: t.area,
+        case_id: t.case_id,
+        pSideLabel,
+        id: t.id,
+        name: t.name,
+        type: t.type,
+        year: t.year,
+        date: t.start_date,
+        teams: t.teams_tournaments
+          .filter((tt) => teamIds[t.id]?.includes(tt.team_id))
+          .map((tt) => ({
           id: tt.team_id,
           name: tt.teams.name,
           type: tt.teams.type,
@@ -90,13 +100,15 @@ export default function useRunBallotAnalysis() {
                 })),
               })),
             })),
-        })),
-    }));
+          })),
+        };
+      });
 
     const tournamentTeamScoresCalc = currentTournamentData.map((t) => ({
       tournamentId: t.id,
       tournamentName: t.name,
       tournamentDate: t.date,
+      pSideLabel: t.pSideLabel,
       teamScores: t.teams.map((team) => ({
         teamId: team.id,
         teamName: team.name,
@@ -107,6 +119,7 @@ export default function useRunBallotAnalysis() {
     const tournamentTeamsAll = tournamentTeamScoresCalc.map((t) => ({
       tournamentId: t.tournamentId,
       tournamentDate: t.tournamentDate,
+      pSideLabel: t.pSideLabel,
       calculations: fullTournamentCalculations({ tournament: t }),
     }));
 

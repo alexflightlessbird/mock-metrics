@@ -14,7 +14,7 @@ export function useGetTournamentDetails(tournamentIds) {
         const { data, error } = await supabase
           .from("tournaments")
           .select(
-            "*, teams_tournaments(*, teams(*, students_teams(*, students(*)))), rounds(*, teams(*, students_teams(*, students(*))), ballots(*, scores(*)), witness_rounds(*, witnesses(*)), role_rounds(*, students(*))))",
+            "*, cases(type), teams_tournaments(*, teams(*, students_teams(*, students(*)))), rounds(*, teams(*, students_teams(*, students(*))), ballots(*, scores(*)), witness_rounds(*, witnesses(*)), role_rounds(*, students(*))))",
           )
           .in("id", tournamentIds);
         if (error) throw error;
