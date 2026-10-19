@@ -235,7 +235,13 @@ export default function NavLayout({ children }) {
       padding="md"
     >
       <AppShell.Header withBorder={false} zIndex={1000}>
-        <Group h="100%" px="xs" justify={isMobile ? "center" : "left"}>
+        <Group
+          h="100%"
+          w="100%"
+          px="xs"
+          justify="left"
+          style={{ position: isMobile ? "relative" : undefined }}
+        >
           <Burger
             opened={mobileOpened}
             onClick={toggleMobile}
@@ -254,6 +260,10 @@ export default function NavLayout({ children }) {
               }
             }}
             style={{
+              position: isMobile ? "absolute" : undefined,
+              left: isMobile ? "50%" : undefined,
+              top: isMobile ? "50%" : undefined,
+              transform: isMobile ? "translate(-50%, -50%)" : undefined,
               userSelect: "none",
               WebkitUserSelect: "none",
               cursor: "pointer",
