@@ -147,7 +147,7 @@ export default function SchoolInfoPage() {
 
       <Space h="md" />
 
-      <UsersSection schoolId={selectedSchoolId} />
+      <UsersSection schoolId={selectedSchoolId} isMobile={isMobile} />
 
       <Space h="md" />
 
