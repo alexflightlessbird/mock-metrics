@@ -30,6 +30,7 @@ import {
   calculateStudentPerformance,
   summarizeStudentPerformance,
 } from "../utils/studentPerformance";
+import Loader from "../../../common/components/loader/GavelLoader";
 
 const ALL = "all";
 const SERIES_COLORS = [
@@ -689,9 +690,12 @@ export default function StudentPerformanceSection({
   return (
     <PageSection title="Performance history" collapsible defaultOpen>
       {isLoading ? (
-        <Text size="sm" c="dimmed">
-          Loading tournament performance…
-        </Text>
+        <>
+          <Text size="sm" c="dimmed">
+            Loading tournament performance…
+          </Text>
+          <Loader scale={1.5} />
+        </>
       ) : error ? (
         <Alert color="red" title="Unable to load performance history">
           {error.message}
