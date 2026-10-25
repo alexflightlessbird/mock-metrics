@@ -22,6 +22,7 @@ import Loader from "../common/components/loader/GavelLoader";
 import PageDetailSection from "../common/components/PageDetailSection";
 import DangerZoneSection from "../common/components/DangerZoneSection";
 import { styleProps } from "../common/editModeStyleProps";
+import StudentPerformanceSection from "../features/studentInfo/components/StudentPerformanceSection";
 
 export default function StudentInfoPage() {
   const [selectedSchoolId] = useLocalStorage({
@@ -204,6 +205,12 @@ export default function StudentInfoPage() {
           entityName="student"
         />
       )}
+
+      <StudentPerformanceSection
+        studentId={studentId}
+        studentName={selectedStudent.name}
+        schoolId={selectedSchoolId}
+      />
     </BasePage>
   );
 }
