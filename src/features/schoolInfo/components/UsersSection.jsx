@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Group,
+  HoverCard,
   Select,
   Skeleton,
   Stack,
@@ -15,6 +16,7 @@ import {
 } from "@mantine/core";
 import {
   LuCheck,
+  LuInfo,
   LuPencilLine,
   LuSearch,
   LuTrash,
@@ -127,7 +129,11 @@ export default function UsersSection({ schoolId, isMobile }) {
                 <Flex justify="space-between" align="flex-start" gap="sm">
                   <Stack gap={4} style={{ minWidth: 0 }}>
                     <Title order={5}>{name}</Title>
-                    <Text c="dimmed" size="sm" style={{ overflowWrap: "anywhere" }}>
+                    <Text
+                      c="dimmed"
+                      size="sm"
+                      style={{ overflowWrap: "anywhere" }}
+                    >
                       {entry.users?.email || entry.user_id}
                     </Text>
                     {isEditing && (
@@ -213,6 +219,28 @@ export default function UsersSection({ schoolId, isMobile }) {
     );
   };
 
+  const InfoHoverCard = ({ dropdownText }) => {
+    return (
+      <HoverCard
+        withArrow
+        position="bottom"
+        shadow="md"
+        closeDelay={250}
+        width={300}
+        events={{ touch: true }}
+      >
+        <HoverCard.Target>
+          <ActionIcon variant="subtle" size="sm">
+            <LuInfo />
+          </ActionIcon>
+        </HoverCard.Target>
+        <HoverCard.Dropdown>
+          <Text size="sm">{dropdownText}</Text>
+        </HoverCard.Dropdown>
+      </HoverCard>
+    );
+  };
+
   return (
     <PageSection title="users" collapsible>
       <Flex
@@ -221,7 +249,12 @@ export default function UsersSection({ schoolId, isMobile }) {
         mb="md"
         align="center"
       >
-        <Flex direction="row" flex={1} gap="xs" w={isMobile ? "100%" : undefined}>
+        <Flex
+          direction="row"
+          flex={1}
+          gap="xs"
+          w={isMobile ? "100%" : undefined}
+        >
           <TextInput
             id="search-school-users"
             w={isMobile ? "100%" : undefined}
@@ -247,10 +280,7 @@ export default function UsersSection({ schoolId, isMobile }) {
           />
         </Flex>
         {canManageUsers && (
-          <AddButton
-            onClick={() => setAddModalOpen(true)}
-            fullWidth={isMobile}
-          >
+          <AddButton onClick={() => setAddModalOpen(true)} fullWidth={isMobile}>
             Add User
           </AddButton>
         )}
@@ -263,7 +293,10 @@ export default function UsersSection({ schoolId, isMobile }) {
           </Text>
         ) : (
           <>
-            <Title order={4}>Primary Admins</Title>
+            <Flex direction="row" gap="sm" align="center">
+              <Title order={4}>Primary Admins</Title>
+              <InfoHoverCard dropdownText="Primary admins have full control over the school's settings and user access. This role is best suited for the school's president and/or head coach, who has ultimate authority over the program." />
+            </Flex>
             {canManageUsers && (
               <Text c="dimmed" size="sm">
                 Primary admin changes must be submitted through support.
@@ -271,14 +304,16 @@ export default function UsersSection({ schoolId, isMobile }) {
             )}
             <UserCards users={primaryAdmins} />
 
-            <Title order={4} mt="md">
-              Admins
-            </Title>
+            <Flex direction="row" gap="sm" align="center" mt="md">
+              <Title order={4}>Admins</Title>
+              <InfoHoverCard dropdownText="Admins can create and manage tournaments and students, and upload round and ballot information. They cannot change school settings or manage user access." />
+            </Flex>
             <UserCards users={admins} editable />
 
-            <Title order={4} mt="md">
-              Viewers
-            </Title>
+            <Flex direction="row" gap="sm" align="center" mt="md">
+              <Title order={4}>Viewers</Title>
+              <InfoHoverCard dropdownText="Viewers have read-only access to the school's tournaments, students, and related data. They cannot create, modify, or delete content, or manage school settings and user access." />
+            </Flex>
             <UserCards users={viewers} editable />
           </>
         )}
@@ -336,8 +371,8 @@ export default function UsersSection({ schoolId, isMobile }) {
       >
         <Stack>
           <Text>
-            Remove {userToRemove?.users?.name || userToRemove?.user_id} from this
-            school's access list?
+            Remove {userToRemove?.users?.name || userToRemove?.user_id} from
+            this school's access list?
           </Text>
           <Group justify="flex-end">
             <Button
