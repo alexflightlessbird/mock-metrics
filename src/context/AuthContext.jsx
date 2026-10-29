@@ -51,6 +51,47 @@ export function AuthProvider({ children }) {
     isDbManager,
     loading,
     superAdminLoading,
+    signUp: async (email, password) => {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      return data;
+    },
+    verifyEmailOtp: async (email, token) => {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: "signup",
+      });
+      if (error) throw error;
+      return data;
+    },
+    resendEmailOtp: async (email) => {
+      const { data, error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+      });
+      if (error) throw error;
+      return data;
+    },
+    requestPasswordReset: async (email) => {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      return data;
+    },
+    verifyPasswordResetOtp: async (email, token) => {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: "recovery",
+      });
+      if (error) throw error;
+      return data;
+    },
+    updatePassword: async (password) => {
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      return data;
+    },
     signIn: async (email, password) => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,

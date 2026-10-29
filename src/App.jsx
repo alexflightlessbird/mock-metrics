@@ -51,7 +51,15 @@ export default function App({ onReady }) {
         <Routes>
           <Route
             path="/auth"
-            element={!user ? <AuthPage /> : <Navigate to="/" replace />}
+            element={<AuthPage />}
+          />
+          <Route
+            path="/signup"
+            element={<AuthPage />}
+          />
+          <Route
+            path="/forgot-password"
+            element={<AuthPage />}
           />
           <Route
             path="/admin"
