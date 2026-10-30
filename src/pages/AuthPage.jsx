@@ -233,24 +233,25 @@ export default function AuthPage() {
   }[step];
 
   return (
-    <Center mih="100vh" px="md" py="xl">
-      <Container size={440} w="100%">
-        <Stack align="center" gap="md" mb="xl">
-          <Box w={100} h={100}>
-            <Logo />
-          </Box>
-          <Text
-            ff="Trirong"
-            fw={700}
-            fz={28}
-            c={isDark ? "var(--mantine-color-text)" : "#0a1f3c"}
-          >
-            MockMetrics
-          </Text>
-        </Stack>
+    <Box mih="100vh" style={{ display: "flex", flexDirection: "column" }}>
+      <Center px="md" py="xl" style={{ flex: 1 }}>
+        <Container size={440} w="100%">
+          <Stack align="center" gap="md" mb="xl">
+            <Box w={100} h={100}>
+              <Logo />
+            </Box>
+            <Text
+              ff="Trirong"
+              fw={700}
+              fz={28}
+              c={isDark ? "var(--mantine-color-text)" : "#0a1f3c"}
+            >
+              MockMetrics
+            </Text>
+          </Stack>
 
-        <Paper withBorder shadow="md" radius="md" p={{ base: "lg", sm: "xl" }}>
-          <Stack gap="lg">
+          <Paper withBorder shadow="md" radius="md" p={{ base: "lg", sm: "xl" }}>
+            <Stack gap="lg">
             <div>
               <Title
                 order={2}
@@ -490,9 +491,10 @@ export default function AuthPage() {
                 </Anchor>
               </Text>
             )}
-          </Stack>
-        </Paper>
-      </Container>
-    </Center>
+            </Stack>
+          </Paper>
+        </Container>
+      </Center>
+    </Box>
   );
 }
