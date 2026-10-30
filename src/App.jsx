@@ -32,7 +32,13 @@ import StudentInfoPage from "./pages/StudentInfoPage";
 import BallotAnalysisPage from "./pages/BallotAnalysisPage";
 
 export default function App({ onReady }) {
-  const { user, isSuperAdmin, loading, superAdminLoading } = useAuth();
+  const {
+    user,
+    isPasswordRecovery,
+    isSuperAdmin,
+    loading,
+    superAdminLoading,
+  } = useAuth();
 
   const [selectedSchoolId] = useLocalStorage({
     key: "school",
@@ -51,15 +57,21 @@ export default function App({ onReady }) {
         <Routes>
           <Route
             path="/auth"
-            element={<AuthPage />}
+            element={user ? <Navigate to="/" replace /> : <AuthPage />}
           />
           <Route
             path="/signup"
-            element={<AuthPage />}
+            element={user ? <Navigate to="/" replace /> : <AuthPage />}
           />
           <Route
             path="/forgot-password"
-            element={<AuthPage />}
+            element={
+              user && !isPasswordRecovery ? (
+                <Navigate to="/" replace />
+              ) : (
+                <AuthPage />
+              )
+            }
           />
           <Route
             path="/admin"

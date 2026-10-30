@@ -1,3 +1,4 @@
+import { useSessionStorage } from "@mantine/hooks";
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
@@ -5,14 +6,34 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [
+    isPasswordRecovery,
+    setIsPasswordRecovery,
+    removePasswordRecovery,
+  ] = useSessionStorage({
+    key: "password-recovery",
+    defaultValue: false,
+  });
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [isDbManager, setIsDbManager] = useState(false);
   const [loading, setLoading] = useState(true);
   const [superAdminLoading, setSuperAdminLoading] = useState(true);
 
+  const clearPasswordRecovery = () => {
+    removePasswordRecovery();
+    setIsPasswordRecovery(false);
+  };
+
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
+      async (event, session) => {
+        if (event === "PASSWORD_RECOVERY") {
+          setIsPasswordRecovery(true);
+        } else if (event === "SIGNED_OUT" || event === "USER_UPDATED") {
+          removePasswordRecovery();
+          setIsPasswordRecovery(false);
+        }
+
         if (session?.user) {
           setUser(session.user);
           checkSuperAdmin(session.user.id);
@@ -27,7 +48,7 @@ export function AuthProvider({ children }) {
     );
 
     return () => authListener.subscription.unsubscribe();
-  }, []);
+  }, [removePasswordRecovery, setIsPasswordRecovery]);
 
   const checkSuperAdmin = async (userId) => {
     const { data } = await supabase
@@ -47,6 +68,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    isPasswordRecovery,
     isSuperAdmin,
     isDbManager,
     loading,
@@ -98,6 +120,7 @@ export function AuthProvider({ children }) {
         password,
       });
       if (error) throw error;
+      clearPasswordRecovery();
 
       if (data.user) {
         const { error: updateError } = await supabase
@@ -120,6 +143,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("ballotForm");
       localStorage.removeItem("mantine-color-scheme-value");
       await supabase.auth.signOut();
+      clearPasswordRecovery();
     },
   };
 

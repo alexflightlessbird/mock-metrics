@@ -14,15 +14,65 @@ import {
   Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { LuCircle, LuCircleCheck } from "react-icons/lu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/svgs/Logo/Logo";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
+const existingAccountError =
+  "An account with this email already exists. Sign in or reset your password.";
+const passwordRequirementsError = "Please meet all password requirements.";
+const errorDismissDelay = 8000;
+
+const passwordRules = [
+  { label: "At least 8 characters", validate: (password) => password.length >= 8 },
+  { label: "At least one lowercase letter", validate: (password) => /[a-z]/.test(password) },
+  { label: "At least one uppercase letter", validate: (password) => /[A-Z]/.test(password) },
+  { label: "At least one number", validate: (password) => /\d/.test(password) },
+];
+
+function isValidPassword(password) {
+  return passwordRules.every(({ validate }) => validate(password));
+}
+
+function PasswordRequirements({ password }) {
+  return (
+    <Stack gap={4} mt="xs" role="list" aria-label="Password requirements">
+      {passwordRules.map(({ label, validate }) => {
+        const isMet = validate(password);
+        const RequirementIcon = isMet ? LuCircleCheck : LuCircle;
+
+        return (
+          <Group
+            key={label}
+            gap="xs"
+            wrap="nowrap"
+            role="listitem"
+            aria-label={`${label}: ${isMet ? "met" : "not met"}`}
+          >
+            <RequirementIcon
+              size={14}
+              color={
+                isMet
+                  ? "var(--mantine-color-teal-6)"
+                  : "var(--mantine-color-dimmed)"
+              }
+              aria-hidden="true"
+            />
+            <Text size="xs" c={isMet ? "teal" : "dimmed"}>
+              {label}
+            </Text>
+          </Group>
+        );
+      })}
+    </Stack>
+  );
+}
+
 export default function AuthPage() {
   const { isDark } = useTheme();
   const {
-    user,
     signIn,
     signUp,
     verifyEmailOtp,
@@ -48,12 +98,6 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user && step === "login" && location.pathname !== "/forgot-password") {
-      navigate("/", { replace: true });
-    }
-  }, [location.pathname, navigate, step, user]);
-
   const changeStep = (nextStep) => {
     setError("");
     setMessage("");
@@ -63,7 +107,16 @@ export default function AuthPage() {
 
   useEffect(() => {
     setStep(initialStep);
+    setError("");
+    setMessage("");
   }, [initialStep]);
+
+  useEffect(() => {
+    if (!error) return undefined;
+
+    const timeoutId = window.setTimeout(() => setError(""), errorDismissDelay);
+    return () => window.clearTimeout(timeoutId);
+  }, [error]);
 
   const runAuthAction = async (action) => {
     setLoading(true);
@@ -90,6 +143,11 @@ export default function AuthPage() {
     event.preventDefault();
     runAuthAction(async () => {
       const data = await signUp(email, password);
+      if (data.user?.identities?.length === 0) {
+        setError(existingAccountError);
+        return;
+      }
+
       if (data.session) {
         navigate("/", { replace: true });
       } else {
@@ -105,7 +163,7 @@ export default function AuthPage() {
       await requestPasswordReset(email);
       changeStep("verify-recovery");
       setMessage(
-        "Enter the six-digit password reset code we sent to your email.",
+        "If an account exists for this email, you'll receive a six-digit reset code.",
       );
     });
   };
@@ -137,12 +195,20 @@ export default function AuthPage() {
       } else {
         await requestPasswordReset(email);
       }
-      setMessage("A new code has been sent to your email.");
+      setMessage(
+        step === "verify-signup"
+          ? "A new code has been sent to your email."
+          : "If an account exists for this email, a new reset code will be sent.",
+      );
     });
   };
 
   const handleUpdatePassword = (event) => {
     event.preventDefault();
+    if (!isValidPassword(password)) {
+      setError(passwordRequirementsError);
+      return;
+    }
     if (password !== confirmPassword) {
       setError("The passwords do not match.");
       return;
@@ -195,7 +261,9 @@ export default function AuthPage() {
               </Title>
               <Text c="dimmed" size="sm" ta="center" mt="xs">
                 {isCodeStep
-                  ? `We sent a six-digit code to ${email}.`
+                  ? step === "verify-signup"
+                    ? `We sent a six-digit code to ${email}.`
+                    : `If an account exists for ${email}, a six-digit reset code will be sent.`
                   : step === "new-password"
                     ? "Use a password you have not used before."
                     : isResetRequest
@@ -245,8 +313,8 @@ export default function AuthPage() {
               <form
                 onSubmit={(event) => {
                   event.preventDefault();
-                  if (password.length < 8) {
-                    setError("Your password must be at least 8 characters.");
+                  if (!isValidPassword(password)) {
+                    setError(passwordRequirementsError);
                     return;
                   }
                   handleSignUp(event);
@@ -264,10 +332,10 @@ export default function AuthPage() {
                   <PasswordInput
                     label="Password"
                     autoComplete="new-password"
-                    description="Use at least 8 characters."
+                    description={<PasswordRequirements password={password} />}
+                    descriptionProps={{ component: "div" }}
                     value={password}
                     onChange={(event) => setPassword(event.currentTarget.value)}
-                    minLength={8}
                     required
                   />
                   <Button type="submit" loading={loading} fullWidth>
@@ -327,9 +395,10 @@ export default function AuthPage() {
                   <PasswordInput
                     label="New password"
                     autoComplete="new-password"
+                    description={<PasswordRequirements password={password} />}
+                    descriptionProps={{ component: "div" }}
                     value={password}
                     onChange={(event) => setPassword(event.currentTarget.value)}
-                    minLength={8}
                     required
                   />
                   <PasswordInput
@@ -339,7 +408,6 @@ export default function AuthPage() {
                     onChange={(event) =>
                       setConfirmPassword(event.currentTarget.value)
                     }
-                    minLength={8}
                     required
                   />
                   <Button type="submit" loading={loading} fullWidth>
@@ -349,20 +417,34 @@ export default function AuthPage() {
               </form>
             )}
 
-            {error && error == "Signups not allowed for this instance" && (
+            {error === existingAccountError && (
+              <Text c="red" size="sm" role="alert">
+                An account with this email already exists.{" "}
+                <Anchor component={Link} to="/auth">
+                  Sign in
+                </Anchor>{" "}
+                or{" "}
+                <Anchor component={Link} to="/forgot-password">
+                  reset your password
+                </Anchor>
+                .
+              </Text>
+            )}
+            {error && error === "Signups not allowed for this instance" && (
               <Text c="red" size="sm" role="alert">
                 Signups are currently disabled. Please contact the administrator
                 for assistance.
               </Text>
             )}
-            {error && error == "Invalid login credentials" && (
+            {error && error === "Invalid login credentials" && (
               <Text c="red" size="sm" role="alert">
                 Invalid email or password. Please try again.
               </Text>
             )}
             {error &&
-              error != "Signups not allowed for this instance" &&
-              error != "Invalid login credentials" && (
+              error !== existingAccountError &&
+              error !== "Signups not allowed for this instance" &&
+              error !== "Invalid login credentials" && (
                 <Text c="red" size="sm" role="alert">
                   {error}
                 </Text>
