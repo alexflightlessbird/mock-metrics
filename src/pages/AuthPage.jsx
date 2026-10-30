@@ -17,8 +17,10 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/svgs/Logo/Logo";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function AuthPage() {
+  const { isDark } = useTheme();
   const {
     user,
     signIn,
@@ -168,10 +170,15 @@ export default function AuthPage() {
     <Center mih="100vh" px="md" py="xl">
       <Container size={440} w="100%">
         <Stack align="center" gap="md" mb="xl">
-          <Box w={72} h={72}>
-            <Logo scale={0.2} />
+          <Box w={100} h={100}>
+            <Logo />
           </Box>
-          <Text fw={700} size="xl" c="#0a1f3c">
+          <Text
+            ff="Trirong"
+            fw={700}
+            fz={28}
+            c={isDark ? "var(--mantine-color-text)" : "#0a1f3c"}
+          >
             MockMetrics
           </Text>
         </Stack>
@@ -179,7 +186,11 @@ export default function AuthPage() {
         <Paper withBorder shadow="md" radius="md" p={{ base: "lg", sm: "xl" }}>
           <Stack gap="lg">
             <div>
-              <Title order={2} ta="center" c="#0a1f3c">
+              <Title
+                order={2}
+                ta="center"
+                c={isDark ? "var(--mantine-color-text)" : "#0a1f3c"}
+              >
                 {title}
               </Title>
               <Text c="dimmed" size="sm" ta="center" mt="xs">
