@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./common/components/loader/GavelLoader";
 import AuthPage from "./pages/AuthPage";
@@ -30,6 +36,16 @@ import TournamentInfoPage from "./pages/TournamentInfoPage";
 import TeamInfoPage from "./pages/TeamInfoPage";
 import StudentInfoPage from "./pages/StudentInfoPage";
 import BallotAnalysisPage from "./pages/BallotAnalysisPage";
+import DomainMigrationNotice from "./temporary/DomainMigrationNotice";
+
+function PublicDomainMigrationNotice({ user }) {
+  const { pathname } = useLocation();
+  const isAuthPage = ["/auth", "/signup", "/forgot-password"].includes(
+    pathname,
+  );
+
+  return !user && !isAuthPage ? <DomainMigrationNotice /> : null;
+}
 
 export default function App({ onReady }) {
   const {
@@ -53,6 +69,7 @@ export default function App({ onReady }) {
 
   return (
     <BrowserRouter>
+      <PublicDomainMigrationNotice user={user} />
       <ErrorBoundary FallbackComponent={Error}>
         <Routes>
           <Route

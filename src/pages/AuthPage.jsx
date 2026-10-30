@@ -19,6 +19,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/svgs/Logo/Logo";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import DomainMigrationNotice from "../temporary/DomainMigrationNotice";
 
 const existingAccountError =
   "An account with this email already exists. Sign in or reset your password.";
@@ -234,6 +235,7 @@ export default function AuthPage() {
 
   return (
     <Box mih="100vh" style={{ display: "flex", flexDirection: "column" }}>
+      <DomainMigrationNotice mb="xs" />
       <Center px="md" py="xl" style={{ flex: 1 }}>
         <Container size={440} w="100%">
           <Stack align="center" gap="md" mb="xl">

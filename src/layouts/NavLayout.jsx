@@ -30,6 +30,7 @@ import Logo from "../assets/svgs/Logo/Logo";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import CookieBanner from "../common/components/CookieBanner";
 import { useMobile } from "../context/MobileContext";
+import DomainMigrationNotice from "../temporary/DomainMigrationNotice";
 
 const NAV_LINKS = [
   { icon: PiGavelFill, label: "Dashboard", path: "/", showOnNoSchool: true },
@@ -469,6 +470,7 @@ export default function NavLayout({ children }) {
         pb="xl"
         pt={`calc(${rem(70)} + var(--mantine-spacing-md))`}
       >
+        <DomainMigrationNotice />
         {children}
         <CookieBanner />
       </AppShell.Main>
