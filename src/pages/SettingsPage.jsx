@@ -89,17 +89,12 @@ export default function SettingsPage() {
         <PageSection title="account">
           <Paper withBorder radius="md" p={{ base: "md", sm: "lg" }}>
             <Stack gap="md">
-              <Group gap="sm" wrap="nowrap">
-                <Avatar color="blue" radius="xl" size="lg">
-                  {name.trim().charAt(0).toUpperCase() || "U"}
-                </Avatar>
-                <Box>
-                  <Text fw={600}>{name.trim() || "Your account"}</Text>
-                  <Text size="sm" c="dimmed">
-                    Manage the details associated with your account.
-                  </Text>
-                </Box>
-              </Group>
+              <Box>
+                <Text fw={600}>{name.trim() || "Your account"}</Text>
+                <Text size="sm" c="dimmed">
+                  Manage the details associated with your account.
+                </Text>
+              </Box>
 
               <Divider />
 
