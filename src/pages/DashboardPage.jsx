@@ -1,4 +1,4 @@
-import { Container, Text, Flex } from "@mantine/core";
+import { Alert, Anchor, Container, Text, Flex } from "@mantine/core";
 import { useAuth } from "../context/AuthContext";
 import { useUserAssignments } from "../common/hooks/useUserAssignments";
 import Loader from "../common/components/loader/GavelLoader";
@@ -6,6 +6,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import BasePage from "../common/components/BasePage";
 import { useUserDetails } from "../common/hooks/useUserDetails";
+import { Link } from "react-router-dom";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -45,11 +46,19 @@ export default function DashboardPage() {
 
   return (
     <BasePage titleText="Dashboard">
-      {assignments.length === 0 && (
-        <Text>
-          You are not assigned to any schools. Please have your school's Primary
-          Admin reach out to support to be added.
-        </Text>
+      {assignments?.length === 0 && (
+        <Alert
+          title="Get access to your school"
+          color="blue"
+          mb="md"
+        >
+          You are not assigned to any schools yet. Go to{" "}
+          <Anchor component={Link} to="/settings">
+            Settings
+          </Anchor>{" "}
+          to find and copy your user ID, then give it to the Primary Admin at
+          each school you need to be added to.
+        </Alert>
       )}
       <Text>Welcome back{userName}!</Text>
     </BasePage>
