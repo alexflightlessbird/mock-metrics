@@ -130,7 +130,7 @@ export default function TournamentInfoPage() {
                 value={tournamentDate}
                 onChange={setTournamentDate}
                 min={new Date(1980, 0, 1)}
-                max={new Date().getFullYear() + 1, 11, 31}
+                max={new Date(new Date().getFullYear() + 1, 11, 31)}
                 style={styleProps}
               />
             ) : (
