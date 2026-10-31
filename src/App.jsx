@@ -23,7 +23,6 @@ import {
 } from "./pages/ErrorCodePages";
 import Error from "./pages/Error";
 import NavLayout from "./layouts/NavLayout";
-import TestPage from "./pages/Test";
 import SchoolInfoPage from "./pages/SchoolInfoPage";
 import { useLocalStorage } from "@mantine/hooks";
 import PrivacyAndSecurityPage from "./pages/PrivacyAndSecurityPage";
@@ -48,13 +47,8 @@ function PublicDomainMigrationNotice({ user }) {
 }
 
 export default function App({ onReady }) {
-  const {
-    user,
-    isPasswordRecovery,
-    isSuperAdmin,
-    loading,
-    superAdminLoading,
-  } = useAuth();
+  const { user, isPasswordRecovery, isSuperAdmin, loading, superAdminLoading } =
+    useAuth();
 
   const [selectedSchoolId] = useLocalStorage({
     key: "school",
@@ -194,23 +188,6 @@ export default function App({ onReady }) {
               }
             />
           </Route>
-          <Route
-            path="/admin-test"
-            element={
-              !user ? (
-                <Error401 />
-              ) : isSuperAdmin ? (
-                <NavLayout>
-                  <TestPage />
-                  <BetaOverlay />
-                </NavLayout>
-              ) : (
-                <NavLayout>
-                  <Error403 />
-                </NavLayout>
-              )
-            }
-          />
           <Route
             path="/privacy-and-security"
             element={

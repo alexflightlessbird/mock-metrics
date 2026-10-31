@@ -18,7 +18,6 @@ import {
   LuLogOut,
   LuDatabase,
   LuChevronsUpDown as ChevronIcon,
-  LuLayoutDashboard,
   LuSettings,
   LuChartScatter,
 } from "react-icons/lu";
@@ -123,18 +122,6 @@ export default function NavLayout({ children }) {
       path: "/settings",
       onClick: () => {
         navigate("/settings");
-        setTimeout(() => {
-          closeMobile();
-        }, 100);
-      },
-    },
-    {
-      enabled: !loading && isSuperAdmin && !superAdminLoading,
-      icon: LuLayoutDashboard,
-      label: "Admin Test",
-      path: "/admin-test",
-      onClick: () => {
-        navigate("/admin-test");
         setTimeout(() => {
           closeMobile();
         }, 100);
