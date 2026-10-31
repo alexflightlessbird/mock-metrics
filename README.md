@@ -1,42 +1,36 @@
 # MockMetrics 🏛️⚖️
 
 **Ballot Analysis for Competitive Mock Trial Teams**  
-*Data-driven insights to elevate your AMTA performance*
+_Data-driven insights to elevate your mock trial performance_
 
 [![Contributing](https://img.shields.io/badge/Contributions-Welcome-%23FF8300)](CONTRIBUTING.md)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Security](https://img.shields.io/badge/Security-Policy-%2344CC11)](SECURITY.md)
 
 ![MockMetrics Screenshot](https://via.placeholder.com/800x400?text=MockMetrics+UI+Screenshot)  
-*(Replace with actual screenshot)*
+_(Replace with actual screenshot)_
 
 ## 🔍 What is MockMetrics?
 
 A specialized analytics platform that helps **college mock trial teams**:
 
-- 📊 Visualize scoring patterns from AMTA ballots
+- 📊 Visualize scoring patterns from mock trial rounds
 - 🎯 Identify strengths/weaknesses across case details, witnesses, and attorneys
 - 🔄 Compare performance across tournaments
 - � Optimize strategy using empirical data
 
-*Note: This is an independent tool not affiliated with the American Mock Trial Association (AMTA).*
-
 ## 🚀 Key Features
 
-- **Ballot Breakdowns** - Heatmaps of scoring categories
+- **Score Breakdowns** - Heatmaps of scoring categories (coming soon)
 - **Trend Analysis** - Performance evolution across tournaments
 - **Role Comparisons** - Witness/attorney effectiveness metrics
-- **Custom Reports** - Exportable data visualizations
 
 ## 💎 Premium Features (Optional + Coming Soon)
 
-- **AI-Assisted Strategy Suggestions** - Get customized recommendations
-- **AI-Assisted Ballot Image Inputs** - Use pictures to upload ballots, rather than typing everything out
-- **Advanced Analytics** - Deeper trend analysis across seasons
-- **Priority Support** - Faster response times
+- **Custom Reports** - Exportable data visualizations
 
-*AI features use Azure Cognitive Services and may incur API costs for local development. No AMTA data is used to train models created by MockMetrics.*
-*All core functionality remains free forever. Premium features help sustain development.*
+_All core functionality remains free forever. Premium features help sustain development._
+_Note: we are currently exploring donation options to sustain development, which would allow us to open premium features to everyone._
 
 ## 🛠️ Tech Stack
 
@@ -73,16 +67,16 @@ A specialized analytics platform that helps **college mock trial teams**:
 
 MockMetrics:
 
-1. Is **not endorsed by or affiliated with AMTA**
-2. Uses **no copyrighted AMTA materials**
-3. Processes only **user-uploaded ballot data**
-4. Complies with FERPA for student data protection
-5. Complies with GDPR for individual data privacy
+1. Is **not endorsed by or affiliated with the American Mock Trial Association (AMTA)**
+2. Uses **no copyrighted mock trial materials**
+3. Processes only **user-uploaded data**
+4. **Complies with FERPA** for student data protection
+5. **Complies with GDPR** for individual data privacy
 
 ## License
 
 MockMetrics is licensed under the [GNU AGPL v3.0](LICENSE).  
-This means you’re free to use, modify, and distribute this project —  
+This means you’re free to use, modify, and distribute this project,
 but if you host or deploy a modified version, you must share your source code.
 
 ## 🤝 Contributing
