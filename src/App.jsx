@@ -3,7 +3,6 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation,
 } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./common/components/loader/GavelLoader";
@@ -35,16 +34,7 @@ import TournamentInfoPage from "./pages/TournamentInfoPage";
 import TeamInfoPage from "./pages/TeamInfoPage";
 import StudentInfoPage from "./pages/StudentInfoPage";
 import BallotAnalysisPage from "./pages/BallotAnalysisPage";
-import DomainMigrationNotice from "./temporary/DomainMigrationNotice";
-
-function PublicDomainMigrationNotice({ user }) {
-  const { pathname } = useLocation();
-  const isAuthPage = ["/auth", "/signup", "/forgot-password"].includes(
-    pathname,
-  );
-
-  return !user && !isAuthPage ? <DomainMigrationNotice /> : null;
-}
+import LandingPage from "./pages/LandingPage";
 
 export default function App({ onReady }) {
   const { user, isPasswordRecovery, isSuperAdmin, loading, superAdminLoading } =
@@ -63,7 +53,6 @@ export default function App({ onReady }) {
 
   return (
     <BrowserRouter>
-      <PublicDomainMigrationNotice user={user} />
       <ErrorBoundary FallbackComponent={Error}>
         <Routes>
           <Route
@@ -332,7 +321,19 @@ export default function App({ onReady }) {
                   <DashboardPage />
                 </NavLayout>
               ) : (
-                <Navigate to="/auth" replace />
+                <LandingPage />
+              )
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              user ? (
+                <NavLayout>
+                  <LandingPage />
+                </NavLayout>
+              ) : (
+                <LandingPage />
               )
             }
           />

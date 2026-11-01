@@ -1,6 +1,7 @@
 import { Text, Button, Group } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import BasePage from "../common/components/BasePage";
+import SupportLink from "../common/components/SupportLink";
 
 export default function Error({ error, resetErrorBoundary }) {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ export default function Error({ error, resetErrorBoundary }) {
           Return to Home
         </Button>
       </Group>
+      <Text size="sm" c="dimmed" mt="md">
+        Still stuck? <SupportLink>Contact support</SupportLink>.
+      </Text>
     </BasePage>
   );
 }
