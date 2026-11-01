@@ -47,17 +47,14 @@ export default function DashboardPage() {
   return (
     <BasePage titleText="Dashboard">
       {assignments?.length === 0 && (
-        <Alert
-          title="Get access to your school"
-          color="blue"
-          mb="md"
-        >
+        <Alert title="Get access to your school" color="blue" mb="md">
           You are not assigned to any schools yet. Go to{" "}
           <Anchor component={Link} to="/settings">
             Settings
           </Anchor>{" "}
           to find and copy your user ID, then give it to the Primary Admin at
-          each school you need to be added to.
+          each school you need to be added to. If a school is not yet in our
+          system, contact support.
         </Alert>
       )}
       <Text>Welcome back{userName}!</Text>
