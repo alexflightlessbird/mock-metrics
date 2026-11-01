@@ -1,5 +1,6 @@
 import { Title, Text, Space, List, Divider } from "@mantine/core";
 import BasePage from "../common/components/BasePage";
+import SupportLink from "../common/components/SupportLink";
 
 export default function PrivacyAndSecurityPage() {
   return (
@@ -26,7 +27,8 @@ export default function PrivacyAndSecurityPage() {
         <Title order={2}>User Rights</Title>
         <Text>
           Users may request access to, correction of, or deletion of their
-          personal data. Contact support for data-related requests.
+          personal data. <SupportLink>Contact support</SupportLink> for
+          data-related requests.
         </Text>
 
         <Space h="xl" />

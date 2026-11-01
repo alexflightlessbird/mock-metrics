@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Divider,
   Paper,
@@ -14,13 +13,15 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import { LuSun, LuMoon } from "react-icons/lu";
+import { LuSun, LuMoon, LuInfo, LuLifeBuoy } from "react-icons/lu";
 import BasePage from "../common/components/BasePage";
 import ShowIdText from "../common/components/ShowIdText";
 import PageSection from "../common/components/PageSection";
 import { useUserDetails } from "../common/hooks/useUserDetails";
+import { SUPPORT_HREF } from "../common/components/SupportLink";
 
 export default function SettingsPage() {
   const { toggleTheme, isDark } = useTheme();
@@ -138,6 +139,49 @@ export default function SettingsPage() {
               </Stack>
 
               <ShowIdText idName="User" idValue={user.id} />
+            </Stack>
+          </Paper>
+        </PageSection>
+
+        <PageSection title="help & about">
+          <Paper withBorder radius="md" p={{ base: "md", sm: "lg" }}>
+            <Stack gap="md">
+              <Group justify="space-between" align="center" wrap="wrap">
+                <Box>
+                  <Text fw={600}>About MockMetrics</Text>
+                  <Text size="sm" c="dimmed">
+                    Learn more about the platform and getting your school
+                    started.
+                  </Text>
+                </Box>
+                <Button
+                  component={Link}
+                  to="/about"
+                  variant="light"
+                  leftSection={<LuInfo size={16} />}
+                >
+                  About MockMetrics
+                </Button>
+              </Group>
+
+              <Divider />
+
+              <Group justify="space-between" align="center" wrap="wrap">
+                <Box>
+                  <Text fw={600}>Need help?</Text>
+                  <Text size="sm" c="dimmed">
+                    Get in touch with the MockMetrics support team.
+                  </Text>
+                </Box>
+                <Button
+                  component="a"
+                  href={SUPPORT_HREF}
+                  variant="light"
+                  leftSection={<LuLifeBuoy size={16} />}
+                >
+                  Contact support
+                </Button>
+              </Group>
             </Stack>
           </Paper>
         </PageSection>

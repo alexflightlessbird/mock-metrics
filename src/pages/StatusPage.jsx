@@ -18,6 +18,7 @@ import {
 import { PiGavelFill as IconGavel } from "react-icons/pi";
 import BasePage from "../common/components/BasePage";
 import PageSection from "../common/components/PageSection";
+import SupportLink from "../common/components/SupportLink";
 
 const services = [
   {
@@ -82,6 +83,7 @@ export default function StatusPage() {
       <Stack gap="xl">
         <Text c="dimmed">
           Current operational status of MockMetrics services.{" "}
+          Need help? <SupportLink>Contact support</SupportLink>.{" "}
           <Anchor href="#" target="_blank">
             Subscribe to updates <IconExternalLink size={12} />
           </Anchor>

@@ -4,6 +4,7 @@ import GavelLoader from "../common/components/loader/GavelLoader";
 import BasePage from "../common/components/BasePage";
 import { LuGithub as GithubIcon } from "react-icons/lu";
 import { capitalize } from "../common/utils/helpers";
+import SupportLink from "../common/components/SupportLink";
 
 function ErrorBase({
   errorNumber,
@@ -69,7 +70,7 @@ function ErrorBase({
         >
           file a feature request or bug report
         </Anchor>
-        .
+        , or <SupportLink>contact support</SupportLink>.
       </Text>
       <Center>
         <Button

@@ -20,6 +20,7 @@ import Logo from "../assets/svgs/Logo/Logo";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import DomainMigrationNotice from "../temporary/DomainMigrationNotice";
+import SupportLink from "../common/components/SupportLink";
 
 const existingAccountError =
   "An account with this email already exists. Sign in or reset your password.";
@@ -493,6 +494,9 @@ export default function AuthPage() {
                 </Anchor>
               </Text>
             )}
+            <Text size="sm" ta="center" c="dimmed">
+              Need a hand? <SupportLink>Contact support</SupportLink>
+            </Text>
             </Stack>
           </Paper>
         </Container>
