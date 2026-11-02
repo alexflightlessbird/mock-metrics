@@ -402,10 +402,10 @@ export default function LandingPage() {
                   Your team belongs in the room.
                 </Title>
                 <Text c="dimmed" size="lg" lh={1.6}>
-                  Create an account to get started. If your school isn&apos;t
-                  part of MockMetrics yet, reach out to our support team first.
-                  We handle every school addition on the backend to make sure
-                  your program is set up correctly.
+                  Create an account to get started. If your school isn't part of
+                  MockMetrics yet, reach out to our support team first. We
+                  handle every school addition on the backend to make sure your
+                  program is set up correctly.
                 </Text>
               </Stack>
             </Grid.Col>
@@ -507,16 +507,16 @@ export default function LandingPage() {
           <Group justify="space-between" align="center" gap="md" wrap="wrap">
             <Box>
               <Title order={3} size="h4">
-                Privacy &amp; security
+                Privacy & security
               </Title>
               <Text c="dimmed" size="sm" mt={4} maw={720}>
-                We don&apos;t sell user or school data, and support staff don&apos;t
+                We don't sell user or school data, and support staff don't
                 routinely browse round or witness-selection records. Read how
                 MockMetrics handles information and protects accounts.
               </Text>
             </Box>
             <Anchor component={Link} to="/privacy-and-security" fw={600}>
-              Read our privacy &amp; security notice
+              Read our privacy & security notice
             </Anchor>
           </Group>
         </Paper>
