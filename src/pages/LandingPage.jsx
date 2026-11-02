@@ -501,6 +501,26 @@ export default function LandingPage() {
           </Grid>
         </Paper>
       </Container>
+
+      <Container size="xl" pb={{ base: 40, md: 64 }}>
+        <Paper withBorder radius="lg" p={{ base: "md", sm: "lg" }}>
+          <Group justify="space-between" align="center" gap="md" wrap="wrap">
+            <Box>
+              <Title order={3} size="h4">
+                Privacy &amp; security
+              </Title>
+              <Text c="dimmed" size="sm" mt={4} maw={720}>
+                We don&apos;t sell user or school data, and support staff don&apos;t
+                routinely browse round or witness-selection records. Read how
+                MockMetrics handles information and protects accounts.
+              </Text>
+            </Box>
+            <Anchor component={Link} to="/privacy-and-security" fw={600}>
+              Read our privacy &amp; security notice
+            </Anchor>
+          </Group>
+        </Paper>
+      </Container>
     </Box>
   );
 }

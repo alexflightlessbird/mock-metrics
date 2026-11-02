@@ -60,9 +60,8 @@ export default function CookieBanner() {
     >
       <Group>
         <Text size="sm">
-          We use cookies for authentication and essential site functions. By
-          continuing to use our site, you consent to our use of cookies. For
-          more information, visit{" "}
+          We use browser storage for authentication and essential site
+          functions. For more information, visit{" "}
           <Text
             component="a"
             td="underline"
@@ -70,7 +69,7 @@ export default function CookieBanner() {
             span
             onClick={() => navigate("/privacy-and-security")}
           >
-            our Privacy Policy
+            our Privacy & Security notice
           </Text>
           .
         </Text>
