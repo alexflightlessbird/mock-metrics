@@ -49,7 +49,6 @@ _Note: we are currently exploring donation options to sustain development, which
 - **Authentication**: Supabase Auth
 - **Database**: Supabase PostgreSQL
 - **Storage**: Supabase Storage
-- **AI Services**: Azure Form Recognizer & Self-Hosted AI Model
 
 ### Utilities
 
